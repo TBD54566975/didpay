@@ -1,0 +1,8 @@
+{
+    "appName": "DIDPay",
+    "welcome": "Welcome",
+    "getStarted": "Get started",
+    "toSendMoney": "To send money, we need to quickly verify your identity",
+    "congratsOnYourDid": "Congrats on your new DID!",
+    "verifyIdentity": "Verify your identity"
+}

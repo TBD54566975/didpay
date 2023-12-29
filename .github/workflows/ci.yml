@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  flutter-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Init Hermit
+        uses: cashapp/activate-hermit@v1
+        with:
+          cache: true
+
+      - name: Install Dependencies
+        working-directory: ./frontend
+        run: just get
+
+      - name: Run Flutter Analyze
+        working-directory: ./frontend
+        run: just analyze
+
+      - name: Run Flutter Test
+        working-directory: ./frontend
+        run: just test
