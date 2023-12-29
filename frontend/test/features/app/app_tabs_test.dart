@@ -1,5 +1,6 @@
+import 'package:flutter_starter/features/account/account_page.dart';
 import 'package:flutter_starter/features/app/app_tabs.dart';
-import 'package:flutter_starter/features/sample/sample_page.dart';
+import 'package:flutter_starter/features/home/home_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -10,7 +11,7 @@ void main() {
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );
 
-    expect(find.byType(SamplePage), findsOneWidget);
+    expect(find.byType(HomePage), findsOneWidget);
   });
 
   testWidgets('should show TodosPage when tapped', (WidgetTester tester) async {
@@ -18,8 +19,8 @@ void main() {
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );
 
-    await tester.tap(find.text('Tab 2'));
+    await tester.tap(find.text('Account'));
     await tester.pumpAndSettle();
-    expect(find.byType(SamplePage), findsOneWidget);
+    expect(find.byType(AccountPage), findsOneWidget);
   });
 }
