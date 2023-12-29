@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_starter/features/sample/sample_page.dart';
+import 'package:flutter_starter/features/account/account_page.dart';
+import 'package:flutter_starter/features/home/home_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _TabItem {
@@ -20,14 +21,14 @@ class AppTabs extends HookConsumerWidget {
 
     final tabs = [
       _TabItem(
-        "Tab 1",
-        const Icon(Icons.numbers),
-        const SamplePage(title: "Page 1"),
+        'Home',
+        const Icon(Icons.home_outlined),
+        const HomePage(),
       ),
       _TabItem(
-        "Tab 2",
-        const Icon(Icons.check),
-        const SamplePage(title: "Page 2"),
+        'Account',
+        const Icon(Icons.person_outlined),
+        const AccountPage(),
       ),
     ];
 

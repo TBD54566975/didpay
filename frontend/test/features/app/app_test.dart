@@ -1,5 +1,5 @@
 import 'package:flutter_starter/features/app/app.dart';
-import 'package:flutter_starter/features/auth/welcome_page.dart';
+import 'package:flutter_starter/features/app/app_tabs.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -10,6 +10,6 @@ void main() {
       WidgetHelpers.testableWidget(child: const App()),
     );
 
-    expect(find.byType(WelcomePage), findsOneWidget);
+    expect(find.byType(AppTabs), findsOneWidget);
   });
 }
