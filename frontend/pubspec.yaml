@@ -1,0 +1,42 @@
+name: flutter_starter
+description: A new Flutter project.
+publish_to: "none"
+version: 0.0.1+1
+
+environment:
+  sdk: ">=3.1.4 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  tbdex:
+    git:
+      url: https://github.com/TBD54566975/tbdex-dart.git
+      ref: main
+
+  flutter_hooks: ^0.20.3  
+  hooks_riverpod: ^2.4.9
+  intl: ^0.18.1
+  webview_flutter: ^4.4.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+  mocktail: ^1.0.2
+
+flutter:
+  uses-material-design: true
+  fonts:
+      - family: IBMPlexMono
+        fonts:
+          - asset: assets/fonts/IBMPlexMono-Regular.ttf
+          - asset: assets/fonts/IBMPlexMono-Medium.ttf
+            weight: 500
+          - asset: assets/fonts/IBMPlexMono-Bold.ttf
+            weight: 700
+          - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+            weight: 600
