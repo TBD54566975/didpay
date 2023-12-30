@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/pfis/pfi_providers.dart';
+import 'package:flutter_starter/features/pfis/pfi_verification_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -14,23 +14,21 @@ class HomePage extends HookConsumerWidget {
       body: ListView(
         children: [
           ...pfis.map(
-            (e) => ListTile(
-              title: Text(e.name),
-              subtitle: Text(e.id),
+            (pfi) => ListTile(
+              title: Text(pfi.name),
+              subtitle: Text(pfi.id),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
-                _launchUrl(e.widgetUrl);
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => PfiVerificationPage(pfi: pfi),
+                  ),
+                );
               },
             ),
           )
         ],
       ),
     );
-  }
-
-  Future<void> _launchUrl(String url) async {
-    if (!await launchUrl(Uri.parse(url))) {
-      throw Exception('Could not launch $url');
-    }
   }
 }

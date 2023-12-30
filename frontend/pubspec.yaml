@@ -21,7 +21,6 @@ dependencies:
   flutter_secure_storage: ^9.0.0
   hooks_riverpod: ^2.4.9
   intl: ^0.18.1
-  url_launcher: ^6.2.2
   webview_flutter: ^4.4.2
 
 dev_dependencies:

@@ -3,7 +3,16 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final pfisProvider = Provider<List<Pfi>>(
   (ref) => [
-    Pfi(id: 'africa', name: 'Africa', widgetUrl: 'https://tbd.website'),
-    Pfi(id: 'mexico', name: 'Mexico', widgetUrl: 'https://block.xyz'),
+    Pfi(
+      id: 'africa',
+      name: 'Africa',
+      widgetUrl: 'https://tbd.website',
+    ),
+    Pfi(
+      id: 'mexico',
+      name: 'Mexico',
+      widgetUrl:
+          'https://robustdisastrousstartups.wesbillman.repl.co/?proof=moeisreal&callback_uri=didpay://wes',
+    ),
   ],
 );
