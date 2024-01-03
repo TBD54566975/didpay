@@ -13,7 +13,7 @@ class AccountDidPage extends HookConsumerWidget {
       appBar: AppBar(title: const Text('My DID')),
       body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Center(child: SelectableText(did))),
+          child: Center(child: SelectableText(did.uri))),
     );
   }
 }
