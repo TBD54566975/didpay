@@ -1,14 +1,14 @@
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/pfis/pfi.dart';
 
 class PfiVerificationPage extends StatelessWidget {
-  final Pfi pfi;
+  final String widgetUri;
 
-  const PfiVerificationPage({required this.pfi, super.key});
+  const PfiVerificationPage({required this.widgetUri, super.key});
 
   @override
   Widget build(BuildContext context) {
+    final fullPath = '$widgetUri?proof=moegrammer&callback_uri=didpay://kyc';
     final controller = WebViewController()
       ..setBackgroundColor(Theme.of(context).colorScheme.background)
       ..setNavigationDelegate(
@@ -28,7 +28,7 @@ class PfiVerificationPage extends StatelessWidget {
           },
         ),
       )
-      ..loadRequest(Uri.parse(pfi.widgetUrl));
+      ..loadRequest(Uri.parse(fullPath));
 
     return Scaffold(
       appBar: AppBar(title: const Text('PFI Verification')),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/pfis/pfi_providers.dart';
 import 'package:flutter_starter/features/pfis/pfi_verification_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tbdex/tbdex.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -16,14 +17,22 @@ class HomePage extends HookConsumerWidget {
           ...pfis.map(
             (pfi) => ListTile(
               title: Text(pfi.name),
-              subtitle: Text(pfi.id),
+              subtitle: Text(pfi.didUri),
               trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PfiVerificationPage(pfi: pfi),
-                  ),
-                );
+              onTap: () async {
+                final result = await DidDht.resolve(pfi.didUri);
+                final widgetService = result.didDocument?.service
+                    ?.firstWhere((e) => e.type == 'kyc-widget');
+                if (widgetService?.serviceEndpoint != null) {
+                  // ignore: use_build_context_synchronously
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PfiVerificationPage(
+                        widgetUri: widgetService!.serviceEndpoint,
+                      ),
+                    ),
+                  );
+                }
               },
             ),
           )

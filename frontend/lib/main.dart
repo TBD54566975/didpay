@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_starter/features/account/account_providers.dart';
 import 'package:flutter_starter/features/app/app.dart';
+import 'package:flutter_starter/services/secure_storage_key_manager.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
@@ -14,8 +15,8 @@ void main() async {
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  final did = await getOrCreateDid(storage);
-
+  final keyManager = SecureStorageKeyManager(storage);
+  final did = await getOrCreateDid(keyManager, storage);
   runApp(ProviderScope(
     overrides: [
       secureStorage.overrideWithValue(storage),
@@ -25,16 +26,17 @@ void main() async {
   ));
 }
 
-Future<String> getOrCreateDid(FlutterSecureStorage storage) async {
-  const didKey = 'did';
-  final did = await storage.read(key: didKey);
-  if (did != null) {
-    return did;
+Future<Did> getOrCreateDid(
+  KeyManager keyManager,
+  FlutterSecureStorage storage,
+) async {
+  const didUriKey = 'did.uri';
+  final didUri = await storage.read(key: didUriKey);
+  if (didUri != null) {
+    return DidJwk(uri: didUri, keyManager: keyManager);
   }
 
-  final keyManager = InMemoryKeyManager();
-  final jwt = await DidJwk.create(keyManager: keyManager);
-  await storage.write(key: didKey, value: jwt.uri);
-
-  return jwt.uri;
+  final did = await DidJwk.create(keyManager: keyManager);
+  await storage.write(key: didUriKey, value: did.uri);
+  return did;
 }
