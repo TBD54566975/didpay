@@ -97,11 +97,11 @@ abstract class Loc {
   /// **'DIDPay'**
   String get appName;
 
-  /// No description provided for @welcome.
+  /// No description provided for @welcomeToDIDPay.
   ///
   /// In en, this message translates to:
-  /// **'Welcome'**
-  String get welcome;
+  /// **'Welcome to DIDPay'**
+  String get welcomeToDIDPay;
 
   /// No description provided for @getStarted.
   ///
@@ -112,20 +112,44 @@ abstract class Loc {
   /// No description provided for @toSendMoney.
   ///
   /// In en, this message translates to:
-  /// **'To send money, we need to quickly verify your identity'**
+  /// **'To send money, you\'ll need to verify your identity with a PFI in your region'**
   String get toSendMoney;
 
-  /// No description provided for @congratsOnYourDid.
+  /// No description provided for @selectYourRegion.
   ///
   /// In en, this message translates to:
-  /// **'Congrats on your new DID!'**
-  String get congratsOnYourDid;
+  /// **'Select your region'**
+  String get selectYourRegion;
 
-  /// No description provided for @verifyIdentity.
+  /// No description provided for @home.
   ///
   /// In en, this message translates to:
-  /// **'Verify your identity'**
-  String get verifyIdentity;
+  /// **'Home'**
+  String get home;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @deposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get deposit;
+
+  /// No description provided for @send.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get withdraw;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/account/account_did_page.dart';
+import 'package:flutter_starter/features/account/account_vc_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
@@ -11,15 +12,27 @@ class AccountPage extends StatelessWidget {
       body: ListView(
         children: [
           ListTile(
-              title: const Text('My DID'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AccountDidPage(),
-                  ),
-                );
-              }),
+            title: const Text('My DID'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AccountDidPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
+            title: const Text('My verifiable credential'),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const AccountVCPage(),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

@@ -1,5 +1,5 @@
 import 'package:flutter_starter/features/app/app.dart';
-import 'package:flutter_starter/features/app/app_tabs.dart';
+import 'package:flutter_starter/features/onboarding/onboarding_welcome_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -7,9 +7,9 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   testWidgets('should show AppTabs', (WidgetTester tester) async {
     await tester.pumpWidget(
-      WidgetHelpers.testableWidget(child: const App()),
+      WidgetHelpers.testableWidget(child: const App(onboarding: true)),
     );
 
-    expect(find.byType(AppTabs), findsOneWidget);
+    expect(find.byType(OnboardingWelcomePage), findsOneWidget);
   });
 }
