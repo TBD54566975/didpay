@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_starter/features/account/account_providers.dart';
 import 'package:flutter_starter/features/app/app.dart';
-import 'package:flutter_starter/services/secure_storage_key_manager.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tbdex/tbdex.dart';
+import 'package:web5_flutter/web5_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +14,7 @@ void main() async {
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  final keyManager = SecureStorageKeyManager(storage);
+  final keyManager = SecureStorageKeyManager(storage: storage);
   final did = await getOrCreateDid(keyManager, storage);
   runApp(ProviderScope(
     overrides: [

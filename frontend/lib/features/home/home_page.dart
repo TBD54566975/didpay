@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/pfis/pfi_providers.dart';
 import 'package:flutter_starter/features/pfis/pfi_verification_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tbdex/tbdex.dart';
+import 'package:web5_flutter/web5_flutter.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
