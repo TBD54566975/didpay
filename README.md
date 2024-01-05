@@ -1,31 +1,25 @@
-# $PROJECT_NAME README
+# DidPay - pay anyone with tbdex
 
-Congrats, project leads! You got a new project to grow!
-
-This stub is meant to help you form a strong community around your work. It's yours to adapt, and may 
-diverge from this initial structure. Just keep the files seeded in this repo, and the rest is yours to evolve! 
+DidPay is a general purpose front end for tbdex that can be used or forked and modified. It runs as a mobile app. 
 
 ## Introduction
 
-Orient users to the project here. This is a good place to start with an assumption
-that the user knows very little - so start with the Big Picture and show how this
-project fits into it. It may be good to reference/link the broader architecture in the
-`collaboration` repo or the developer site here.
+This is EXTREMELY a work in progress. 
+The aim is that this app can work with any tbdex liquidity node, discoverying the offerings and then running transactions all from a phone. 
 
-Then maybe a dive into what this project does.
+## Running
 
-Diagrams and other visuals are helpful here. Perhaps code snippets showing usage.
+* Install Hermit https://cashapp.github.io/hermit/ (on macos you can run `brew install hermit` and then `hermit shell-hooks`)
+* Ensure you have a mobile app simulator handy (XCode on macOS and runing the Simulator app will do for example)
+* Run `flutter run` from this project to build and start the app in the simulator
 
-Project leads should complete, alongside this `README`:
-* [CODEOWNERS](./CODEOWNERS) - set project lead(s)
-* [CONTRIBUTING.md](./CONTRIBUTING.md) - Fill out how to: install prereqs, build, test, run, access CI, chat, discuss, file issues
-* [Bug-report.md](.github/ISSUE_TEMPLATE/bug-report.md) - Fill out `Assignees` add codeowners @names
-* [config.yml](.github/ISSUE_TEMPLATE/config.yml) - remove "(/add your discord channel..)" and replace the url with your Discord channel if applicable
 
-The other files in this template repo may be used as-is:
-* [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
-* [GOVERNANCE.md](./GOVERNANCE.md)
-* [LICENSE](./LICENSE)
+
+A picture says a thousand words: 
+
+![shot1](https://github.com/TBD54566975/didpay/assets/14976/fe4600fa-9843-4770-ba6a-9e1bc4234d0d)
+
+![shot2](https://github.com/TBD54566975/didpay/assets/14976/64948141-311e-41fb-a0b7-fe2160fd36be)
 
 ## Project Resources
 
