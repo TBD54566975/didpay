@@ -12,9 +12,10 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  tbdex:
+  web5_flutter:
     git:
-      url: https://github.com/TBD54566975/tbdex-dart.git
+      url: https://github.com/TBD54566975/web5-dart.git
+      path: packages/web5_flutter
       ref: main
 
   flutter_hooks: ^0.20.3  
