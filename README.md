@@ -4,16 +4,14 @@ DidPay is a general purpose front end for tbdex that can be used or forked and m
 
 ## Introduction
 
-This is is EXTREMELY a work in progress. 
+This is EXTREMELY a work in progress. 
 The aim is that this app can work with any tbdex liquidity node, discoverying the offerings and then running transactions all from a phone. 
 
 ## Running
 
-* Install flutter
-* Install Hermit https://cashapp.github.io/hermit/
-* Ensure you have a mobile app simulator handy (XCode on macOS and runing the Simulator app will do for example).
-* Run `flutter run` to build and start the app in the simulator.
-
+* Install Hermit https://cashapp.github.io/hermit/ (on macos you can run `brew install hermit` and then `hermit shell-hooks`)
+* Ensure you have a mobile app simulator handy (XCode on macOS and runing the Simulator app will do for example)
+* Run `flutter run` from this project to build and start the app in the simulator
 
 
 
