@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  testWidgets('should start on CounterPage', (WidgetTester tester) async {
+  testWidgets('should start on HomePage', (WidgetTester tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );
@@ -14,7 +14,8 @@ void main() {
     expect(find.byType(HomePage), findsOneWidget);
   });
 
-  testWidgets('should show TodosPage when tapped', (WidgetTester tester) async {
+  testWidgets('should show AccountPage when tapped',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );

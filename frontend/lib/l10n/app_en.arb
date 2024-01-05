@@ -1,8 +1,12 @@
 {
     "appName": "DIDPay",
-    "welcome": "Welcome",
+    "welcomeToDIDPay": "Welcome to DIDPay",
     "getStarted": "Get started",
-    "toSendMoney": "To send money, we need to quickly verify your identity",
-    "congratsOnYourDid": "Congrats on your new DID!",
-    "verifyIdentity": "Verify your identity"
+    "toSendMoney": "To send money, you'll need to verify your identity with a PFI in your region",
+    "selectYourRegion": "Select your region",
+    "home": "Home",
+    "done": "Done",
+    "deposit": "Deposit",
+    "send": "Send",
+    "withdraw": "Withdraw"
 }

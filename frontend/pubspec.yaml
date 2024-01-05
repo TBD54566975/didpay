@@ -18,9 +18,11 @@ dependencies:
       path: packages/web5_flutter
       ref: main
 
+  collection: ^1.18.0
   flutter_hooks: ^0.20.3  
   flutter_secure_storage: ^9.0.0
   hooks_riverpod: ^2.4.9
+  http: ^1.1.2
   intl: ^0.18.1
   webview_flutter: ^4.4.2
 

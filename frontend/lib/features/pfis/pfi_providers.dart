@@ -5,7 +5,7 @@ final pfisProvider = Provider<List<Pfi>>(
   (ref) => [
     Pfi(
       id: 'prototype',
-      name: 'Prototype PFI',
+      name: 'Prototype',
       didUri: 'did:dht:3x1hbjobt577amnoeoxcenqrbjicym5mgsx6c6zszisf1igfj51y',
     ),
     Pfi(
