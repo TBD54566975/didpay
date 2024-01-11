@@ -3,8 +3,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class NumberPad extends HookWidget {
   final Function(String) onKeyPressed;
+  final VoidCallback onDeletePressed;
 
-  const NumberPad({required this.onKeyPressed, super.key});
+  const NumberPad({
+    required this.onKeyPressed,
+    required this.onDeletePressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +39,11 @@ class NumberPad extends HookWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: keys.map((key) {
-        return NumberPadKey(title: key, onKeyPressed: onKeyPressed);
+        return NumberPadKey(
+          title: key,
+          onKeyPressed: onKeyPressed,
+          onDeletePressed: onDeletePressed,
+        );
       }).toList(),
     );
   }
@@ -43,9 +52,14 @@ class NumberPad extends HookWidget {
 class NumberPadKey extends HookWidget {
   final String title;
   final Function(String) onKeyPressed;
+  final VoidCallback onDeletePressed;
 
-  const NumberPadKey(
-      {required this.title, required this.onKeyPressed, super.key});
+  const NumberPadKey({
+    required this.title,
+    required this.onKeyPressed,
+    required this.onDeletePressed,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -61,9 +75,9 @@ class NumberPadKey extends HookWidget {
       child: GestureDetector(
         onTapDown: (_) => keySize.value = selectedSize,
         onTapCancel: () => keySize.value = defaultSize,
-        onTapUp: (_) {
+        onTapUp: (key) {
           keySize.value = defaultSize;
-          onKeyPressed(title);
+          (title == '<') ? onDeletePressed() : onKeyPressed(title);
         },
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 100),
