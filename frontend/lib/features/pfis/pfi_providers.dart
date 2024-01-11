@@ -6,7 +6,7 @@ final pfisProvider = Provider<List<Pfi>>(
     Pfi(
       id: 'prototype',
       name: 'Prototype',
-      didUri: 'did:dht:3x1hbjobt577amnoeoxcenqrbjicym5mgsx6c6zszisf1igfj51y',
+      didUri: 'did:dht:74hg1efatndi8enx3e4z6c4u8ieh1xfkyay4ntg4dg1w6risu35y',
     ),
     Pfi(
       id: 'africa',
