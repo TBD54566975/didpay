@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/features/send/send_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -24,7 +25,13 @@ class HomePage extends HookConsumerWidget {
             children: [
               FilledButton(
                   onPressed: () {}, child: Text(Loc.of(context).deposit)),
-              FilledButton(onPressed: () {}, child: Text(Loc.of(context).send)),
+              FilledButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const SendPage(),
+                    ));
+                  },
+                  child: Text(Loc.of(context).send)),
               FilledButton(
                   onPressed: () {}, child: Text(Loc.of(context).withdraw)),
             ],
