@@ -105,7 +105,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
     }
 
     var uri = Uri.parse(
-        '${pfiService.serviceEndpoint}/credential?transaction_id=$transactionId');
+        '${pfiService.serviceEndpoint}/credential?transactionId=$transactionId');
     final response = await http.get(uri);
     if (response.statusCode != 200) {
       // Add real error handling here...
