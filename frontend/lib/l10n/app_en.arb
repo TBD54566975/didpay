@@ -8,5 +8,6 @@
     "done": "Done",
     "deposit": "Deposit",
     "send": "Send",
-    "withdraw": "Withdraw"
+    "withdraw": "Withdraw",
+    "accountBalance": "Account balance"
 }
