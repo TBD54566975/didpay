@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/account/account_providers.dart';
+import 'package:flutter_starter/shared/grid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AccountVCPage extends HookConsumerWidget {
@@ -12,7 +13,7 @@ class AccountVCPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('My VC')),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
         child: Center(child: SelectableText(vc ?? '')),
       ),
     );

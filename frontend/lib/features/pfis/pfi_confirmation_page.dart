@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_starter/features/account/account_providers.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:flutter_starter/shared/constants.dart';
+import 'package:flutter_starter/shared/grid.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,13 +45,13 @@ class PfiConfirmationPage extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const SizedBox(height: 40),
+        const SizedBox(height: Grid.lg),
         Text(
           'Verifying your credentials...',
           style: Theme.of(context).textTheme.titleMedium,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 40),
+        const SizedBox(height: Grid.lg),
         const Center(child: CircularProgressIndicator())
       ],
     );
@@ -60,7 +61,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const SizedBox(height: 40),
+        const SizedBox(height: Grid.lg),
         Expanded(
           child: Center(
             child: Column(
@@ -71,7 +72,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 40),
+                const SizedBox(height: Grid.lg),
                 Icon(Icons.check_circle,
                     size: 80, color: Theme.of(context).colorScheme.primary),
               ],
@@ -79,7 +80,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
           child: FilledButton(
             onPressed: () {
               Navigator.of(context).pushAndRemoveUntil(
