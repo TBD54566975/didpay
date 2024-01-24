@@ -150,6 +150,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Withdraw'**
   String get withdraw;
+
+  /// No description provided for @accountBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Account balance'**
+  String get accountBalance;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
