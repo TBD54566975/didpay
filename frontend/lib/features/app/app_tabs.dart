@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/features/account/account_page.dart';
 import 'package:flutter_starter/features/home/home_page.dart';
+import 'package:flutter_starter/features/send/send_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class _TabItem {
@@ -24,6 +25,11 @@ class AppTabs extends HookConsumerWidget {
         'Home',
         const Icon(Icons.home_outlined),
         const HomePage(),
+      ),
+      _TabItem(
+        'Send',
+        const Icon(Icons.attach_money),
+        const SendPage(),
       ),
       _TabItem(
         'Account',
