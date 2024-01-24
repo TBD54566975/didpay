@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
+import 'package:flutter_starter/shared/grid.dart';
 
 class SendPage extends HookWidget {
   const SendPage({super.key});
@@ -24,12 +25,12 @@ class SendPage extends HookWidget {
                     style: Theme.of(context).textTheme.displayLarge,
                     textAlign: TextAlign.center,
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: Grid.lg),
                 ],
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16.0),
+              padding: const EdgeInsets.symmetric(vertical: Grid.xs),
               child: NumberPad(
                 onKeyPressed: (key) {
                   sendAmount.value = (sendAmount.value == '\$0')
@@ -45,7 +46,7 @@ class SendPage extends HookWidget {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
               child: FilledButton(
                 onPressed: () {},
                 child: Text(Loc.of(context).send),

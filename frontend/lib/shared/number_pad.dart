@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/shared/grid.dart';
 
 class NumberPad extends HookWidget {
   final Function(String) onKeyPressed;
@@ -16,7 +17,7 @@ class NumberPad extends HookWidget {
     final pressedKey = useState<String>('');
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: Grid.xs),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -63,20 +64,20 @@ class NumberPadKey extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    const defaultSize = 24.0;
-    const selectedSize = 40.0;
+    const defaultFontSize = 24.0;
+    const selectedFontSize = 40.0;
 
-    final keySize = useState(defaultSize);
+    final keySize = useState(defaultFontSize);
 
     return Container(
-      margin: const EdgeInsets.all(8.0),
+      margin: const EdgeInsets.all(Grid.xxs),
       width: 100.0,
       height: 50.0,
       child: GestureDetector(
-        onTapDown: (_) => keySize.value = selectedSize,
-        onTapCancel: () => keySize.value = defaultSize,
+        onTapDown: (_) => keySize.value = selectedFontSize,
+        onTapCancel: () => keySize.value = defaultFontSize,
         onTapUp: (key) {
-          keySize.value = defaultSize;
+          keySize.value = defaultFontSize;
           (title == '<') ? onDeletePressed() : onKeyPressed(title);
         },
         child: AnimatedDefaultTextStyle(
