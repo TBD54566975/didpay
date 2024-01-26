@@ -9,26 +9,32 @@ class PfisPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pfis = ref.watch(pfisProvider);
+    // Watch the provider and get the AsyncValue object    
+
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).selectYourRegion)),
-      body: ListView(
-        children: [
-          ...pfis.map(
-            (pfi) => ListTile(
-              title: Text(pfi.name),
-              subtitle: Text(pfi.didUri),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () async {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => PfiVerificationPage(pfi: pfi),
-                  ),
-                );
-              },
-            ),
-          )
-        ],
+      body: ref.watch(pfisProvider).when(
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (error, stack) => Center(child: Text('Error: $error')),
+        data: (pfis) {
+          // Build the list when data is available
+          return ListView(
+            children: pfis.map(
+              (pfi) => ListTile(
+                title: Text(pfi.name),
+                subtitle: Text(pfi.didUri),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => PfiVerificationPage(pfi: pfi),
+                    ),
+                  );
+                },
+              ),
+            ).toList(),
+          );
+        },
       ),
     );
   }
