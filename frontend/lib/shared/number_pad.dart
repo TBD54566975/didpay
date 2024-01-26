@@ -16,8 +16,8 @@ class NumberPad extends HookWidget {
   Widget build(BuildContext context) {
     final pressedKey = useState<String>('');
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: Grid.xs),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -64,22 +64,23 @@ class NumberPadKey extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    const keyHeight = 64.0;
+    const keyWidth = 93.0;
     const defaultFontSize = 24.0;
-    const selectedFontSize = 40.0;
+    const selectedFontSize = 44.0;
 
     final keySize = useState(defaultFontSize);
 
-    return Container(
-      margin: const EdgeInsets.all(Grid.xxs),
-      width: 100.0,
-      height: 50.0,
-      child: GestureDetector(
-        onTapDown: (_) => keySize.value = selectedFontSize,
-        onTapCancel: () => keySize.value = defaultFontSize,
-        onTapUp: (key) {
-          keySize.value = defaultFontSize;
-          (title == '<') ? onDeletePressed() : onKeyPressed(title);
-        },
+    return GestureDetector(
+      onTapDown: (_) => keySize.value = selectedFontSize,
+      onTapCancel: () => keySize.value = defaultFontSize,
+      onTapUp: (key) {
+        keySize.value = defaultFontSize;
+        (title == '<') ? onDeletePressed() : onKeyPressed(title);
+      },
+      child: SizedBox(
+        height: keyHeight,
+        width: keyWidth,
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 100),
           style: TextStyle(
