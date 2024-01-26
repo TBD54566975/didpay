@@ -15,34 +15,38 @@ class DepositPage extends HookWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: Grid.side, vertical: Grid.sm),
-              child: Column(
-                children: [
-                  buildCurrencyConverter(context, depositAmount, 'MXN', '17'),
-                  const SizedBox(height: Grid.xl),
-                  // these will come from PFI offerings later
-                  buildDepositDetails(context, 'MXN', '17', '0'),
-                ],
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: Grid.side, vertical: Grid.sm),
+                  child: Column(
+                    children: [
+                      buildCurrencyConverter(
+                          context, depositAmount, 'MXN', '17'),
+                      const SizedBox(height: Grid.xl),
+                      // these will come from PFI offerings later
+                      buildDepositDetails(context, 'MXN', '17', '0'),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Grid.xs),
-            child: buildNumberPad(depositAmount),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-            child: FilledButton(
-              onPressed: () {},
-              child: Text(Loc.of(context).next),
+            Center(child: buildNumberPad(depositAmount)),
+            const SizedBox(height: Grid.sm),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+              child: FilledButton(
+                onPressed: () {},
+                child: Text(Loc.of(context).next),
+              ),
             ),
-          ),
-        ]),
+          ],
+        ),
       ),
     );
   }
