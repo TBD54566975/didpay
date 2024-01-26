@@ -9,5 +9,11 @@
     "deposit": "Deposit",
     "send": "Send",
     "withdraw": "Withdraw",
-    "accountBalance": "Account balance"
+    "next": "Next",
+    "accountBalance": "Account balance",
+    "youDeposit": "You deposit",
+    "youGet": "You get",
+    "estRate": "Est. rate",
+    "serviceFee": "Service fee",
+    "usd": "USD"
 }

@@ -151,11 +151,47 @@ abstract class Loc {
   /// **'Withdraw'**
   String get withdraw;
 
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
+
   /// No description provided for @accountBalance.
   ///
   /// In en, this message translates to:
   /// **'Account balance'**
   String get accountBalance;
+
+  /// No description provided for @youDeposit.
+  ///
+  /// In en, this message translates to:
+  /// **'You deposit'**
+  String get youDeposit;
+
+  /// No description provided for @youGet.
+  ///
+  /// In en, this message translates to:
+  /// **'You get'**
+  String get youGet;
+
+  /// No description provided for @estRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Est. rate'**
+  String get estRate;
+
+  /// No description provided for @serviceFee.
+  ///
+  /// In en, this message translates to:
+  /// **'Service fee'**
+  String get serviceFee;
+
+  /// No description provided for @usd.
+  ///
+  /// In en, this message translates to:
+  /// **'USD'**
+  String get usd;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
