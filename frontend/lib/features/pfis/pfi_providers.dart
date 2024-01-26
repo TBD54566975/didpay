@@ -7,7 +7,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final pfisProvider = FutureProvider<List<Pfi>>((ref) async {
   const url = 'https://raw.githubusercontent.com/TBD54566975/pfi-providers-data/main/pfis.json';
-  const cacheKey = 'pfis_cache';
+  const cacheKey = 'pfi_cache';
+
+
+  // fall back to a dev PFI if passed on command line like: flutter run --dart-define=DEV_PFI=your_did_string
+  const devPfi = String.fromEnvironment('DEV_PFI');
+  if (devPfi != '' && devPfi != null) {
+    return [
+      Pfi(
+        id: 'dev',
+        name: 'Dev PFI',
+        didUri: devPfi,
+      ),
+    ];
+  }
 
   // First, try loading from cache
   List<Pfi> pfis = await _loadFromCache(cacheKey);
