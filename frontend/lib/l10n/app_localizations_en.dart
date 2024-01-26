@@ -35,5 +35,23 @@ class LocEn extends Loc {
   String get withdraw => 'Withdraw';
 
   @override
+  String get next => 'Next';
+
+  @override
   String get accountBalance => 'Account balance';
+
+  @override
+  String get youDeposit => 'You deposit';
+
+  @override
+  String get youGet => 'You get';
+
+  @override
+  String get estRate => 'Est. rate';
+
+  @override
+  String get serviceFee => 'Service fee';
+
+  @override
+  String get usd => 'USD';
 }

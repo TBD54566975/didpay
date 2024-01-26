@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/features/deposit/deposit_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
 
@@ -39,7 +40,12 @@ class AccountBalance extends HookWidget {
               children: [
                 Expanded(
                   child: FilledButton(
-                      onPressed: () {}, child: Text(Loc.of(context).deposit)),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => const DepositPage(),
+                        ));
+                      },
+                      child: Text(Loc.of(context).deposit)),
                 ),
                 const SizedBox(width: Grid.xs),
                 Expanded(

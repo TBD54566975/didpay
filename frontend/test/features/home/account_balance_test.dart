@@ -5,17 +5,16 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('AccountBalance', () {
-    testWidgets('should show account balance', (widgetTester) async {
-      await widgetTester.pumpWidget(
+    testWidgets('should show account balance', (tester) async {
+      await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const AccountBalance()),
       );
 
       expect(find.text('Account balance'), findsOneWidget);
     });
 
-    testWidgets('should show valid account balance amount',
-        (widgetTester) async {
-      await widgetTester.pumpWidget(
+    testWidgets('should show valid account balance amount', (tester) async {
+      await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const AccountBalance()),
       );
 
