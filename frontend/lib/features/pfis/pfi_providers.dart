@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_starter/features/pfis/pfi.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -8,31 +9,16 @@ final pfisProvider = FutureProvider<List<Pfi>>((ref) async {
   const url = 'https://raw.githubusercontent.com/TBD54566975/pfi-providers-data/main/pfis.json';
   const cacheKey = 'pfis_cache';
 
-  try {
-    // Attempt to fetch data from the URL
-    final response = await http.get(Uri.parse(url));
-    if (response.statusCode == 200) {
-      // Parse the JSON data directly into a list of Pfi objects
-      List<Pfi> pfis = (json.decode(response.body) as List).map((data) {
-        return Pfi(
-          id: data['id'] as String,
-          name: data['name'] as String,
-          didUri: data['didUri'] as String,
-        );
-      }).toList();
-
-      // Save the data to cache
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString(cacheKey, response.body);
-
-      return pfis;
-    } else {
-      // If server returns an unsuccessful response, try loading from cache
-      return await _loadFromCache(cacheKey);
-    }
-  } catch (e) {
-    // In case of an error, try loading from cache
-    return await _loadFromCache(cacheKey);
+  // First, try loading from cache
+  List<Pfi> pfis = await _loadFromCache(cacheKey);
+  if (pfis.isNotEmpty) {
+    // If cache has data, return it first
+    // Then, asynchronously refresh the cache
+    _refreshCache(url, cacheKey);
+    return pfis;
+  } else {
+    // If cache is empty, fetch from the URL
+    return await _fetchFromURL(url, cacheKey);
   }
 });
 
@@ -41,7 +27,6 @@ Future<List<Pfi>> _loadFromCache(String cacheKey) async {
   String? cachedData = prefs.getString(cacheKey);
 
   if (cachedData != null) {
-    // If cached data is available, parse and return it
     return (json.decode(cachedData) as List).map((data) {
       return Pfi(
         id: data['id'] as String,
@@ -50,7 +35,41 @@ Future<List<Pfi>> _loadFromCache(String cacheKey) async {
       );
     }).toList();
   } else {
-    // If there is no cached data, return an empty list or handle appropriately
     return [];
+  }
+}
+
+Future<List<Pfi>> _fetchFromURL(String url, String cacheKey) async {
+  try {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(cacheKey, response.body);
+
+      return (json.decode(response.body) as List).map((data) {
+        return Pfi(
+          id: data['id'] as String,
+          name: data['name'] as String,
+          didUri: data['didUri'] as String,
+        );
+      }).toList();
+    }
+  } catch (e) {
+    // Handle the error or return an empty list
+    debugPrint(e.toString());
+  }
+  return [];
+}
+
+Future<void> _refreshCache(String url, String cacheKey) async {
+  try {
+    final response = await http.get(Uri.parse(url));
+    if (response.statusCode == 200) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(cacheKey, response.body);
+    }
+  } catch (e) {
+    // Handle the error silently as this is a background refresh
+    debugPrint(e.toString());
   }
 }
