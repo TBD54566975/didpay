@@ -69,12 +69,15 @@ void main() {
         WidgetHelpers.testableWidget(child: const DepositPage()),
       );
 
-      for (int i = 1; i <= 5; i++) {
+      for (int i = 1; i <= 9; i++) {
         await tester.tap(find.text('$i'));
         await tester.pump();
 
         final expectedText = i.toStringAsFixed(2);
         expect(find.textContaining(expectedText), findsOneWidget);
+
+        await tester.tap(find.text('<'));
+        await tester.pump();
       }
     });
   });
