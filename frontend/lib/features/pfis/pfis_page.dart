@@ -3,19 +3,17 @@ import 'package:flutter_starter/features/pfis/pfi_providers.dart';
 import 'package:flutter_starter/features/pfis/pfi_verification_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:flutter_starter/features/pfis/pfi.dart';
 
 class PfisPage extends HookConsumerWidget {
   const PfisPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the provider and get the AsyncValue object
-    AsyncValue<List<Pfi>> pfisAsyncValue = ref.watch(pfisProvider);
+    // Watch the provider and get the AsyncValue object    
 
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).selectYourRegion)),
-      body: pfisAsyncValue.when(
+      body: ref.watch(pfisProvider).when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, stack) => Center(child: Text('Error: $error')),
         data: (pfis) {
