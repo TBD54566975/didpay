@@ -3,13 +3,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:intl/intl.dart';
 
 class SendPage extends HookWidget {
   const SendPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final sendAmount = useState<String>('\$0');
+    final sendAmount = useState<String>('0');
 
     return Scaffold(
         appBar: AppBar(),
@@ -21,7 +22,10 @@ class SendPage extends HookWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    sendAmount.value,
+                    NumberFormat.simpleCurrency(
+                            decimalDigits:
+                                sendAmount.value.contains('.') ? 2 : 0)
+                        .format(double.parse(sendAmount.value)),
                     style: Theme.of(context).textTheme.displayLarge,
                     textAlign: TextAlign.center,
                   ),
@@ -32,17 +36,7 @@ class SendPage extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: Grid.xs),
               child: NumberPad(
-                onKeyPressed: (key) {
-                  sendAmount.value = (sendAmount.value == '\$0')
-                      ? '\$$key'
-                      : '${sendAmount.value}$key';
-                },
-                onDeletePressed: () {
-                  sendAmount.value = (sendAmount.value.length > 2)
-                      ? sendAmount.value
-                          .substring(0, sendAmount.value.length - 1)
-                      : '\$0';
-                },
+                enteredAmount: sendAmount,
               ),
             ),
             Padding(

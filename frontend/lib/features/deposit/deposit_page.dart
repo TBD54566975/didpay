@@ -10,7 +10,7 @@ class DepositPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final depositAmount = useState<String>('0');
+    final depositInputAmount = useState<String>('0');
 
     return Scaffold(
       appBar: AppBar(),
@@ -26,17 +26,21 @@ class DepositPage extends HookWidget {
                       horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
                     children: [
-                      buildCurrencyConverter(
-                          context, depositAmount, 'MXN', '17'),
+                      _buildCurrencyConverter(
+                          context, depositInputAmount, 'MXN', '17'),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
-                      buildDepositDetails(context, 'MXN', '17', '0'),
+                      _buildDepositDetails(context, 'MXN', '17', '0'),
                     ],
                   ),
                 ),
               ),
             ),
-            Center(child: buildNumberPad(depositAmount)),
+            Center(
+              child: NumberPad(
+                enteredAmount: depositInputAmount,
+              ),
+            ),
             const SizedBox(height: Grid.sm),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -51,11 +55,17 @@ class DepositPage extends HookWidget {
     );
   }
 
-  Widget buildCurrencyConverter(
-      BuildContext context,
-      ValueNotifier<String> depositAmount,
-      String depositCurrency,
-      String exchangeRate) {
+  Widget _buildCurrencyConverter(
+    BuildContext context,
+    ValueNotifier<String> depositInputAmount,
+    String depositCurrency,
+    String exchangeRate,
+  ) {
+    final depositOutputAmount =
+        double.parse(depositInputAmount.value) / double.parse(exchangeRate);
+
+    bool isDoubleAnInt(double number) => number.remainder(1) == 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -63,10 +73,15 @@ class DepositPage extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(
-              NumberFormat.simpleCurrency()
-                  .format(double.parse(depositAmount.value)),
-              style: Theme.of(context).textTheme.displayMedium,
+            FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                NumberFormat.simpleCurrency(
+                        decimalDigits:
+                            depositInputAmount.value.contains('.') ? 2 : 0)
+                    .format(double.parse(depositInputAmount.value)),
+                style: Theme.of(context).textTheme.displayMedium,
+              ),
             ),
             const SizedBox(width: Grid.xs),
             Text(
@@ -86,8 +101,9 @@ class DepositPage extends HookWidget {
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              NumberFormat.simpleCurrency().format(
-                  double.parse(depositAmount.value) /
+              NumberFormat.simpleCurrency(
+                      decimalDigits: isDoubleAnInt(depositOutputAmount) ? 0 : 2)
+                  .format(double.parse(depositInputAmount.value) /
                       double.parse(exchangeRate)),
               style: Theme.of(context).textTheme.displayMedium,
             ),
@@ -111,7 +127,7 @@ class DepositPage extends HookWidget {
     );
   }
 
-  Widget buildDepositDetails(
+  Widget _buildDepositDetails(
     BuildContext context,
     String depositCurrency,
     String exchangeRate,
@@ -174,20 +190,6 @@ class DepositPage extends HookWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget buildNumberPad(ValueNotifier<String> depositAmount) {
-    return NumberPad(
-      onKeyPressed: (key) {
-        depositAmount.value =
-            (depositAmount.value == '0') ? key : '${depositAmount.value}$key';
-      },
-      onDeletePressed: () {
-        depositAmount.value = (depositAmount.value.length > 1)
-            ? depositAmount.value.substring(0, depositAmount.value.length - 1)
-            : '0';
-      },
     );
   }
 }
