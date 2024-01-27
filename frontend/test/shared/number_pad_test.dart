@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -24,8 +25,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: NumberPad(
-            onKeyPressed: (key) {},
-            onDeletePressed: () {},
+            enteredAmount: ValueNotifier<String>('0'),
           ),
         ),
       );
@@ -35,43 +35,25 @@ void main() {
       }
     });
 
-    testWidgets('should call onKeyPressed when a key is pressed',
-        (tester) async {
-      var pressedKey = '';
+    testWidgets('should get entered amount', (tester) async {
+      var enteredAmount = ValueNotifier<String>('0');
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: NumberPad(
-            onKeyPressed: (key) {
-              pressedKey = key;
-            },
-            onDeletePressed: () {},
+            enteredAmount: enteredAmount,
           ),
         ),
       );
 
-      // exclude the delete key '<'
-      for (String key in numberKeys.sublist(0, numberKeys.length - 1)) {
-        await tester.tap(find.text(key));
-        expect(pressedKey, key);
+      for (int i = 0; i <= 3; i++) {
+        await tester.tap(find.text('$i'));
+        await tester.pump();
       }
-    });
-
-    testWidgets('should call onDeletePressed when delete key is pressed',
-        (tester) async {
-      var deletePressed = false;
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: NumberPad(
-            onKeyPressed: (key) {},
-            onDeletePressed: () {
-              deletePressed = true;
-            },
-          ),
-        ),
-      );
 
       await tester.tap(find.text('<'));
-      expect(deletePressed, true);
+      await tester.pump();
+
+      expect(enteredAmount.value, '12');
     });
   });
 }
