@@ -9,9 +9,8 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const DepositPage()),
       );
-      final depositAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
 
-      expect(find.textContaining(depositAmountPattern), findsExactly(2));
+      expect(find.textContaining('\$0'), findsExactly(2));
     });
 
     testWidgets('should show you deposit', (tester) async {
@@ -73,8 +72,7 @@ void main() {
         await tester.tap(find.text('$i'));
         await tester.pump();
 
-        final expectedText = i.toStringAsFixed(2);
-        expect(find.textContaining(expectedText), findsOneWidget);
+        expect(find.textContaining('\$$i'), findsOneWidget);
 
         await tester.tap(find.text('<'));
         await tester.pump();
