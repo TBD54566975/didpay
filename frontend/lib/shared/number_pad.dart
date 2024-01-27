@@ -3,12 +3,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/shared/grid.dart';
 
 class NumberPad extends HookWidget {
-  final Function(String) onKeyPressed;
-  final VoidCallback onDeletePressed;
+  final ValueNotifier<String> enteredAmount;
 
   const NumberPad({
-    required this.onKeyPressed,
-    required this.onDeletePressed,
+    required this.enteredAmount,
     super.key,
   });
 
@@ -42,8 +40,7 @@ class NumberPad extends HookWidget {
       children: keys.map((key) {
         return NumberPadKey(
           title: key,
-          onKeyPressed: onKeyPressed,
-          onDeletePressed: onDeletePressed,
+          enteredAmount: enteredAmount,
         );
       }).toList(),
     );
@@ -52,13 +49,11 @@ class NumberPad extends HookWidget {
 
 class NumberPadKey extends HookWidget {
   final String title;
-  final Function(String) onKeyPressed;
-  final VoidCallback onDeletePressed;
+  final ValueNotifier<String> enteredAmount;
 
   const NumberPadKey({
     required this.title,
-    required this.onKeyPressed,
-    required this.onDeletePressed,
+    required this.enteredAmount,
     super.key,
   });
 
@@ -74,10 +69,18 @@ class NumberPadKey extends HookWidget {
     return GestureDetector(
       onTapDown: (_) => keySize.value = selectedFontSize,
       onTapCancel: () => keySize.value = defaultFontSize,
-      onTapUp: (key) {
+      onTapUp: (_) {
         keySize.value = defaultFontSize;
-        (title == '<') ? onDeletePressed() : onKeyPressed(title);
+
+        title == '<'
+            ? _onDeletePressed(enteredAmount)
+            : (title == '.' && enteredAmount.value.contains('.'))
+                ? null
+                : !RegExp(r'\.\d{2}$').hasMatch(enteredAmount.value)
+                    ? _onKeyPressed(title, enteredAmount)
+                    : null;
       },
+      behavior: HitTestBehavior.translucent,
       child: SizedBox(
         height: keyHeight,
         width: keyWidth,
@@ -97,5 +100,19 @@ class NumberPadKey extends HookWidget {
         ),
       ),
     );
+  }
+
+  void _onDeletePressed(ValueNotifier<String> enteredAmount) {
+    enteredAmount.value = (enteredAmount.value.length > 1)
+        ? enteredAmount.value.substring(0, enteredAmount.value.length - 1)
+        : '0';
+  }
+
+  void _onKeyPressed(String title, ValueNotifier<String> enteredAmount) {
+    enteredAmount.value = (enteredAmount.value == '0' && title == '.')
+        ? '${enteredAmount.value}$title'
+        : (enteredAmount.value == '0')
+            ? title
+            : '${enteredAmount.value}$title';
   }
 }
