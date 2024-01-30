@@ -44,6 +44,9 @@ class LocEn extends Loc {
   String get youDeposit => 'You deposit';
 
   @override
+  String get youWithdraw => 'You withdraw';
+
+  @override
   String get youGet => 'You get';
 
   @override
