@@ -8,4 +8,20 @@ class Pfi {
     required this.name,
     required this.didUri,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'didUri': didUri,
+    };
+  }
+
+  factory Pfi.fromJson(Map<String, dynamic> json) {
+    return Pfi(
+      id: json['id'],
+      name: json['name'],
+      didUri: json['didUri'],
+    );
+  }
 }

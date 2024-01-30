@@ -5,10 +5,13 @@ import 'package:flutter_starter/features/app/app.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:flutter_starter/shared/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web5_flutter/web5_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  final sharedPreferences = await SharedPreferences.getInstance();
 
   FlutterSecureStorage storage = const FlutterSecureStorage(
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
@@ -21,6 +24,7 @@ void main() async {
 
   runApp(ProviderScope(
     overrides: [
+      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
       secureStorageProvider.overrideWithValue(storage),
       didProvider.overrideWithValue(did),
     ],
