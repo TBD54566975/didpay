@@ -1,0 +1,12 @@
+import 'package:flutter_starter/features/pfis/pfi.dart';
+
+class Config {
+  static const List<Pfi> devPfis = [
+    Pfi(
+        id: 'dev',
+        name: 'Dev PFI',
+        didUri: 'did:dht:74hg1efatndi8enx3e4z6c4u8ieh1xfkyay4ntg4dg1w6risu35y'),
+  ];
+  static const pfisJsonUrl =
+      'https://raw.githubusercontent.com/TBD54566975/pfi-providers-data/main/pfis.json';
+}
