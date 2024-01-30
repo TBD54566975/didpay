@@ -65,7 +65,7 @@ class DynamicJsonForm extends StatelessWidget {
   }
 }
 
-
+// this is an example of a widget that renders the json schema
 class FormsPage extends StatelessWidget {
   const FormsPage({super.key});
 
