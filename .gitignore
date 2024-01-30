@@ -1,0 +1,7 @@
+.hermit/
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.iml
+.DS_Store
+/logs/
