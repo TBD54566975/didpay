@@ -35,7 +35,7 @@ class CurrencyConverter extends HookWidget {
             SizedBox(
                 child: InvalidNumberPadInputAnimation(
                     textValue: NumberFormat.simpleCurrency()
-                        .format(double.parse(originAmount)),
+                        .format(double.parse('0$originAmount')),
                     textStyle: Theme.of(context).textTheme.displayMedium,
                     shouldAnimate: !isValidKeyPress)),
             const SizedBox(width: Grid.xs),
@@ -61,7 +61,7 @@ class CurrencyConverter extends HookWidget {
           children: [
             Text(
               NumberFormat.simpleCurrency().format(
-                  double.parse(originAmount) * double.parse(exchangeRate)),
+                  double.parse('0$originAmount') * double.parse(exchangeRate)),
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(width: Grid.xs),
