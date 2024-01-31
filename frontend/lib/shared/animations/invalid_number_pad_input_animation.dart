@@ -20,13 +20,13 @@ class _InvalidNumberPadInputAnimationState
     extends State<InvalidNumberPadInputAnimation>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 500),
+    duration: const Duration(milliseconds: 375),
     vsync: this,
   );
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: const Offset(0.0, 0.0),
-    end: const Offset(0.25, 0.0),
-  ).animate(CurvedAnimation(
+          begin: const Offset(0.0, 0.0),
+          end: Offset(0.75 / widget.textValue.length, 0.0))
+      .animate(CurvedAnimation(
     parent: _controller,
     curve: Curves.elasticIn,
   ));
