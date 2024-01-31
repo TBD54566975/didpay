@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'dart:convert';
 
 
@@ -16,7 +14,7 @@ import 'dart:convert';
       "title": "Phone Number",
       "minLength": 12,
       "maxLength": 12,
-      "pattern": "^+2332[0-9]{8}$"
+      "pattern": "^\\+2332[0-9]{8}$"
     },
     "reason": {
       "title": "Reason for sending",
@@ -47,7 +45,6 @@ class FormsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Define the JSON schema string
     return Scaffold(
       appBar: AppBar(title: Text('Forms Page')),
       body: Padding(
@@ -58,57 +55,49 @@ class FormsPage extends StatelessWidget {
   }
 }
 
-
-class DynamicJsonForm extends StatelessWidget {
+class DynamicJsonForm extends StatefulWidget {
   final String jsonSchemaString;
 
   DynamicJsonForm({Key? key, required this.jsonSchemaString}) : super(key: key);
 
   @override
+  _DynamicJsonFormState createState() => _DynamicJsonFormState();
+}
+
+class _DynamicJsonFormState extends State<DynamicJsonForm> {
+  final _formKey = GlobalKey<FormState>();
+  Map<String, String> _formData = {};
+
+  @override
   Widget build(BuildContext context) {
-    final jsonSchema = json.decode(jsonSchemaString);
+    final jsonSchema = json.decode(widget.jsonSchemaString);
     List<Widget> formFields = [];
 
     if (jsonSchema['properties'] != null) {
       jsonSchema['properties'].forEach((key, value) {
-        formFields.add(FormBuilderTextField(
-          name: key,
+        formFields.add(TextFormField(
           decoration: InputDecoration(
             labelText: value['title'] ?? key,
             hintText: value['description'],
           ),
-          validator: (value) {
-            if (jsonSchema['required']?.contains(key) ?? false && (value == null || value.isEmpty)) {
-              return 'This field cannot be empty';
-            }
-            var minLength = jsonSchema['properties'][key]['minLength'] as int?;
-            var maxLength = jsonSchema['properties'][key]['maxLength'] as int?;
-            var pattern = jsonSchema['properties'][key]['pattern'] as String?;
-
-            if (value != null && minLength != null && value.length < minLength) {
-              return 'Minimum length is $minLength';
-            }
-            if (value != null && maxLength != null && value.length > maxLength) {
-              return 'Maximum length is $maxLength';
-            }
-            if (value != null && pattern != null && !RegExp(pattern).hasMatch(value)) {
-              return 'Invalid format';
-            }
-            return null;
-          },
+          validator: (value) => validateField(key, value, jsonSchema),
+          onSaved: (value) => _formData[key] = value ?? '',
         ));
       });
     }
 
-    return FormBuilder(
-      autovalidateMode: AutovalidateMode.onUserInteraction,
+    return Form(
+      key: _formKey,
       child: SingleChildScrollView(
         child: Column(
           children: [
             ...formFields,
             ElevatedButton(
               onPressed: () {
-                // Implement submission logic
+                if (_formKey.currentState!.validate()) {
+                  _formKey.currentState!.save();
+                  // Implement submission logic using _formData
+                }
               },
               child: Text('Submit'),
             ),
@@ -117,5 +106,34 @@ class DynamicJsonForm extends StatelessWidget {
       ),
     );
   }
-}
 
+
+  String? validateField(String key, String? value, Map<String, dynamic> jsonSchema) {
+    if (jsonSchema['required']?.contains(key) && (value == null || value.isEmpty)) {
+      return 'This field cannot be empty';
+    }
+
+    if (value != null && value.isNotEmpty) {
+      var minLength = jsonSchema['properties'][key]['minLength'] as int?;
+      var maxLength = jsonSchema['properties'][key]['maxLength'] as int?;
+      var pattern = jsonSchema['properties'][key]['pattern'] as String?;
+
+      if (minLength != null && value.length < minLength) {
+        return 'Minimum length is $minLength characters';
+      }
+
+      if (maxLength != null && value.length > maxLength) {
+        return 'Maximum length is $maxLength characters';
+      }
+
+      if (pattern != null && !RegExp(pattern).hasMatch(value)) {
+        return 'Invalid format';
+      }
+    }
+
+    return null;
+  }
+
+
+
+}
