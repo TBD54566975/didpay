@@ -169,6 +169,12 @@ abstract class Loc {
   /// **'You deposit'**
   String get youDeposit;
 
+  /// No description provided for @youWithdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'You withdraw'**
+  String get youWithdraw;
+
   /// No description provided for @youGet.
   ///
   /// In en, this message translates to:
