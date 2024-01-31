@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class InvalidNumberPadInputAnimation extends StatefulWidget {
+class InvalidNumberPadInputAnimation extends HookWidget {
   final String textValue;
   final bool shouldAnimate;
   final TextStyle? textStyle;
@@ -12,62 +13,43 @@ class InvalidNumberPadInputAnimation extends StatefulWidget {
       super.key});
 
   @override
-  State<InvalidNumberPadInputAnimation> createState() =>
-      _InvalidNumberPadInputAnimationState();
-}
-
-class _InvalidNumberPadInputAnimationState
-    extends State<InvalidNumberPadInputAnimation>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 375),
-    vsync: this,
-  );
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-          begin: const Offset(0.0, 0.0),
-          end: Offset(0.75 / widget.textValue.length, 0.0))
-      .animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.elasticIn,
-  ));
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        Future.delayed(const Duration(milliseconds: 0), () {
-          _controller.reverse();
-        });
-      }
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant InvalidNumberPadInputAnimation prevWidget) {
-    super.didUpdateWidget(prevWidget);
-
-    if (widget.shouldAnimate) {
-      _controller.reset();
-      _controller.forward();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = useAnimationController(
+      duration: const Duration(milliseconds: 200),
+    );
+
+    final offsetAnimation = Tween<Offset>(
+      begin: const Offset(0.0, 0.0),
+      end: Offset(0.5 / textValue.length, 0.0),
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.elasticIn,
+    ));
+
+    useEffect(() {
+      controller.addStatusListener((status) {
+        if (status == AnimationStatus.completed) {
+          Future.delayed(const Duration(milliseconds: 0), () {
+            controller.reverse();
+          });
+        }
+      });
+    }, []);
+
+    useEffect(() {
+      if (shouldAnimate) {
+        controller.reset();
+        controller.forward();
+      }
+      return null;
+    }, [super.hashCode]);
+
     return SlideTransition(
-      position: _offsetAnimation,
+      position: offsetAnimation,
       child: SizedBox(
         child: Text(
-          widget.textValue,
-          style: widget.textStyle,
+          textValue,
+          style: textStyle,
           textAlign: TextAlign.center,
         ),
       ),
