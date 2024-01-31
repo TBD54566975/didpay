@@ -42,8 +42,7 @@ void main() {
         await tester.pump();
 
         final expectedText = i.toStringAsFixed(2);
-        // ignore: unnecessary_brace_in_string_interps
-        expect(find.text('\$${expectedText}'), findsOneWidget);
+        expect(find.text('\$$expectedText'), findsOneWidget);
 
         await tester.tap(find.text('<'));
         await tester.pump();

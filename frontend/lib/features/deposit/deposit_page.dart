@@ -27,15 +27,19 @@ class DepositPage extends HookWidget {
                       horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
                     children: [
-                      buildCurrencyConverter(
-                          depositAmount,
-                          'MXN',
-                          Loc.of(context).youDeposit,
-                          Loc.of(context).usd,
-                          (1 / 17).toString()),
+                      CurrencyConverter(
+                          originAmount: depositAmount.value,
+                          originCurrency: 'MXN',
+                          originLabel: Loc.of(context).youDeposit,
+                          destinationCurrency: Loc.of(context).usd,
+                          exchangeRate: (1 / 17).toString()),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
-                      buildFeeDetails(Loc.of(context).usd, 'MXN', '17', '0')
+                      FeeDetails(
+                          originCurrency: Loc.of(context).usd,
+                          destinationCurrency: 'MXN',
+                          exchangeRate: '17',
+                          serviceFee: '0')
                     ],
                   ),
                 ),
@@ -54,29 +58,6 @@ class DepositPage extends HookWidget {
         ),
       ),
     );
-  }
-
-  Widget buildCurrencyConverter(
-      ValueNotifier<String> depositAmount,
-      String depositCurrency,
-      String depositLabel,
-      String receiptCurrency,
-      String exchangeRate) {
-    return CurrencyConverter(
-        originAmount: depositAmount.value,
-        originCurrency: depositCurrency,
-        originLabel: depositLabel,
-        destinationCurrency: receiptCurrency,
-        exchangeRate: exchangeRate);
-  }
-
-  Widget buildFeeDetails(String depositCurrency, String receiptCurrency,
-      String exchangeRate, String serviceFee) {
-    return FeeDetails(
-        originCurrency: depositCurrency,
-        destinationCurrency: receiptCurrency,
-        exchangeRate: exchangeRate,
-        serviceFee: serviceFee);
   }
 
   Widget buildNumberPad(ValueNotifier<String> depositAmount) {

@@ -27,15 +27,19 @@ class WithdrawPage extends HookWidget {
                       horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
                     children: [
-                      buildCurrencyConverter(
-                          withdrawAmount,
-                          Loc.of(context).usd,
-                          Loc.of(context).youWithdraw,
-                          'MXN',
-                          '17'),
+                      CurrencyConverter(
+                          originAmount: withdrawAmount.value,
+                          originCurrency: Loc.of(context).usd,
+                          originLabel: Loc.of(context).youWithdraw,
+                          destinationCurrency: 'MXN',
+                          exchangeRate: '17'),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
-                      buildFeeDetails(Loc.of(context).usd, 'MXN', '17', '0')
+                      FeeDetails(
+                          originCurrency: Loc.of(context).usd,
+                          destinationCurrency: 'MXN',
+                          exchangeRate: '17',
+                          serviceFee: '0')
                     ],
                   ),
                 ),
@@ -54,29 +58,6 @@ class WithdrawPage extends HookWidget {
         ),
       ),
     );
-  }
-
-  Widget buildCurrencyConverter(
-      ValueNotifier<String> withdrawAmount,
-      String withdrawCurrency,
-      String withdrawLabel,
-      String receiptCurrency,
-      String exchangeRate) {
-    return CurrencyConverter(
-        originAmount: withdrawAmount.value,
-        originCurrency: withdrawCurrency,
-        originLabel: withdrawLabel,
-        destinationCurrency: receiptCurrency,
-        exchangeRate: exchangeRate);
-  }
-
-  Widget buildFeeDetails(String withdrawCurrency, String receiptCurrency,
-      String exchangeRate, String serviceFee) {
-    return FeeDetails(
-        originCurrency: withdrawCurrency,
-        destinationCurrency: receiptCurrency,
-        exchangeRate: exchangeRate,
-        serviceFee: serviceFee);
   }
 
   Widget buildNumberPad(ValueNotifier<String> withdrawAmount) {
