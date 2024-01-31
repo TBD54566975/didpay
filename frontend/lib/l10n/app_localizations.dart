@@ -145,6 +145,30 @@ abstract class Loc {
   /// **'Send'**
   String get send;
 
+  /// No description provided for @to.
+  ///
+  /// In en, this message translates to:
+  /// **'To'**
+  String get to;
+
+  /// No description provided for @pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get pay;
+
+  /// No description provided for @scanQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t know the recipient\'s DID tag? Scan their QR code'**
+  String get scanQrCode;
+
+  /// No description provided for @didTag.
+  ///
+  /// In en, this message translates to:
+  /// **'DID tag'**
+  String get didTag;
+
   /// No description provided for @withdraw.
   ///
   /// In en, this message translates to:
