@@ -1,4 +1,5 @@
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
+import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -30,29 +31,12 @@ void main() {
       expect(find.text('You get'), findsOneWidget);
     });
 
-    testWidgets('should show est rate', (tester) async {
+    testWidgets('should show Fee Details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const DepositPage()),
       );
 
-      expect(find.text('Est. rate'), findsOneWidget);
-    });
-
-    testWidgets('should show exchange rate', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const DepositPage()),
-      );
-      final exchangeRatePattern = RegExp(r'1 [A-Z]{3} = \d+ [A-Z]{3}');
-
-      expect(find.textContaining(exchangeRatePattern), findsOneWidget);
-    });
-
-    testWidgets('should show service fee', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const DepositPage()),
-      );
-
-      expect(find.text('Service fee'), findsOneWidget);
+      expect(find.byType(FeeDetails), findsOneWidget);
     });
 
     testWidgets('should show next button', (tester) async {
