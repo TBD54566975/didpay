@@ -13,7 +13,7 @@ import 'dart:convert';
       "description": "Mobile Money account number of the Recipient",
       "title": "Phone Number",
       "minLength": 12,
-      "maxLength": 12,
+      "maxLength": 13,
       "pattern": "^\\+2332[0-9]{8}$"
     },
     "reason": {
