@@ -1,4 +1,4 @@
 class Constants {
-  static const String didUriKey = 'didpay:did.uri';
-  static const String verifiableCredentialKey = 'didpay:verifiableCredential';
+  static const String didUriKey = 'didpay:did_uri';
+  static const String verifiableCredentialKey = 'didpay:verifiable_credential';
 }
