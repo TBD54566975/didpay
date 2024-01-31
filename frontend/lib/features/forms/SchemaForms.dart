@@ -39,7 +39,7 @@ import 'dart:convert';
     ''';
 
 
-// this is an example of a widget that renders the json schema
+
 class FormsPage extends StatelessWidget {
   const FormsPage({super.key});
 
@@ -49,7 +49,13 @@ class FormsPage extends StatelessWidget {
       appBar: AppBar(title: Text('Forms Page')),
       body: Padding(
         padding: EdgeInsets.all(10),
-        child: DynamicJsonForm(jsonSchemaString: jsonSchema),
+        child: DynamicJsonForm(
+          jsonSchemaString: jsonSchema,
+          onSubmit: (formData) {
+            // Handle form data submission logic here
+            print(formData);
+          },
+        ),
       ),
     );
   }
@@ -57,8 +63,9 @@ class FormsPage extends StatelessWidget {
 
 class DynamicJsonForm extends StatefulWidget {
   final String jsonSchemaString;
+  final void Function(Map<String, String>) onSubmit;
 
-  DynamicJsonForm({Key? key, required this.jsonSchemaString}) : super(key: key);
+  DynamicJsonForm({Key? key, required this.jsonSchemaString, required this.onSubmit}) : super(key: key);
 
   @override
   _DynamicJsonFormState createState() => _DynamicJsonFormState();
@@ -96,7 +103,7 @@ class _DynamicJsonFormState extends State<DynamicJsonForm> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  // Implement submission logic using _formData
+                  widget.onSubmit(_formData); // Call the callback function with form data
                 }
               },
               child: Text('Submit'),
@@ -106,7 +113,6 @@ class _DynamicJsonFormState extends State<DynamicJsonForm> {
       ),
     );
   }
-
 
   String? validateField(String key, String? value, Map<String, dynamic> jsonSchema) {
     if (jsonSchema['required']?.contains(key) && (value == null || value.isEmpty)) {
