@@ -1,4 +1,5 @@
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
+import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -6,29 +7,12 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('DepositPage', () {
-    testWidgets('should show deposit input and output amounts', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const DepositPage()),
-      );
-      final depositAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
-
-      expect(find.textContaining(depositAmountPattern), findsExactly(2));
-    });
-
-    testWidgets('should show you deposit', (tester) async {
+    testWidgets('should show Currency Converter', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const DepositPage()),
       );
 
-      expect(find.text('You deposit'), findsOneWidget);
-    });
-
-    testWidgets('should show you get', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const DepositPage()),
-      );
-
-      expect(find.text('You get'), findsOneWidget);
+      expect(find.byType(CurrencyConverter), findsOneWidget);
     });
 
     testWidgets('should show Fee Details', (tester) async {
