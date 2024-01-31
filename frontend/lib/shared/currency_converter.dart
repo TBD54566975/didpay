@@ -5,7 +5,7 @@ import 'package:flutter_starter/shared/grid.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyConverter extends HookWidget {
-  final ValueNotifier<String> originAmount;
+  final String originAmount;
   final String originCurrency;
   final String originLabel;
   final String destinationCurrency;
@@ -30,8 +30,7 @@ class CurrencyConverter extends HookWidget {
           textBaseline: TextBaseline.alphabetic,
           children: [
             Text(
-              NumberFormat.simpleCurrency()
-                  .format(double.parse(originAmount.value)),
+              NumberFormat.simpleCurrency().format(double.parse(originAmount)),
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(width: Grid.xs),
@@ -57,8 +56,7 @@ class CurrencyConverter extends HookWidget {
           children: [
             Text(
               NumberFormat.simpleCurrency().format(
-                  double.parse(originAmount.value) *
-                      double.parse(exchangeRate)),
+                  double.parse(originAmount) * double.parse(exchangeRate)),
               style: Theme.of(context).textTheme.displayMedium,
             ),
             const SizedBox(width: Grid.xs),

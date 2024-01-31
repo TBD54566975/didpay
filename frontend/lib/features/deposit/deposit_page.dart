@@ -63,7 +63,7 @@ class DepositPage extends HookWidget {
       String receiptCurrency,
       String exchangeRate) {
     return CurrencyConverter(
-        originAmount: depositAmount,
+        originAmount: depositAmount.value,
         originCurrency: depositCurrency,
         originLabel: depositLabel,
         destinationCurrency: receiptCurrency,

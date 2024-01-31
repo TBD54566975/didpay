@@ -63,7 +63,7 @@ class WithdrawPage extends HookWidget {
       String receiptCurrency,
       String exchangeRate) {
     return CurrencyConverter(
-        originAmount: withdrawAmount,
+        originAmount: withdrawAmount.value,
         originCurrency: withdrawCurrency,
         originLabel: withdrawLabel,
         destinationCurrency: receiptCurrency,
