@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
+import 'package:flutter_starter/shared/animations/invalid_number_pad_input_animation.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:intl/intl.dart';
 
@@ -10,6 +11,7 @@ class CurrencyConverter extends HookWidget {
   final String originLabel;
   final String destinationCurrency;
   final String exchangeRate;
+  final bool isValidKeyPress;
 
   const CurrencyConverter({
     required this.originAmount,
@@ -17,6 +19,7 @@ class CurrencyConverter extends HookWidget {
     required this.originLabel,
     required this.destinationCurrency,
     required this.exchangeRate,
+    required this.isValidKeyPress,
     super.key,
   });
 
@@ -29,10 +32,12 @@ class CurrencyConverter extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.baseline,
           textBaseline: TextBaseline.alphabetic,
           children: [
-            Text(
-              NumberFormat.simpleCurrency().format(double.parse(originAmount)),
-              style: Theme.of(context).textTheme.displayMedium,
-            ),
+            SizedBox(
+                child: InvalidNumberPadInputAnimation(
+                    textValue: NumberFormat.simpleCurrency()
+                        .format(double.parse(originAmount)),
+                    textStyle: Theme.of(context).textTheme.displayMedium,
+                    shouldAnimate: !isValidKeyPress)),
             const SizedBox(width: Grid.xs),
             Baseline(
               baseline: 0,

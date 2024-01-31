@@ -5,6 +5,7 @@ import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
+import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
 
 class DepositPage extends HookWidget {
   const DepositPage({super.key});
@@ -12,6 +13,7 @@ class DepositPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final depositAmount = useState<String>('0');
+    final isValidKeyPress = useState<bool>(true);
 
     return Scaffold(
       appBar: AppBar(),
@@ -28,11 +30,13 @@ class DepositPage extends HookWidget {
                   child: Column(
                     children: [
                       CurrencyConverter(
-                          originAmount: depositAmount.value,
-                          originCurrency: 'MXN',
-                          originLabel: Loc.of(context).youDeposit,
-                          destinationCurrency: Loc.of(context).usd,
-                          exchangeRate: (1 / 17).toString()),
+                        originAmount: depositAmount.value,
+                        originCurrency: 'MXN',
+                        originLabel: Loc.of(context).youDeposit,
+                        destinationCurrency: Loc.of(context).usd,
+                        exchangeRate: (1 / 17).toString(),
+                        isValidKeyPress: isValidKeyPress.value,
+                      ),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
                       FeeDetails(
@@ -45,7 +49,7 @@ class DepositPage extends HookWidget {
                 ),
               ),
             ),
-            Center(child: buildNumberPad(depositAmount)),
+            Center(child: buildNumberPad(depositAmount, isValidKeyPress)),
             const SizedBox(height: Grid.sm),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -60,16 +64,30 @@ class DepositPage extends HookWidget {
     );
   }
 
-  Widget buildNumberPad(ValueNotifier<String> depositAmount) {
+  Widget buildNumberPad(ValueNotifier<String> depositAmount,
+      ValueNotifier<bool> isValidKeyPress) {
     return NumberPad(
       onKeyPressed: (key) {
-        depositAmount.value =
-            (depositAmount.value == '0') ? key : '${depositAmount.value}$key';
+        isValidKeyPress.value = true;
+        isValidKeyPress.value = NumberPadInputValidationUtil.validateKeyPress(
+            depositAmount.value, key);
+
+        if (isValidKeyPress.value) {
+          depositAmount.value =
+              (depositAmount.value == '0') ? key : '${depositAmount.value}$key';
+        }
       },
       onDeletePressed: () {
-        depositAmount.value = (depositAmount.value.length > 1)
-            ? depositAmount.value.substring(0, depositAmount.value.length - 1)
-            : '0';
+        isValidKeyPress.value = true;
+        isValidKeyPress.value =
+            NumberPadInputValidationUtil.validateDeletePress(
+                depositAmount.value);
+
+        if (isValidKeyPress.value) {
+          depositAmount.value = (depositAmount.value.length > 1)
+              ? depositAmount.value.substring(0, depositAmount.value.length - 1)
+              : '0';
+        }
       },
     );
   }
