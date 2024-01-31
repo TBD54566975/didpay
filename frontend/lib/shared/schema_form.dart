@@ -38,7 +38,7 @@ class DynamicJsonFormState extends State<JsonSchemaForm> {
         child: Column(
           children: [
             ...formFields,
-            ElevatedButton(
+            FilledButton(
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
