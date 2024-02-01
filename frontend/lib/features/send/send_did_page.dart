@@ -12,7 +12,19 @@ class SendDidPage extends HookWidget {
     final sendDid = useState<String>('');
 
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(
+            title: Column(children: [
+          Text(
+            '\$$sendAmount',
+            style: Theme.of(context).textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
+          Text(
+            Loc.of(context).accountBalance,
+            style: Theme.of(context).textTheme.bodyMedium,
+            textAlign: TextAlign.center,
+          )
+        ])),
         body: SafeArea(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -25,17 +37,6 @@ class SendDidPage extends HookWidget {
                     child: Column(
                       children: [
                         Column(children: [
-                          Text(
-                            sendAmount,
-                            style: Theme.of(context).textTheme.headlineMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: Grid.xxs),
-                          Text(
-                            Loc.of(context).accountBalance,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            textAlign: TextAlign.center,
-                          ),
                           const SizedBox(height: Grid.lg),
                           GestureDetector(
                             child: Row(

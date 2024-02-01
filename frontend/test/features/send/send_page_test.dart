@@ -1,3 +1,4 @@
+import 'package:flutter_starter/features/send/send_did_page.dart';
 import 'package:flutter_starter/features/send/send_page.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -52,6 +53,18 @@ void main() {
       await tester.pump();
 
       expect(find.text('\$0.'), findsOneWidget);
+    });
+
+    testWidgets('should navigate to SendDidPage on tap of send button',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const SendPage()),
+      );
+
+      await tester.tap(find.text('Send'));
+      await tester.pump();
+
+      expect(find.byType(SendDidPage), findsOneWidget);
     });
   });
 }
