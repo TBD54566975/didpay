@@ -161,7 +161,6 @@ class HomePage extends HookWidget {
                   fontWeight: FontWeight.bold,
                 ),
           ),
-          // TODO: display status from txn
           subtitle: Text(
             txn.status,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
