@@ -40,7 +40,8 @@ class SendDidPage extends HookWidget {
                           GestureDetector(
                             child: Row(
                               children: [
-                                const Icon(Icons.qr_code_scanner, size: 24.0),
+                                const Icon(Icons.qr_code_scanner,
+                                    size: Grid.sm),
                                 const SizedBox(width: Grid.xs),
                                 Expanded(
                                   child: Text(
