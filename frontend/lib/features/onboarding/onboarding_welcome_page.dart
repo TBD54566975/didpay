@@ -43,6 +43,7 @@ class OnboardingWelcomePage extends StatelessWidget {
                 child: Text(Loc.of(context).getStarted),
               ),
             ),
+            const SizedBox(height: Grid.lg), // Optional spacing at the bottom
           ],
         ),
       ),
