@@ -78,9 +78,9 @@ class NumberPadKey extends HookWidget {
         keySize.value = defaultFontSize;
         (title == '<') ? onDeletePressed() : onKeyPressed(title);
       },
-      child: SizedBox(
-        height: keyHeight,
-        width: keyWidth,
+      child: TextButton(
+        onPressed: null,
+        style: TextButton.styleFrom(fixedSize: const Size(keyWidth, keyHeight)),
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 100),
           style: TextStyle(

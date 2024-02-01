@@ -5,6 +5,7 @@ import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
+import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
 
 class WithdrawPage extends HookWidget {
   const WithdrawPage({super.key});
@@ -12,6 +13,7 @@ class WithdrawPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final withdrawAmount = useState<String>('0');
+    final isValidKeyPress = useState<bool>(true);
 
     return Scaffold(
       appBar: AppBar(),
@@ -28,11 +30,13 @@ class WithdrawPage extends HookWidget {
                   child: Column(
                     children: [
                       CurrencyConverter(
-                          originAmount: withdrawAmount.value,
-                          originCurrency: Loc.of(context).usd,
-                          originLabel: Loc.of(context).youWithdraw,
-                          destinationCurrency: 'MXN',
-                          exchangeRate: '17'),
+                        originAmount: withdrawAmount.value,
+                        originCurrency: Loc.of(context).usd,
+                        originLabel: Loc.of(context).youWithdraw,
+                        destinationCurrency: 'MXN',
+                        exchangeRate: '17',
+                        isValidKeyPress: isValidKeyPress.value,
+                      ),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
                       FeeDetails(
@@ -45,7 +49,7 @@ class WithdrawPage extends HookWidget {
                 ),
               ),
             ),
-            Center(child: buildNumberPad(withdrawAmount)),
+            Center(child: buildNumberPad(withdrawAmount, isValidKeyPress)),
             const SizedBox(height: Grid.sm),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -60,16 +64,32 @@ class WithdrawPage extends HookWidget {
     );
   }
 
-  Widget buildNumberPad(ValueNotifier<String> withdrawAmount) {
+  Widget buildNumberPad(ValueNotifier<String> withdrawAmount,
+      ValueNotifier<bool> isValidKeyPress) {
     return NumberPad(
       onKeyPressed: (key) {
-        withdrawAmount.value =
-            (withdrawAmount.value == '0') ? key : '${withdrawAmount.value}$key';
+        isValidKeyPress.value = true;
+        isValidKeyPress.value = NumberPadInputValidationUtil.validateKeyPress(
+            withdrawAmount.value, key);
+
+        if (isValidKeyPress.value) {
+          withdrawAmount.value = (withdrawAmount.value == '0')
+              ? key
+              : '${withdrawAmount.value}$key';
+        }
       },
       onDeletePressed: () {
-        withdrawAmount.value = (withdrawAmount.value.length > 1)
-            ? withdrawAmount.value.substring(0, withdrawAmount.value.length - 1)
-            : '0';
+        isValidKeyPress.value = true;
+        isValidKeyPress.value =
+            NumberPadInputValidationUtil.validateDeletePress(
+                withdrawAmount.value);
+
+        if (isValidKeyPress.value) {
+          withdrawAmount.value = (withdrawAmount.value.length > 1)
+              ? withdrawAmount.value
+                  .substring(0, withdrawAmount.value.length - 1)
+              : '0';
+        }
       },
     );
   }

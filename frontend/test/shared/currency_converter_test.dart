@@ -15,6 +15,7 @@ void main() {
           originLabel: 'You withdraw',
           destinationCurrency: 'MXN',
           exchangeRate: '17',
+          isValidKeyPress: true,
         )),
       );
       final depositAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
@@ -34,6 +35,7 @@ void main() {
           originLabel: 'You withdraw',
           destinationCurrency: 'MXN',
           exchangeRate: '17',
+          isValidKeyPress: true,
         )),
       );
 
@@ -50,6 +52,7 @@ void main() {
           originLabel: 'You withdraw',
           destinationCurrency: 'MXN',
           exchangeRate: '17',
+          isValidKeyPress: true,
         )),
       );
 
@@ -65,6 +68,7 @@ void main() {
           originLabel: 'You withdraw',
           destinationCurrency: 'MXN',
           exchangeRate: '17',
+          isValidKeyPress: true,
         )),
       );
 
