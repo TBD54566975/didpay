@@ -23,5 +23,20 @@
     "usd": "USD",
     "activity": "Activity",
     "noTransactionsYet": "No transactions yet",
-    "startByAdding": "Start by adding funds to your account!"
+    "startByAdding": "Start by adding funds to your account!",
+    "transactionDetails": "Transaction details",
+    "youPay": "You pay",
+    "youPaid": "You paid",
+    "youReceived": "You received",
+    "txnTypeQuote": "{txnType} quote",
+    "@txnTypeQuote": {
+         "placeholders": {
+            "txnType": {
+                "type": "String"
+            }
+        }
+    },
+    "accountBalance": "Account balance",
+    "accept": "Accept",
+    "reject": "Reject"
 }

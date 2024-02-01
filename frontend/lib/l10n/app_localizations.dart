@@ -240,6 +240,48 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Start by adding funds to your account!'**
   String get startByAdding;
+
+  /// No description provided for @transactionDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction details'**
+  String get transactionDetails;
+
+  /// No description provided for @youPay.
+  ///
+  /// In en, this message translates to:
+  /// **'You pay'**
+  String get youPay;
+
+  /// No description provided for @youPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'You paid'**
+  String get youPaid;
+
+  /// No description provided for @youReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'You received'**
+  String get youReceived;
+
+  /// No description provided for @txnTypeQuote.
+  ///
+  /// In en, this message translates to:
+  /// **'{txnType} quote'**
+  String txnTypeQuote(String txnType);
+
+  /// No description provided for @accept.
+  ///
+  /// In en, this message translates to:
+  /// **'Accept'**
+  String get accept;
+
+  /// No description provided for @reject.
+  ///
+  /// In en, this message translates to:
+  /// **'Reject'**
+  String get reject;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

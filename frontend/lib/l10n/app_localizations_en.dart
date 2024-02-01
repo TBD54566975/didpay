@@ -78,4 +78,27 @@ class LocEn extends Loc {
 
   @override
   String get startByAdding => 'Start by adding funds to your account!';
+
+  @override
+  String get transactionDetails => 'Transaction details';
+
+  @override
+  String get youPay => 'You pay';
+
+  @override
+  String get youPaid => 'You paid';
+
+  @override
+  String get youReceived => 'You received';
+
+  @override
+  String txnTypeQuote(String txnType) {
+    return '$txnType quote';
+  }
+
+  @override
+  String get accept => 'Accept';
+
+  @override
+  String get reject => 'Reject';
 }
