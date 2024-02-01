@@ -57,4 +57,13 @@ class LocEn extends Loc {
 
   @override
   String get usd => 'USD';
+
+  @override
+  String get activity => 'Activity';
+
+  @override
+  String get noTransactionsYet => 'No transactions yet';
+
+  @override
+  String get startByAdding => 'Start by adding funds to your account!';
 }

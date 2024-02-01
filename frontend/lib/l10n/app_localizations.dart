@@ -198,6 +198,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'USD'**
   String get usd;
+
+  /// No description provided for @activity.
+  ///
+  /// In en, this message translates to:
+  /// **'Activity'**
+  String get activity;
+
+  /// No description provided for @noTransactionsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get noTransactionsYet;
+
+  /// No description provided for @startByAdding.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding funds to your account!'**
+  String get startByAdding;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

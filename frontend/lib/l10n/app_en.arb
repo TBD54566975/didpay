@@ -16,5 +16,8 @@
     "youGet": "You get",
     "estRate": "Est. rate",
     "serviceFee": "Service fee",
-    "usd": "USD"
+    "usd": "USD",
+    "activity": "Activity",
+    "noTransactionsYet": "No transactions yet",
+    "startByAdding": "Start by adding funds to your account!",
 }
