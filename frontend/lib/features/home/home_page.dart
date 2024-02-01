@@ -18,7 +18,7 @@ class HomePage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildAccountBalance(context),
+            _buildAccountBalance(context),
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: Grid.side, vertical: Grid.xs),
@@ -29,46 +29,8 @@ class HomePage extends HookWidget {
             ),
             Expanded(
               child: txns.isEmpty
-                  ? buildEmptyState(context)
-                  : ListView(
-                      children: txns.map((txn) {
-                        return ListTile(
-                          title: Text(
-                            txn.title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleSmall
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                          ),
-                          // TODO: display status from txn
-                          subtitle: Text(
-                            'status',
-                            style: Theme.of(context)
-                                .textTheme
-                                .labelMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.w300,
-                                ),
-                          ),
-                          trailing: Text(txn.amount.toString()),
-                          leading: Container(
-                            width: Grid.lg,
-                            height: Grid.lg,
-                            decoration: BoxDecoration(
-                              color:
-                                  Theme.of(context).colorScheme.surfaceVariant,
-                              shape: BoxShape.circle,
-                            ),
-                            // TODO: use $ or first letter of name based on txn type
-                            child: const Center(
-                              child: Text('\$'),
-                            ),
-                          ),
-                        );
-                      }).toList(),
-                    ),
+                  ? _buildEmptyState(context)
+                  : _buildTransactionsList(context),
             ),
           ],
         ),
@@ -76,14 +38,14 @@ class HomePage extends HookWidget {
     );
   }
 
-  Widget buildAccountBalance(BuildContext context) {
+  Widget _buildAccountBalance(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: Container(
         decoration: BoxDecoration(
           border: Border.all(
               color: Theme.of(context).colorScheme.outline, width: 2.0),
-          borderRadius: BorderRadius.circular(25.0),
+          borderRadius: BorderRadius.circular(Grid.radius),
         ),
         padding: const EdgeInsets.all(Grid.xs),
         child: Column(
@@ -133,9 +95,10 @@ class HomePage extends HookWidget {
     );
   }
 
-  Widget buildEmptyState(BuildContext context) {
+  Widget _buildEmptyState(BuildContext context) {
     return Center(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           const SizedBox(height: Grid.xxs),
           Text(
@@ -156,6 +119,41 @@ class HomePage extends HookWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildTransactionsList(BuildContext context) {
+    return ListView(
+      children: txns.map((txn) {
+        return ListTile(
+          title: Text(
+            txn.title,
+            style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
+          // TODO: display status from txn
+          subtitle: Text(
+            'status',
+            style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                  fontWeight: FontWeight.w300,
+                ),
+          ),
+          trailing: Text(txn.amount.toString()),
+          leading: Container(
+            width: Grid.lg,
+            height: Grid.lg,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceVariant,
+              shape: BoxShape.circle,
+            ),
+            // TODO: use $ or first letter of name based on txn type
+            child: const Center(
+              child: Text('\$'),
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }
