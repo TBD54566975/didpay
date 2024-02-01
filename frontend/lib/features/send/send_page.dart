@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/features/send/send_did_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
 import 'package:flutter_starter/shared/grid.dart';
@@ -71,7 +72,12 @@ class SendPage extends HookWidget {
                   isValidKeyPress.value = true;
                   if (num.parse(sendAmount.value) < 0.01) {
                     isValidKeyPress.value = false;
+                    return;
                   }
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) =>
+                        SendDidPage(sendAmount: sendAmount.value),
+                  ));
                 },
                 child: Text(Loc.of(context).send),
               ),
