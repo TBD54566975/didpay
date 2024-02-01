@@ -13,4 +13,5 @@ class Grid {
   static const double xxl = gridSize * 7;
 
   static const double side = 20;
+  static const double radius = 25;
 }
