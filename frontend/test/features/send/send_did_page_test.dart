@@ -12,7 +12,7 @@ void main() {
             child: const SendDidPage(sendAmount: '25')),
       );
 
-      expect(find.textContaining('\$25'), findsOneWidget);
+      expect(find.textContaining('\$25'), findsNWidgets(2));
     });
 
     testWidgets('should show Account Balance', (tester) async {

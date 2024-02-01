@@ -61,8 +61,11 @@ void main() {
         WidgetHelpers.testableWidget(child: const SendPage()),
       );
 
-      await tester.tap(find.text('Send'));
+      await tester.tap(find.text('8'));
       await tester.pump();
+
+      await tester.tap(find.text('Send'));
+      await tester.pumpAndSettle();
 
       expect(find.byType(SendDidPage), findsOneWidget);
     });
