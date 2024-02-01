@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/pfis/pfis_page.dart';
-import 'package:flutter_starter/features/forms/SchemaForms.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
-import 'package:flutter/foundation.dart';
-
 
 class OnboardingWelcomePage extends StatelessWidget {
   const OnboardingWelcomePage({super.key});
@@ -44,21 +41,6 @@ class OnboardingWelcomePage extends StatelessWidget {
                   );
                 },
                 child: Text(Loc.of(context).getStarted),
-              ),
-            ),
-            if (kDebugMode) const SizedBox(height: Grid.md), // Add some spacing
-            if (kDebugMode) Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const FormsPage(), // Replace with your desired page
-                      fullscreenDialog: true,
-                    ),
-                  );
-                },
-                child: Text('Test Schemas'), // Your custom text
               ),
             ),
             const SizedBox(height: Grid.lg), // Optional spacing at the bottom

@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class JsonSchemaForm extends StatefulWidget {
-  final String jsonSchemaString;
+class JsonSchemaForm extends HookWidget {
+  final String schema;
   final void Function(Map<String, String>) onSubmit;
 
-  JsonSchemaForm({Key? key, required this.jsonSchemaString, required this.onSubmit}) : super(key: key);
-
-  @override
-  DynamicJsonFormState createState() => DynamicJsonFormState();
-}
-
-class DynamicJsonFormState extends State<JsonSchemaForm> {
   final _formKey = GlobalKey<FormState>();
-  final Map<String, String> _formData = {};
+  final Map<String, String> formData = {};
+
+  JsonSchemaForm({required this.schema, required this.onSubmit, super.key});
 
   @override
   Widget build(BuildContext context) {
-    final jsonSchema = json.decode(widget.jsonSchemaString);
+    final jsonSchema = json.decode(schema);
     List<Widget> formFields = [];
     jsonSchema['properties']?.forEach((key, value) {
       formFields.add(TextFormField(
@@ -26,11 +22,10 @@ class DynamicJsonFormState extends State<JsonSchemaForm> {
           labelText: value['title'] ?? key,
           hintText: value['description'],
         ),
-        validator: (value) => validateField(key, value, jsonSchema),
-        onSaved: (value) => _formData[key] = value ?? '',
+        validator: (value) => _validateField(key, value, jsonSchema),
+        onSaved: (value) => formData[key] = value ?? '',
       ));
     });
-    
 
     return Form(
       key: _formKey,
@@ -42,10 +37,11 @@ class DynamicJsonFormState extends State<JsonSchemaForm> {
               onPressed: () {
                 if (_formKey.currentState!.validate()) {
                   _formKey.currentState!.save();
-                  widget.onSubmit(_formData); // Call the callback function with form data
+
+                  onSubmit(formData);
                 }
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),
@@ -53,8 +49,13 @@ class DynamicJsonFormState extends State<JsonSchemaForm> {
     );
   }
 
-  String? validateField(String key, String? value, Map<String, dynamic> jsonSchema) {
-    if (jsonSchema['required']?.contains(key) && (value == null || value.isEmpty)) {
+  String? _validateField(
+    String key,
+    String? value,
+    Map<String, dynamic> jsonSchema,
+  ) {
+    if (jsonSchema['required']?.contains(key) &&
+        (value == null || value.isEmpty)) {
       return 'This field cannot be empty';
     }
 
@@ -78,7 +79,4 @@ class DynamicJsonFormState extends State<JsonSchemaForm> {
 
     return null;
   }
-
-
-
 }

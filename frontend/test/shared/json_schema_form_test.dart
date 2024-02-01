@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_starter/shared/schema_form.dart';
+import 'package:flutter_starter/shared/json_schema_form.dart';
 import '../helpers/widget_helpers.dart';
 
 void main() {
@@ -25,11 +25,12 @@ void main() {
   }''';
 
   group('JsonSchemaForm', () {
-    testWidgets('should render form fields based on JSON schema', (tester) async {
+    testWidgets('should render form fields based on JSON schema',
+        (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: JsonSchemaForm(
-            jsonSchemaString: jsonSchemaString,
+            schema: jsonSchemaString,
             onSubmit: (_) {},
           ),
         ),
@@ -43,7 +44,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: JsonSchemaForm(
-            jsonSchemaString: jsonSchemaString,
+            schema: jsonSchemaString,
             onSubmit: (_) {},
           ),
         ),
@@ -62,12 +63,13 @@ void main() {
       expect(find.text('Invalid format'), findsOneWidget);
     });
 
-    testWidgets('should call onSubmit with correct data when form is valid', (tester) async {
+    testWidgets('should call onSubmit with correct data when form is valid',
+        (tester) async {
       Map<String, String>? submittedData;
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: JsonSchemaForm(
-            jsonSchemaString: jsonSchemaString,
+            schema: jsonSchemaString,
             onSubmit: (formData) {
               submittedData = formData;
             },
@@ -76,11 +78,13 @@ void main() {
       );
 
       await tester.enterText(find.byType(TextFormField).at(0), 'John');
-      await tester.enterText(find.byType(TextFormField).at(1), 'john@example.com');
+      await tester.enterText(
+          find.byType(TextFormField).at(1), 'john@example.com');
       await tester.tap(find.text('Submit'));
       await tester.pump();
 
-      expect(submittedData, equals({'name': 'John', 'email': 'john@example.com'}));
+      expect(
+          submittedData, equals({'name': 'John', 'email': 'john@example.com'}));
     });
   });
 }
