@@ -173,8 +173,8 @@ class TransactionDetailsPage extends HookWidget {
         : txn.amount.toString();
 
     return Padding(
-      padding:
-          const EdgeInsets.only(top: 64, left: Grid.side, right: Grid.side),
+      padding: const EdgeInsets.only(
+          top: Grid.xxl, left: Grid.side, right: Grid.side),
       child: Column(
         children: [
           Padding(
