@@ -50,13 +50,13 @@ class TransactionDetailsPage extends HookWidget {
 
   Widget _buildHeader(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 32),
+      padding: const EdgeInsets.only(top: Grid.md),
       child: Column(
         children: [
           Center(
             child: Container(
-              width: 70,
-              height: 70,
+              width: Grid.xxl,
+              height: Grid.xxl,
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceVariant,
                 shape: BoxShape.circle,
@@ -65,7 +65,7 @@ class TransactionDetailsPage extends HookWidget {
                 // TODO: use $ or first letter of name based on txn type
                 child: Text(
                   '\$',
-                  style: Theme.of(context).textTheme.displaySmall?.copyWith(
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                 ),
@@ -90,7 +90,7 @@ class TransactionDetailsPage extends HookWidget {
 
   Widget _buildAmount(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 64),
+      padding: const EdgeInsets.only(top: Grid.xxl),
       child: Column(
         children: [
           Text(
@@ -108,7 +108,7 @@ class TransactionDetailsPage extends HookWidget {
 
   Widget _buildStatus(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8),
+      padding: const EdgeInsets.only(top: Grid.xs),
       child: Column(
         children: [
           Padding(
