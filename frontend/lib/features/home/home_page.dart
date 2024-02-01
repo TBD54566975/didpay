@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
+import 'package:flutter_starter/features/home/transaction_details_page.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
@@ -8,7 +9,34 @@ import 'package:flutter_starter/shared/grid.dart';
 class HomePage extends HookWidget {
   HomePage({super.key});
 
-  final List<Transaction> txns = [];
+  // Will be replaced when we have real data
+  final List<Transaction> txns = [
+    Transaction(
+      type: 'Deposit',
+      status: 'Quoted',
+      amount: 4.61,
+    ),
+    Transaction(
+      type: 'Withdrawal',
+      status: 'Quoted',
+      amount: 20.85,
+    ),
+    Transaction(
+      type: 'Deposit',
+      status: 'Completed',
+      amount: 10.99,
+    ),
+    Transaction(
+      type: 'Withdrawal',
+      status: 'Completed',
+      amount: 7.03,
+    ),
+    Transaction(
+      type: 'Withdrawal',
+      status: 'Failed',
+      amount: 5.42,
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -126,15 +154,16 @@ class HomePage extends HookWidget {
     return ListView(
       children: txns.map((txn) {
         return ListTile(
+          // TODO: display name for payments and type for deposits/withdrawals
           title: Text(
-            txn.title,
+            txn.type,
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           // TODO: display status from txn
           subtitle: Text(
-            'status',
+            txn.status,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w300,
                 ),
@@ -152,6 +181,15 @@ class HomePage extends HookWidget {
               child: Text('\$'),
             ),
           ),
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute<void>(
+              builder: (BuildContext context) {
+                return TransactionDetailsPage(
+                  txn: txn,
+                );
+              },
+            ),
+          ),
         );
       }).toList(),
     );
@@ -160,8 +198,13 @@ class HomePage extends HookWidget {
 
 // Will be replaced with FTL-generated types later
 class Transaction {
-  final String title;
+  final String type;
+  final String status;
   final double amount;
 
-  Transaction({required this.title, required this.amount});
+  Transaction({
+    required this.type,
+    required this.status,
+    required this.amount,
+  });
 }
