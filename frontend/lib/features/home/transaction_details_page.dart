@@ -11,7 +11,7 @@ class TransactionDetailsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Transaction details')),
+      appBar: AppBar(title: Text(Loc.of(context).transactionDetails)),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -24,14 +24,12 @@ class TransactionDetailsPage extends HookWidget {
                     _buildHeader(context),
                     _buildAmount(context),
                     _buildStatus(context),
-                    txn.status == 'Failed'
-                        ? Container()
-                        : _buildDetails(context),
+                    if (txn.status != Status.failed) _buildDetails(context)
                   ],
                 ),
               ),
             ),
-            txn.status == 'Quoted'
+            txn.status == Status.quoted
                 ? _buildResponseButtons(context)
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -52,21 +50,23 @@ class TransactionDetailsPage extends HookWidget {
     return Column(
       children: [
         const SizedBox(height: Grid.md),
-        Center(
-          child: Container(
-            width: Grid.xxl,
-            height: Grid.xxl,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant,
-              shape: BoxShape.circle,
-            ),
-            child: Center(
-              // TODO: use $ or first letter of name based on txn type
-              child: Text(
-                '\$',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+        ExcludeSemantics(
+          child: Center(
+            child: Container(
+              width: Grid.xxl,
+              height: Grid.xxl,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceVariant,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                // TODO: use $ or first letter of name based on txn type
+                child: Text(
+                  '\$',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
               ),
             ),
           ),
@@ -103,7 +103,7 @@ class TransactionDetailsPage extends HookWidget {
       children: [
         const SizedBox(height: Grid.lg),
         Icon(_getStatusIcon(txn.status),
-            size: 50, color: _getStatusColor(context, txn.status)),
+            size: Grid.md, color: _getStatusColor(context, txn.status)),
         const SizedBox(height: Grid.xxs),
         Text(
           txn.status,
@@ -117,11 +117,11 @@ class TransactionDetailsPage extends HookWidget {
 
   IconData _getStatusIcon(String status) {
     switch (status) {
-      case 'Quoted':
+      case Status.quoted:
         return Icons.pending;
-      case 'Failed':
+      case Status.failed:
         return Icons.error;
-      case 'Completed':
+      case Status.completed:
         return Icons.check_circle;
       default:
         return Icons.help;
@@ -131,11 +131,11 @@ class TransactionDetailsPage extends HookWidget {
   Color _getStatusColor(BuildContext context, String status) {
     var colorScheme = Theme.of(context).colorScheme;
     switch (status) {
-      case 'Quoted':
+      case Status.quoted:
         return colorScheme.secondary;
-      case 'Failed':
+      case Status.failed:
         return colorScheme.error;
-      case 'Completed':
+      case Status.completed:
         return colorScheme.primary;
       default:
         return colorScheme.outlineVariant;
@@ -143,18 +143,18 @@ class TransactionDetailsPage extends HookWidget {
   }
 
   Widget _buildDetails(BuildContext context) {
-    final paymentLabel = txn.status == 'Quoted'
+    final paymentLabel = txn.status == Status.quoted
         ? Loc.of(context).youPay
-        : txn.type == 'Deposit'
+        : txn.type == Type.deposit
             ? Loc.of(context).youPaid
             : Loc.of(context).youReceived;
 
-    final balanceLabel = txn.status == 'Quoted'
+    final balanceLabel = txn.status == Status.quoted
         ? Loc.of(context).txnTypeQuote(txn.type)
         : Loc.of(context).accountBalance;
 
-    final amount = txn.status == 'Completed'
-        ? '${txn.type == 'Deposit' ? '+' : '-'}${txn.amount}'
+    final amount = txn.status == Status.completed
+        ? '${txn.type == Type.deposit ? '+' : '-'}${txn.amount}'
         : txn.amount.toString();
 
     return Padding(
