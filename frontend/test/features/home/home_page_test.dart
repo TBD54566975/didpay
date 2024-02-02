@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
 import 'package:flutter_starter/features/home/home_page.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
+import 'package:flutter_starter/shared/transaction.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -9,7 +11,7 @@ void main() {
   group('HomePage', () {
     testWidgets('should show account balance', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
       expect(find.text('Account balance'), findsOneWidget);
@@ -17,7 +19,7 @@ void main() {
 
     testWidgets('should show valid account balance amount', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
       final dollarAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
@@ -27,19 +29,19 @@ void main() {
 
     testWidgets('should show deposit button', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      expect(find.text('Deposit'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Deposit'), findsOneWidget);
     });
 
     testWidgets('should navigate to DepositPage on tap of deposit button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      await tester.tap(find.text('Deposit'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Deposit'));
       await tester.pumpAndSettle();
 
       expect(find.byType(DepositPage), findsOneWidget);
@@ -47,16 +49,16 @@ void main() {
 
     testWidgets('should show withdraw button', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      expect(find.text('Withdraw'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Withdraw'), findsOneWidget);
     });
 
     testWidgets('should navigate to WithdrawPage on tap of withdraw button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
       await tester.tap(find.text('Withdraw'));
@@ -67,7 +69,12 @@ void main() {
 
     testWidgets('should show empty state when no transactions', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(
+          child: const HomePage(),
+          overrides: [
+            transactionsProvider.overrideWith((ref) => []),
+          ],
+        ),
       );
 
       expect(find.text('No transactions yet'), findsOneWidget);
@@ -79,7 +86,12 @@ void main() {
     testWidgets('should navigate to DepositPage on tap of get started button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: HomePage()),
+        WidgetHelpers.testableWidget(
+          child: const HomePage(),
+          overrides: [
+            transactionsProvider.overrideWith((ref) => []),
+          ],
+        ),
       );
 
       await tester.tap(find.text('Get started'));
