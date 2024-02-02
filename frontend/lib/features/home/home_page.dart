@@ -1,45 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
 import 'package:flutter_starter/features/home/transaction_details_page.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/transaction.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class HomePage extends HookWidget {
-  HomePage({super.key});
-
-  // Will be replaced when we have real data
-  final List<Transaction> txns = [
-    Transaction(
-      type: 'Deposit',
-      status: 'Quoted',
-      amount: 4.61,
-    ),
-    Transaction(
-      type: 'Withdrawal',
-      status: 'Quoted',
-      amount: 20.85,
-    ),
-    Transaction(
-      type: 'Deposit',
-      status: 'Completed',
-      amount: 10.99,
-    ),
-    Transaction(
-      type: 'Withdrawal',
-      status: 'Completed',
-      amount: 7.03,
-    ),
-    Transaction(
-      type: 'Withdrawal',
-      status: 'Failed',
-      amount: 5.42,
-    ),
-  ];
+class HomePage extends HookConsumerWidget {
+  const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final txns = ref.watch(transactionsProvider);
+
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).home)),
       body: SafeArea(
@@ -58,7 +32,7 @@ class HomePage extends HookWidget {
             Expanded(
               child: txns.isEmpty
                   ? _buildEmptyState(context)
-                  : _buildTransactionsList(context),
+                  : _buildTransactionsList(context, txns),
             ),
           ],
         ),
@@ -150,7 +124,7 @@ class HomePage extends HookWidget {
     );
   }
 
-  Widget _buildTransactionsList(BuildContext context) {
+  Widget _buildTransactionsList(BuildContext context, List<Transaction> txns) {
     return ListView(
       children: txns.map((txn) {
         return ListTile(
@@ -193,17 +167,4 @@ class HomePage extends HookWidget {
       }).toList(),
     );
   }
-}
-
-// Will be replaced with FTL-generated types later
-class Transaction {
-  final String type;
-  final String status;
-  final double amount;
-
-  Transaction({
-    required this.type,
-    required this.status,
-    required this.amount,
-  });
 }
