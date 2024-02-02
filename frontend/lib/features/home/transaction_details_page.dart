@@ -234,13 +234,7 @@ class TransactionDetailsPage extends HookWidget {
           const SizedBox(width: Grid.sm),
           Expanded(
             child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const SuccessPage(),
-                  ),
-                );
-              },
+              onPressed: () {},
               child: Text(Loc.of(context).accept),
             ),
           ),
