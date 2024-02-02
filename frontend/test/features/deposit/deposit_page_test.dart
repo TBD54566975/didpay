@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/deposit/deposit_page.dart';
 import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
@@ -28,7 +29,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const DepositPage()),
       );
 
-      expect(find.text('Next'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
     });
 
     testWidgets('should change deposit input amount after number pad press',

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/send/send_did_page.dart';
 import 'package:flutter_starter/features/send/send_page.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
@@ -20,7 +21,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const SendPage()),
       );
 
-      expect(find.text('Send'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Send'), findsOneWidget);
     });
 
     testWidgets('should change send amount after number pad press',
