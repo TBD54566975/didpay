@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/success_page.dart';
 import 'package:flutter_starter/shared/transaction.dart';
 
 class TransactionDetailsPage extends HookWidget {
@@ -49,84 +50,69 @@ class TransactionDetailsPage extends HookWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: Grid.md),
-      child: Column(
-        children: [
-          Center(
-            child: Container(
-              width: Grid.xxl,
-              height: Grid.xxl,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                // TODO: use $ or first letter of name based on txn type
-                child: Text(
-                  '\$',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
+    return Column(
+      children: [
+        const SizedBox(height: Grid.md),
+        Center(
+          child: Container(
+            width: Grid.xxl,
+            height: Grid.xxl,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceVariant,
+              shape: BoxShape.circle,
+            ),
+            child: Center(
+              // TODO: use $ or first letter of name based on txn type
+              child: Text(
+                '\$',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(
-              top: Grid.xxs,
-            ),
-            child: Text(
-              txn.type,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          )
-        ],
-      ),
+        ),
+        const SizedBox(height: Grid.xxs),
+        Text(
+          txn.type,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ],
     );
   }
 
   Widget _buildAmount(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: Grid.xxl),
-      child: Column(
-        children: [
-          Text(
-            '${txn.amount} USD',
-            style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          // TODO: replace with createdAt time
-          const Text('Mar 1 at 10:00 am'),
-        ],
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: Grid.xxl),
+        Text(
+          '${txn.amount} USD',
+          style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+        // TODO: replace with createdAt time
+        const Text('Mar 1 at 10:00 am'),
+      ],
     );
   }
 
   Widget _buildStatus(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: Grid.xs),
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: Grid.sm,
-              bottom: Grid.xxs,
-            ),
-            child: Icon(_getStatusIcon(txn.status),
-                size: 50, color: _getStatusColor(context, txn.status)),
-          ),
-          Text(
-            txn.status,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-        ],
-      ),
+    return Column(
+      children: [
+        const SizedBox(height: Grid.lg),
+        Icon(_getStatusIcon(txn.status),
+            size: 50, color: _getStatusColor(context, txn.status)),
+        const SizedBox(height: Grid.xxs),
+        Text(
+          txn.status,
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ],
     );
   }
 
@@ -173,10 +159,10 @@ class TransactionDetailsPage extends HookWidget {
         : txn.amount.toString();
 
     return Padding(
-      padding: const EdgeInsets.only(
-          top: Grid.xxl, left: Grid.side, right: Grid.side),
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: Column(
         children: [
+          const SizedBox(height: Grid.xxl),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
             child: Row(
@@ -236,11 +222,7 @@ class TransactionDetailsPage extends HookWidget {
 
   Widget _buildResponseButtons(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: Grid.sm,
-        right: Grid.sm,
-        bottom: Grid.xxs,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
       child: Row(
         children: [
           Expanded(
@@ -252,7 +234,13 @@ class TransactionDetailsPage extends HookWidget {
           const SizedBox(width: Grid.sm),
           Expanded(
             child: FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const SuccessPage(),
+                  ),
+                );
+              },
               child: Text(Loc.of(context).accept),
             ),
           ),
