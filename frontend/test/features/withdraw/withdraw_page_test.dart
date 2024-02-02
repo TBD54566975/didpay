@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
 import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
@@ -28,7 +29,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const WithdrawPage()),
       );
 
-      expect(find.text('Next'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
     });
 
     testWidgets('should change withdraw input amount after number pad press',

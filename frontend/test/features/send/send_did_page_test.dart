@@ -48,7 +48,7 @@ void main() {
             child: const SendDidPage(sendAmount: '25')),
       );
 
-      expect(find.text('Pay \$25'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Pay \$25'), findsOneWidget);
     });
   });
 }

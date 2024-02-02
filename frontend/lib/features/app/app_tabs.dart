@@ -24,7 +24,7 @@ class AppTabs extends HookConsumerWidget {
       _TabItem(
         'Home',
         const Icon(Icons.home_outlined),
-        HomePage(),
+        const HomePage(),
       ),
       _TabItem(
         'Send',
