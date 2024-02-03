@@ -9,7 +9,6 @@ import 'package:flutter_starter/shared/success_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_starter/features/app/app_tabs.dart';
 import 'package:flutter_starter/features/pfis/pfi.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
