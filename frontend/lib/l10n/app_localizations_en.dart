@@ -101,4 +101,13 @@ class LocEn extends Loc {
 
   @override
   String get reject => 'Reject';
+
+  @override
+  String get yourRequestWasSent => 'Your request was sent!';
+
+  @override
+  String get yourPaymentWasSent => 'Your payment was sent!';
+
+  @override
+  String get verificationComplete => 'Verification complete!';
 }
