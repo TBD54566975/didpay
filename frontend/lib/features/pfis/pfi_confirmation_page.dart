@@ -5,10 +5,10 @@ import 'package:flutter_starter/features/account/account_providers.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:flutter_starter/shared/constants.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/success_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_starter/features/app/app_tabs.dart';
 import 'package:flutter_starter/features/pfis/pfi.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -35,7 +35,11 @@ class PfiConfirmationPage extends HookConsumerWidget {
 
     return Scaffold(
       body: SafeArea(
-        child: vcJwt == null ? verifying(context) : verified(context, vcJwt),
+        child: vcJwt == null
+            ? verifying(context)
+            : SuccessPage(
+                text: Loc.of(context).verificationComplete,
+              ),
       ),
     );
   }
@@ -53,44 +57,6 @@ class PfiConfirmationPage extends HookConsumerWidget {
         ),
         const SizedBox(height: Grid.lg),
         const Center(child: CircularProgressIndicator())
-      ],
-    );
-  }
-
-  Widget verified(BuildContext context, String vcJwt) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const SizedBox(height: Grid.lg),
-        Expanded(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Your credentials have been verified!',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: Grid.lg),
-                Icon(Icons.check_circle,
-                    size: 80, color: Theme.of(context).colorScheme.primary),
-              ],
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-          child: FilledButton(
-            onPressed: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (context) => const AppTabs()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Text(Loc.of(context).done),
-          ),
-        ),
       ],
     );
   }

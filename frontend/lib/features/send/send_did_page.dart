@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/success_page.dart';
 
 class SendDidPage extends HookWidget {
   final String sendAmount;
@@ -82,7 +83,15 @@ class SendDidPage extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SuccessPage(
+                        text: Loc.of(context).yourPaymentWasSent,
+                      ),
+                    ),
+                  );
+                },
                 child: Text('${Loc.of(context).pay} \$$sendAmount'),
               ),
             ),

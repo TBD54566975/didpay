@@ -282,6 +282,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Reject'**
   String get reject;
+
+  /// No description provided for @yourRequestWasSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request was sent!'**
+  String get yourRequestWasSent;
+
+  /// No description provided for @yourPaymentWasSent.
+  ///
+  /// In en, this message translates to:
+  /// **'Your payment was sent!'**
+  String get yourPaymentWasSent;
+
+  /// No description provided for @verificationComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification complete!'**
+  String get verificationComplete;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/success_page.dart';
 import 'package:flutter_starter/shared/transaction.dart';
 
 class TransactionDetailsPage extends HookWidget {
@@ -103,7 +104,7 @@ class TransactionDetailsPage extends HookWidget {
       children: [
         const SizedBox(height: Grid.lg),
         Icon(_getStatusIcon(txn.status),
-            size: Grid.md, color: _getStatusColor(context, txn.status)),
+            size: Grid.xl, color: _getStatusColor(context, txn.status)),
         const SizedBox(height: Grid.xxs),
         Text(
           txn.status,
@@ -233,7 +234,15 @@ class TransactionDetailsPage extends HookWidget {
           const SizedBox(width: Grid.sm),
           Expanded(
             child: FilledButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SuccessPage(
+                      text: Loc.of(context).yourRequestWasSent,
+                    ),
+                  ),
+                );
+              },
               child: Text(Loc.of(context).accept),
             ),
           ),

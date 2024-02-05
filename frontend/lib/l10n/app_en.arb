@@ -38,5 +38,8 @@
     },
     "accountBalance": "Account balance",
     "accept": "Accept",
-    "reject": "Reject"
+    "reject": "Reject",
+    "yourRequestWasSent": "Your request was sent!",
+    "yourPaymentWasSent": "Your payment was sent!",
+    "verificationComplete": "Verification complete!"
 }
