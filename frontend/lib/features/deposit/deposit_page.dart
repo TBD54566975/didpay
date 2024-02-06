@@ -55,7 +55,8 @@ class DepositPage extends HookWidget {
                               (value) => selectedCurrencyItem.value =
                                   supportedCurrencyList.firstWhere(
                                       (element) => element['label'] == value),
-                              supportedCurrencyList);
+                              supportedCurrencyList,
+                              selectedCurrencyItem.value['label'].toString());
                         },
                       ),
                       const SizedBox(height: Grid.xl),
