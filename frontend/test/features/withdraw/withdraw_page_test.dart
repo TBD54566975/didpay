@@ -49,5 +49,18 @@ void main() {
         await tester.pump();
       }
     });
+
+    testWidgets(
+        'should show the currency list on tap of the currency converter dropdown toggle',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const WithdrawPage()),
+      );
+
+      await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
+      await tester.pump();
+
+      expect(find.byType(ListView), findsOneWidget);
+    });
   });
 }

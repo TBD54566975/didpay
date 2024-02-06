@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_starter/shared/animations/invalid_number_pad_input_animation.dart';
 import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -10,11 +12,10 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const CurrencyConverter(
-          originAmount: '1.00',
-          originCurrency: 'USD',
-          originLabel: 'You withdraw',
-          destinationCurrency: 'MXN',
-          exchangeRate: '17',
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
           isValidKeyPress: true,
         )),
       );
@@ -25,16 +26,14 @@ void main() {
       expect(find.textContaining('17.00'), findsOneWidget);
     });
 
-    testWidgets('should show you origin and desination currencies',
-        (tester) async {
+    testWidgets('should show you input and output currencies', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const CurrencyConverter(
-          originAmount: '1.00',
-          originCurrency: 'USD',
-          originLabel: 'You withdraw',
-          destinationCurrency: 'MXN',
-          exchangeRate: '17',
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
           isValidKeyPress: true,
         )),
       );
@@ -43,15 +42,14 @@ void main() {
       expect(find.textContaining('MXN'), findsOneWidget);
     });
 
-    testWidgets('should show you origin label', (tester) async {
+    testWidgets('should show you input label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const CurrencyConverter(
-          originAmount: '1.00',
-          originCurrency: 'USD',
-          originLabel: 'You withdraw',
-          destinationCurrency: 'MXN',
-          exchangeRate: '17',
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
           isValidKeyPress: true,
         )),
       );
@@ -59,20 +57,67 @@ void main() {
       expect(find.text('You withdraw'), findsOneWidget);
     });
 
-    testWidgets('should show you get', (tester) async {
+    testWidgets('should show the `You get` label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const CurrencyConverter(
-          originAmount: '1.00',
-          originCurrency: 'USD',
-          originLabel: 'You withdraw',
-          destinationCurrency: 'MXN',
-          exchangeRate: '17',
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
           isValidKeyPress: true,
         )),
       );
 
       expect(find.text('You get'), findsOneWidget);
+    });
+
+    testWidgets('should show the animation component', (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+            child: const CurrencyConverter(
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
+          isValidKeyPress: true,
+        )),
+      );
+
+      expect(find.byType(InvalidNumberPadInputAnimation), findsOneWidget);
+    });
+
+    testWidgets(
+        'should show one toggle icon if transactionType is deposit or withdrawal',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+            child: const CurrencyConverter(
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
+          isValidKeyPress: true,
+        )),
+      );
+
+      expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
+    });
+
+    testWidgets('should not show toggle icon if transactionType is not defined',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+            child: const CurrencyConverter(
+          inputAmount: 1,
+          outputSelectedCurrency: 'MXN',
+          inputLabel: 'You withdraw',
+          outputAmount: 17,
+          isValidKeyPress: true,
+        )),
+      );
+
+      expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
     });
   });
 }

@@ -6,20 +6,22 @@ import 'package:flutter_starter/shared/grid.dart';
 import 'package:intl/intl.dart';
 
 class CurrencyConverter extends HookWidget {
-  final String originAmount;
-  final String originCurrency;
-  final String originLabel;
-  final String destinationCurrency;
-  final String exchangeRate;
+  final double inputAmount;
+  final String inputLabel;
+  final double outputAmount;
   final bool isValidKeyPress;
+  final String? inputSelectedCurrency;
+  final String? outputSelectedCurrency;
+  final VoidCallback? onDropdownTap;
 
   const CurrencyConverter({
-    required this.originAmount,
-    required this.originCurrency,
-    required this.originLabel,
-    required this.destinationCurrency,
-    required this.exchangeRate,
+    required this.inputAmount,
+    required this.inputLabel,
+    required this.outputAmount,
     required this.isValidKeyPress,
+    this.inputSelectedCurrency,
+    this.outputSelectedCurrency,
+    this.onDropdownTap,
     super.key,
   });
 
@@ -28,54 +30,59 @@ class CurrencyConverter extends HookWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            SizedBox(
-                child: InvalidNumberPadInputAnimation(
-                    textValue: NumberFormat.simpleCurrency()
-                        .format(double.parse('0$originAmount')),
-                    textStyle: Theme.of(context).textTheme.displayMedium,
-                    shouldAnimate: !isValidKeyPress)),
-            const SizedBox(width: Grid.xs),
-            Baseline(
-              baseline: 0,
-              baselineType: TextBaseline.alphabetic,
-              child: Text(
-                originCurrency,
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: Grid.xxs),
-        Text(
-          originLabel,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        _buildRow(
+            context,
+            InvalidNumberPadInputAnimation(
+                textValue: NumberFormat.simpleCurrency().format(inputAmount),
+                textStyle: Theme.of(context).textTheme.displayMedium,
+                shouldAnimate: !isValidKeyPress),
+            currency: inputSelectedCurrency ?? Loc.of(context).usd,
+            bottomLabel: inputLabel,
+            isToggle: inputSelectedCurrency?.isNotEmpty ?? false),
         const SizedBox(height: Grid.sm),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
+        _buildRow(
+            context,
             Text(
-              NumberFormat.simpleCurrency().format(
-                  double.parse('0$originAmount') * double.parse(exchangeRate)),
+              NumberFormat.simpleCurrency().format(outputAmount),
               style: Theme.of(context).textTheme.displayMedium,
             ),
-            const SizedBox(width: Grid.xs),
-            Text(
-              destinationCurrency,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-        const SizedBox(height: Grid.xxs),
+            currency: outputSelectedCurrency ?? Loc.of(context).usd,
+            bottomLabel: Loc.of(context).youGet,
+            isToggle: outputSelectedCurrency?.isNotEmpty ?? false),
+      ],
+    );
+  }
+
+  Widget _buildRow(BuildContext context, inputWidget,
+      {String currency = '', String bottomLabel = '', bool isToggle = false}) {
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      isToggle
+          ? GestureDetector(
+              onTap: onDropdownTap,
+              child: _buildRowDetail(context, inputWidget,
+                  currency: currency, isToggle: isToggle))
+          : _buildRowDetail(context, inputWidget, currency: currency),
+      const SizedBox(height: Grid.xxs),
+      Text(
+        bottomLabel,
+        style: Theme.of(context).textTheme.bodyLarge,
+      )
+    ]);
+  }
+
+  Widget _buildRowDetail(BuildContext context, Widget inputWidget,
+      {String currency = '', bool isToggle = false}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.baseline,
+      textBaseline: TextBaseline.alphabetic,
+      children: [
+        inputWidget,
+        const SizedBox(width: Grid.xs),
         Text(
-          Loc.of(context).youGet,
-          style: Theme.of(context).textTheme.bodyLarge,
+          currency,
+          style: Theme.of(context).textTheme.headlineMedium,
         ),
+        if (isToggle) const Icon(Icons.keyboard_arrow_down)
       ],
     );
   }
