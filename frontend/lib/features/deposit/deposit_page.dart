@@ -2,10 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/currency_converter.dart';
+import 'package:flutter_starter/shared/currency_modal.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
 import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
+
+// replace with actual currency list
+final supportedCurrencyList = [
+  {'label': 'USD', 'icon': Icons.attach_money, 'exchangeRate': 1},
+  {'label': 'MXN', 'icon': Icons.attach_money, 'exchangeRate': 17},
+  {'label': 'BTC', 'icon': Icons.currency_bitcoin, 'exchangeRate': 0.000024}
+];
 
 class DepositPage extends HookWidget {
   const DepositPage({super.key});
@@ -14,6 +22,8 @@ class DepositPage extends HookWidget {
   Widget build(BuildContext context) {
     final depositAmount = useState<String>('0');
     final isValidKeyPress = useState<bool>(true);
+    final selectedCurrencyItem =
+        useState<Map<String, Object>>(supportedCurrencyList[1]);
 
     return Scaffold(
       appBar: AppBar(),
@@ -30,19 +40,33 @@ class DepositPage extends HookWidget {
                   child: Column(
                     children: [
                       CurrencyConverter(
-                        originAmount: depositAmount.value,
-                        originCurrency: 'MXN',
-                        originLabel: Loc.of(context).youDeposit,
-                        destinationCurrency: Loc.of(context).usd,
-                        exchangeRate: (1 / 17).toString(),
+                        inputAmount: double.parse('0${depositAmount.value}'),
+                        inputSelectedCurrency:
+                            selectedCurrencyItem.value['label'].toString(),
+                        inputLabel: Loc.of(context).youDeposit,
+                        outputAmount: (double.parse('0${depositAmount.value}') /
+                            double.parse(selectedCurrencyItem
+                                .value['exchangeRate']
+                                .toString())),
                         isValidKeyPress: isValidKeyPress.value,
+                        onDropdownTap: () {
+                          CurrencyModal.showCurrencyModal(
+                              context,
+                              (value) => selectedCurrencyItem.value =
+                                  supportedCurrencyList.firstWhere(
+                                      (element) => element['label'] == value),
+                              supportedCurrencyList);
+                        },
                       ),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
                       FeeDetails(
                           originCurrency: Loc.of(context).usd,
-                          destinationCurrency: 'MXN',
-                          exchangeRate: '17',
+                          destinationCurrency:
+                              selectedCurrencyItem.value['label'].toString(),
+                          exchangeRate: selectedCurrencyItem
+                              .value['exchangeRate']
+                              .toString(),
                           serviceFee: '0')
                     ],
                   ),
