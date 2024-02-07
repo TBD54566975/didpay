@@ -13,26 +13,44 @@ class PaymentMethod {
   });
 }
 
+final _defaultList = [
+  PaymentMethod(
+    kind: 'BANK_ACCESS BANK',
+    requiredPaymentDetails: bankSchema,
+    fee: '9.0',
+  ),
+  PaymentMethod(
+    kind: 'BANK_GT BANK',
+    requiredPaymentDetails: bankSchema,
+    fee: '8.0',
+  ),
+  PaymentMethod(
+    kind: 'BANK_UNITED BANK FOR AFRICA',
+    requiredPaymentDetails: bankSchema,
+    fee: '10.0',
+  ),
+  PaymentMethod(
+    kind: 'MOMO_MTN',
+    requiredPaymentDetails: momoSchema,
+  ),
+  PaymentMethod(
+    kind: 'MOMO_MPESA',
+    requiredPaymentDetails: momoSchema,
+  ),
+  PaymentMethod(
+    kind: 'WALLET_BTC ADDRESS',
+    requiredPaymentDetails: walletSchema,
+    fee: '5.0',
+  ),
+  PaymentMethod(
+    kind: 'WALLET_USDC ADDRESS',
+    requiredPaymentDetails: walletSchema,
+    fee: '2.0',
+  ),
+];
+
 final paymentMethodProvider = StateProvider<List<PaymentMethod>>((ref) {
-  return [
-    PaymentMethod(
-      kind: 'BTC_ADDRESS WALLET',
-      requiredPaymentDetails: walletSchema,
-    ),
-    PaymentMethod(
-      kind: 'MOMO_MTN',
-      requiredPaymentDetails: momoSchema,
-    ),
-    PaymentMethod(
-      kind: 'MOMO_MPESA',
-      requiredPaymentDetails: momoSchema,
-    ),
-    PaymentMethod(
-      kind: 'BANK_Access Bank',
-      requiredPaymentDetails: bankSchema,
-      fee: '10.0',
-    ),
-  ];
+  return _defaultList;
 });
 
 const String bankSchema = '''
@@ -40,7 +58,7 @@ const String bankSchema = '''
     "properties": {
       "accountNumber": {
         "type": "string",
-        "title": "Account Number",
+        "title": "Account number",
         "description": "Bank account number of the recipient",
         "minLength": 10,
         "maxLength": 10
@@ -63,7 +81,7 @@ const String momoSchema = '''
     "properties": {
       "accountNumber": {
         "type": "string",
-        "title": "Phone Number",
+        "title": "Phone number",
         "description": "Mobile money account number of the recipient",
         "minLength": 12,
         "maxLength": 12
@@ -87,7 +105,7 @@ const String walletSchema = '''
       "walletAddress": {
         "type": "string",
         "description": "Your wallet address",
-        "title": "BTC Address"
+        "title": "Wallet address"
       },
       "reason": {
         "title": "Reason for sending",
