@@ -312,6 +312,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Enter your {paymentChannel} details'**
   String enterYourPaymentChannelDetails(String paymentChannel);
+
+  /// No description provided for @serviceFeeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Service fee: {amount} {currency}'**
+  String serviceFeeAmount(String amount, String currency);
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

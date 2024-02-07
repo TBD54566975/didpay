@@ -50,5 +50,17 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "serviceFeeAmount": "Service fee: {amount} {currency}",
+    "@serviceFeeAmount": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            },
+            "currency": {
+                "type": "String"
+            }
+        }
+    },
+    "search": "Search"
 }

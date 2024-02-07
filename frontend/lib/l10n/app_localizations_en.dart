@@ -118,4 +118,12 @@ class LocEn extends Loc {
   String enterYourPaymentChannelDetails(String paymentChannel) {
     return 'Enter your $paymentChannel details';
   }
+
+  @override
+  String serviceFeeAmount(String amount, String currency) {
+    return 'Service fee: $amount $currency';
+  }
+
+  @override
+  String get search => 'Search';
 }
