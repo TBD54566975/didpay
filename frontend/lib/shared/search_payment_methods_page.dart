@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/payment_method.dart';
 
-class PaymentMethodsPage extends HookWidget {
+class SearchPaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
   final ValueNotifier<PaymentMethod> selectedPaymentMethod;
   final List<PaymentMethod> paymentMethods;
 
-  PaymentMethodsPage({
+  SearchPaymentMethodsPage({
     required this.selectedPaymentMethod,
     required this.paymentMethods,
     super.key,
@@ -29,15 +30,15 @@ class PaymentMethodsPage extends HookWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        labelText: 'Search',
-                        prefixIcon: const Icon(Icons.search),
+                  TextFormField(
+                    decoration: InputDecoration(
+                      labelText: Loc.of(context).search,
+                      prefixIcon: const Icon(Icons.search),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: Grid.side,
                       ),
-                      onChanged: (value) => searchText.value = value,
                     ),
+                    onChanged: (value) => searchText.value = value,
                   ),
                 ],
               ),
@@ -67,34 +68,31 @@ class PaymentMethodsPage extends HookWidget {
             entry.kind.toLowerCase().contains(searchText.value.toLowerCase()))
         .toList();
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-      child: ListView.builder(
-        itemBuilder: (context, index) {
-          final currentPaymentMethod = filteredPaymentMethods.elementAt(index);
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final currentPaymentMethod = filteredPaymentMethods.elementAt(index);
+        final paymentSubtype = currentPaymentMethod.kind.split('_').last;
+        final fee = currentPaymentMethod.fee ?? '0.0';
 
-          final paymentProvider = currentPaymentMethod.kind.split('_').last;
-
-          return ListTile(
-            visualDensity: VisualDensity.compact,
-            selected: selectedPaymentMethod.value == currentPaymentMethod,
-            title: Text(paymentProvider),
-            subtitle: Text(
-              'Service fee',
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-            trailing: selectedPaymentMethod.value == currentPaymentMethod
-                ? const Icon(Icons.check)
-                : null,
-            onTap: () {
-              selectedPaymentMethod.value = currentPaymentMethod;
-              print('Selected payment method: ${currentPaymentMethod.kind}');
-              Navigator.of(context).pop();
-            },
-          );
-        },
-        itemCount: filteredPaymentMethods.length,
-      ),
+        return ListTile(
+          visualDensity: VisualDensity.compact,
+          selected: selectedPaymentMethod.value == currentPaymentMethod,
+          title: Text(paymentSubtype),
+          subtitle: Text(
+            Loc.of(context).serviceFeeAmount(fee, 'USD'),
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
+          trailing: selectedPaymentMethod.value == currentPaymentMethod
+              ? const Icon(Icons.check)
+              : null,
+          contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
+          onTap: () {
+            selectedPaymentMethod.value = currentPaymentMethod;
+            Navigator.of(context).pop();
+          },
+        );
+      },
+      itemCount: filteredPaymentMethods.length,
     );
   }
 }

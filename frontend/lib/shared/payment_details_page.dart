@@ -4,7 +4,7 @@ import 'package:flutter_starter/l10n/app_localizations.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/json_schema_form.dart';
 import 'package:flutter_starter/shared/payment_method.dart';
-import 'package:flutter_starter/shared/payment_methods_page.dart';
+import 'package:flutter_starter/shared/search_payment_methods_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
@@ -48,10 +48,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 selectedPaymentType.value.toLowerCase(),
               ),
             ),
-            const SizedBox(
-              height: Grid.xs,
-            ),
-            _buildPaymentProvider(
+            const SizedBox(height: Grid.xs),
+            _buildPaymentMethodTile(
               context,
               selectedPaymentMethod,
               typeToPaymentMethods[selectedPaymentType.value] ?? [],
@@ -60,43 +58,12 @@ class PaymentDetailsPage extends HookConsumerWidget {
               child: JsonSchemaForm(
                   schema: selectedPaymentMethod.value.requiredPaymentDetails,
                   onSubmit: (formData) {
-                    print('Form data submitted: $formData');
+                    // TODO: save payment details here
                   }),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildPaymentProvider(
-    BuildContext context,
-    ValueNotifier<PaymentMethod> selectedPaymentMethod,
-    List<PaymentMethod> paymentMethods,
-  ) {
-    return ListTile(
-      title: Text(
-        selectedPaymentMethod.value.kind,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-      ),
-      subtitle: Text(
-        'Service fee',
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PaymentMethodsPage(
-              selectedPaymentMethod: selectedPaymentMethod,
-              paymentMethods: paymentMethods,
-            ),
-          ),
-        );
-      },
     );
   }
 
@@ -147,15 +114,50 @@ class PaymentDetailsPage extends HookConsumerWidget {
             (Set<MaterialState> _) {
               return BorderSide(
                 color: Theme.of(context).colorScheme.secondaryContainer,
-                width: 3.0,
+                width: Grid.half,
               );
             },
           ),
           shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+            RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(Grid.xs)),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPaymentMethodTile(
+    BuildContext context,
+    ValueNotifier<PaymentMethod> selectedPaymentMethod,
+    List<PaymentMethod> paymentMethods,
+  ) {
+    final paymentSubtype = selectedPaymentMethod.value.kind.split('_').last;
+    final fee = selectedPaymentMethod.value.fee ?? '0.0';
+
+    return ListTile(
+      title: Text(
+        paymentSubtype,
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+      ),
+      subtitle: Text(
+        Loc.of(context).serviceFeeAmount(fee, 'USD'),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SearchPaymentMethodsPage(
+              selectedPaymentMethod: selectedPaymentMethod,
+              paymentMethods: paymentMethods,
+            ),
+          ),
+        );
+      },
     );
   }
 

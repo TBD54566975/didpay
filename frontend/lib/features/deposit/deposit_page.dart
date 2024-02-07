@@ -6,6 +6,7 @@ import 'package:flutter_starter/shared/currency_modal.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_starter/shared/grid.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
+import 'package:flutter_starter/shared/payment_details_page.dart';
 import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
 
 // replace with actual currency list
@@ -79,7 +80,13 @@ class DepositPage extends HookWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
               child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const PaymentDetailsPage(),
+                    ),
+                  );
+                },
                 child: Text(Loc.of(context).next),
               ),
             ),
