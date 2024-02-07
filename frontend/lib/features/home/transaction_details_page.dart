@@ -171,9 +171,7 @@ class TransactionDetailsPage extends HookWidget {
                   flex: 1,
                   child: Text(
                     paymentLabel,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.left,
                   ),
                 ),
@@ -181,9 +179,7 @@ class TransactionDetailsPage extends HookWidget {
                   flex: 2,
                   child: Text(
                     '${txn.amount} USD',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.right,
                   ),
                 ),
@@ -197,18 +193,14 @@ class TransactionDetailsPage extends HookWidget {
                 Expanded(
                   child: Text(
                     balanceLabel,
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.left,
                   ),
                 ),
                 Expanded(
                   child: Text(
                     '$amount USD',
-                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          color: Theme.of(context).colorScheme.secondary,
-                        ),
+                    style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.right,
                   ),
                 ),

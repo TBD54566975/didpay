@@ -41,5 +41,14 @@
     "reject": "Reject",
     "yourRequestWasSent": "Your request was sent!",
     "yourPaymentWasSent": "Your payment was sent!",
-    "verificationComplete": "Verification complete!"
+    "verificationComplete": "Verification complete!",
+    "makeSureInfoIsCorrect": "Make sure this information is correct.",
+    "enterYourPaymentChannelDetails": "Enter your {paymentChannel} details",
+    "@enterYourPaymentChannelDetails": {
+         "placeholders": {
+            "paymentChannel": {
+                "type": "String"
+            }
+        }
+    }
 }

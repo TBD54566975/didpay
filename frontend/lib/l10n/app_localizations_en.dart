@@ -110,4 +110,12 @@ class LocEn extends Loc {
 
   @override
   String get verificationComplete => 'Verification complete!';
+
+  @override
+  String get makeSureInfoIsCorrect => 'Make sure this information is correct.';
+
+  @override
+  String enterYourPaymentChannelDetails(String paymentChannel) {
+    return 'Enter your $paymentChannel details';
+  }
 }
