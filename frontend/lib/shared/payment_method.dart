@@ -37,16 +37,16 @@ final _defaultList = [
     kind: 'MOMO_MPESA',
     requiredPaymentDetails: momoSchema,
   ),
-  PaymentMethod(
-    kind: 'WALLET_BTC ADDRESS',
-    requiredPaymentDetails: walletSchema,
-    fee: '5.0',
-  ),
-  PaymentMethod(
-    kind: 'WALLET_USDC ADDRESS',
-    requiredPaymentDetails: walletSchema,
-    fee: '2.0',
-  ),
+  // PaymentMethod(
+  //   kind: 'WALLET_BTC ADDRESS',
+  //   requiredPaymentDetails: walletSchema,
+  //   fee: '5.0',
+  // ),
+  // PaymentMethod(
+  //   kind: 'WALLET_USDC ADDRESS',
+  //   requiredPaymentDetails: walletSchema,
+  //   fee: '2.0',
+  // ),
 ];
 
 final paymentMethodProvider = StateProvider<List<PaymentMethod>>((ref) {
