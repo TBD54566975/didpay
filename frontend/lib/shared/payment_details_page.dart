@@ -14,19 +14,25 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final paymentMethods = ref.watch(paymentMethodProvider);
 
-    final selectedPaymentMethod = useState<PaymentMethod>(paymentMethods.first);
-    final selectedPaymentType =
-        useState<String>(paymentMethods.first.kind.split('_').first);
-
     final paymentTypes =
-        paymentMethods.map((method) => method.kind.split('_').first).toSet();
+        paymentMethods?.map((method) => method.kind.split('_').first).toSet();
 
-    final Map<String, List<PaymentMethod>> typeToPaymentMethods = {};
+    final selectedPaymentMethod = useState(paymentMethods?.firstOrNull);
+    final selectedPaymentType = useState(paymentTypes?.firstOrNull);
 
-    for (var method in paymentMethods) {
-      var prefix = method.kind.split('_').first;
-      (typeToPaymentMethods.putIfAbsent(prefix, () => [])..add(method));
-    }
+    final availablePaymentMethods = paymentMethods
+        ?.where(
+          (method) => method.kind.contains(selectedPaymentType.value ?? ''),
+        )
+        .toList();
+
+    useEffect(
+      () {
+        selectedPaymentMethod.value = availablePaymentMethods?.firstOrNull;
+        return;
+      },
+      [selectedPaymentType.value],
+    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -34,33 +40,25 @@ class PaymentDetailsPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (paymentTypes.length > 1)
+            if (paymentTypes != null && paymentTypes.length > 1)
               _buildPaymentTypeSegments(
                 context,
                 paymentTypes,
                 selectedPaymentType,
-                selectedPaymentMethod,
-                typeToPaymentMethods,
               ),
             _buildHeader(
               context,
               Loc.of(context).enterYourPaymentChannelDetails(
-                selectedPaymentType.value.toLowerCase(),
+                selectedPaymentType.value?.toLowerCase() ?? '',
               ),
             ),
             const SizedBox(height: Grid.xs),
             _buildPaymentMethodTile(
               context,
               selectedPaymentMethod,
-              typeToPaymentMethods[selectedPaymentType.value] ?? [],
+              availablePaymentMethods,
             ),
-            Expanded(
-              child: JsonSchemaForm(
-                  schema: selectedPaymentMethod.value.requiredPaymentDetails,
-                  onSubmit: (formData) {
-                    // TODO: save payment details here
-                  }),
-            ),
+            _buildForm(context, selectedPaymentMethod),
           ],
         ),
       ),
@@ -69,23 +67,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildPaymentTypeSegments(
     BuildContext context,
-    Set<String> paymentTypes,
-    ValueNotifier<String> selectedPaymentType,
-    ValueNotifier<PaymentMethod> selectedPaymentMethod,
-    Map<String, List<PaymentMethod>> typeToPaymentMethods,
+    Set<String?> paymentTypes,
+    ValueNotifier<String?> selectedPaymentType,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(
-        left: Grid.side,
-        right: Grid.side,
-      ),
-      child: SegmentedButton<String>(
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      child: SegmentedButton(
         segments: paymentTypes
             .map(
-              (segment) => ButtonSegment<String>(
+              (segment) => ButtonSegment(
                 value: segment,
                 label: Text(
-                  segment,
+                  segment ?? '',
                   style: TextStyle(
                     color: selectedPaymentType.value == segment
                         ? Theme.of(context).colorScheme.onSurface
@@ -97,67 +90,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
             .toList(),
         selected: {selectedPaymentType.value},
         showSelectedIcon: false,
-        onSelectionChanged: (value) {
-          selectedPaymentType.value = value.first;
-          selectedPaymentMethod.value =
-              typeToPaymentMethods[value.first]!.first;
+        onSelectionChanged: (type) {
+          selectedPaymentType.value = type.firstOrNull;
         },
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
-            (Set<MaterialState> states) {
-              return states.contains(MaterialState.selected)
-                  ? Theme.of(context).colorScheme.surface
-                  : Theme.of(context).colorScheme.secondaryContainer;
-            },
-          ),
-          side: MaterialStateProperty.resolveWith<BorderSide>(
-            (Set<MaterialState> _) {
-              return BorderSide(
-                color: Theme.of(context).colorScheme.secondaryContainer,
-                width: Grid.half,
-              );
-            },
-          ),
-          shape: MaterialStateProperty.all(
-            RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(Grid.xs)),
-          ),
-        ),
       ),
-    );
-  }
-
-  Widget _buildPaymentMethodTile(
-    BuildContext context,
-    ValueNotifier<PaymentMethod> selectedPaymentMethod,
-    List<PaymentMethod> paymentMethods,
-  ) {
-    final paymentSubtype = selectedPaymentMethod.value.kind.split('_').last;
-    final fee = selectedPaymentMethod.value.fee ?? '0.0';
-
-    return ListTile(
-      title: Text(
-        paymentSubtype,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.primary,
-            ),
-      ),
-      subtitle: Text(
-        Loc.of(context).serviceFeeAmount(fee, 'USD'),
-        style: Theme.of(context).textTheme.bodySmall,
-      ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SearchPaymentMethodsPage(
-              selectedPaymentMethod: selectedPaymentMethod,
-              paymentMethods: paymentMethods,
-            ),
-          ),
-        );
-      },
     );
   }
 
@@ -187,5 +123,57 @@ class PaymentDetailsPage extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget _buildPaymentMethodTile(
+    BuildContext context,
+    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+    List<PaymentMethod>? availablePaymentMethods,
+  ) {
+    final paymentSubtype = selectedPaymentMethod.value?.kind.split('_').last;
+    final fee = (double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
+            ?.toStringAsFixed(2) ??
+        '0.00');
+
+    return ListTile(
+      title: Text(
+        paymentSubtype ?? '',
+        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.primary,
+            ),
+      ),
+      subtitle: Text(
+        Loc.of(context).serviceFeeAmount(fee, 'USD'),
+        style: Theme.of(context).textTheme.bodySmall,
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SearchPaymentMethodsPage(
+              selectedPaymentMethod: selectedPaymentMethod,
+              paymentMethods: availablePaymentMethods,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildForm(
+    BuildContext context,
+    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+  ) {
+    return selectedPaymentMethod.value == null
+        ? Container()
+        : Expanded(
+            child: JsonSchemaForm(
+              schema: selectedPaymentMethod.value!.requiredPaymentDetails,
+              onSubmit: (formData) {
+                // TODO: save payment details here
+              },
+            ),
+          );
   }
 }

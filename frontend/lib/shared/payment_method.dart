@@ -49,7 +49,7 @@ final _defaultList = [
   // ),
 ];
 
-final paymentMethodProvider = StateProvider<List<PaymentMethod>>((ref) {
+final paymentMethodProvider = StateProvider<List<PaymentMethod>?>((ref) {
   return _defaultList;
 });
 

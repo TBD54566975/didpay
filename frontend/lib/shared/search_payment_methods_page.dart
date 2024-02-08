@@ -6,8 +6,8 @@ import 'package:flutter_starter/shared/payment_method.dart';
 
 class SearchPaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final ValueNotifier<PaymentMethod> selectedPaymentMethod;
-  final List<PaymentMethod> paymentMethods;
+  final ValueNotifier<PaymentMethod?> selectedPaymentMethod;
+  final List<PaymentMethod>? paymentMethods;
 
   SearchPaymentMethodsPage({
     required this.selectedPaymentMethod,
@@ -17,41 +17,42 @@ class SearchPaymentMethodsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final searchText = useState<String>('');
+    final searchText = useState('');
 
     return Scaffold(
       appBar: AppBar(scrolledUnderElevation: 0),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TextFormField(
-                    decoration: InputDecoration(
-                      labelText: Loc.of(context).search,
-                      prefixIcon: const Icon(Icons.search),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: Grid.side,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      decoration: InputDecoration(
+                        labelText: Loc.of(context).search,
+                        prefixIcon: const Icon(Icons.search),
                       ),
+                      onChanged: (value) => searchText.value = value,
                     ),
-                    onChanged: (value) => searchText.value = value,
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Expanded(
-              child: _buildList(
-                context,
-                selectedPaymentMethod,
-                searchText,
-                paymentMethods,
+              const SizedBox(height: Grid.xs),
+              Expanded(
+                child: _buildList(
+                  context,
+                  selectedPaymentMethod,
+                  searchText,
+                  paymentMethods,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -59,25 +60,28 @@ class SearchPaymentMethodsPage extends HookWidget {
 
   Widget _buildList(
     BuildContext context,
-    ValueNotifier<PaymentMethod> selectedPaymentMethod,
+    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
     ValueNotifier<String> searchText,
-    List<PaymentMethod> paymentMethods,
+    List<PaymentMethod>? paymentMethods,
   ) {
     final filteredPaymentMethods = paymentMethods
-        .where((entry) =>
+        ?.where((entry) =>
             entry.kind.toLowerCase().contains(searchText.value.toLowerCase()))
         .toList();
 
     return ListView.builder(
       itemBuilder: (context, index) {
-        final currentPaymentMethod = filteredPaymentMethods.elementAt(index);
-        final paymentSubtype = currentPaymentMethod.kind.split('_').last;
-        final fee = currentPaymentMethod.fee ?? '0.0';
+        final currentPaymentMethod =
+            filteredPaymentMethods?.elementAtOrNull(index);
+        final paymentSubtype = currentPaymentMethod?.kind.split('_').last;
+        final fee = (double.tryParse(currentPaymentMethod?.fee ?? '0.00')
+                ?.toStringAsFixed(2) ??
+            '0.00');
 
         return ListTile(
           visualDensity: VisualDensity.compact,
           selected: selectedPaymentMethod.value == currentPaymentMethod,
-          title: Text(paymentSubtype),
+          title: Text(paymentSubtype ?? ''),
           subtitle: Text(
             Loc.of(context).serviceFeeAmount(fee, 'USD'),
             style: Theme.of(context).textTheme.bodySmall,
@@ -85,14 +89,14 @@ class SearchPaymentMethodsPage extends HookWidget {
           trailing: selectedPaymentMethod.value == currentPaymentMethod
               ? const Icon(Icons.check)
               : null,
-          contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
           onTap: () {
-            selectedPaymentMethod.value = currentPaymentMethod;
+            selectedPaymentMethod.value =
+                currentPaymentMethod ?? selectedPaymentMethod.value;
             Navigator.of(context).pop();
           },
         );
       },
-      itemCount: filteredPaymentMethods.length,
+      itemCount: filteredPaymentMethods?.length,
     );
   }
 }
