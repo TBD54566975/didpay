@@ -20,14 +20,16 @@ void main() {
           find.text('Make sure this information is correct.'), findsOneWidget);
     });
 
-    testWidgets('should show next button', (tester) async {
+    testWidgets('should show payment method selection zero state',
+        (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const PaymentDetailsPage(),
         ),
       );
 
-      expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
+      expect(find.text('Select a payment method'), findsOneWidget);
+      expect(find.text('Service fees may apply'), findsOneWidget);
     });
 
     testWidgets('should show enter your momo details', (tester) async {
@@ -174,7 +176,9 @@ void main() {
           findsOneWidget);
     });
 
-    testWidgets('should show payment provider', (tester) async {
+    testWidgets(
+        'should show SearchPaymentMethodsPage on tap of select a payment method',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const PaymentDetailsPage(),
@@ -190,6 +194,37 @@ void main() {
           ],
         ),
       );
+
+      await tester.tap(find.text('Select a payment method'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SearchPaymentMethodsPage), findsOneWidget);
+    });
+
+    testWidgets(
+        'should show payment name after SearchPaymentMethodsPage selection',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: const PaymentDetailsPage(),
+          overrides: [
+            paymentMethodProvider.overrideWith(
+              (ref) => [
+                PaymentMethod(
+                  kind: 'MOMO_MPESA',
+                  requiredPaymentDetails: momoSchema,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.tap(find.text('Select a payment method'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('MPESA'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(ListTile), findsOneWidget);
       expect(find.widgetWithText(ListTile, 'MPESA'), findsOneWidget);
       expect(find.textContaining('Service fee: 0.0'), findsOneWidget);
@@ -211,6 +246,13 @@ void main() {
           ],
         ),
       );
+
+      await tester.tap(find.text('Select a payment method'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('MPESA'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Phone number'), findsOneWidget);
       expect(find.text('Reason for sending'), findsOneWidget);
@@ -232,6 +274,13 @@ void main() {
           ],
         ),
       );
+
+      await tester.tap(find.text('Select a payment method'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('GT BANK'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Account number'), findsOneWidget);
       expect(find.text('Reason for sending'), findsOneWidget);
@@ -253,33 +302,16 @@ void main() {
           ],
         ),
       );
+
+      await tester.tap(find.text('Select a payment method'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('BTC ADDRESS'));
+      await tester.pumpAndSettle();
+
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Wallet address'), findsOneWidget);
       expect(find.text('Reason for sending'), findsOneWidget);
-    });
-
-    testWidgets(
-        'should show PaymentMethodsPage when payment provider is tapped',
-        (WidgetTester tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
-          overrides: [
-            paymentMethodProvider.overrideWith(
-              (ref) => [
-                PaymentMethod(
-                  kind: 'MOMO_MPESA',
-                  requiredPaymentDetails: walletSchema,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-      await tester.tap(find.text('MPESA'));
-      await tester.pumpAndSettle();
-      expect(find.byType(SearchPaymentMethodsPage), findsOneWidget);
     });
   });
 }
