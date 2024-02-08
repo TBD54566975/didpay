@@ -83,7 +83,6 @@ class JsonSchemaForm extends HookWidget {
       var pattern = jsonSchema['properties'][key]['pattern'] as String?;
 
       if (minLength != null &&
-          maxLength != null &&
           minLength == maxLength &&
           value.length != minLength) {
         return 'Must be exactly $minLength characters';
