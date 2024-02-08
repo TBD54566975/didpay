@@ -191,6 +191,7 @@ class TransactionDetailsPage extends HookWidget {
             child: Row(
               children: [
                 Expanded(
+                  flex: 2,
                   child: Text(
                     balanceLabel,
                     style: Theme.of(context).textTheme.bodyLarge,
@@ -198,6 +199,7 @@ class TransactionDetailsPage extends HookWidget {
                   ),
                 ),
                 Expanded(
+                  flex: 3,
                   child: Text(
                     '$amount USD',
                     style: Theme.of(context).textTheme.bodyLarge,
