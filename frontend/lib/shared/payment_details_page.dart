@@ -14,14 +14,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final paymentMethods = ref.watch(paymentMethodProvider);
 
+    // TODO: remove this when tbdex issue #233 is resolved
     final paymentTypes = paymentMethods
         ?.map((method) => method.kind.split('_').firstOrNull)
         .toSet();
 
-    final selectedPaymentMethod = useState(paymentMethods?.firstOrNull);
+    final selectedPaymentMethod = useState<PaymentMethod?>(null);
     final selectedPaymentType = useState(paymentTypes?.firstOrNull);
 
-    final availablePaymentMethods = paymentMethods
+    final filteredPaymentMethods = paymentMethods
         ?.where(
           (method) => method.kind.contains(selectedPaymentType.value ?? ''),
         )
@@ -29,7 +30,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        selectedPaymentMethod.value = availablePaymentMethods?.firstOrNull;
+        selectedPaymentMethod.value = null;
         return;
       },
       [selectedPaymentType.value],
@@ -57,7 +58,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             _buildPaymentMethodTile(
               context,
               selectedPaymentMethod,
-              availablePaymentMethods,
+              filteredPaymentMethods,
             ),
             _buildForm(context, selectedPaymentMethod),
           ],
@@ -129,23 +130,24 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget _buildPaymentMethodTile(
     BuildContext context,
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
-    List<PaymentMethod>? availablePaymentMethods,
+    List<PaymentMethod>? filteredPaymentMethods,
   ) {
-    final paymentSubtype =
-        selectedPaymentMethod.value?.kind.split('_').lastOrNull;
+    final paymentName = selectedPaymentMethod.value?.kind.split('_').lastOrNull;
     final fee = (double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
             ?.toStringAsFixed(2) ??
         '0.00');
 
     return ListTile(
       title: Text(
-        paymentSubtype ?? '',
+        paymentName ?? Loc.of(context).selectPaymentMethod,
         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: Theme.of(context).colorScheme.primary,
             ),
       ),
       subtitle: Text(
-        Loc.of(context).serviceFeeAmount(fee, 'USD'),
+        paymentName == null
+            ? Loc.of(context).serviceFeesMayApply
+            : Loc.of(context).serviceFeeAmount(fee, 'USD'),
         style: Theme.of(context).textTheme.bodySmall,
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -155,7 +157,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
           MaterialPageRoute(
             builder: (context) => SearchPaymentMethodsPage(
               selectedPaymentMethod: selectedPaymentMethod,
-              paymentMethods: availablePaymentMethods,
+              paymentMethods: filteredPaymentMethods,
             ),
           ),
         );
