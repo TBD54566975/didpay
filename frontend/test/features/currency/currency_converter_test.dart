@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/features/currency/currency_converter.dart';
 import 'package:flutter_starter/shared/animations/invalid_number_pad_input_animation.dart';
-import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/widget_helpers.dart';
+import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('CurrencyConverter', () {

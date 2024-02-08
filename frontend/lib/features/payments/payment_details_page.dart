@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/features/payments/payment_method.dart';
+import 'package:flutter_starter/features/payments/search_payment_methods_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 import 'package:flutter_starter/shared/json_schema_form.dart';
-import 'package:flutter_starter/shared/payment_method.dart';
-import 'package:flutter_starter/shared/search_payment_methods_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {

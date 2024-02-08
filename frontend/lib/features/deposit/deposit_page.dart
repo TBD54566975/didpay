@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_starter/features/currency/currency_converter.dart';
+import 'package:flutter_starter/features/currency/currency_modal.dart';
+import 'package:flutter_starter/features/payments/payment_details_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/currency_converter.dart';
-import 'package:flutter_starter/shared/currency_modal.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 import 'package:flutter_starter/shared/number_pad.dart';
-import 'package:flutter_starter/shared/payment_details_page.dart';
 import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
 
 // replace with actual currency list
@@ -51,7 +51,7 @@ class DepositPage extends HookWidget {
                                 .toString())),
                         isValidKeyPress: isValidKeyPress.value,
                         onDropdownTap: () {
-                          CurrencyModal.showCurrencyModal(
+                          CurrencyModal.show(
                               context,
                               (value) => selectedCurrencyItem.value =
                                   supportedCurrencyList.firstWhere(

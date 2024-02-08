@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_starter/features/account/account_providers.dart';
 import 'package:flutter_starter/services/service_providers.dart';
 import 'package:flutter_starter/shared/constants.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 import 'package:flutter_starter/shared/success_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';

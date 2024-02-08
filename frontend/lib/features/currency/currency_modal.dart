@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 
 class CurrencyModal {
-  static Future<dynamic> showCurrencyModal(
+  static Future<dynamic> show(
       BuildContext context,
       Function(String) onPressed,
       List<Map<String, Object>> supportedCurrencyList,

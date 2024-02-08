@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter/features/pfis/pfis_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 
 class OnboardingWelcomePage extends StatelessWidget {
   const OnboardingWelcomePage({super.key});

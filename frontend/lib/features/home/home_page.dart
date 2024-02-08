@@ -3,8 +3,8 @@ import 'package:flutter_starter/features/deposit/deposit_page.dart';
 import 'package:flutter_starter/features/home/transaction_details_page.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
 import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/grid.dart';
-import 'package:flutter_starter/shared/transaction.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
+import 'package:flutter_starter/features/home/transaction.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends HookConsumerWidget {
