@@ -170,7 +170,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
   ) {
     return selectedPaymentMethod.value == null
-        ? Container()
+        ? _buildDisabledButton(context)
         : Expanded(
             child: JsonSchemaForm(
               schema: selectedPaymentMethod.value!.requiredPaymentDetails,
@@ -179,5 +179,23 @@ class PaymentDetailsPage extends HookConsumerWidget {
               },
             ),
           );
+  }
+
+  Widget _buildDisabledButton(BuildContext context) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(child: Container()),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+            child: FilledButton(
+              onPressed: null,
+              child: Text(Loc.of(context).next),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
