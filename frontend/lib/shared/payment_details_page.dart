@@ -14,8 +14,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final paymentMethods = ref.watch(paymentMethodProvider);
 
-    final paymentTypes =
-        paymentMethods?.map((method) => method.kind.split('_').first).toSet();
+    final paymentTypes = paymentMethods
+        ?.map((method) => method.kind.split('_').firstOrNull)
+        .toSet();
 
     final selectedPaymentMethod = useState(paymentMethods?.firstOrNull);
     final selectedPaymentType = useState(paymentTypes?.firstOrNull);
@@ -130,7 +131,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
     List<PaymentMethod>? availablePaymentMethods,
   ) {
-    final paymentSubtype = selectedPaymentMethod.value?.kind.split('_').last;
+    final paymentSubtype =
+        selectedPaymentMethod.value?.kind.split('_').lastOrNull;
     final fee = (double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
             ?.toStringAsFixed(2) ??
         '0.00');
