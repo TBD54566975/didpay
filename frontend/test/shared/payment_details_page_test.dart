@@ -132,11 +132,11 @@ void main() {
         ),
       );
 
-      expect(find.byType(SegmentedButton<String>), findsOneWidget);
-      expect(
-          find.widgetWithText(SegmentedButton<String>, 'MOMO'), findsOneWidget);
-      expect(
-          find.widgetWithText(SegmentedButton<String>, 'BANK'), findsOneWidget);
+      expect(find.byType(SegmentedButton<String?>), findsOneWidget);
+      expect(find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
+          findsOneWidget);
+      expect(find.widgetWithText(SegmentedButton<String?>, 'BANK'),
+          findsOneWidget);
     });
 
     testWidgets('should show momo, bank, and wallet payment type segments',
@@ -165,12 +165,12 @@ void main() {
         ),
       );
 
-      expect(find.byType(SegmentedButton<String>), findsOneWidget);
-      expect(
-          find.widgetWithText(SegmentedButton<String>, 'MOMO'), findsOneWidget);
-      expect(
-          find.widgetWithText(SegmentedButton<String>, 'BANK'), findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String>, 'WALLET'),
+      expect(find.byType(SegmentedButton<String?>), findsOneWidget);
+      expect(find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
+          findsOneWidget);
+      expect(find.widgetWithText(SegmentedButton<String?>, 'BANK'),
+          findsOneWidget);
+      expect(find.widgetWithText(SegmentedButton<String?>, 'WALLET'),
           findsOneWidget);
     });
 
