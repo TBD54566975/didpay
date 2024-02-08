@@ -73,7 +73,7 @@ class SearchPaymentMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final paymentSubtype = currentPaymentMethod?.kind.split('_').lastOrNull;
+        final paymentName = currentPaymentMethod?.kind.split('_').lastOrNull;
         final fee = (double.tryParse(currentPaymentMethod?.fee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00');
@@ -81,7 +81,7 @@ class SearchPaymentMethodsPage extends HookWidget {
         return ListTile(
           visualDensity: VisualDensity.compact,
           selected: selectedPaymentMethod.value == currentPaymentMethod,
-          title: Text(paymentSubtype ?? ''),
+          title: Text(paymentName ?? ''),
           subtitle: Text(
             Loc.of(context).serviceFeeAmount(fee, 'USD'),
             style: Theme.of(context).textTheme.bodySmall,
