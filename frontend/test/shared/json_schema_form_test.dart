@@ -50,13 +50,13 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Submit'));
+      await tester.tap(find.text('Next'));
       await tester.pump();
       expect(find.text('This field cannot be empty'), findsNWidgets(2));
 
       await tester.enterText(find.byType(TextFormField).at(0), 'A');
       await tester.enterText(find.byType(TextFormField).at(1), 'invalid_email');
-      await tester.tap(find.text('Submit'));
+      await tester.tap(find.text('Next'));
       await tester.pump();
 
       expect(find.text('Minimum length is 2 characters'), findsOneWidget);
@@ -80,7 +80,7 @@ void main() {
       await tester.enterText(find.byType(TextFormField).at(0), 'John');
       await tester.enterText(
           find.byType(TextFormField).at(1), 'john@example.com');
-      await tester.tap(find.text('Submit'));
+      await tester.tap(find.text('Next'));
       await tester.pump();
 
       expect(

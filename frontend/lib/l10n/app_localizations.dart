@@ -300,6 +300,42 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Verification complete!'**
   String get verificationComplete;
+
+  /// No description provided for @makeSureInfoIsCorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure this information is correct.'**
+  String get makeSureInfoIsCorrect;
+
+  /// No description provided for @enterYourPaymentChannelDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your {paymentChannel} details'**
+  String enterYourPaymentChannelDetails(String paymentChannel);
+
+  /// No description provided for @serviceFeeAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Service fee: {amount} {currency}'**
+  String serviceFeeAmount(String amount, String currency);
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @serviceFeesMayApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Service fees may apply'**
+  String get serviceFeesMayApply;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a payment method'**
+  String get selectPaymentMethod;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
