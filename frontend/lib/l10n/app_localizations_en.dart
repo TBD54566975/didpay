@@ -126,4 +126,10 @@ class LocEn extends Loc {
 
   @override
   String get search => 'Search';
+
+  @override
+  String get serviceFeesMayApply => 'Service fees may apply';
+
+  @override
+  String get selectPaymentMethod => 'Select a payment method';
 }

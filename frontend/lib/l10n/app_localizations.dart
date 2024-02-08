@@ -324,6 +324,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Search'**
   String get search;
+
+  /// No description provided for @serviceFeesMayApply.
+  ///
+  /// In en, this message translates to:
+  /// **'Service fees may apply'**
+  String get serviceFeesMayApply;
+
+  /// No description provided for @selectPaymentMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a payment method'**
+  String get selectPaymentMethod;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
