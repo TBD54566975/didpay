@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
-import 'package:flutter_starter/features/account/account_providers.dart';
-import 'package:flutter_starter/services/service_providers.dart';
-import 'package:flutter_starter/shared/constants.dart';
-import 'package:flutter_starter/shared/theme/grid.dart';
-import 'package:flutter_starter/shared/success_page.dart';
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/services/service_providers.dart';
+import 'package:didpay/shared/constants.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/success_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_starter/features/pfis/pfi.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5_flutter/web5_flutter.dart';
 

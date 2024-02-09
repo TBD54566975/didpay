@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/shared/theme/grid.dart';
+import 'package:didpay/shared/theme/grid.dart';
 
 class CurrencyModal {
   static Future<dynamic> show(

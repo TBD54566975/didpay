@@ -1,4 +1,4 @@
-import 'package:flutter_starter/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 
 class Config {
   static const List<Pfi> devPfis = [];

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/app/app_tabs.dart';
-import 'package:flutter_starter/features/onboarding/onboarding_welcome_page.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/theme/theme.dart';
+import 'package:didpay/features/app/app_tabs.dart';
+import 'package:didpay/features/onboarding/onboarding_welcome_page.dart';
+import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/theme/theme.dart';
 
 class App extends StatelessWidget {
   final bool onboarding;

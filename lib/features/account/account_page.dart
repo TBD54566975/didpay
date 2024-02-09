@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/account/account_did_page.dart';
-import 'package:flutter_starter/features/account/account_vc_page.dart';
+import 'package:didpay/features/account/account_did_page.dart';
+import 'package:didpay/features/account/account_vc_page.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});

@@ -1,7 +1,7 @@
-import 'package:flutter_starter/features/account/account_page.dart';
-import 'package:flutter_starter/features/app/app_tabs.dart';
-import 'package:flutter_starter/features/home/home_page.dart';
-import 'package:flutter_starter/features/send/send_page.dart';
+import 'package:didpay/features/account/account_page.dart';
+import 'package:didpay/features/app/app_tabs.dart';
+import 'package:didpay/features/home/home_page.dart';
+import 'package:didpay/features/send/send_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

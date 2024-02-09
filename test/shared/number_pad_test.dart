@@ -1,4 +1,4 @@
-import 'package:flutter_starter/shared/number_pad.dart';
+import 'package:didpay/shared/number_pad.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/widget_helpers.dart';

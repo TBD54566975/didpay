@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_starter/features/send/send_did_page.dart';
-import 'package:flutter_starter/l10n/app_localizations.dart';
-import 'package:flutter_starter/shared/number_pad.dart';
-import 'package:flutter_starter/shared/theme/grid.dart';
-import 'package:flutter_starter/shared/animations/invalid_number_pad_input_animation.dart';
-import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
+import 'package:didpay/features/send/send_did_page.dart';
+import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/number_pad.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/animations/invalid_number_pad_input_animation.dart';
+import 'package:didpay/shared/utils/number_pad_input_validation_util.dart';
 
 class SendPage extends HookWidget {
   const SendPage({super.key});

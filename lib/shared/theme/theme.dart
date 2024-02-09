@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/shared/theme/grid.dart';
-import 'package:flutter_starter/shared/theme/color_scheme.dart';
-import 'package:flutter_starter/shared/theme/text_theme.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/theme/color_scheme.dart';
+import 'package:didpay/shared/theme/text_theme.dart';
 
 ThemeData lightTheme(BuildContext context) => ThemeData(
       useMaterial3: true,

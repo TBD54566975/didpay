@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/deposit/deposit_page.dart';
-import 'package:flutter_starter/features/home/home_page.dart';
-import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
-import 'package:flutter_starter/features/home/transaction.dart';
+import 'package:didpay/features/deposit/deposit_page.dart';
+import 'package:didpay/features/home/home_page.dart';
+import 'package:didpay/features/withdraw/withdraw_page.dart';
+import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

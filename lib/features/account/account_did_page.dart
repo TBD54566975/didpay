@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/account/account_providers.dart';
-import 'package:flutter_starter/shared/theme/grid.dart';
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/shared/theme/grid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AccountDidPage extends HookConsumerWidget {
