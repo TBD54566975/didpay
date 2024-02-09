@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_starter/features/currency/currency_converter.dart';
 import 'package:flutter_starter/features/withdraw/withdraw_page.dart';
-import 'package:flutter_starter/shared/currency_converter.dart';
 import 'package:flutter_starter/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 

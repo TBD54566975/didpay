@@ -34,6 +34,7 @@ class InvalidNumberPadInputAnimation extends HookWidget {
           });
         }
       });
+      return;
     }, []);
 
     useEffect(() {

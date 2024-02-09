@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/shared/grid.dart';
+import 'package:flutter_starter/shared/theme/grid.dart';
 import 'package:flutter_starter/shared/theme/color_scheme.dart';
 import 'package:flutter_starter/shared/theme/text_theme.dart';
 
