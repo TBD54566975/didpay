@@ -1,3 +1,4 @@
+import 'package:didpay/services/service_providers.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_confirmation_page.dart';
@@ -13,9 +14,6 @@ class PfiVerificationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const proof =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-
     final controller = WebViewController()
       ..setBackgroundColor(Theme.of(context).colorScheme.background)
       ..setNavigationDelegate(
@@ -38,9 +36,9 @@ class PfiVerificationPage extends HookConsumerWidget {
 
     useEffect(() {
       Future.microtask(() async {
-        final result = await DidDht.resolve(pfi.didUri);
-        final widgetService = result.didDocument?.service
-            ?.firstWhere((e) => e.type == 'kyc-widget');
+        final result = await DidWeb.resolve(pfi.didUri);
+        final widgetService =
+            result.didDocument?.service?.firstWhere((e) => e.type == 'IDV');
         if (widgetService?.serviceEndpoint == null) {
           final snackBar = SnackBar(
             content: const Text('PFI does not support KYC widget'),
@@ -53,9 +51,11 @@ class PfiVerificationPage extends HookConsumerWidget {
           return;
         }
 
-        final fullPath =
-            '${widgetService?.serviceEndpoint}?proof=$proof&callback_uri=didpay://kyc';
+        final idvWidgetUrl = await ref
+            .read(idvServiceProvider)
+            .getWidgetUrl('http://${widgetService?.serviceEndpoint}');
 
+        final fullPath = '$idvWidgetUrl&callback_uri=didpay://kyc';
         controller.loadRequest(Uri.parse(fullPath));
       });
 

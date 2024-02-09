@@ -19,7 +19,7 @@ class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
 
   Future<void> reload() async {
     if (Config.devPfis.isNotEmpty) {
-      state = const AsyncData(Config.devPfis);
+      state = AsyncData(Config.devPfis);
       return;
     }
 
