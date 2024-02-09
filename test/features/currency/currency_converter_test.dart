@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/currency/currency_converter.dart';
-import 'package:flutter_starter/shared/animations/invalid_number_pad_input_animation.dart';
+import 'package:didpay/features/currency/currency_converter.dart';
+import 'package:didpay/shared/animations/invalid_number_pad_input_animation.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

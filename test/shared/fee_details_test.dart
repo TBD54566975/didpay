@@ -1,4 +1,4 @@
-import 'package:flutter_starter/shared/fee_details.dart';
+import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../helpers/widget_helpers.dart';

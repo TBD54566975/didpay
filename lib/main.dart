@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_starter/features/account/account_providers.dart';
-import 'package:flutter_starter/features/app/app.dart';
-import 'package:flutter_starter/services/service_providers.dart';
-import 'package:flutter_starter/shared/constants.dart';
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/app/app.dart';
+import 'package:didpay/services/service_providers.dart';
+import 'package:didpay/shared/constants.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web5_flutter/web5_flutter.dart';

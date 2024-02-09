@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter/features/currency/currency_converter.dart';
-import 'package:flutter_starter/features/deposit/deposit_page.dart';
-import 'package:flutter_starter/shared/fee_details.dart';
+import 'package:didpay/features/currency/currency_converter.dart';
+import 'package:didpay/features/deposit/deposit_page.dart';
+import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

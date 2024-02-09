@@ -1,5 +1,5 @@
-import 'package:flutter_starter/features/account/account_did_page.dart';
-import 'package:flutter_starter/features/account/account_providers.dart';
+import 'package:didpay/features/account/account_did_page.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:web5_flutter/web5_flutter.dart';
 

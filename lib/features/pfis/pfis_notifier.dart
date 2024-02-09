@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter_starter/config/config.dart';
+import 'package:didpay/config/config.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_starter/features/pfis/pfi.dart';
-import 'package:flutter_starter/services/service_providers.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/services/service_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final pfisProvider = AsyncNotifierProvider<PfisAsyncNotifier, List<Pfi>>(

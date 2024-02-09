@@ -1,4 +1,4 @@
-import 'package:flutter_starter/shared/utils/number_pad_input_validation_util.dart';
+import 'package:didpay/shared/utils/number_pad_input_validation_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

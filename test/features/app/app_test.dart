@@ -1,5 +1,5 @@
-import 'package:flutter_starter/features/app/app.dart';
-import 'package:flutter_starter/features/onboarding/onboarding_welcome_page.dart';
+import 'package:didpay/features/app/app.dart';
+import 'package:didpay/features/onboarding/onboarding_welcome_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_starter/shared/json_schema_form.dart';
+import 'package:didpay/shared/json_schema_form.dart';
 import '../helpers/widget_helpers.dart';
 
 void main() {
