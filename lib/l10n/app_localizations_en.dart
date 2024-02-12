@@ -135,4 +135,7 @@ class LocEn extends Loc {
 
   @override
   String get didPrefix => 'did:jwk:';
+
+  @override
+  String get invalidDid => 'Invalid DID';
 }

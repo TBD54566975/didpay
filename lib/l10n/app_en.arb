@@ -65,5 +65,6 @@
     "search": "Search",
     "serviceFeesMayApply": "Service fees may apply",
     "selectPaymentMethod": "Select a payment method",
-    "didPrefix": "did:jwk:"
+    "didPrefix": "did:jwk:",
+    "invalidDid": "Invalid DID"
 }

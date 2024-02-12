@@ -342,6 +342,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'did:jwk:'**
   String get didPrefix;
+
+  /// No description provided for @invalidDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid DID'**
+  String get invalidDid;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
