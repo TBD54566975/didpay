@@ -14,18 +14,22 @@ class SendDidPage extends HookWidget {
 
     return Scaffold(
         appBar: AppBar(
-            title: Column(children: [
-          Text(
-            '\$$sendAmount',
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
+          title: Column(
+            children: [
+              Text(
+                '\$$sendAmount',
+                style: Theme.of(context).textTheme.headlineMedium,
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                Loc.of(context).accountBalance,
+                style: Theme.of(context).textTheme.bodyMedium,
+                textAlign: TextAlign.center,
+              )
+            ],
           ),
-          Text(
-            Loc.of(context).accountBalance,
-            style: Theme.of(context).textTheme.bodyMedium,
-            textAlign: TextAlign.center,
-          )
-        ])),
+          scrolledUnderElevation: 0,
+        ),
         body: SafeArea(
           child:
               Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
