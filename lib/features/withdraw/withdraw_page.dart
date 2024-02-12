@@ -27,7 +27,7 @@ class WithdrawPage extends HookWidget {
         useState<Map<String, Object>>(supportedCurrencyList[1]);
 
     return Scaffold(
-      appBar: AppBar(scrolledUnderElevation: 0),
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

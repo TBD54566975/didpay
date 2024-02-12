@@ -7,6 +7,9 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
       useMaterial3: true,
       colorScheme: lightColorScheme,
       textTheme: textTheme(ThemeData().textTheme),
+      appBarTheme: const AppBarTheme(
+        scrolledUnderElevation: 0,
+      ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
@@ -36,6 +39,9 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
       useMaterial3: true,
       colorScheme: darkColorScheme,
       textTheme: textTheme(ThemeData.dark().textTheme),
+      appBarTheme: const AppBarTheme(
+        scrolledUnderElevation: 0,
+      ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(

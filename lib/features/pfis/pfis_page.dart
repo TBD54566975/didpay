@@ -19,10 +19,7 @@ class PfisPage extends HookConsumerWidget {
     }, []);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(Loc.of(context).selectYourRegion),
-        scrolledUnderElevation: 0,
-      ),
+      appBar: AppBar(title: Text(Loc.of(context).selectYourRegion)),
       body: ref.watch(pfisProvider).when(
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => _buildError(context, ref, error),

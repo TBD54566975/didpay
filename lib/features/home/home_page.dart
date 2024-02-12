@@ -15,10 +15,7 @@ class HomePage extends HookConsumerWidget {
     final txns = ref.watch(transactionsProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(Loc.of(context).home),
-        scrolledUnderElevation: 0,
-      ),
+      appBar: AppBar(title: Text(Loc.of(context).home)),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

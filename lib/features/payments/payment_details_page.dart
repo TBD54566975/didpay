@@ -37,7 +37,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(scrolledUnderElevation: 0),
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
