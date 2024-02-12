@@ -33,14 +33,6 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
           ),
         ),
       ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: InputBorder.none,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        alignLabelWithHint: true,
-        labelStyle: TextStyle(
-          color: lightColorScheme.outlineVariant,
-        ),
-      ),
     );
 
 ThemeData darkTheme(BuildContext context) => ThemeData(
@@ -71,14 +63,6 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
             RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(Grid.xs)),
           ),
-        ),
-      ),
-      inputDecorationTheme: InputDecorationTheme(
-        border: InputBorder.none,
-        floatingLabelBehavior: FloatingLabelBehavior.never,
-        alignLabelWithHint: true,
-        labelStyle: TextStyle(
-          color: darkColorScheme.outlineVariant,
         ),
       ),
     );
