@@ -148,7 +148,7 @@ abstract class Loc {
   /// No description provided for @to.
   ///
   /// In en, this message translates to:
-  /// **'To'**
+  /// **'To:'**
   String get to;
 
   /// No description provided for @pay.
@@ -336,6 +336,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select a payment method'**
   String get selectPaymentMethod;
+
+  /// No description provided for @didPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'did:jwk:'**
+  String get didPrefix;
+
+  /// No description provided for @invalidDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid DID'**
+  String get invalidDid;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
