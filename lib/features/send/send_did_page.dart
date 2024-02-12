@@ -1,3 +1,4 @@
+import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -109,9 +110,21 @@ class SendDidPage extends HookWidget {
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
       trailing: const Icon(Icons.chevron_right),
-      onTap: () => {
-        //TODO: complete in #55 using TextEditingController
-      },
+      onTap: () => _scanQrCode(context, controller, Loc.of(context).didPrefix),
     );
+  }
+
+  void _scanQrCode(
+    BuildContext context,
+    TextEditingController controller,
+    String didPrefix,
+  ) async {
+    final scannedDid = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const ScanQrPage()),
+    );
+    if (scannedDid != null) {
+      controller.text = scannedDid.startsWith(didPrefix) ? scannedDid : '';
+      _formKey.currentState?.validate();
+    }
   }
 }
