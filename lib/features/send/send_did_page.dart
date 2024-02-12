@@ -66,9 +66,6 @@ class SendDidPage extends HookWidget {
                             Expanded(
                               child: TextField(
                                   decoration: InputDecoration(
-                                      border: InputBorder.none,
-                                      floatingLabelBehavior:
-                                          FloatingLabelBehavior.never,
                                       labelText: Loc.of(context).didTag),
                                   enableSuggestions: false,
                                   autocorrect: false,
