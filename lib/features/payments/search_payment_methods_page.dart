@@ -18,7 +18,6 @@ class SearchPaymentMethodsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final searchText = useState('');
-    final focusNode = useFocusNode();
 
     return Scaffold(
       appBar: AppBar(scrolledUnderElevation: 0),
@@ -34,15 +33,9 @@ class SearchPaymentMethodsPage extends HookWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     TextFormField(
-                      focusNode: focusNode,
-                      onTapOutside: (_) => focusNode.unfocus(),
-                      enableSuggestions: false,
-                      autocorrect: false,
                       decoration: InputDecoration(
                         labelText: Loc.of(context).search,
-                        prefixIcon: const Padding(
-                            padding: EdgeInsets.only(top: Grid.xs),
-                            child: Icon(Icons.search)),
+                        prefixIcon: const Icon(Icons.search),
                       ),
                       onChanged: (value) => searchText.value = value,
                     ),

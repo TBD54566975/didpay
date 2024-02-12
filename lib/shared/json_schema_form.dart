@@ -17,28 +17,20 @@ class JsonSchemaForm extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final jsonSchema = json.decode(schema);
-
     List<Widget> formFields = [];
-    jsonSchema['properties']?.forEach(
-      (key, value) {
-        final focusNode = useFocusNode();
-
-        formFields.add(
-          TextFormField(
-            focusNode: focusNode,
-            onTapOutside: (_) => focusNode.unfocus(),
-            enableSuggestions: false,
-            autocorrect: false,
-            decoration: InputDecoration(
-              labelText: value['title'] ?? key,
-            ),
-            textInputAction: TextInputAction.next,
-            validator: (value) => _validateField(key, value, jsonSchema),
-            onSaved: (value) => formData[key] = value ?? '',
+    jsonSchema['properties']?.forEach((key, value) {
+      formFields.add(TextFormField(
+        decoration: InputDecoration(
+          labelText: value['title'] ?? key,
+          labelStyle: TextStyle(
+            color: Theme.of(context).colorScheme.outlineVariant,
           ),
-        );
-      },
-    );
+          border: InputBorder.none,
+        ),
+        validator: (value) => _validateField(key, value, jsonSchema),
+        onSaved: (value) => formData[key] = value ?? '',
+      ));
+    });
 
     return Form(
       key: _formKey,
@@ -49,8 +41,12 @@ class JsonSchemaForm extends HookWidget {
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                child: Column(children: formFields),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Grid.side,
+                ),
+                child: Column(
+                  children: formFields,
+                ),
               ),
             ),
           ),
