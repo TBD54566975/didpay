@@ -32,7 +32,7 @@ class LocEn extends Loc {
   String get send => 'Send';
 
   @override
-  String get to => 'To';
+  String get to => 'To:';
 
   @override
   String get pay => 'Pay';
@@ -132,4 +132,7 @@ class LocEn extends Loc {
 
   @override
   String get selectPaymentMethod => 'Select a payment method';
+
+  @override
+  String get didPrefix => 'did:jwk:';
 }
