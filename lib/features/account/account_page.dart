@@ -8,7 +8,10 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Account')),
+      appBar: AppBar(
+        title: const Text('Account'),
+        scrolledUnderElevation: 0,
+      ),
       body: ListView(
         children: [
           ListTile(

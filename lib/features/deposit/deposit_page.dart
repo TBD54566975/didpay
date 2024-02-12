@@ -27,7 +27,7 @@ class DepositPage extends HookWidget {
         useState<Map<String, Object>>(supportedCurrencyList[1]);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(scrolledUnderElevation: 0),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

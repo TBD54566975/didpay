@@ -12,7 +12,10 @@ class TransactionDetailsPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(Loc.of(context).transactionDetails)),
+      appBar: AppBar(
+        title: Text(Loc.of(context).transactionDetails),
+        scrolledUnderElevation: 0,
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
