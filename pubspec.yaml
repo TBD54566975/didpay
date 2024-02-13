@@ -27,6 +27,7 @@ dependencies:
   webview_flutter: ^4.4.2
   shared_preferences: ^2.2.2
   mobile_scanner: ^4.0.0
+  qr_flutter: ^4.1.0
 
 dev_dependencies:
   flutter_test:
