@@ -372,6 +372,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Copied DID!'**
   String get copiedDid;
+
+  /// No description provided for @simulatedQrCodeScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated QR code scan!'**
+  String get simulatedQrCodeScan;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

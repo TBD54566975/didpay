@@ -70,5 +70,6 @@
     "invalidDid": "Invalid DID",
     "invalidDidQrCode": "Invalid DID QR Code",
     "myDid": "My DID",
-    "copiedDid": "Copied DID!"
+    "copiedDid": "Copied DID!",
+    "simulatedQrCodeScan": "Simulated QR code scan!"
 }
