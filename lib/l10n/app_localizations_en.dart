@@ -144,4 +144,10 @@ class LocEn extends Loc {
 
   @override
   String get invalidDidQrCode => 'Invalid DID QR Code';
+
+  @override
+  String get myDid => 'My DID';
+
+  @override
+  String get copiedDid => 'Copied DID!';
 }

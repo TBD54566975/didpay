@@ -360,6 +360,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Invalid DID QR Code'**
   String get invalidDidQrCode;
+
+  /// No description provided for @myDid.
+  ///
+  /// In en, this message translates to:
+  /// **'My DID'**
+  String get myDid;
+
+  /// No description provided for @copiedDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied DID!'**
+  String get copiedDid;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

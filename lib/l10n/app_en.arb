@@ -68,5 +68,7 @@
     "didPrefix": "did:...",
     "thisFieldCannotBeEmpty": "This field cannot be empty",
     "invalidDid": "Invalid DID",
-    "invalidDidQrCode": "Invalid DID QR Code"
+    "invalidDidQrCode": "Invalid DID QR Code",
+    "myDid": "My DID",
+    "copiedDid": "Copied DID!"
 }
