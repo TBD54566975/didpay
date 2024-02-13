@@ -14,7 +14,7 @@ class PfiVerificationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = WebViewController()
+    final controller = useMemoized(() => WebViewController())
       ..setBackgroundColor(Theme.of(context).colorScheme.background)
       ..setNavigationDelegate(
         NavigationDelegate(
