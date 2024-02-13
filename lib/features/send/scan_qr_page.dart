@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -9,13 +11,22 @@ class ScanQrPage extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final isProcessing = useState(false);
-    final controller = useMobileScannerController();
+    final controller = useMemoized(() => MobileScannerController());
 
+    useOnAppLifecycleStateChange((_, current) {
+      if (current == AppLifecycleState.resumed) {
+        controller.start();
+      } else {
+        controller.stop();
+      }
+    });
+
+    const maxSize = 400.0;
     final screenSize = MediaQuery.of(context).size;
     final scanWindow = Rect.fromCenter(
       center: screenSize.center(Offset.zero),
-      width: screenSize.width * 0.8,
-      height: screenSize.height * 0.4,
+      width: min(screenSize.width * 0.8, maxSize),
+      height: min(screenSize.height * 0.4, maxSize),
     );
 
     return Scaffold(
@@ -52,55 +63,6 @@ class ScanQrPage extends HookWidget {
         ),
       ),
     );
-  }
-}
-
-MobileScannerController useMobileScannerController() {
-  final controller = useMemoized(() => MobileScannerController());
-  final WidgetsBinding binding = WidgetsBinding.instance;
-
-  useEffect(() {
-    void onResume() => controller.start();
-    void onSuspend() => controller.stop();
-
-    final lifecycleEventHandler = LifecycleEventHandler(
-      onResume: onResume,
-      onSuspend: onSuspend,
-    );
-
-    binding.addObserver(lifecycleEventHandler);
-    controller.start();
-
-    return () {
-      binding.removeObserver(lifecycleEventHandler);
-      controller.dispose();
-    };
-  }, [controller]);
-
-  return controller;
-}
-
-class LifecycleEventHandler extends WidgetsBindingObserver {
-  final VoidCallback onResume;
-  final VoidCallback onSuspend;
-
-  LifecycleEventHandler({
-    required this.onResume,
-    required this.onSuspend,
-  });
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    switch (state) {
-      case AppLifecycleState.resumed:
-        onResume();
-        break;
-      case AppLifecycleState.paused:
-        onSuspend();
-        break;
-      default:
-        break;
-    }
   }
 }
 
