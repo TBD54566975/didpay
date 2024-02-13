@@ -340,14 +340,26 @@ abstract class Loc {
   /// No description provided for @didPrefix.
   ///
   /// In en, this message translates to:
-  /// **'did:jwk:'**
+  /// **'did:...'**
   String get didPrefix;
+
+  /// No description provided for @thisFieldCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This field cannot be empty'**
+  String get thisFieldCannotBeEmpty;
 
   /// No description provided for @invalidDid.
   ///
   /// In en, this message translates to:
   /// **'Invalid DID'**
   String get invalidDid;
+
+  /// No description provided for @invalidDidQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid DID QR Code'**
+  String get invalidDidQrCode;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

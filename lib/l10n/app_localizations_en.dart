@@ -134,8 +134,14 @@ class LocEn extends Loc {
   String get selectPaymentMethod => 'Select a payment method';
 
   @override
-  String get didPrefix => 'did:jwk:';
+  String get didPrefix => 'did:...';
+
+  @override
+  String get thisFieldCannotBeEmpty => 'This field cannot be empty';
 
   @override
   String get invalidDid => 'Invalid DID';
+
+  @override
+  String get invalidDidQrCode => 'Invalid DID QR Code';
 }

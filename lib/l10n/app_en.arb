@@ -65,6 +65,8 @@
     "search": "Search",
     "serviceFeesMayApply": "Service fees may apply",
     "selectPaymentMethod": "Select a payment method",
-    "didPrefix": "did:jwk:",
-    "invalidDid": "Invalid DID"
+    "didPrefix": "did:...",
+    "thisFieldCannotBeEmpty": "This field cannot be empty",
+    "invalidDid": "Invalid DID",
+    "invalidDidQrCode": "Invalid DID QR Code"
 }
