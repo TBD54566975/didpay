@@ -349,11 +349,11 @@ abstract class Loc {
   /// **'Invalid DID'**
   String get invalidDid;
 
-  /// No description provided for @invalidDidQrCode.
+  /// No description provided for @noDidQrCodeFound.
   ///
   /// In en, this message translates to:
-  /// **'Invalid DID QR Code'**
-  String get invalidDidQrCode;
+  /// **'No DID QR Code found'**
+  String get noDidQrCodeFound;
 
   /// No description provided for @myDid.
   ///

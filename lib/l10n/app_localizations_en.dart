@@ -140,7 +140,7 @@ class LocEn extends Loc {
   String get invalidDid => 'Invalid DID';
 
   @override
-  String get invalidDidQrCode => 'Invalid DID QR Code';
+  String get noDidQrCodeFound => 'No DID QR Code found';
 
   @override
   String get myDid => 'My DID';
