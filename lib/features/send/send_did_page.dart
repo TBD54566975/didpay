@@ -159,14 +159,18 @@ class SendDidPage extends HookConsumerWidget {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => _scanQrCode(
-          context,
-          controller,
-          errorText,
-          isPhysicalDevice,
-          Loc.of(context).noDidQrCodeFound,
-          did,
-        ),
+        onTap: () => isPhysicalDevice.value
+            ? _scanQrCode(
+                context,
+                controller,
+                errorText,
+                Loc.of(context).noDidQrCodeFound,
+              )
+            : _simulateScanQrCode(
+                context,
+                controller,
+                did,
+              ),
       ),
     );
   }
@@ -180,30 +184,28 @@ class SendDidPage extends HookConsumerWidget {
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<String?> errorText,
-    ValueNotifier<bool> isPhysicalDevice,
     String errorMessage,
-    String did,
   ) async {
-    if (isPhysicalDevice.value) {
-      // ignore: use_build_context_synchronously
-      final qrValue = await Navigator.of(context).push<String>(
-        MaterialPageRoute(builder: (context) => const ScanQrPage()),
-      );
+    // ignore: use_build_context_synchronously
+    final qrValue = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (context) => const ScanQrPage()),
+    );
 
-      final isValid = qrValue != null && await _isValidDid(qrValue);
-      controller.text = isValid ? qrValue : '';
-      errorText.value = isValid ? null : errorMessage;
-      return;
-    }
+    final isValid = qrValue != null && await _isValidDid(qrValue);
+    controller.text = isValid ? qrValue : '';
+    errorText.value = isValid ? null : errorMessage;
+  }
 
-    final snackBar = SnackBar(
-      content: Text(
-        // ignore: use_build_context_synchronously
-        Loc.of(context).simulatedQrCodeScan,
+  void _simulateScanQrCode(
+    BuildContext context,
+    TextEditingController controller,
+    String did,
+  ) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(Loc.of(context).simulatedQrCodeScan),
       ),
     );
-    // ignore: use_build_context_synchronously
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
     controller.text = did;
   }
 }
