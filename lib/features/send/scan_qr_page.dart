@@ -23,10 +23,12 @@ class ScanQrPage extends HookWidget {
 
     const maxSize = 400.0;
     final screenSize = MediaQuery.of(context).size;
+    final scanSize = screenSize.width * 0.8;
+
     final scanWindow = Rect.fromCenter(
       center: screenSize.center(Offset.zero),
-      width: min(screenSize.width * 0.8, maxSize),
-      height: min(screenSize.height * 0.4, maxSize),
+      width: min(scanSize, maxSize),
+      height: min(scanSize, maxSize),
     );
 
     return Scaffold(
