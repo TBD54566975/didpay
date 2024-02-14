@@ -38,10 +38,7 @@ class LocEn extends Loc {
   String get pay => 'Pay';
 
   @override
-  String get scanQrCode => 'Don\'t know the recipient\'s DID tag? Scan their QR code';
-
-  @override
-  String get didTag => 'DID tag';
+  String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
   String get withdraw => 'Withdraw';

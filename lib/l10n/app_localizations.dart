@@ -160,14 +160,8 @@ abstract class Loc {
   /// No description provided for @scanQrCode.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t know the recipient\'s DID tag? Scan their QR code'**
+  /// **'Don\'t know the recipient\'s DID? Scan their QR code'**
   String get scanQrCode;
-
-  /// No description provided for @didTag.
-  ///
-  /// In en, this message translates to:
-  /// **'DID tag'**
-  String get didTag;
 
   /// No description provided for @withdraw.
   ///
