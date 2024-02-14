@@ -41,6 +41,9 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
           color: lightColorScheme.outlineVariant,
         ),
       ),
+      listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: Grid.side),
+      ),
     );
 
 ThemeData darkTheme(BuildContext context) => ThemeData(
@@ -80,5 +83,8 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
         labelStyle: TextStyle(
           color: darkColorScheme.outlineVariant,
         ),
+      ),
+      listTileTheme: const ListTileThemeData(
+        contentPadding: EdgeInsets.symmetric(horizontal: Grid.side),
       ),
     );
