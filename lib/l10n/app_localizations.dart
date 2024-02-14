@@ -372,6 +372,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Simulated QR code scan!'**
   String get simulatedQrCodeScan;
+
+  /// No description provided for @sendingPayment.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending payment...'**
+  String get sendingPayment;
+
+  /// No description provided for @verifyingYourIdentity.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying your identity...'**
+  String get verifyingYourIdentity;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

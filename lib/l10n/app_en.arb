@@ -70,5 +70,7 @@
     "noDidQrCodeFound": "No DID QR Code found",
     "myDid": "My DID",
     "copiedDid": "Copied DID!",
-    "simulatedQrCodeScan": "Simulated QR code scan!"
+    "simulatedQrCodeScan": "Simulated QR code scan!",
+    "sendingPayment": "Sending payment...",
+    "verifyingYourIdentity": "Verifying your identity..."
 }

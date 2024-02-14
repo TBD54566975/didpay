@@ -150,4 +150,10 @@ class LocEn extends Loc {
 
   @override
   String get simulatedQrCodeScan => 'Simulated QR code scan!';
+
+  @override
+  String get sendingPayment => 'Sending payment...';
+
+  @override
+  String get verifyingYourIdentity => 'Verifying your identity...';
 }
