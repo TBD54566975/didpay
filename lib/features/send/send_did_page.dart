@@ -1,8 +1,6 @@
-import 'dart:io';
-
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/scan_qr_page.dart';
+import 'package:didpay/services/service_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -22,8 +20,18 @@ class SendDidPage extends HookConsumerWidget {
     final did = ref.watch(didProvider);
 
     final focusNode = useFocusNode();
+    final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
     final controller = useTextEditingController();
+
+    useEffect(() {
+      Future.microtask(() async {
+        isPhysicalDevice.value =
+            await ref.read(deviceInfoServiceProvider).isPhysicalDevice();
+      });
+
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(),
@@ -41,6 +49,7 @@ class SendDidPage extends HookConsumerWidget {
                       context,
                       controller,
                       errorText,
+                      isPhysicalDevice,
                       did.uri,
                     ),
                     _buildForm(
@@ -138,6 +147,7 @@ class SendDidPage extends HookConsumerWidget {
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<String?> errorText,
+    ValueNotifier<bool> isPhysicalDevice,
     String did,
   ) {
     return Padding(
@@ -149,19 +159,16 @@ class SendDidPage extends HookConsumerWidget {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.chevron_right),
-        onTap: () => _scanQrCode(context, controller, errorText,
-            Loc.of(context).noDidQrCodeFound, did),
+        onTap: () => _scanQrCode(
+          context,
+          controller,
+          errorText,
+          isPhysicalDevice,
+          Loc.of(context).noDidQrCodeFound,
+          did,
+        ),
       ),
     );
-  }
-
-  Future<bool> _isPhysicalDevice() async {
-    final deviceInfo = DeviceInfoPlugin();
-    return Platform.isIOS
-        ? (await deviceInfo.iosInfo).isPhysicalDevice
-        : Platform.isAndroid
-            ? (await deviceInfo.androidInfo).isPhysicalDevice
-            : false;
   }
 
   Future<bool> _isValidDid(String did) async {
@@ -173,10 +180,11 @@ class SendDidPage extends HookConsumerWidget {
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<String?> errorText,
+    ValueNotifier<bool> isPhysicalDevice,
     String errorMessage,
     String did,
   ) async {
-    if (await _isPhysicalDevice()) {
+    if (isPhysicalDevice.value) {
       // ignore: use_build_context_synchronously
       final qrValue = await Navigator.of(context).push<String>(
         MaterialPageRoute(builder: (context) => const ScanQrPage()),
