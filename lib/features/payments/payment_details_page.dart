@@ -150,7 +150,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
             : Loc.of(context).serviceFeeAmount(fee, 'USD'),
         style: Theme.of(context).textTheme.bodySmall,
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
         Navigator.of(context).push(

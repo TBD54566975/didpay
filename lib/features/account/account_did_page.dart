@@ -21,47 +21,41 @@ class AccountDidPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).myDid)),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: Column(
-          children: [
-            const SizedBox(height: Grid.md),
-            QrImageView(
-              data: did.uri,
-              size: qrSize,
-              eyeStyle: QrEyeStyle(
-                eyeShape: QrEyeShape.square,
-                color: Theme.of(context).colorScheme.onBackground,
-              ),
-              dataModuleStyle: QrDataModuleStyle(
-                color: Theme.of(context).colorScheme.onBackground,
-                dataModuleShape: QrDataModuleShape.square,
-              ),
+      body: Column(
+        children: [
+          const SizedBox(height: Grid.md),
+          QrImageView(
+            data: did.uri,
+            size: qrSize,
+            eyeStyle: QrEyeStyle(
+              eyeShape: QrEyeShape.square,
+              color: Theme.of(context).colorScheme.onBackground,
             ),
-            const SizedBox(height: Grid.xxl),
-            ListTile(
-              title: Text(did.uri),
-              trailing: const Icon(Icons.content_copy),
-              contentPadding: EdgeInsets.zero,
-              onTap: () {
-                Clipboard.setData(ClipboardData(text: did.uri));
-                final snackBar = SnackBar(
-                  content: Text(
-                    Loc.of(context).copiedDid,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color:
-                              Theme.of(context).colorScheme.onPrimaryContainer,
-                        ),
-                  ),
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                );
+            dataModuleStyle: QrDataModuleStyle(
+              color: Theme.of(context).colorScheme.onBackground,
+              dataModuleShape: QrDataModuleShape.square,
+            ),
+          ),
+          const SizedBox(height: Grid.xxl),
+          ListTile(
+            title: Text(did.uri),
+            trailing: const Icon(Icons.content_copy),
+            onTap: () {
+              Clipboard.setData(ClipboardData(text: did.uri));
+              final snackBar = SnackBar(
+                content: Text(
+                  Loc.of(context).copiedDid,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                      ),
+                ),
+                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+              );
 
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              },
-            ),
-          ],
-        ),
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            },
+          ),
+        ],
       ),
     );
   }

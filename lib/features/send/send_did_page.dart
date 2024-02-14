@@ -148,10 +148,9 @@ class SendDidPage extends HookConsumerWidget {
           Loc.of(context).scanQrCode,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: Grid.side),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => _scanQrCode(context, controller, errorText,
-            Loc.of(context).invalidDidQrCode, did),
+            Loc.of(context).noDidQrCodeFound, did),
       ),
     );
   }

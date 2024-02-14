@@ -23,12 +23,12 @@ class SearchPaymentMethodsPage extends HookWidget {
     return Scaffold(
       appBar: AppBar(scrolledUnderElevation: 0),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Form(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+              child: Form(
                 key: _formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -49,17 +49,17 @@ class SearchPaymentMethodsPage extends HookWidget {
                   ],
                 ),
               ),
-              const SizedBox(height: Grid.xs),
-              Expanded(
-                child: _buildList(
-                  context,
-                  selectedPaymentMethod,
-                  searchText,
-                  paymentMethods,
-                ),
+            ),
+            const SizedBox(height: Grid.xs),
+            Expanded(
+              child: _buildList(
+                context,
+                selectedPaymentMethod,
+                searchText,
+                paymentMethods,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
