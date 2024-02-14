@@ -4,7 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:didpay/shared/constants.dart';
-import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/pending_page.dart';
 import 'package:didpay/shared/success_page.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
@@ -36,28 +36,9 @@ class PfiConfirmationPage extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: vcJwt == null
-            ? verifying(context)
-            : SuccessPage(
-                text: Loc.of(context).verificationComplete,
-              ),
+            ? PendingPage(text: Loc.of(context).verifyingYourIdentity)
+            : SuccessPage(text: Loc.of(context).verificationComplete),
       ),
-    );
-  }
-
-  Widget verifying(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const SizedBox(height: Grid.lg),
-        Text(
-          'Verifying your credentials...',
-          style: Theme.of(context).textTheme.titleMedium,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: Grid.lg),
-        const Center(child: CircularProgressIndicator())
-      ],
     );
   }
 
