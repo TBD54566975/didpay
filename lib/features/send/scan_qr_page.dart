@@ -13,13 +13,10 @@ class ScanQrPage extends HookWidget {
     final isProcessing = useState(false);
     final controller = useMemoized(() => MobileScannerController());
 
-    useOnAppLifecycleStateChange((_, current) {
-      if (current == AppLifecycleState.resumed) {
-        controller.start();
-      } else {
-        controller.stop();
-      }
-    });
+    useOnAppLifecycleStateChange((_, current) =>
+        current == AppLifecycleState.resumed
+            ? controller.start()
+            : controller.stop());
 
     const maxSize = 400.0;
     final screenSize = MediaQuery.of(context).size;
@@ -60,7 +57,7 @@ class ScanQrPage extends HookWidget {
                 );
               },
             ),
-            CustomPaint(painter: ScannerOverlay(scanWindow)),
+            CustomPaint(painter: _ScannerOverlay(scanWindow)),
           ],
         ),
       ),
@@ -68,10 +65,10 @@ class ScanQrPage extends HookWidget {
   }
 }
 
-class ScannerOverlay extends CustomPainter {
+class _ScannerOverlay extends CustomPainter {
   final Rect scanWindow;
 
-  ScannerOverlay(this.scanWindow);
+  _ScannerOverlay(this.scanWindow);
 
   @override
   void paint(Canvas canvas, Size size) {
