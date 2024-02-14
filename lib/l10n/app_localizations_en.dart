@@ -38,10 +38,7 @@ class LocEn extends Loc {
   String get pay => 'Pay';
 
   @override
-  String get scanQrCode => 'Don\'t know the recipient\'s DID tag? Scan their QR code';
-
-  @override
-  String get didTag => 'DID tag';
+  String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
   String get withdraw => 'Withdraw';
@@ -134,8 +131,23 @@ class LocEn extends Loc {
   String get selectPaymentMethod => 'Select a payment method';
 
   @override
-  String get didPrefix => 'did:jwk:';
+  String get didPrefix => 'did:...';
+
+  @override
+  String get thisFieldCannotBeEmpty => 'This field cannot be empty';
 
   @override
   String get invalidDid => 'Invalid DID';
+
+  @override
+  String get noDidQrCodeFound => 'No DID QR Code found';
+
+  @override
+  String get myDid => 'My DID';
+
+  @override
+  String get copiedDid => 'Copied DID!';
+
+  @override
+  String get simulatedQrCodeScan => 'Simulated QR code scan!';
 }

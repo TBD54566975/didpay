@@ -10,8 +10,7 @@
     "send": "Send",
     "to": "To:",
     "pay": "Pay",
-    "scanQrCode": "Don't know the recipient's DID tag? Scan their QR code",
-    "didTag": "DID tag",
+    "scanQrCode": "Don't know the recipient's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
     "accountBalance": "Account balance",
@@ -65,6 +64,11 @@
     "search": "Search",
     "serviceFeesMayApply": "Service fees may apply",
     "selectPaymentMethod": "Select a payment method",
-    "didPrefix": "did:jwk:",
-    "invalidDid": "Invalid DID"
+    "didPrefix": "did:...",
+    "thisFieldCannotBeEmpty": "This field cannot be empty",
+    "invalidDid": "Invalid DID",
+    "noDidQrCodeFound": "No DID QR Code found",
+    "myDid": "My DID",
+    "copiedDid": "Copied DID!",
+    "simulatedQrCodeScan": "Simulated QR code scan!"
 }

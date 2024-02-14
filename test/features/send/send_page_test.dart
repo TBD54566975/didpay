@@ -1,12 +1,21 @@
-import 'package:flutter/material.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/send_did_page.dart';
+import 'package:flutter/material.dart';
 import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:web5_flutter/web5_flutter.dart';
 
+import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
+  late MockKeyManager keyManager;
+
+  setUp(() {
+    keyManager = MockKeyManager();
+  });
+
   group('SendPage', () {
     testWidgets('should show Number Pad', (tester) async {
       await tester.pumpWidget(
@@ -55,20 +64,26 @@ void main() {
 
       expect(find.text('\$0.'), findsOneWidget);
     });
+  });
 
-    testWidgets('should navigate to SendDidPage on tap of send button',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const SendPage()),
-      );
+  testWidgets('should navigate to SendDidPage on tap of send button',
+      (tester) async {
+    const uri = 'did:example:123';
 
-      await tester.tap(find.text('8'));
-      await tester.pump();
+    await tester.pumpWidget(
+      WidgetHelpers.testableWidget(child: const SendPage(), overrides: [
+        didProvider.overrideWithValue(
+          DidJwk(uri: uri, keyManager: keyManager),
+        ),
+      ]),
+    );
 
-      await tester.tap(find.text('Send'));
-      await tester.pumpAndSettle();
+    await tester.tap(find.text('8'));
+    await tester.pump();
 
-      expect(find.byType(SendDidPage), findsOneWidget);
-    });
+    await tester.tap(find.text('Send'));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(SendDidPage), findsOneWidget);
   });
 }

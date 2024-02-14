@@ -160,14 +160,8 @@ abstract class Loc {
   /// No description provided for @scanQrCode.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t know the recipient\'s DID tag? Scan their QR code'**
+  /// **'Don\'t know the recipient\'s DID? Scan their QR code'**
   String get scanQrCode;
-
-  /// No description provided for @didTag.
-  ///
-  /// In en, this message translates to:
-  /// **'DID tag'**
-  String get didTag;
 
   /// No description provided for @withdraw.
   ///
@@ -340,14 +334,44 @@ abstract class Loc {
   /// No description provided for @didPrefix.
   ///
   /// In en, this message translates to:
-  /// **'did:jwk:'**
+  /// **'did:...'**
   String get didPrefix;
+
+  /// No description provided for @thisFieldCannotBeEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'This field cannot be empty'**
+  String get thisFieldCannotBeEmpty;
 
   /// No description provided for @invalidDid.
   ///
   /// In en, this message translates to:
   /// **'Invalid DID'**
   String get invalidDid;
+
+  /// No description provided for @noDidQrCodeFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No DID QR Code found'**
+  String get noDidQrCodeFound;
+
+  /// No description provided for @myDid.
+  ///
+  /// In en, this message translates to:
+  /// **'My DID'**
+  String get myDid;
+
+  /// No description provided for @copiedDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied DID!'**
+  String get copiedDid;
+
+  /// No description provided for @simulatedQrCodeScan.
+  ///
+  /// In en, this message translates to:
+  /// **'Simulated QR code scan!'**
+  String get simulatedQrCodeScan;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
