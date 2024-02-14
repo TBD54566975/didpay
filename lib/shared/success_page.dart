@@ -20,6 +20,7 @@ class SuccessPage extends HookWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const SizedBox(height: Grid.xl),
                   Text(text, style: Theme.of(context).textTheme.titleMedium),
                   const SizedBox(height: Grid.xs),
                   Icon(
