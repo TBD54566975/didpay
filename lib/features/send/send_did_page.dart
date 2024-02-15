@@ -1,11 +1,11 @@
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/scan_qr_page.dart';
+import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/success_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5_flutter/web5_flutter.dart';
 
@@ -72,9 +72,8 @@ class SendDidPage extends HookConsumerWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SuccessPage(
-                          text: Loc.of(context).yourPaymentWasSent,
-                        ),
+                        builder: (context) => SendConfirmationPage(
+                            did: did.uri, amount: sendAmount),
                       ),
                     );
                   }
