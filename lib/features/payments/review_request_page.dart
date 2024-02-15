@@ -77,15 +77,24 @@ class ReviewRequestPage extends HookWidget {
                 ))));
   }
 
-  Widget _buildHeader(BuildContext context) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Text(
-          Loc.of(context).reviewYourRequest,
-          style: Theme.of(context).textTheme.titleLarge,
+  Widget _buildHeader(BuildContext context) => Column(children: [
+        Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            Loc.of(context).reviewYourRequest,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                  fontWeight: FontWeight.bold,
+                ),
+          ),
         ),
         const SizedBox(height: Grid.xs),
-        Text(Loc.of(context).makeSureInfoIsCorrect,
-            style: Theme.of(context).textTheme.bodyLarge),
+        Align(
+          alignment: Alignment.topLeft,
+          child: Text(
+            Loc.of(context).makeSureInfoIsCorrect,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+        ),
       ]);
 
   Widget _buildAmounts(BuildContext context) =>
