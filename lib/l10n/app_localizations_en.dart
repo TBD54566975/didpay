@@ -14,8 +14,7 @@ class LocEn extends Loc {
   String get getStarted => 'Get started';
 
   @override
-  String get toSendMoney =>
-      'To send money, you\'ll need to verify your identity with a PFI in your region';
+  String get toSendMoney => 'To send money, you\'ll need to verify your identity with a PFI in your region';
 
   @override
   String get selectYourRegion => 'Select your region';
@@ -39,8 +38,7 @@ class LocEn extends Loc {
   String get pay => 'Pay';
 
   @override
-  String get scanQrCode =>
-      'Don\'t know the recipient\'s DID? Scan their QR code';
+  String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
   String get withdraw => 'Withdraw';
