@@ -77,90 +77,83 @@ class ReviewRequestPage extends HookWidget {
                 ))));
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Text(
-        Loc.of(context).reviewYourRequest,
-        style: Theme.of(context).textTheme.titleLarge,
-      ),
-      const SizedBox(height: Grid.xs),
-      Text(Loc.of(context).makeSureInfoIsCorrect,
-          style: Theme.of(context).textTheme.bodyLarge),
-    ]);
-  }
+  Widget _buildHeader(BuildContext context) =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(
+          Loc.of(context).reviewYourRequest,
+          style: Theme.of(context).textTheme.titleLarge,
+        ),
+        const SizedBox(height: Grid.xs),
+        Text(Loc.of(context).makeSureInfoIsCorrect,
+            style: Theme.of(context).textTheme.bodyLarge),
+      ]);
 
-  Widget _buildAmounts(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: [
-          Text(
-            NumberFormat.simpleCurrency().format(double.parse(inputAmount)),
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          const SizedBox(width: Grid.xs),
-          Text(
-            inputCurrency,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ],
-      ),
-      const SizedBox(height: Grid.xxs),
-      Text(
-        transactionType == Type.deposit
-            ? Loc.of(context).youPay
-            : Loc.of(context).withdrawAmount,
-        style: Theme.of(context).textTheme.bodyLarge,
-      ),
-      const SizedBox(height: Grid.xs),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
-        children: [
-          Text(
-            NumberFormat.simpleCurrency().format(double.parse(outputAmount)),
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          const SizedBox(width: Grid.xs),
-          Text(
-            outputCurrency,
-            style: Theme.of(context).textTheme.headlineMedium,
-          ),
-        ],
-      ),
-      const SizedBox(height: Grid.xxs),
-      Text(
-        transactionType == Type.deposit
-            ? Loc.of(context).depositAmount
-            : Loc.of(context).youGet,
-        style: Theme.of(context).textTheme.bodyLarge,
-      )
-    ]);
-  }
+  Widget _buildAmounts(BuildContext context) =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              NumberFormat.simpleCurrency().format(double.parse(inputAmount)),
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            const SizedBox(width: Grid.xs),
+            Text(
+              inputCurrency,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+        const SizedBox(height: Grid.xxs),
+        Text(
+          transactionType == Type.deposit
+              ? Loc.of(context).youPay
+              : Loc.of(context).withdrawAmount,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        const SizedBox(height: Grid.xs),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Text(
+              NumberFormat.simpleCurrency().format(double.parse(outputAmount)),
+              style: Theme.of(context).textTheme.displaySmall,
+            ),
+            const SizedBox(width: Grid.xs),
+            Text(
+              outputCurrency,
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+          ],
+        ),
+        const SizedBox(height: Grid.xxs),
+        Text(
+          transactionType == Type.deposit
+              ? Loc.of(context).depositAmount
+              : Loc.of(context).youGet,
+          style: Theme.of(context).textTheme.bodyLarge,
+        )
+      ]);
 
-  Widget _buildFeeDetails(BuildContext context) {
-    return FeeDetails(
-        originCurrency: Loc.of(context).usd,
-        destinationCurrency: inputCurrency != Loc.of(context).usd
-            ? inputCurrency
-            : outputCurrency,
-        exchangeRate: exchangeRate,
-        serviceFee: double.parse(serviceFee).toStringAsFixed(2),
-        total: inputCurrency != Loc.of(context).usd
-            ? (double.parse(inputAmount) + double.parse(serviceFee))
-                .toStringAsFixed(2)
-            : (double.parse(outputAmount) + double.parse(serviceFee))
-                .toStringAsFixed(2));
-  }
+  Widget _buildFeeDetails(BuildContext context) => FeeDetails(
+      originCurrency: Loc.of(context).usd,
+      destinationCurrency:
+          inputCurrency != Loc.of(context).usd ? inputCurrency : outputCurrency,
+      exchangeRate: exchangeRate,
+      serviceFee: double.parse(serviceFee).toStringAsFixed(2),
+      total: inputCurrency != Loc.of(context).usd
+          ? (double.parse(inputAmount) + double.parse(serviceFee))
+              .toStringAsFixed(2)
+          : (double.parse(outputAmount) + double.parse(serviceFee))
+              .toStringAsFixed(2));
 
-  Widget _buildBankDetails(BuildContext context) {
-    return Column(children: [
-      Text(bankName),
-      const SizedBox(height: Grid.xxs),
-      Text(obscureAccountNumber(formData['accountNumber']!)),
-    ]);
-  }
+  Widget _buildBankDetails(BuildContext context) => Column(children: [
+        Text(bankName),
+        const SizedBox(height: Grid.xxs),
+        Text(obscureAccountNumber(formData['accountNumber']!)),
+      ]);
 
   String obscureAccountNumber(String input) {
     if (input.length <= 4) {
