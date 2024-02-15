@@ -12,7 +12,14 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
         ),
       );
 
@@ -24,7 +31,14 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
         ),
       );
 
@@ -35,7 +49,14 @@ void main() {
     testWidgets('should show enter your momo details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -55,7 +76,14 @@ void main() {
     testWidgets('should show enter your bank details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -75,7 +103,14 @@ void main() {
     testWidgets('should show enter your wallet details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -95,7 +130,14 @@ void main() {
     testWidgets('should show no payment type segments', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -116,7 +158,14 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -145,7 +194,14 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -181,7 +237,14 @@ void main() {
         (WidgetTester tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -205,7 +268,14 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -233,7 +303,14 @@ void main() {
     testWidgets('should show momo schema form', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -261,7 +338,14 @@ void main() {
     testWidgets('should show bank schema form', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [
@@ -289,7 +373,14 @@ void main() {
     testWidgets('should show wallet schema form', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PaymentDetailsPage(),
+          child: const PaymentDetailsPage(
+            inputAmount: '1.00',
+            inputCurrency: 'USD',
+            exchangeRate: '17',
+            outputAmount: '17.00',
+            outputCurrency: 'MXN',
+            transactionType: 'Deposit',
+          ),
           overrides: [
             paymentMethodProvider.overrideWith(
               (ref) => [

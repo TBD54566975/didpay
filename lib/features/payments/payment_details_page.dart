@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:didpay/features/payments/review_request_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/payments/payment_method.dart';
@@ -8,7 +10,21 @@ import 'package:didpay/shared/json_schema_form.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
-  const PaymentDetailsPage({super.key});
+  final String inputCurrency;
+  final String inputAmount;
+  final String outputCurrency;
+  final String outputAmount;
+  final String exchangeRate;
+  final String transactionType;
+
+  const PaymentDetailsPage(
+      {required this.inputCurrency,
+      required this.inputAmount,
+      required this.outputCurrency,
+      required this.outputAmount,
+      required this.exchangeRate,
+      required this.transactionType,
+      super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -174,10 +190,35 @@ class PaymentDetailsPage extends HookConsumerWidget {
             child: JsonSchemaForm(
               schema: selectedPaymentMethod.value!.requiredPaymentDetails,
               onSubmit: (formData) {
-                // TODO: save payment details here
+                if (isValidOnSubmit(formData, selectedPaymentMethod)) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ReviewRequestPage(
+                        formData: formData,
+                        bankName: selectedPaymentMethod.value!.kind
+                                .split('_')
+                                .lastOrNull ??
+                            '',
+                        inputAmount: inputAmount,
+                        outputAmount: outputAmount,
+                        inputCurrency: inputCurrency,
+                        outputCurrency: outputCurrency,
+                        exchangeRate: exchangeRate,
+                        serviceFee: selectedPaymentMethod.value!.fee ?? '0.00',
+                        transactionType: transactionType,
+                      ),
+                    ),
+                  );
+                }
               },
             ),
           );
+  }
+
+  bool isValidOnSubmit(Map<String, String> formData,
+      ValueNotifier<PaymentMethod?> selectedPaymentMethod) {
+    return formData['accountNumber'] != null &&
+        selectedPaymentMethod.value!.kind.split('_').lastOrNull != null;
   }
 
   Widget _buildDisabledButton(BuildContext context) {

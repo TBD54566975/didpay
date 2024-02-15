@@ -1,3 +1,4 @@
+import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/currency/currency_converter.dart';
@@ -25,6 +26,8 @@ class DepositPage extends HookWidget {
     final isValidKeyPress = useState<bool>(true);
     final selectedCurrencyItem =
         useState<Map<String, Object>>(supportedCurrencyList[1]);
+    final outputAmount = double.parse('0${depositAmount.value}') /
+        double.parse(selectedCurrencyItem.value['exchangeRate'].toString());
 
     return Scaffold(
       appBar: AppBar(),
@@ -45,10 +48,7 @@ class DepositPage extends HookWidget {
                         inputSelectedCurrency:
                             selectedCurrencyItem.value['label'].toString(),
                         inputLabel: Loc.of(context).youDeposit,
-                        outputAmount: (double.parse('0${depositAmount.value}') /
-                            double.parse(selectedCurrencyItem
-                                .value['exchangeRate']
-                                .toString())),
+                        outputAmount: outputAmount,
                         isValidKeyPress: isValidKeyPress.value,
                         onDropdownTap: () {
                           CurrencyModal.show(
@@ -83,7 +83,16 @@ class DepositPage extends HookWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const PaymentDetailsPage(),
+                      builder: (context) => PaymentDetailsPage(
+                        inputAmount: depositAmount.value,
+                        inputCurrency:
+                            selectedCurrencyItem.value['label'].toString(),
+                        exchangeRate: selectedCurrencyItem.value['exchangeRate']
+                            .toString(),
+                        outputAmount: outputAmount.toString(),
+                        outputCurrency: Loc.of(context).usd,
+                        transactionType: Type.deposit,
+                      ),
                     ),
                   );
                 },
