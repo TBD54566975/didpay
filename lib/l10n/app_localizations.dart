@@ -384,6 +384,42 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Verifying your identity...'**
   String get verifyingYourIdentity;
+
+  /// No description provided for @reviewYourRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Review your request'**
+  String get reviewYourRequest;
+
+  /// No description provided for @depositAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit amount'**
+  String get depositAmount;
+
+  /// No description provided for @withdrawAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw amount'**
+  String get withdrawAmount;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @submit.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit'**
+  String get submit;
+
+  /// No description provided for @yourRequestWasSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Your request was submitted!'**
+  String get yourRequestWasSubmitted;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

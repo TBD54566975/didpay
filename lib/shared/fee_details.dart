@@ -9,12 +9,14 @@ class FeeDetails extends HookWidget {
   final String
       exchangeRate; // from origin -> destination (ie. destination / origin = exchangeRate)
   final String serviceFee;
+  final String total;
 
   const FeeDetails({
     required this.originCurrency,
     required this.destinationCurrency,
     required this.exchangeRate,
     required this.serviceFee,
+    this.total = '',
     super.key,
   });
 
@@ -75,6 +77,35 @@ class FeeDetails extends HookWidget {
               ),
             ],
           ),
+          if (total.isNotEmpty)
+            Column(
+              children: [
+                const SizedBox(height: Grid.sm),
+                Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: Text(
+                        Loc.of(context).total,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: Text(
+                        '$total $destinationCurrency',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                        textAlign: TextAlign.right,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            )
         ],
       ),
     );

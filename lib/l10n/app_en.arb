@@ -72,5 +72,11 @@
     "copiedDid": "Copied DID!",
     "simulatedQrCodeScan": "Simulated QR code scan!",
     "sendingPayment": "Sending payment...",
-    "verifyingYourIdentity": "Verifying your identity..."
+    "verifyingYourIdentity": "Verifying your identity...",
+    "reviewYourRequest": "Review your request",
+    "depositAmount": "Deposit amount",
+    "withdrawAmount": "Withdraw amount",
+    "total": "Total",
+    "submit": "Submit",
+    "yourRequestWasSubmitted": "Your request was submitted!"
 }

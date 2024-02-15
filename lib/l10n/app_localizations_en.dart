@@ -156,4 +156,22 @@ class LocEn extends Loc {
 
   @override
   String get verifyingYourIdentity => 'Verifying your identity...';
+
+  @override
+  String get reviewYourRequest => 'Review your request';
+
+  @override
+  String get depositAmount => 'Deposit amount';
+
+  @override
+  String get withdrawAmount => 'Withdraw amount';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get submit => 'Submit';
+
+  @override
+  String get yourRequestWasSubmitted => 'Your request was submitted!';
 }

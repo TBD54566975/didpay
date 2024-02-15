@@ -1,3 +1,4 @@
+import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/currency/currency_converter.dart';
@@ -25,6 +26,8 @@ class WithdrawPage extends HookWidget {
     final isValidKeyPress = useState<bool>(true);
     final selectedCurrencyItem =
         useState<Map<String, Object>>(supportedCurrencyList[1]);
+    final outputAmount = double.parse('0${withdrawAmount.value}') *
+        double.parse(selectedCurrencyItem.value['exchangeRate'].toString());
 
     return Scaffold(
       appBar: AppBar(),
@@ -45,11 +48,7 @@ class WithdrawPage extends HookWidget {
                         inputLabel: Loc.of(context).youWithdraw,
                         outputSelectedCurrency:
                             selectedCurrencyItem.value['label'].toString(),
-                        outputAmount:
-                            (double.parse('0${withdrawAmount.value}') *
-                                double.parse(selectedCurrencyItem
-                                    .value['exchangeRate']
-                                    .toString())),
+                        outputAmount: outputAmount,
                         isValidKeyPress: isValidKeyPress.value,
                         onDropdownTap: () {
                           CurrencyModal.show(
@@ -84,7 +83,16 @@ class WithdrawPage extends HookWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const PaymentDetailsPage(),
+                      builder: (context) => PaymentDetailsPage(
+                        inputAmount: withdrawAmount.value,
+                        inputCurrency: Loc.of(context).usd,
+                        exchangeRate: selectedCurrencyItem.value['exchangeRate']
+                            .toString(),
+                        outputAmount: outputAmount.toString(),
+                        outputCurrency:
+                            selectedCurrencyItem.value['label'].toString(),
+                        transactionType: Type.withdrawal,
+                      ),
                     ),
                   );
                 },
