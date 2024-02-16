@@ -54,22 +54,14 @@ class TransactionDetailsPage extends HookWidget {
         ExcludeSemantics(
           child: Center(
             child: Container(
-              width: Grid.xxl,
-              height: Grid.xxl,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surfaceVariant,
-                shape: BoxShape.circle,
-              ),
-              child: Center(
-                // TODO: use $ or first letter of name based on txn type
-                child: Text(
-                  '\$',
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                width: Grid.xxl,
+                height: Grid.xxl,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  shape: BoxShape.circle,
                 ),
-              ),
-            ),
+                child: Icon(Icons.attach_money,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant)),
           ),
         ),
         const SizedBox(height: Grid.xxs),
@@ -139,7 +131,7 @@ class TransactionDetailsPage extends HookWidget {
       case Status.completed:
         return colorScheme.primary;
       default:
-        return colorScheme.outlineVariant;
+        return colorScheme.onSurface;
     }
   }
 

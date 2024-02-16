@@ -46,10 +46,10 @@ class AccountDidPage extends HookConsumerWidget {
                 content: Text(
                   Loc.of(context).copiedDid,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        color: Theme.of(context).colorScheme.onSecondary,
                       ),
                 ),
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: Theme.of(context).colorScheme.secondary,
               );
 
               ScaffoldMessenger.of(context).showSnackBar(snackBar);

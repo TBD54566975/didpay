@@ -45,8 +45,7 @@ class HomePage extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: Container(
         decoration: BoxDecoration(
-          border: Border.all(
-              color: Theme.of(context).colorScheme.outline, width: 2.0),
+          color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(Grid.radius),
         ),
         padding: const EdgeInsets.all(Grid.xs),
@@ -55,7 +54,9 @@ class HomePage extends HookConsumerWidget {
           children: [
             Text(
               Loc.of(context).accountBalance,
-              style: Theme.of(context).textTheme.labelMedium,
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    color: Theme.of(context).colorScheme.onSurface,
+                  ),
             ),
             const SizedBox(height: Grid.xxs),
             Center(
@@ -151,7 +152,7 @@ class HomePage extends HookConsumerWidget {
             ),
             // TODO: use $ or first letter of name based on txn type
             child: const Center(
-              child: Text('\$'),
+              child: Icon(Icons.attach_money),
             ),
           ),
           onTap: () => Navigator.of(context).push(

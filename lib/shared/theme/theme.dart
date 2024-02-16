@@ -7,22 +7,22 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
       useMaterial3: true,
       colorScheme: lightColorScheme,
       textTheme: textTheme(ThemeData().textTheme),
-      appBarTheme: const AppBarTheme(
-        scrolledUnderElevation: 0,
-      ),
+      appBarTheme: AppBarTheme(
+          scrolledUnderElevation: 0,
+          backgroundColor: lightColorScheme.background),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
               return states.contains(MaterialState.selected)
-                  ? lightColorScheme.surface
-                  : lightColorScheme.secondaryContainer;
+                  ? lightColorScheme.secondary
+                  : lightColorScheme.onSecondary;
             },
           ),
           side: MaterialStateProperty.resolveWith<BorderSide>(
             (Set<MaterialState> _) {
               return BorderSide(
-                color: lightColorScheme.secondaryContainer,
+                color: lightColorScheme.secondary,
                 width: Grid.half,
               );
             },
@@ -38,7 +38,7 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         alignLabelWithHint: true,
         labelStyle: TextStyle(
-          color: lightColorScheme.outlineVariant,
+          color: lightColorScheme.onSurface,
         ),
       ),
       listTileTheme: const ListTileThemeData(
@@ -50,22 +50,23 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
       useMaterial3: true,
       colorScheme: darkColorScheme,
       textTheme: textTheme(ThemeData.dark().textTheme),
-      appBarTheme: const AppBarTheme(
+      appBarTheme: AppBarTheme(
         scrolledUnderElevation: 0,
+        backgroundColor: darkColorScheme.background,
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.resolveWith<Color>(
             (Set<MaterialState> states) {
               return states.contains(MaterialState.selected)
-                  ? darkColorScheme.surface
-                  : darkColorScheme.secondaryContainer;
+                  ? darkColorScheme.secondary
+                  : darkColorScheme.onSecondary;
             },
           ),
           side: MaterialStateProperty.resolveWith<BorderSide>(
             (Set<MaterialState> _) {
               return BorderSide(
-                color: darkColorScheme.secondaryContainer,
+                color: darkColorScheme.secondary,
                 width: Grid.half,
               );
             },
@@ -81,7 +82,7 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
         floatingLabelBehavior: FloatingLabelBehavior.never,
         alignLabelWithHint: true,
         labelStyle: TextStyle(
-          color: darkColorScheme.outlineVariant,
+          color: darkColorScheme.onSurface,
         ),
       ),
       listTileTheme: const ListTileThemeData(

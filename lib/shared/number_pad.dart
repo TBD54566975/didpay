@@ -86,7 +86,7 @@ class NumberPadKey extends HookWidget {
           style: TextStyle(
             fontSize: keySize.value,
             fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.secondary,
           ),
           child: Center(
             child: Text(
