@@ -1,0 +1,82 @@
+{
+    "appName": "DIDPay",
+    "welcomeToDIDPay": "Welcome to DIDPay",
+    "getStarted": "Get started",
+    "toSendMoney": "To send money, you'll need to verify your identity with a PFI in your region",
+    "selectYourRegion": "Select your region",
+    "home": "Home",
+    "done": "Done",
+    "deposit": "Deposit",
+    "send": "Send",
+    "to": "To:",
+    "pay": "Pay",
+    "scanQrCode": "Don't know the recipient's DID? Scan their QR code",
+    "withdraw": "Withdraw",
+    "next": "Next",
+    "accountBalance": "Account balance",
+    "youDeposit": "You deposit",
+    "youWithdraw": "You withdraw",
+    "youGet": "You get",
+    "estRate": "Est. rate",
+    "serviceFee": "Service fee",
+    "usd": "USD",
+    "activity": "Activity",
+    "noTransactionsYet": "No transactions yet",
+    "startByAdding": "Start by adding funds to your account!",
+    "transactionDetails": "Transaction details",
+    "youPay": "You pay",
+    "youPaid": "You paid",
+    "youReceived": "You received",
+    "txnTypeQuote": "{txnType} quote",
+    "@txnTypeQuote": {
+         "placeholders": {
+            "txnType": {
+                "type": "String"
+            }
+        }
+    },
+    "accountBalance": "Account balance",
+    "accept": "Accept",
+    "reject": "Reject",
+    "yourRequestWasSent": "Your request was sent!",
+    "yourPaymentWasSent": "Your payment was sent!",
+    "verificationComplete": "Verification complete!",
+    "makeSureInfoIsCorrect": "Make sure this information is correct.",
+    "enterYourPaymentChannelDetails": "Enter your {paymentChannel} details",
+    "@enterYourPaymentChannelDetails": {
+         "placeholders": {
+            "paymentChannel": {
+                "type": "String"
+            }
+        }
+    },
+    "serviceFeeAmount": "Service fee: {amount} {currency}",
+    "@serviceFeeAmount": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            },
+            "currency": {
+                "type": "String"
+            }
+        }
+    },
+    "search": "Search",
+    "serviceFeesMayApply": "Service fees may apply",
+    "selectPaymentMethod": "Select a payment method",
+    "didPrefix": "did:...",
+    "thisFieldCannotBeEmpty": "This field cannot be empty",
+    "invalidDid": "Invalid DID",
+    "noDidQrCodeFound": "No DID QR Code found",
+    "myDid": "My DID",
+    "copiedDid": "Copied DID!",
+    "simulatedQrCodeScan": "Simulated QR code scan!",
+    "sendingPayment": "Sending payment...",
+    "verifyingYourIdentity": "Verifying your identity...",
+    "reviewYourRequest": "Review your request",
+    "depositAmount": "Deposit amount",
+    "withdrawAmount": "Withdraw amount",
+    "total": "Total",
+    "submit": "Submit",
+    "yourRequestWasSubmitted": "Your request was submitted!"
+}

@@ -19,13 +19,10 @@ jobs:
           cache: true
 
       - name: Install Dependencies
-        working-directory: ./frontend
         run: just get
 
       - name: Run Flutter Analyze
-        working-directory: ./frontend
         run: just analyze
 
       - name: Run Flutter Test
-        working-directory: ./frontend
         run: just test

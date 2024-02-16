@@ -10,10 +10,9 @@ The aim is that this app can work with any tbdex liquidity node, discoverying th
 ## Running
 
 * Install Hermit https://cashapp.github.io/hermit/ (on macos you can run `brew install hermit` and then `hermit shell-hooks`)
-* Ensure you have a mobile app simulator handy (XCode on macOS and runing the Simulator app will do for example)
-* Run `flutter run` from this project to build and start the app in the simulator. Use `flutter run --dart-define=DEV_PFI=your_did_string` to run against a local tbdex liquidity node at dev time.
-
-
+* Ensure you have a mobile app simulator connected and running (XCode on macOS and running the Simulator app will do for example)
+* Run `pub get`.
+* With your simulator running, run `flutter run` to build and start the app in the simulator.
 
 A picture says a thousand words: 
 
