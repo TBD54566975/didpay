@@ -57,11 +57,11 @@ class TransactionDetailsPage extends HookWidget {
                 width: Grid.xxl,
                 height: Grid.xxl,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).colorScheme.primary,
                   shape: BoxShape.circle,
                 ),
                 child: Icon(Icons.attach_money,
-                    color: Theme.of(context).colorScheme.onSurfaceVariant)),
+                    color: Theme.of(context).colorScheme.onPrimary)),
           ),
         ),
         const SizedBox(height: Grid.xxs),
@@ -124,8 +124,6 @@ class TransactionDetailsPage extends HookWidget {
   Color _getStatusColor(BuildContext context, String status) {
     var colorScheme = Theme.of(context).colorScheme;
     switch (status) {
-      case Status.quoted:
-        return colorScheme.secondary;
       case Status.failed:
         return colorScheme.error;
       case Status.completed:

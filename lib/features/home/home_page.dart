@@ -147,12 +147,13 @@ class HomePage extends HookConsumerWidget {
             width: Grid.lg,
             height: Grid.lg,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.primary,
               shape: BoxShape.circle,
             ),
             // TODO: use $ or first letter of name based on txn type
-            child: const Center(
-              child: Icon(Icons.attach_money),
+            child: Center(
+              child: Icon(Icons.attach_money,
+                  color: Theme.of(context).colorScheme.background),
             ),
           ),
           onTap: () => Navigator.of(context).push(
