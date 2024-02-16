@@ -24,7 +24,7 @@ class FeeDetails extends HookWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).colorScheme.outline),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(15.0),
       ),
       padding: const EdgeInsets.all(Grid.xs),
@@ -37,7 +37,7 @@ class FeeDetails extends HookWidget {
                 child: Text(
                   Loc.of(context).estRate,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
               ),
@@ -46,7 +46,7 @@ class FeeDetails extends HookWidget {
                 child: Text(
                   '1 $originCurrency = $exchangeRate $destinationCurrency',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                   textAlign: TextAlign.right,
                 ),
@@ -61,7 +61,7 @@ class FeeDetails extends HookWidget {
                 child: Text(
                   Loc.of(context).serviceFee,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
               ),
@@ -70,7 +70,7 @@ class FeeDetails extends HookWidget {
                 child: Text(
                   '$serviceFee $destinationCurrency',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                   textAlign: TextAlign.right,
                 ),
@@ -88,7 +88,7 @@ class FeeDetails extends HookWidget {
                       child: Text(
                         Loc.of(context).total,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                       ),
                     ),
@@ -97,7 +97,7 @@ class FeeDetails extends HookWidget {
                       child: Text(
                         '$total $destinationCurrency',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                         textAlign: TextAlign.right,
                       ),

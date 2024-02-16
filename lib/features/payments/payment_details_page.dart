@@ -99,8 +99,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   segment ?? '',
                   style: TextStyle(
                     color: selectedPaymentType.value == segment
-                        ? Theme.of(context).colorScheme.onSurface
-                        : Theme.of(context).disabledColor,
+                        ? Theme.of(context).colorScheme.onSecondary
+                        : Theme.of(context).colorScheme.secondary,
                   ),
                 ),
               ),
