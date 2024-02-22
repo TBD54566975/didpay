@@ -1,5 +1,6 @@
+import 'package:didpay/features/currency/payin.dart';
+import 'package:didpay/features/currency/payout.dart';
 import 'package:flutter/material.dart';
-import 'package:didpay/features/currency/currency_converter.dart';
 import 'package:didpay/features/withdraw/withdraw_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,7 +14,8 @@ void main() {
         WidgetHelpers.testableWidget(child: const WithdrawPage()),
       );
 
-      expect(find.byType(CurrencyConverter), findsOneWidget);
+      expect(find.byType(Payin), findsOneWidget);
+      expect(find.byType(Payout), findsOneWidget);
     });
 
     testWidgets('should show Fee Details', (tester) async {
@@ -40,13 +42,12 @@ void main() {
 
       for (int i = 1; i <= 9; i++) {
         await tester.tap(find.text('$i'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
-        final expectedText = i.toStringAsFixed(2);
-        expect(find.text('\$$expectedText'), findsOneWidget);
+        expect(find.text('\$$i'), findsAtLeast(1));
 
         await tester.tap(find.text('<'));
-        await tester.pump();
+        await tester.pumpAndSettle();
       }
     });
 
