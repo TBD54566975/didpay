@@ -52,11 +52,13 @@ class Payin extends HookWidget {
 
         shouldAnimate.value = (key == '<')
             ? !NumberValidationUtil.isValidDelete(current)
-            : !NumberValidationUtil.isValidInput(
-                current,
-                key,
-                currency: currency.value?.label,
-              );
+            : (transactionType == Type.deposit
+                ? !NumberValidationUtil.isValidInput(
+                    current,
+                    key,
+                    currency: currency.value?.label,
+                  )
+                : !NumberValidationUtil.isValidInput(current, key));
         if (shouldAnimate.value) return;
 
         if (key == '<') {
