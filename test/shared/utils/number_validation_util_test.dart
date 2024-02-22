@@ -2,8 +2,8 @@ import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('NumberPadInputValidationUtil', () {
-    group('validateKeyPress', () {
+  group('NumberValidationUtil', () {
+    group('validateInput', () {
       test('invalidate if input is 0 and user attempts to input 0', () {
         final validateKeyPress = NumberValidationUtil.isValidInput('0', '0');
 
@@ -40,7 +40,7 @@ void main() {
       });
     });
 
-    group('validateDeletePress', () {
+    group('validateDelete', () {
       test('invalidate if input is 0 and user attempts to backspace', () {
         final validateKeyPress = NumberValidationUtil.isValidDelete('0');
 
