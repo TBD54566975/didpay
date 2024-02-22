@@ -1,33 +1,27 @@
+import 'package:didpay/features/currency/currency.dart';
+import 'package:didpay/features/currency/payin.dart';
+import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/currency/currency_converter.dart';
-import 'package:didpay/features/currency/currency_modal.dart';
 import 'package:didpay/features/payments/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/number_pad.dart';
-import 'package:didpay/shared/utils/number_pad_input_validation_util.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// replace with actual currency list
-final supportedCurrencyList = [
-  {'label': 'USD', 'icon': Icons.attach_money, 'exchangeRate': 1},
-  {'label': 'MXN', 'icon': Icons.attach_money, 'exchangeRate': 17},
-  {'label': 'BTC', 'icon': Icons.currency_bitcoin, 'exchangeRate': 0.000024}
-];
-
-class WithdrawPage extends HookWidget {
+class WithdrawPage extends HookConsumerWidget {
   const WithdrawPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final withdrawAmount = useState<String>('0');
-    final isValidKeyPress = useState<bool>(true);
-    final selectedCurrencyItem =
-        useState<Map<String, Object>>(supportedCurrencyList[1]);
-    final outputAmount = double.parse('0${withdrawAmount.value}') *
-        double.parse(selectedCurrencyItem.value['exchangeRate'].toString());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencies = ref.watch(currencyProvider);
+
+    final payinAmount = useState('0');
+    final payoutAmount = useState(0.0);
+    final keyPress = useState(PayinKeyPress(0, ''));
+    final selectedCurrency = useState<Currency?>(currencies[0]);
 
     return Scaffold(
       appBar: AppBar(),
@@ -42,40 +36,42 @@ class WithdrawPage extends HookWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CurrencyConverter(
-                        inputAmount: double.parse('0${withdrawAmount.value}'),
-                        inputLabel: Loc.of(context).youWithdraw,
-                        outputSelectedCurrency:
-                            selectedCurrencyItem.value['label'].toString(),
-                        outputAmount: outputAmount,
-                        isValidKeyPress: isValidKeyPress.value,
-                        onDropdownTap: () {
-                          CurrencyModal.show(
-                              context,
-                              (value) => selectedCurrencyItem.value =
-                                  supportedCurrencyList.firstWhere(
-                                      (element) => element['label'] == value),
-                              supportedCurrencyList,
-                              selectedCurrencyItem.value['label'].toString());
-                        },
+                      Payin(
+                        transactionType: Type.withdrawal,
+                        amount: payinAmount,
+                        keyPress: keyPress,
+                        currency: selectedCurrency,
+                      ),
+                      const SizedBox(height: Grid.sm),
+                      Payout(
+                        payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
+                        transactionType: Type.withdrawal,
+                        payoutAmount: payoutAmount,
+                        currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
                       FeeDetails(
                           originCurrency: Loc.of(context).usd,
                           destinationCurrency:
-                              selectedCurrencyItem.value['label'].toString(),
-                          exchangeRate: selectedCurrencyItem
-                              .value['exchangeRate']
-                              .toString(),
+                              selectedCurrency.value?.label.toString() ?? '',
+                          exchangeRate:
+                              selectedCurrency.value?.exchangeRate.toString() ??
+                                  '',
                           serviceFee: '0')
                     ],
                   ),
                 ),
               ),
             ),
-            Center(child: buildNumberPad(withdrawAmount, isValidKeyPress)),
+            Center(
+              child: NumberPad(
+                onKeyPressed: (key) => keyPress.value =
+                    PayinKeyPress(keyPress.value.count + 1, key),
+              ),
+            ),
             const SizedBox(height: Grid.sm),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -84,13 +80,14 @@ class WithdrawPage extends HookWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
-                        inputAmount: withdrawAmount.value,
+                        inputAmount: payinAmount.value,
                         inputCurrency: Loc.of(context).usd,
-                        exchangeRate: selectedCurrencyItem.value['exchangeRate']
-                            .toString(),
-                        outputAmount: outputAmount.toString(),
+                        exchangeRate:
+                            selectedCurrency.value?.exchangeRate.toString() ??
+                                '',
+                        outputAmount: payoutAmount.value.toString(),
                         outputCurrency:
-                            selectedCurrencyItem.value['label'].toString(),
+                            selectedCurrency.value?.label.toString() ?? '',
                         transactionType: Type.withdrawal,
                       ),
                     ),
@@ -102,36 +99,6 @@ class WithdrawPage extends HookWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildNumberPad(ValueNotifier<String> withdrawAmount,
-      ValueNotifier<bool> isValidKeyPress) {
-    return NumberPad(
-      onKeyPressed: (key) {
-        isValidKeyPress.value = true;
-        isValidKeyPress.value = NumberPadInputValidationUtil.validateKeyPress(
-            withdrawAmount.value, key);
-
-        if (isValidKeyPress.value) {
-          withdrawAmount.value = (withdrawAmount.value == '0')
-              ? key
-              : '${withdrawAmount.value}$key';
-        }
-      },
-      onDeletePressed: () {
-        isValidKeyPress.value = true;
-        isValidKeyPress.value =
-            NumberPadInputValidationUtil.validateDeletePress(
-                withdrawAmount.value);
-
-        if (isValidKeyPress.value) {
-          withdrawAmount.value = (withdrawAmount.value.length > 1)
-              ? withdrawAmount.value
-                  .substring(0, withdrawAmount.value.length - 1)
-              : '0';
-        }
-      },
     );
   }
 }
