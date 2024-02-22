@@ -16,14 +16,30 @@ class Currency {
   static String formatFromString(String amount, {String? currency}) {
     final parsedAmount = double.tryParse(amount) ?? 0.0;
 
+    if (currency == 'BTC') {
+      return NumberFormat.currency(
+        symbol: '₿',
+        decimalDigits: amount.contains('.') ? 8 : 0,
+      ).format(parsedAmount);
+    }
+
     return NumberFormat.simpleCurrency(
-      decimalDigits: amount.contains('.') ? (currency == 'BTC' ? 8 : 2) : 0,
+      name: currency,
+      decimalDigits: amount.contains('.') ? 2 : 0,
     ).format(parsedAmount);
   }
 
   static String formatFromDouble(double amount, {String? currency}) {
+    if (currency == 'BTC') {
+      return NumberFormat.currency(
+        symbol: '₿',
+        decimalDigits: amount % 1 == 0 ? 0 : 8,
+      ).format(amount);
+    }
+
     return NumberFormat.simpleCurrency(
-      decimalDigits: amount % 1 == 0 ? 0 : (currency == 'BTC' ? 8 : 2),
+      name: currency,
+      decimalDigits: amount % 1 == 0 ? 0 : 2,
     ).format(amount);
   }
 }
