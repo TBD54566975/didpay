@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
 class SendDidPage extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
@@ -175,7 +175,7 @@ class SendDidPage extends HookConsumerWidget {
   }
 
   Future<bool> _isValidDid(String did) async {
-    final result = await DidJwk.resolve(did);
+    final result = await DidResolver.resolve(did);
     return !result.hasError();
   }
 

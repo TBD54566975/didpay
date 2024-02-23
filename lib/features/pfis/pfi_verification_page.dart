@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_confirmation_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +36,7 @@ class PfiVerificationPage extends HookConsumerWidget {
 
     useEffect(() {
       Future.microtask(() async {
-        final result = await DidWeb.resolve(pfi.didUri);
+        final result = await DidResolver.resolve(pfi.didUri);
         final widgetService =
             result.didDocument?.service?.firstWhere((e) => e.type == 'IDV');
         if (widgetService?.serviceEndpoint == null) {

@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
 class IdvService {
   Future<String> getWidgetUrl(String idvAuthRequestUrl) async {

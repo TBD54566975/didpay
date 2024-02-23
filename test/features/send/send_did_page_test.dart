@@ -2,29 +2,20 @@ import 'package:didpay/features/account/account_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
-import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
-void main() {
-  late MockKeyManager keyManager;
-
-  setUp(() {
-    keyManager = MockKeyManager();
-  });
+void main() async {
+  final did = await DidJwk.create();
 
   group('SendDidPage', () {
-    const uri = 'did:example:123';
-
     testWidgets('should show amount to send', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: SendDidPage(sendAmount: '25'),
             overrides: [
-              didProvider.overrideWithValue(
-                DidJwk(uri: uri, keyManager: keyManager),
-              ),
+              didProvider.overrideWithValue(did),
             ]),
       );
 
@@ -36,9 +27,7 @@ void main() {
         WidgetHelpers.testableWidget(
             child: SendDidPage(sendAmount: '25'),
             overrides: [
-              didProvider.overrideWithValue(
-                DidJwk(uri: uri, keyManager: keyManager),
-              ),
+              didProvider.overrideWithValue(did),
             ]),
       );
 
@@ -50,9 +39,7 @@ void main() {
         WidgetHelpers.testableWidget(
             child: SendDidPage(sendAmount: '25'),
             overrides: [
-              didProvider.overrideWithValue(
-                DidJwk(uri: uri, keyManager: keyManager),
-              ),
+              didProvider.overrideWithValue(did),
             ]),
       );
 
@@ -64,9 +51,7 @@ void main() {
         WidgetHelpers.testableWidget(
             child: SendDidPage(sendAmount: '25'),
             overrides: [
-              didProvider.overrideWithValue(
-                DidJwk(uri: uri, keyManager: keyManager),
-              ),
+              didProvider.overrideWithValue(did),
             ]),
       );
 

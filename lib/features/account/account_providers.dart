@@ -1,5 +1,5 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
-final didProvider = Provider<Did>((ref) => throw UnimplementedError());
+final didProvider = Provider<BearerDid>((ref) => throw UnimplementedError());
 final vcProvider = StateProvider<String?>((ref) => null);

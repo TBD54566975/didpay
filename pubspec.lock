@@ -9,6 +9,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   base32:
     dependency: transitive
     description:
@@ -73,6 +81,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
+  device_info_plus:
+    dependency: "direct main"
+    description:
+      name: device_info_plus
+      sha256: "77f757b789ff68e4eaf9c56d1752309bd9f7ad557cb105b938a7f8eb89e59110"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.2"
+  device_info_plus_platform_interface:
+    dependency: transitive
+    description:
+      name: device_info_plus_platform_interface
+      sha256: d3b01d5868b50ae571cd1dc6e502fc94d956b665756180f7b16ead09e836fd64
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -261,6 +285,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.0"
+  mobile_scanner:
+    dependency: "direct main"
+    description:
+      name: mobile_scanner
+      sha256: "619ed5fd43ca9007a151f00c3dc43feedeaf235fe5647735d0237c38849d49dc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   mocktail:
     dependency: "direct dev"
     description:
@@ -349,6 +381,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.7.4"
+  qr:
+    dependency: transitive
+    description:
+      name: qr
+      sha256: "64957a3930367bf97cc211a5af99551d630f2f4625e38af10edd6b19131b64b3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
+  qr_flutter:
+    dependency: "direct main"
+    description:
+      name: qr_flutter
+      sha256: "5095f0fc6e3f71d08adef8feccc8cea4f12eec18a2e31c2e8d82cb6019f4b097"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   riverpod:
     dependency: transitive
     description:
@@ -499,20 +547,11 @@ packages:
     source: hosted
     version: "0.3.0"
   web5:
-    dependency: transitive
+    dependency: "direct main"
     description:
       path: "packages/web5"
       ref: main
-      resolved-ref: "0e9de93e2b7398828b269a191d119e133dfeac39"
-      url: "https://github.com/TBD54566975/web5-dart.git"
-    source: git
-    version: "0.1.0"
-  web5_flutter:
-    dependency: "direct main"
-    description:
-      path: "packages/web5_flutter"
-      ref: main
-      resolved-ref: "0e9de93e2b7398828b269a191d119e133dfeac39"
+      resolved-ref: dbe70ca3834a628114627085f3a6de6ac1686124
       url: "https://github.com/TBD54566975/web5-dart.git"
     source: git
     version: "0.1.0"
@@ -556,6 +595,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.0"
+  win32_registry:
+    dependency: transitive
+    description:
+      name: win32_registry
+      sha256: "41fd8a189940d8696b1b810efb9abcf60827b6cbfab90b0c43e8439e3a39d85a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.2"
   xdg_directories:
     dependency: transitive
     description:
@@ -565,5 +612,5 @@ packages:
     source: hosted
     version: "1.0.4"
 sdks:
-  dart: ">=3.2.3 <4.0.0"
+  dart: ">=3.2.0 <4.0.0"
   flutter: ">=3.16.0"
