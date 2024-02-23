@@ -4,11 +4,9 @@ import 'package:didpay/shared/theme/grid.dart';
 
 class NumberPad extends HookWidget {
   final Function(String) onKeyPressed;
-  final VoidCallback onDeletePressed;
 
   const NumberPad({
     required this.onKeyPressed,
-    required this.onDeletePressed,
     super.key,
   });
 
@@ -40,26 +38,22 @@ class NumberPad extends HookWidget {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: keys.map((key) {
-        return NumberPadKey(
-          title: key,
+        return _NumberPadKey(
+          text: key,
           onKeyPressed: onKeyPressed,
-          onDeletePressed: onDeletePressed,
         );
       }).toList(),
     );
   }
 }
 
-class NumberPadKey extends HookWidget {
-  final String title;
+class _NumberPadKey extends HookWidget {
+  final String text;
   final Function(String) onKeyPressed;
-  final VoidCallback onDeletePressed;
 
-  const NumberPadKey({
-    required this.title,
+  const _NumberPadKey({
+    required this.text,
     required this.onKeyPressed,
-    required this.onDeletePressed,
-    super.key,
   });
 
   @override
@@ -74,13 +68,14 @@ class NumberPadKey extends HookWidget {
     return GestureDetector(
       onTapDown: (_) => keySize.value = selectedFontSize,
       onTapCancel: () => keySize.value = defaultFontSize,
-      onTapUp: (key) {
+      onTapUp: (_) {
         keySize.value = defaultFontSize;
-        (title == '<') ? onDeletePressed() : onKeyPressed(title);
+        onKeyPressed(text);
       },
-      child: TextButton(
-        onPressed: null,
-        style: TextButton.styleFrom(fixedSize: const Size(keyWidth, keyHeight)),
+      behavior: HitTestBehavior.translucent,
+      child: SizedBox(
+        height: keyHeight,
+        width: keyWidth,
         child: AnimatedDefaultTextStyle(
           duration: const Duration(milliseconds: 100),
           style: TextStyle(
@@ -90,7 +85,7 @@ class NumberPadKey extends HookWidget {
           ),
           child: Center(
             child: Text(
-              title,
+              text,
               textScaler: TextScaler.noScaling,
             ),
           ),

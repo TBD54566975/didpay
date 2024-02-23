@@ -1,33 +1,27 @@
+import 'package:didpay/features/currency/currency.dart';
+import 'package:didpay/features/currency/payin.dart';
+import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/currency/currency_converter.dart';
-import 'package:didpay/features/currency/currency_modal.dart';
 import 'package:didpay/features/payments/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/number_pad.dart';
-import 'package:didpay/shared/utils/number_pad_input_validation_util.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// replace with actual currency list
-final supportedCurrencyList = [
-  {'label': 'USD', 'icon': Icons.attach_money, 'exchangeRate': 1},
-  {'label': 'MXN', 'icon': Icons.attach_money, 'exchangeRate': 17},
-  {'label': 'BTC', 'icon': Icons.currency_bitcoin, 'exchangeRate': 0.000024}
-];
-
-class DepositPage extends HookWidget {
+class DepositPage extends HookConsumerWidget {
   const DepositPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final depositAmount = useState<String>('0');
-    final isValidKeyPress = useState<bool>(true);
-    final selectedCurrencyItem =
-        useState<Map<String, Object>>(supportedCurrencyList[1]);
-    final outputAmount = double.parse('0${depositAmount.value}') /
-        double.parse(selectedCurrencyItem.value['exchangeRate'].toString());
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currencies = ref.watch(currencyProvider);
+
+    final payinAmount = useState('0');
+    final payoutAmount = useState(0.0);
+    final keyPress = useState(PayinKeyPress(0, ''));
+    final selectedCurrency = useState<Currency?>(currencies[0]);
 
     return Scaffold(
       appBar: AppBar(),
@@ -42,40 +36,42 @@ class DepositPage extends HookWidget {
                   padding: const EdgeInsets.symmetric(
                       horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      CurrencyConverter(
-                        inputAmount: double.parse('0${depositAmount.value}'),
-                        inputSelectedCurrency:
-                            selectedCurrencyItem.value['label'].toString(),
-                        inputLabel: Loc.of(context).youDeposit,
-                        outputAmount: outputAmount,
-                        isValidKeyPress: isValidKeyPress.value,
-                        onDropdownTap: () {
-                          CurrencyModal.show(
-                              context,
-                              (value) => selectedCurrencyItem.value =
-                                  supportedCurrencyList.firstWhere(
-                                      (element) => element['label'] == value),
-                              supportedCurrencyList,
-                              selectedCurrencyItem.value['label'].toString());
-                        },
+                      Payin(
+                        transactionType: Type.deposit,
+                        amount: payinAmount,
+                        keyPress: keyPress,
+                        currency: selectedCurrency,
+                      ),
+                      const SizedBox(height: Grid.sm),
+                      Payout(
+                        payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
+                        transactionType: Type.deposit,
+                        payoutAmount: payoutAmount,
+                        currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
                       // these will come from PFI offerings later
                       FeeDetails(
                           originCurrency: Loc.of(context).usd,
                           destinationCurrency:
-                              selectedCurrencyItem.value['label'].toString(),
-                          exchangeRate: selectedCurrencyItem
-                              .value['exchangeRate']
-                              .toString(),
+                              selectedCurrency.value?.label.toString() ?? '',
+                          exchangeRate:
+                              selectedCurrency.value?.exchangeRate.toString() ??
+                                  '',
                           serviceFee: '0')
                     ],
                   ),
                 ),
               ),
             ),
-            Center(child: buildNumberPad(depositAmount, isValidKeyPress)),
+            Center(
+              child: NumberPad(
+                onKeyPressed: (key) => keyPress.value =
+                    PayinKeyPress(keyPress.value.count + 1, key),
+              ),
+            ),
             const SizedBox(height: Grid.sm),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -84,12 +80,13 @@ class DepositPage extends HookWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
-                        inputAmount: depositAmount.value,
+                        inputAmount: payinAmount.value,
                         inputCurrency:
-                            selectedCurrencyItem.value['label'].toString(),
-                        exchangeRate: selectedCurrencyItem.value['exchangeRate']
-                            .toString(),
-                        outputAmount: outputAmount.toString(),
+                            selectedCurrency.value?.label.toString() ?? '',
+                        exchangeRate:
+                            selectedCurrency.value?.exchangeRate.toString() ??
+                                '',
+                        outputAmount: payoutAmount.value.toString(),
                         outputCurrency: Loc.of(context).usd,
                         transactionType: Type.deposit,
                       ),
@@ -102,34 +99,6 @@ class DepositPage extends HookWidget {
           ],
         ),
       ),
-    );
-  }
-
-  Widget buildNumberPad(ValueNotifier<String> depositAmount,
-      ValueNotifier<bool> isValidKeyPress) {
-    return NumberPad(
-      onKeyPressed: (key) {
-        isValidKeyPress.value = true;
-        isValidKeyPress.value = NumberPadInputValidationUtil.validateKeyPress(
-            depositAmount.value, key);
-
-        if (isValidKeyPress.value) {
-          depositAmount.value =
-              (depositAmount.value == '0') ? key : '${depositAmount.value}$key';
-        }
-      },
-      onDeletePressed: () {
-        isValidKeyPress.value = true;
-        isValidKeyPress.value =
-            NumberPadInputValidationUtil.validateDeletePress(
-                depositAmount.value);
-
-        if (isValidKeyPress.value) {
-          depositAmount.value = (depositAmount.value.length > 1)
-              ? depositAmount.value.substring(0, depositAmount.value.length - 1)
-              : '0';
-        }
-      },
     );
   }
 }

@@ -41,12 +41,12 @@ void main() {
 
       for (int i = 1; i <= 9; i++) {
         await tester.tap(find.text('$i'));
-        await tester.pump();
+        await tester.pumpAndSettle();
 
         expect(find.text('\$$i'), findsOneWidget);
 
         await tester.tap(find.text('<'));
-        await tester.pump();
+        await tester.pumpAndSettle();
       }
 
       expect(find.text('\$0'), findsOneWidget);
@@ -60,9 +60,9 @@ void main() {
       );
 
       await tester.tap(find.text('.'));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
-      expect(find.text('\$0.'), findsOneWidget);
+      expect(find.text('\$0.00'), findsOneWidget);
     });
   });
 

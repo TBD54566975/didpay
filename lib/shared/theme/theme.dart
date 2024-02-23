@@ -44,6 +44,9 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: Grid.side),
       ),
+      bottomSheetTheme: BottomSheetThemeData(
+        surfaceTintColor: lightColorScheme.surface,
+      ),
     );
 
 ThemeData darkTheme(BuildContext context) => ThemeData(
@@ -87,5 +90,8 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
       ),
       listTileTheme: const ListTileThemeData(
         contentPadding: EdgeInsets.symmetric(horizontal: Grid.side),
+      ),
+      bottomSheetTheme: BottomSheetThemeData(
+        surfaceTintColor: darkColorScheme.surface,
       ),
     );

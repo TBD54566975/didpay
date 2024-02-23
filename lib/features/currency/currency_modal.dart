@@ -1,12 +1,10 @@
+import 'package:didpay/features/currency/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:didpay/shared/theme/grid.dart';
 
 class CurrencyModal {
-  static Future<dynamic> show(
-      BuildContext context,
-      Function(String) onPressed,
-      List<Map<String, Object>> supportedCurrencyList,
-      String selectedCurrency) {
+  static Future<dynamic> show(BuildContext context, Function(String) onPressed,
+      List<Currency> currencies, String selectedCurrency) {
     return showModalBottomSheet(
         useSafeArea: true,
         isScrollControlled: true,
@@ -14,7 +12,7 @@ class CurrencyModal {
         builder: (BuildContext context) {
           return SafeArea(
               child: SizedBox(
-            height: supportedCurrencyList.length * 80,
+            height: currencies.length * 80,
             child: Column(children: [
               Padding(
                   padding: const EdgeInsets.symmetric(vertical: Grid.xs),
@@ -25,19 +23,16 @@ class CurrencyModal {
                   )),
               Expanded(
                 child: ListView(
-                    children:
-                        supportedCurrencyList.map((Map<String, Object> map) {
-                  IconData icon = map['icon'] as IconData;
-                  String label = map['label'].toString();
+                    children: currencies.map((Currency c) {
                   return (ListTile(
                     onTap: () {
-                      onPressed(label);
+                      onPressed(c.label);
                       Navigator.pop(context);
                     },
-                    leading: Icon(icon),
-                    title: Text(label,
+                    leading: Icon(c.icon),
+                    title: Text(c.label,
                         style: Theme.of(context).textTheme.titleMedium),
-                    trailing: (selectedCurrency == label)
+                    trailing: (selectedCurrency == c.label)
                         ? const Icon(Icons.check)
                         : null,
                   ));
