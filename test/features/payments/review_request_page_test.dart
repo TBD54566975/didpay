@@ -11,14 +11,14 @@ void main() {
   Widget requestReviewPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewRequestPage(
-          inputAmount: '1.00',
-          inputCurrency: 'USD',
+          payinAmount: '1.00',
+          payinCurrency: 'USD',
           exchangeRate: '17',
-          outputAmount: '17.00',
-          outputCurrency: 'MXN',
+          payoutAmount: '17.00',
+          payoutCurrency: 'MXN',
           transactionType: 'Deposit',
           serviceFee: '9.0',
-          bankName: 'ABC Bank',
+          paymentName: 'ABC Bank',
           formData: {'accountNumber': '1234567890'},
         ),
         overrides: overrides,

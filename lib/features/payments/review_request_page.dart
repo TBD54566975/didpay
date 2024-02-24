@@ -1,3 +1,4 @@
+import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
@@ -5,166 +6,190 @@ import 'package:didpay/shared/success_page.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:intl/intl.dart';
 
 class ReviewRequestPage extends HookWidget {
-  final String inputAmount;
-  final String outputAmount;
-  final String inputCurrency;
-  final String outputCurrency;
+  final String payinAmount;
+  final String payoutAmount;
+  final String payinCurrency;
+  final String payoutCurrency;
   final String exchangeRate;
   final String serviceFee;
-  final String bankName;
-  final Map<String, String> formData;
+  final String paymentName;
   final String transactionType;
+  final Map<String, String> formData;
 
   const ReviewRequestPage({
-    required this.inputAmount,
-    required this.outputAmount,
-    required this.inputCurrency,
-    required this.outputCurrency,
+    required this.payinAmount,
+    required this.payoutAmount,
+    required this.payinCurrency,
+    required this.payoutCurrency,
     required this.exchangeRate,
     required this.serviceFee,
-    required this.bankName,
-    required this.formData,
+    required this.paymentName,
     required this.transactionType,
+    required this.formData,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
-        body: SafeArea(
-            child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                _buildHeader(context),
-                                const SizedBox(height: Grid.md),
-                                _buildAmounts(context),
-                                const SizedBox(height: Grid.md),
-                                _buildFeeDetails(context),
-                                const SizedBox(height: Grid.md),
-                                _buildBankDetails(context),
-                              ])),
-                    ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FilledButton(
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => SuccessPage(
-                                  text: Loc.of(context).yourRequestWasSubmitted,
-                                ),
-                              ),
-                            );
-                          },
-                          child: Text(Loc.of(context).submit),
+      appBar: AppBar(),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeader(context),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Grid.sm),
+                      _buildAmounts(context),
+                      _buildFeeDetails(context),
+                      _buildBankDetails(context),
+                    ],
+                  ),
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  FilledButton(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => SuccessPage(
+                            text: Loc.of(context).yourRequestWasSubmitted,
+                          ),
                         ),
-                      ],
-                    ),
-                  ],
-                ))));
+                      );
+                    },
+                    child: Text(Loc.of(context).submit),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Widget _buildHeader(BuildContext context) => Column(children: [
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text(
-            Loc.of(context).reviewYourRequest,
-            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
+  Widget _buildHeader(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: Grid.xs),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                Loc.of(context).reviewYourRequest,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                Loc.of(context).makeSureInfoIsCorrect,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      );
+
+  Widget _buildAmounts(BuildContext context) => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                Currency.formatFromString(payinAmount, currency: payinCurrency),
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(width: Grid.half),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                child: Text(
+                  payinCurrency,
+                  style: Theme.of(context).textTheme.headlineSmall,
                 ),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: Grid.xs),
-        Align(
-          alignment: Alignment.topLeft,
-          child: Text(
-            Loc.of(context).makeSureInfoIsCorrect,
-            style: Theme.of(context).textTheme.bodyMedium,
+          const SizedBox(height: Grid.xxs),
+          Text(
+            transactionType == Type.deposit
+                ? Loc.of(context).youPay
+                : Loc.of(context).withdrawAmount,
+            style: Theme.of(context).textTheme.bodySmall,
           ),
-        ),
-      ]);
+          const SizedBox(height: Grid.sm),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text(
+                Currency.formatFromString(payoutAmount,
+                    currency: payoutCurrency),
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(width: Grid.xs),
+              Text(
+                payoutCurrency,
+                style: Theme.of(context).textTheme.headlineSmall,
+              ),
+            ],
+          ),
+          const SizedBox(height: Grid.xxs),
+          Text(
+            transactionType == Type.deposit
+                ? Loc.of(context).depositAmount
+                : Loc.of(context).youGet,
+            style: Theme.of(context).textTheme.bodySmall,
+          )
+        ],
+      );
 
-  Widget _buildAmounts(BuildContext context) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
+  Widget _buildFeeDetails(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: Grid.lg),
+        child: FeeDetails(
+            payinCurrency: Loc.of(context).usd,
+            payoutCurrency: payinCurrency != Loc.of(context).usd
+                ? payinCurrency
+                : payoutCurrency,
+            exchangeRate: exchangeRate,
+            serviceFee: double.parse(serviceFee).toStringAsFixed(2),
+            total: payinCurrency != Loc.of(context).usd
+                ? (double.parse(payinAmount) + double.parse(serviceFee))
+                    .toStringAsFixed(2)
+                : (double.parse(payoutAmount) + double.parse(serviceFee))
+                    .toStringAsFixed(2)),
+      );
+
+  Widget _buildBankDetails(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(bottom: Grid.xs),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              NumberFormat.simpleCurrency().format(double.parse(inputAmount)),
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            const SizedBox(width: Grid.xs),
-            Text(
-              inputCurrency,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
+            Text(paymentName, style: Theme.of(context).textTheme.bodyLarge),
+            const SizedBox(height: Grid.xxs),
+            Text(_obscureAccountNumber(formData['accountNumber']!),
+                style: Theme.of(context).textTheme.bodyLarge),
           ],
         ),
-        const SizedBox(height: Grid.xxs),
-        Text(
-          transactionType == Type.deposit
-              ? Loc.of(context).youPay
-              : Loc.of(context).withdrawAmount,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
-        const SizedBox(height: Grid.xs),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Text(
-              NumberFormat.simpleCurrency().format(double.parse(outputAmount)),
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
-            const SizedBox(width: Grid.xs),
-            Text(
-              outputCurrency,
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-        const SizedBox(height: Grid.xxs),
-        Text(
-          transactionType == Type.deposit
-              ? Loc.of(context).depositAmount
-              : Loc.of(context).youGet,
-          style: Theme.of(context).textTheme.bodyLarge,
-        )
-      ]);
+      );
 
-  Widget _buildFeeDetails(BuildContext context) => FeeDetails(
-      originCurrency: Loc.of(context).usd,
-      destinationCurrency:
-          inputCurrency != Loc.of(context).usd ? inputCurrency : outputCurrency,
-      exchangeRate: exchangeRate,
-      serviceFee: double.parse(serviceFee).toStringAsFixed(2),
-      total: inputCurrency != Loc.of(context).usd
-          ? (double.parse(inputAmount) + double.parse(serviceFee))
-              .toStringAsFixed(2)
-          : (double.parse(outputAmount) + double.parse(serviceFee))
-              .toStringAsFixed(2));
-
-  Widget _buildBankDetails(BuildContext context) => Column(children: [
-        Text(bankName),
-        const SizedBox(height: Grid.xxs),
-        Text(obscureAccountNumber(formData['accountNumber']!)),
-      ]);
-
-  String obscureAccountNumber(String input) {
+  String _obscureAccountNumber(String input) {
     if (input.length <= 4) {
       return input;
     }

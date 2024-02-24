@@ -10,21 +10,22 @@ import 'package:didpay/shared/json_schema_form.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
-  final String inputCurrency;
-  final String inputAmount;
-  final String outputCurrency;
-  final String outputAmount;
+  final String payinAmount;
+  final String payoutAmount;
+  final String payinCurrency;
+  final String payoutCurrency;
   final String exchangeRate;
   final String transactionType;
 
-  const PaymentDetailsPage(
-      {required this.inputCurrency,
-      required this.inputAmount,
-      required this.outputCurrency,
-      required this.outputAmount,
-      required this.exchangeRate,
-      required this.transactionType,
-      super.key});
+  const PaymentDetailsPage({
+    required this.payinAmount,
+    required this.payoutAmount,
+    required this.payinCurrency,
+    required this.payoutCurrency,
+    required this.exchangeRate,
+    required this.transactionType,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -194,18 +195,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ReviewRequestPage(
-                        formData: formData,
-                        bankName: selectedPaymentMethod.value!.kind
-                                .split('_')
-                                .lastOrNull ??
-                            '',
-                        inputAmount: inputAmount,
-                        outputAmount: outputAmount,
-                        inputCurrency: inputCurrency,
-                        outputCurrency: outputCurrency,
+                        payinAmount: payinAmount,
+                        payoutAmount: payoutAmount,
+                        payinCurrency: payinCurrency,
+                        payoutCurrency: payoutCurrency,
                         exchangeRate: exchangeRate,
                         serviceFee: selectedPaymentMethod.value!.fee ?? '0.00',
                         transactionType: transactionType,
+                        paymentName: selectedPaymentMethod.value!.kind
+                                .split('_')
+                                .lastOrNull ??
+                            '',
+                        formData: formData,
                       ),
                     ),
                   );

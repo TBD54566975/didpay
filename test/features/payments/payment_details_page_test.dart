@@ -13,11 +13,11 @@ void main() {
             {List<Override> overrides = const []}) =>
         WidgetHelpers.testableWidget(
           child: const PaymentDetailsPage(
-            inputAmount: '1.00',
-            inputCurrency: 'USD',
+            payinAmount: '1.00',
+            payinCurrency: 'USD',
             exchangeRate: '17',
-            outputAmount: '17.00',
-            outputCurrency: 'MXN',
+            payoutAmount: '17.00',
+            payoutCurrency: 'MXN',
             transactionType: 'Deposit',
           ),
           overrides: overrides,
