@@ -4,15 +4,15 @@ import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/payments/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DepositPage extends HookConsumerWidget {
-  const DepositPage({super.key});
+class WithdrawPage extends HookConsumerWidget {
+  const WithdrawPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,12 +34,12 @@ class DepositPage extends HookConsumerWidget {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Grid.side, vertical: Grid.xs),
+                      horizontal: Grid.side, vertical: Grid.sm),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Payin(
-                        transactionType: Type.deposit,
+                        transactionType: Type.withdrawal,
                         amount: payinAmount,
                         keyPress: keyPress,
                         currency: selectedCurrency,
@@ -47,7 +47,7 @@ class DepositPage extends HookConsumerWidget {
                       const SizedBox(height: Grid.sm),
                       Payout(
                         payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
-                        transactionType: Type.deposit,
+                        transactionType: Type.withdrawal,
                         payoutAmount: payoutAmount,
                         currency: selectedCurrency,
                       ),
@@ -80,14 +80,14 @@ class DepositPage extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
                         payinAmount: payinAmount.value,
-                        payoutAmount: payoutAmount.value.toString(),
-                        payinCurrency:
-                            selectedCurrency.value?.label.toString() ?? '',
-                        payoutCurrency: Loc.of(context).usd,
+                        payinCurrency: Loc.of(context).usd,
                         exchangeRate:
                             selectedCurrency.value?.exchangeRate.toString() ??
                                 '',
-                        transactionType: Type.deposit,
+                        payoutAmount: payoutAmount.value.toString(),
+                        payoutCurrency:
+                            selectedCurrency.value?.label.toString() ?? '',
+                        transactionType: Type.withdrawal,
                       ),
                     ),
                   );
