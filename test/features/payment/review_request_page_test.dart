@@ -1,3 +1,4 @@
+import 'package:didpay/features/request/request_confirmation_page.dart';
 import 'package:didpay/features/request/review_request_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/success_page.dart';
@@ -60,7 +61,7 @@ void main() {
       expect(find.textContaining('1234567890'), findsNothing);
     });
 
-    testWidgets('should show success page on tap of submit button',
+    testWidgets('should show request confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
           WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
@@ -68,8 +69,7 @@ void main() {
       await tester.tap(find.text('Submit'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SuccessPage), findsOneWidget);
-      expect(find.text('Your request was submitted!'), findsOneWidget);
+      expect(find.byType(RequestConfirmationPage), findsOneWidget);
     });
   });
 }
