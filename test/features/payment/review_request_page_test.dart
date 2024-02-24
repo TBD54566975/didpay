@@ -1,4 +1,4 @@
-import 'package:didpay/features/payments/review_request_page.dart';
+import 'package:didpay/features/request/review_request_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/success_page.dart';
 import 'package:flutter/material.dart';
