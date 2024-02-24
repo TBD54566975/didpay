@@ -1,4 +1,3 @@
-// TODO: change to validate entire input and have switch statement for different currencies
 class NumberValidationUtil {
   static bool isValidInput(String current, String key, {String? currency}) {
     if (current.contains('.') && key == '.') {
