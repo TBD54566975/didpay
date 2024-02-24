@@ -4,17 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
-import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
-void main() {
-  late MockKeyManager keyManager;
-
-  setUp(() {
-    keyManager = MockKeyManager();
-  });
+void main() async {
+  final did = await DidJwk.create();
 
   group('SendPage', () {
     testWidgets('should show Number Pad', (tester) async {
@@ -68,13 +63,9 @@ void main() {
 
   testWidgets('should navigate to SendDidPage on tap of send button',
       (tester) async {
-    const uri = 'did:example:123';
-
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const SendPage(), overrides: [
-        didProvider.overrideWithValue(
-          DidJwk(uri: uri, keyManager: keyManager),
-        ),
+        didProvider.overrideWithValue(did),
       ]),
     );
 

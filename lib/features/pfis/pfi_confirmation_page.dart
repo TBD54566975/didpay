@@ -12,7 +12,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web5_flutter/web5_flutter.dart';
+import 'package:web5/web5.dart';
 
 class PfiConfirmationPage extends HookConsumerWidget {
   final Pfi pfi;
@@ -43,7 +43,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
   }
 
   Future<void> verifyCredential(WidgetRef ref) async {
-    final result = await DidDht.resolve(pfi.didUri);
+    final result = await DidResolver.resolve(pfi.didUri);
     final pfiService =
         result.didDocument?.service?.firstWhereOrNull((e) => e.type == 'PFI');
 
