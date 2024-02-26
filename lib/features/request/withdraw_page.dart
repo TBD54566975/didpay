@@ -4,7 +4,7 @@ import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/payments/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -52,10 +52,9 @@ class WithdrawPage extends HookConsumerWidget {
                         currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
-                      // these will come from PFI offerings later
                       FeeDetails(
-                          originCurrency: Loc.of(context).usd,
-                          destinationCurrency:
+                          payinCurrency: Loc.of(context).usd,
+                          payoutCurrency:
                               selectedCurrency.value?.label.toString() ?? '',
                           exchangeRate:
                               selectedCurrency.value?.exchangeRate.toString() ??
@@ -80,13 +79,13 @@ class WithdrawPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
-                        inputAmount: payinAmount.value,
-                        inputCurrency: Loc.of(context).usd,
+                        payinAmount: payinAmount.value,
+                        payinCurrency: Loc.of(context).usd,
                         exchangeRate:
                             selectedCurrency.value?.exchangeRate.toString() ??
                                 '',
-                        outputAmount: payoutAmount.value.toString(),
-                        outputCurrency:
+                        payoutAmount: payoutAmount.value.toString(),
+                        payoutCurrency:
                             selectedCurrency.value?.label.toString() ?? '',
                         transactionType: Type.withdrawal,
                       ),

@@ -1,7 +1,7 @@
-import 'package:didpay/features/payments/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:flutter/material.dart';
-import 'package:didpay/features/payments/payment_method.dart';
-import 'package:didpay/features/payments/search_payment_methods_page.dart';
+import 'package:didpay/features/payment/payment_method.dart';
+import 'package:didpay/features/payment/search_payment_methods_page.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -13,11 +13,11 @@ void main() {
             {List<Override> overrides = const []}) =>
         WidgetHelpers.testableWidget(
           child: const PaymentDetailsPage(
-            inputAmount: '1.00',
-            inputCurrency: 'USD',
+            payinAmount: '1.00',
+            payinCurrency: 'USD',
             exchangeRate: '17',
-            outputAmount: '17.00',
-            outputCurrency: 'MXN',
+            payoutAmount: '17.00',
+            payoutCurrency: 'MXN',
             transactionType: 'Deposit',
           ),
           overrides: overrides,

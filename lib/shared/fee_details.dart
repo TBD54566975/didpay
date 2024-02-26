@@ -4,16 +4,15 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 
 class FeeDetails extends HookWidget {
-  final String originCurrency;
-  final String destinationCurrency;
-  final String
-      exchangeRate; // from origin -> destination (ie. destination / origin = exchangeRate)
+  final String payinCurrency;
+  final String payoutCurrency;
+  final String exchangeRate;
   final String serviceFee;
   final String total;
 
   const FeeDetails({
-    required this.originCurrency,
-    required this.destinationCurrency,
+    required this.payinCurrency,
+    required this.payoutCurrency,
     required this.exchangeRate,
     required this.serviceFee,
     this.total = '',
@@ -36,7 +35,7 @@ class FeeDetails extends HookWidget {
                 flex: 1,
                 child: Text(
                   Loc.of(context).estRate,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
@@ -44,8 +43,8 @@ class FeeDetails extends HookWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  '1 $originCurrency = $exchangeRate $destinationCurrency',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  '1 $payinCurrency = $exchangeRate $payoutCurrency',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                   textAlign: TextAlign.right,
@@ -53,14 +52,14 @@ class FeeDetails extends HookWidget {
               ),
             ],
           ),
-          const SizedBox(height: Grid.sm),
+          const SizedBox(height: Grid.xs),
           Row(
             children: [
               Expanded(
                 flex: 1,
                 child: Text(
                   Loc.of(context).serviceFee,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                 ),
@@ -68,8 +67,8 @@ class FeeDetails extends HookWidget {
               Expanded(
                 flex: 2,
                 child: Text(
-                  '$serviceFee $destinationCurrency',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  '$serviceFee $payoutCurrency',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                   textAlign: TextAlign.right,
@@ -80,14 +79,14 @@ class FeeDetails extends HookWidget {
           if (total.isNotEmpty)
             Column(
               children: [
-                const SizedBox(height: Grid.sm),
+                const SizedBox(height: Grid.xs),
                 Row(
                   children: [
                     Expanded(
                       flex: 1,
                       child: Text(
                         Loc.of(context).total,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                       ),
@@ -95,8 +94,8 @@ class FeeDetails extends HookWidget {
                     Expanded(
                       flex: 2,
                       child: Text(
-                        '$total $destinationCurrency',
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        '$total $payoutCurrency',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
                         textAlign: TextAlign.right,

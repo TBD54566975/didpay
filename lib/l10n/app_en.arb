@@ -78,5 +78,5 @@
     "withdrawAmount": "Withdraw amount",
     "total": "Total",
     "submit": "Submit",
-    "yourRequestWasSubmitted": "Your request was submitted!"
+    "sendingRequest": "Sending request..."
 }

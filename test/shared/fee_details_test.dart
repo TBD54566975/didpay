@@ -9,8 +9,8 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const FeeDetails(
-            originCurrency: 'USD',
-            destinationCurrency: 'MXN',
+            payinCurrency: 'USD',
+            payoutCurrency: 'MXN',
             exchangeRate: '17',
             serviceFee: '0',
           ),
@@ -25,8 +25,8 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const FeeDetails(
-          originCurrency: 'USD',
-          destinationCurrency: 'MXN',
+          payinCurrency: 'USD',
+          payoutCurrency: 'MXN',
           exchangeRate: '17',
           serviceFee: '0',
         )),
@@ -39,8 +39,8 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const FeeDetails(
-          originCurrency: 'USD',
-          destinationCurrency: 'MXN',
+          payinCurrency: 'USD',
+          payoutCurrency: 'MXN',
           exchangeRate: '17',
           serviceFee: '0',
         )),
@@ -54,8 +54,8 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: const FeeDetails(
-          originCurrency: 'USD',
-          destinationCurrency: 'MXN',
+          payinCurrency: 'USD',
+          payoutCurrency: 'MXN',
           exchangeRate: '17',
           serviceFee: '0',
         )),

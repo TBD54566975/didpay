@@ -173,5 +173,5 @@ class LocEn extends Loc {
   String get submit => 'Submit';
 
   @override
-  String get yourRequestWasSubmitted => 'Your request was submitted!';
+  String get sendingRequest => 'Sending request...';
 }

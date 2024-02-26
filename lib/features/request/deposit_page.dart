@@ -4,7 +4,7 @@ import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/payments/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -34,7 +34,7 @@ class DepositPage extends HookConsumerWidget {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Grid.side, vertical: Grid.sm),
+                      horizontal: Grid.side, vertical: Grid.xs),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -52,10 +52,9 @@ class DepositPage extends HookConsumerWidget {
                         currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
-                      // these will come from PFI offerings later
                       FeeDetails(
-                          originCurrency: Loc.of(context).usd,
-                          destinationCurrency:
+                          payinCurrency: Loc.of(context).usd,
+                          payoutCurrency:
                               selectedCurrency.value?.label.toString() ?? '',
                           exchangeRate:
                               selectedCurrency.value?.exchangeRate.toString() ??
@@ -80,14 +79,14 @@ class DepositPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
-                        inputAmount: payinAmount.value,
-                        inputCurrency:
+                        payinAmount: payinAmount.value,
+                        payoutAmount: payoutAmount.value.toString(),
+                        payinCurrency:
                             selectedCurrency.value?.label.toString() ?? '',
+                        payoutCurrency: Loc.of(context).usd,
                         exchangeRate:
                             selectedCurrency.value?.exchangeRate.toString() ??
                                 '',
-                        outputAmount: payoutAmount.value.toString(),
-                        outputCurrency: Loc.of(context).usd,
                         transactionType: Type.deposit,
                       ),
                     ),

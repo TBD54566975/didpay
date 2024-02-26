@@ -415,11 +415,11 @@ abstract class Loc {
   /// **'Submit'**
   String get submit;
 
-  /// No description provided for @yourRequestWasSubmitted.
+  /// No description provided for @sendingRequest.
   ///
   /// In en, this message translates to:
-  /// **'Your request was submitted!'**
-  String get yourRequestWasSubmitted;
+  /// **'Sending request...'**
+  String get sendingRequest;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

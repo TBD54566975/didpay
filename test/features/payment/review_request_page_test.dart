@@ -1,4 +1,5 @@
-import 'package:didpay/features/payments/review_request_page.dart';
+import 'package:didpay/features/request/request_confirmation_page.dart';
+import 'package:didpay/features/request/review_request_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/success_page.dart';
 import 'package:flutter/material.dart';
@@ -11,14 +12,14 @@ void main() {
   Widget requestReviewPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewRequestPage(
-          inputAmount: '1.00',
-          inputCurrency: 'USD',
+          payinAmount: '1.00',
+          payinCurrency: 'USD',
           exchangeRate: '17',
-          outputAmount: '17.00',
-          outputCurrency: 'MXN',
+          payoutAmount: '17.00',
+          payoutCurrency: 'MXN',
           transactionType: 'Deposit',
           serviceFee: '9.0',
-          bankName: 'ABC Bank',
+          paymentName: 'ABC Bank',
           formData: {'accountNumber': '1234567890'},
         ),
         overrides: overrides,
@@ -60,7 +61,7 @@ void main() {
       expect(find.textContaining('1234567890'), findsNothing);
     });
 
-    testWidgets('should show success page on tap of submit button',
+    testWidgets('should show request confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
           WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
@@ -68,8 +69,7 @@ void main() {
       await tester.tap(find.text('Submit'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SuccessPage), findsOneWidget);
-      expect(find.text('Your request was submitted!'), findsOneWidget);
+      expect(find.byType(RequestConfirmationPage), findsOneWidget);
     });
   });
 }
