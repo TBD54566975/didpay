@@ -2,8 +2,8 @@
     "appName": "DIDPay",
     "welcomeToDIDPay": "Welcome to DIDPay",
     "getStarted": "Get started",
-    "toSendMoney": "To send money, you'll need to verify your identity with a PFI in your region",
-    "selectYourRegion": "Select your region",
+    "interactWithPfis": "Interact with PFIs (Participating Financial Institutions) and send money to others around the world",
+    "whereAreYouLocated": "Where are you located?",
     "home": "Home",
     "done": "Done",
     "deposit": "Deposit",
@@ -78,5 +78,14 @@
     "withdrawAmount": "Withdraw amount",
     "total": "Total",
     "submit": "Submit",
-    "sendingRequest": "Sending request..."
+    "sendingRequest": "Sending request...",
+    "selectYourCountry": "Select your country to see what PFIs are available to you",
+    "getStartedWithAPfi": "Get started with a PFI",
+    "selectAPfi": "Select a PFI to verify your identity and provide you liquidity",
+    "termsOfService": "Terms of service",
+    "exampleTerms": "Financial services are being provided by Block, Inc. By clicking on the \"next\" button, you consent to opening an account with Block, Inc. Block, Inc. will ask you for personal information to verify your identity before opening an account...",
+    "iCertifyThatIAgreeToThe": "I certify that I agree to the ",
+    "userAgreement": "User Agreement",
+    "andIHaveReadThe": ", and I have read the ",
+    "privacyPolicy": "Privacy Policy"
 }

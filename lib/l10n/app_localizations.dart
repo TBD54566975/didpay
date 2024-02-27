@@ -109,17 +109,17 @@ abstract class Loc {
   /// **'Get started'**
   String get getStarted;
 
-  /// No description provided for @toSendMoney.
+  /// No description provided for @interactWithPfis.
   ///
   /// In en, this message translates to:
-  /// **'To send money, you\'ll need to verify your identity with a PFI in your region'**
-  String get toSendMoney;
+  /// **'Interact with PFIs (Participating Financial Institutions) and send money to others around the world'**
+  String get interactWithPfis;
 
-  /// No description provided for @selectYourRegion.
+  /// No description provided for @whereAreYouLocated.
   ///
   /// In en, this message translates to:
-  /// **'Select your region'**
-  String get selectYourRegion;
+  /// **'Where are you located?'**
+  String get whereAreYouLocated;
 
   /// No description provided for @home.
   ///
@@ -420,6 +420,60 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Sending request...'**
   String get sendingRequest;
+
+  /// No description provided for @selectYourCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your country to see what PFIs are available to you'**
+  String get selectYourCountry;
+
+  /// No description provided for @getStartedWithAPfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Get started with a PFI'**
+  String get getStartedWithAPfi;
+
+  /// No description provided for @selectAPfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a PFI to verify your identity and provide you liquidity'**
+  String get selectAPfi;
+
+  /// No description provided for @termsOfService.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of service'**
+  String get termsOfService;
+
+  /// No description provided for @exampleTerms.
+  ///
+  /// In en, this message translates to:
+  /// **'Financial services are being provided by Block, Inc. By clicking on the \"next\" button, you consent to opening an account with Block, Inc. Block, Inc. will ask you for personal information to verify your identity before opening an account...'**
+  String get exampleTerms;
+
+  /// No description provided for @iCertifyThatIAgreeToThe.
+  ///
+  /// In en, this message translates to:
+  /// **'I certify that I agree to the '**
+  String get iCertifyThatIAgreeToThe;
+
+  /// No description provided for @userAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'User Agreement'**
+  String get userAgreement;
+
+  /// No description provided for @andIHaveReadThe.
+  ///
+  /// In en, this message translates to:
+  /// **', and I have read the '**
+  String get andIHaveReadThe;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
