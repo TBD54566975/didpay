@@ -1,3 +1,4 @@
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -51,9 +52,10 @@ class PfiVerificationPage extends HookConsumerWidget {
           return;
         }
 
+        final did = ref.read(didProvider);
         final idvWidgetUrl = await ref
             .read(idvServiceProvider)
-            .getWidgetUrl('http://${widgetService?.serviceEndpoint}');
+            .getWidgetUrl('http://${widgetService?.serviceEndpoint}', did);
 
         final fullPath = '$idvWidgetUrl&callback_uri=didpay://kyc';
         controller.loadRequest(Uri.parse(fullPath));
