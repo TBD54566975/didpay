@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
@@ -45,7 +44,6 @@ class IdvService {
 
     // TODO: try/catch here
     final idToken = await Jwt.sign(did: did, payload: claims);
-    log('id_token: $idToken');
 
     // TODO: check for response_uri here
     final responseUri = decodedJwt.claims.misc!['response_uri'];
