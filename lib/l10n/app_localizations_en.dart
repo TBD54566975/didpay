@@ -14,10 +14,10 @@ class LocEn extends Loc {
   String get getStarted => 'Get started';
 
   @override
-  String get toSendMoney => 'To send money, you\'ll need to verify your identity with a PFI in your region';
+  String get interactWithPfis => 'Interact with PFIs (Participating Financial Institutions) and send money to others around the world';
 
   @override
-  String get selectYourRegion => 'Select your region';
+  String get whereAreYouLocated => 'Where are you located?';
 
   @override
   String get home => 'Home';
@@ -174,4 +174,19 @@ class LocEn extends Loc {
 
   @override
   String get sendingRequest => 'Sending request...';
+
+  @override
+  String get selectYourCountry => 'Select your country to see what PFIs are available to you';
+
+  @override
+  String get getStartedWithAPfi => 'Get started with a PFI';
+
+  @override
+  String get selectAPfi => 'Select a PFI to verify your identity and provide you liquidity';
+
+  @override
+  String get termsOfService => 'Terms of service';
+
+  @override
+  String get exampleTerms => 'Financial services are being provided by Block, Inc. By clicking on the \"next\" button, you consent to opening an account with Block, Inc. Block, Inc. will ask you for personal information to verify your identity before opening an account...';
 }
