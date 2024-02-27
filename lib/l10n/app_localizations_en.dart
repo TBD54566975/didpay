@@ -189,4 +189,16 @@ class LocEn extends Loc {
 
   @override
   String get exampleTerms => 'Financial services are being provided by Block, Inc. By clicking on the \"next\" button, you consent to opening an account with Block, Inc. Block, Inc. will ask you for personal information to verify your identity before opening an account...';
+
+  @override
+  String get iCertifyThatIAgreeToThe => 'I certify that I agree to the ';
+
+  @override
+  String get userAgreement => 'User Agreement';
+
+  @override
+  String get andIHaveReadThe => ', and I have read the ';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
 }

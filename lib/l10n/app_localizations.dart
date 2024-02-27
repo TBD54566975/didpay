@@ -450,6 +450,30 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Financial services are being provided by Block, Inc. By clicking on the \"next\" button, you consent to opening an account with Block, Inc. Block, Inc. will ask you for personal information to verify your identity before opening an account...'**
   String get exampleTerms;
+
+  /// No description provided for @iCertifyThatIAgreeToThe.
+  ///
+  /// In en, this message translates to:
+  /// **'I certify that I agree to the '**
+  String get iCertifyThatIAgreeToThe;
+
+  /// No description provided for @userAgreement.
+  ///
+  /// In en, this message translates to:
+  /// **'User Agreement'**
+  String get userAgreement;
+
+  /// No description provided for @andIHaveReadThe.
+  ///
+  /// In en, this message translates to:
+  /// **', and I have read the '**
+  String get andIHaveReadThe;
+
+  /// No description provided for @privacyPolicy.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
