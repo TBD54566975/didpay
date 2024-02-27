@@ -86,45 +86,49 @@ class AgreementPage extends HookWidget {
       BuildContext context, ValueNotifier<bool> hasAgreed) {
     return Padding(
       padding: const EdgeInsets.only(left: 5.0, right: Grid.side),
-      child: Row(
-        children: [
-          Checkbox(
-            value: hasAgreed.value,
-            onChanged: (newValue) => hasAgreed.value = newValue ?? false,
-          ),
-          const SizedBox(
-            width: Grid.xxs,
-          ),
-          Flexible(
-            child: RichText(
-              text: TextSpan(
-                style: Theme.of(context).textTheme.bodySmall,
-                children: <TextSpan>[
-                  const TextSpan(text: 'I certify that I agree to the '),
-                  TextSpan(
-                      text: 'User Agreement',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          log('User Agreement');
-                        }),
-                  const TextSpan(text: ', and I have read the '),
-                  TextSpan(
-                      text: 'Privacy Policy',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      recognizer: TapGestureRecognizer()
-                        ..onTap = () {
-                          log('Privacy Policy');
-                        }),
-                ],
+      child: GestureDetector(
+        onTapUp: (_) => hasAgreed.value = !hasAgreed.value,
+        child: Row(
+          children: [
+            Checkbox(
+              value: hasAgreed.value,
+              onChanged: (newValue) => hasAgreed.value = newValue ?? false,
+            ),
+            const SizedBox(
+              width: Grid.xxs,
+            ),
+            Expanded(
+              child: RichText(
+                text: TextSpan(
+                  style: Theme.of(context).textTheme.bodySmall,
+                  children: <TextSpan>[
+                    TextSpan(text: Loc.of(context).iCertifyThatIAgreeToThe),
+                    TextSpan(
+                        text: Loc.of(context).userAgreement,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            log(Loc.of(context).userAgreement);
+                          }),
+                    TextSpan(text: Loc.of(context).andIHaveReadThe),
+                    TextSpan(
+                        text: Loc.of(context).privacyPolicy,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            log(Loc.of(context).privacyPolicy);
+                          }),
+                    const TextSpan(text: '.')
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
