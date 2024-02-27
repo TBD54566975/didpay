@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -108,20 +106,14 @@ class AgreementPage extends HookWidget {
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            log(Loc.of(context).userAgreement);
-                          }),
+                        recognizer: TapGestureRecognizer()),
                     TextSpan(text: Loc.of(context).andIHaveReadThe),
                     TextSpan(
                         text: Loc.of(context).privacyPolicy,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                         ),
-                        recognizer: TapGestureRecognizer()
-                          ..onTap = () {
-                            log(Loc.of(context).privacyPolicy);
-                          }),
+                        recognizer: TapGestureRecognizer()),
                     const TextSpan(text: '.')
                   ],
                 ),
