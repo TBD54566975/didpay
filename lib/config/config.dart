@@ -4,7 +4,7 @@ class Config {
   static List<Pfi> devPfis = [
     Pfi(
       id: '1',
-      name: 'DID PFI 1',
+      name: 'TBD PFI',
       didUri: 'did:web:localhost%3A8892:ingress',
     ),
   ];
