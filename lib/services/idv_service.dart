@@ -5,7 +5,9 @@ import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
 
 class IdvService {
-  Future<String> getWidgetUrl(String idvAuthRequestUrl, BearerDid did) async {
+  Future<Map<String, dynamic>> getIdvRequest(
+      String idvAuthRequestUrl, BearerDid did) async {
+    // TODO: try/catch here
     final response = await http.get(Uri.parse(idvAuthRequestUrl));
     if (response.statusCode != 200) {
       throw Exception('Failed to load auth request');
@@ -22,11 +24,14 @@ class IdvService {
     final nowEpochSeconds = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
     const tokenDuration = Duration(minutes: 5);
 
+    // TODO: try/catch here
     final decodedJwt = await Jwt.verify(request);
 
+    // TODO: check for nonce here
     final nonce = decodedJwt.claims.misc!['nonce'];
     final exp = nowEpochSeconds + tokenDuration.inSeconds;
 
+    // TODO: check for client_id here
     final claims = JwtClaims(
       iss: did.uri,
       aud: decodedJwt.claims.misc!['client_id'],
@@ -38,18 +43,19 @@ class IdvService {
       },
     );
 
+    // TODO: try/catch here
     final idToken = await Jwt.sign(did: did, payload: claims);
-    log('idToken: $idToken');
+    log('id_token: $idToken');
 
+    // TODO: check for response_uri here
     final responseUri = decodedJwt.claims.misc!['response_uri'];
+    // TODO: try/catch here
     final idvResponse = await http.post(Uri.parse(responseUri),
         body: json.encode({
-          'idToken': idToken,
+          'id_token': idToken,
         }));
 
-    Map<String, dynamic> decodedIdvResponse = json.decode(idvResponse.body);
-    print(decodedIdvResponse);
-
-    return Future.value('https://example.com');
+    // TODO: try/catch here
+    return json.decode(idvResponse.body);
   }
 }

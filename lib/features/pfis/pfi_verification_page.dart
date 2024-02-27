@@ -53,11 +53,16 @@ class PfiVerificationPage extends HookConsumerWidget {
         }
 
         final did = ref.read(didProvider);
-        final idvWidgetUrl = await ref
+        final idvRequest = await ref
             .read(idvServiceProvider)
-            .getWidgetUrl('http://${widgetService?.serviceEndpoint}', did);
+            .getIdvRequest('http://${widgetService?.serviceEndpoint}', did);
 
-        final fullPath = '$idvWidgetUrl&callback_uri=didpay://kyc';
+        // TODO: check for url here
+        final idvUrl = idvRequest['url'];
+
+        print('idvUrl: $idvUrl');
+
+        final fullPath = '$idvUrl&callback_uri=didpay://kyc';
         controller.loadRequest(Uri.parse(fullPath));
       });
 
