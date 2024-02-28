@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
 
 class IdvService {
+  static const _expirationDuration = Duration(minutes: 5);
+
   Future<Map<String, dynamic>> getIdvRequest(
       String idvAuthRequestUrl, BearerDid did) async {
     final queryParameters = await _getQueryParameters(idvAuthRequestUrl);
@@ -17,7 +19,7 @@ class IdvService {
     final responseUri = decodedJwt.claims.misc?['response_uri'] ??
         (throw Exception('Response URI not found'));
 
-    final idToken = await _getIdToken(did, clientId, nonce);
+    final idToken = await _computeIdToken(did, clientId, nonce);
     return await _getIdvRequest(responseUri, idToken);
   }
 
@@ -42,11 +44,11 @@ class IdvService {
     }
   }
 
-  Future<String> _getIdToken(
+  Future<String> _computeIdToken(
       BearerDid did, String clientId, String nonce) async {
     try {
       final nowEpochSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
-      final exp = nowEpochSeconds + const Duration(minutes: 5).inSeconds;
+      final exp = nowEpochSeconds + _expirationDuration.inSeconds;
 
       final claims = JwtClaims(
         iss: did.uri,
@@ -61,7 +63,7 @@ class IdvService {
 
       return await Jwt.sign(did: did, payload: claims);
     } catch (e) {
-      throw Exception('Error getting ID token: $e');
+      throw Exception('Error computing ID token: $e');
     }
   }
 
