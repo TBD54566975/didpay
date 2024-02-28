@@ -5,11 +5,11 @@ import 'package:web5/web5.dart';
 class IdvService {
   Future<Map<String, dynamic>> getIdvRequest(
       String idvAuthRequestUrl, BearerDid did) async {
-    final queryParameters = await _fetchQueryParameters(idvAuthRequestUrl);
+    final queryParameters = await _getQueryParameters(idvAuthRequestUrl);
     final authRequest = queryParameters['request'] ??
         (throw Exception('Auth request not found'));
 
-    final decodedJwt = await _verifyJwt(authRequest);
+    final decodedJwt = await _decodeJwt(authRequest);
     final nonce = decodedJwt.claims.misc?['nonce'] ??
         (throw Exception('Nonce not found'));
     final clientId = decodedJwt.claims.misc?['client_id'] ??
@@ -17,32 +17,32 @@ class IdvService {
     final responseUri = decodedJwt.claims.misc?['response_uri'] ??
         (throw Exception('Response URI not found'));
 
-    final idToken = await _prepareIdToken(did, clientId, nonce);
-    return await _sendAuthResponse(responseUri, idToken);
+    final idToken = await _getIdToken(did, clientId, nonce);
+    return await _getIdvRequest(responseUri, idToken);
   }
 
-  Future<Map<String, String>> _fetchQueryParameters(String url) async {
+  Future<Map<String, String>> _getQueryParameters(String uri) async {
     try {
-      final response = await http.get(Uri.parse(url));
+      final response = await http.get(Uri.parse(uri));
       if (response.statusCode != 200) {
         throw Exception(
             'Failed to load auth request with status code: ${response.statusCode}');
       }
       return Uri.splitQueryString(response.body);
     } catch (e) {
-      throw Exception('Error fetching query parameters: $e');
+      throw Exception('Error getting query parameters: $e');
     }
   }
 
-  Future<DecodedJwt> _verifyJwt(String jwt) async {
+  Future<DecodedJwt> _decodeJwt(String jwt) async {
     try {
       return await Jwt.verify(jwt);
     } catch (e) {
-      throw Exception('Error verifying JWT: $e');
+      throw Exception('Error decoding JWT: $e');
     }
   }
 
-  Future<String> _prepareIdToken(
+  Future<String> _getIdToken(
       BearerDid did, String clientId, String nonce) async {
     try {
       final nowEpochSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
@@ -61,11 +61,11 @@ class IdvService {
 
       return await Jwt.sign(did: did, payload: claims);
     } catch (e) {
-      throw Exception('Error preparing ID token: $e');
+      throw Exception('Error getting ID token: $e');
     }
   }
 
-  Future<Map<String, dynamic>> _sendAuthResponse(
+  Future<Map<String, dynamic>> _getIdvRequest(
       String uri, String idToken) async {
     try {
       final authResponse = await http.post(
@@ -84,7 +84,7 @@ class IdvService {
 
       return json.decode(authResponse.body);
     } catch (e) {
-      throw Exception('Error sending auth response: $e');
+      throw Exception('Error getting idv request: $e');
     }
   }
 }
