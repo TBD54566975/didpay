@@ -1,59 +1,92 @@
 import 'dart:convert';
-
 import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
 
 class IdvService {
+  static const _expirationDuration = Duration(minutes: 5);
+
   Future<Map<String, dynamic>> getIdvRequest(
       String idvAuthRequestUrl, BearerDid did) async {
-    // TODO: try/catch here
-    final response = await http.get(Uri.parse(idvAuthRequestUrl));
-    if (response.statusCode != 200) {
-      throw Exception('Failed to load auth request');
+    final queryParameters = await _getQueryParameters(idvAuthRequestUrl);
+    final authRequest = queryParameters['request'] ??
+        (throw Exception('Auth request not found'));
+
+    final decodedJwt = await _decodeJwt(authRequest);
+    final nonce = decodedJwt.claims.misc?['nonce'] ??
+        (throw Exception('Nonce not found'));
+    final clientId = decodedJwt.claims.misc?['client_id'] ??
+        (throw Exception('Client ID not found'));
+    final responseUri = decodedJwt.claims.misc?['response_uri'] ??
+        (throw Exception('Response URI not found'));
+
+    final idToken = await _computeIdToken(did, clientId, nonce);
+    return await _getIdvRequest(responseUri, idToken);
+  }
+
+  Future<Map<String, String>> _getQueryParameters(String uri) async {
+    try {
+      final response = await http.get(Uri.parse(uri));
+      if (response.statusCode != 200) {
+        throw Exception(
+            'Failed to load auth request with status code: ${response.statusCode}');
+      }
+      return Uri.splitQueryString(response.body);
+    } catch (e) {
+      throw Exception('Error getting query parameters: $e');
     }
+  }
 
-    // Parse the URI string so we can extract the query parameters
-    Uri fakeUri = Uri.parse('https://example.com/?${response.body}');
-    final request = fakeUri.queryParameters['request'];
-
-    if (request == null) {
-      throw Exception('Request not found');
+  Future<DecodedJwt> _decodeJwt(String jwt) async {
+    try {
+      return await Jwt.verify(jwt);
+    } catch (e) {
+      throw Exception('Error decoding JWT: $e');
     }
+  }
 
-    final nowEpochSeconds = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
-    const tokenDuration = Duration(minutes: 5);
+  Future<String> _computeIdToken(
+      BearerDid did, String clientId, String nonce) async {
+    try {
+      final nowEpochSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
+      final exp = nowEpochSeconds + _expirationDuration.inSeconds;
 
-    // TODO: try/catch here
-    final decodedJwt = await Jwt.verify(request);
+      final claims = JwtClaims(
+        iss: did.uri,
+        aud: clientId,
+        sub: did.uri,
+        exp: exp,
+        iat: nowEpochSeconds,
+        misc: {
+          'nonce': nonce,
+        },
+      );
 
-    // TODO: check for nonce here
-    final nonce = decodedJwt.claims.misc!['nonce'];
-    final exp = nowEpochSeconds + tokenDuration.inSeconds;
+      return await Jwt.sign(did: did, payload: claims);
+    } catch (e) {
+      throw Exception('Error computing ID token: $e');
+    }
+  }
 
-    // TODO: check for client_id here
-    final claims = JwtClaims(
-      iss: did.uri,
-      aud: decodedJwt.claims.misc!['client_id'],
-      sub: did.uri,
-      exp: exp,
-      iat: nowEpochSeconds,
-      misc: {
-        'nonce': nonce,
-      },
-    );
+  Future<Map<String, dynamic>> _getIdvRequest(
+      String uri, String idToken) async {
+    try {
+      final authResponse = await http.post(
+        Uri.parse(uri),
+        body: json.encode(
+          {
+            'id_token': idToken,
+          },
+        ),
+      );
 
-    // TODO: try/catch here
-    final idToken = await Jwt.sign(did: did, payload: claims);
+      if (authResponse.statusCode != 200) {
+        throw Exception(
+            'Failed to send auth response with status code: ${authResponse.statusCode}');
+      }
 
-    // TODO: check for response_uri here
-    final responseUri = decodedJwt.claims.misc!['response_uri'];
-    // TODO: try/catch here
-    final idvResponse = await http.post(Uri.parse(responseUri),
-        body: json.encode({
-          'id_token': idToken,
-        }));
-
-    // TODO: try/catch here
-    return json.decode(idvResponse.body);
+      return json.decode(authResponse.body);
+    } catch (e) {
+      throw Exception('Error getting idv request: $e');
+    }
   }
 }
