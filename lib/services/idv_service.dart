@@ -20,7 +20,7 @@ class IdvService {
         (throw Exception('Response URI not found'));
 
     final idToken = await _computeIdToken(did, clientId, nonce);
-    return await _getIdvRequest(responseUri, idToken);
+    return await _postAuthResponse(responseUri, idToken);
   }
 
   Future<Map<String, String>> _getQueryParameters(String uri) async {
@@ -67,7 +67,7 @@ class IdvService {
     }
   }
 
-  Future<Map<String, dynamic>> _getIdvRequest(
+  Future<Map<String, dynamic>> _postAuthResponse(
       String uri, String idToken) async {
     try {
       final authResponse = await http.post(
