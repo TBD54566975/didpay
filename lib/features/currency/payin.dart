@@ -96,12 +96,6 @@ class Payin extends HookWidget {
                     child: AutoSizeText(
                       formattedAmount,
                       style: Theme.of(context).textTheme.displayMedium,
-                      maxFontSize:
-                          Theme.of(context).textTheme.displayMedium?.fontSize ??
-                              45.0,
-                      minFontSize:
-                          Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16.0,
                       maxLines: 1,
                     ),
                   ),
@@ -112,7 +106,7 @@ class Payin extends HookWidget {
                           padding:
                               const EdgeInsets.symmetric(horizontal: Grid.xxs),
                           child: Text(
-                            CurrencyCode.usdc.toString(),
+                            '${CurrencyCode.usdc}',
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),

@@ -67,7 +67,7 @@ class TransactionDetailsPage extends HookWidget {
         ),
         const SizedBox(height: Grid.xxs),
         Text(
-          txn.type.toString(),
+          '${txn.status}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -94,10 +94,6 @@ class TransactionDetailsPage extends HookWidget {
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
-                maxFontSize:
-                    Theme.of(context).textTheme.displayMedium?.fontSize ?? 45.0,
-                minFontSize:
-                    Theme.of(context).textTheme.bodyLarge?.fontSize ?? 16.0,
                 maxLines: 1,
               ),
             ),
@@ -125,7 +121,7 @@ class TransactionDetailsPage extends HookWidget {
             size: Grid.xl, color: _getStatusColor(context, txn.status)),
         const SizedBox(height: Grid.xxs),
         Text(
-          txn.status.toString(),
+          '${txn.status}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),

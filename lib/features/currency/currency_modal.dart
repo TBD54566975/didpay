@@ -30,7 +30,7 @@ class CurrencyModal {
                       Navigator.pop(context);
                     },
                     leading: Icon(c.icon),
-                    title: Text(c.code.toString(),
+                    title: Text('${c.code}',
                         style: Theme.of(context).textTheme.titleMedium),
                     trailing: (selectedCurrency == c.code.toString())
                         ? const Icon(Icons.check)

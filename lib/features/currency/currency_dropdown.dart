@@ -21,7 +21,7 @@ class CurrencyDropdown extends HookConsumerWidget {
       child: ElevatedButton.icon(
         icon: const Icon(Icons.keyboard_arrow_down),
         label: Text(
-          selectedCurrency.value?.code.toString() ?? '',
+          '${selectedCurrency.value?.code}',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         style: ElevatedButton.styleFrom(
