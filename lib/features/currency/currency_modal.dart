@@ -26,13 +26,13 @@ class CurrencyModal {
                     children: currencies.map((Currency c) {
                   return (ListTile(
                     onTap: () {
-                      onPressed(c.label);
+                      onPressed(c.code.toString());
                       Navigator.pop(context);
                     },
                     leading: Icon(c.icon),
-                    title: Text(c.label,
+                    title: Text(c.code.toString(),
                         style: Theme.of(context).textTheme.titleMedium),
-                    trailing: (selectedCurrency == c.label)
+                    trailing: (selectedCurrency == c.code.toString())
                         ? const Icon(Icons.check)
                         : null,
                   ));

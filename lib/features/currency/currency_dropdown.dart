@@ -21,7 +21,7 @@ class CurrencyDropdown extends HookConsumerWidget {
       child: ElevatedButton.icon(
         icon: const Icon(Icons.keyboard_arrow_down),
         label: Text(
-          selectedCurrency.value?.label.toString() ?? '',
+          selectedCurrency.value?.code.toString() ?? '',
           style: Theme.of(context).textTheme.headlineMedium,
         ),
         style: ElevatedButton.styleFrom(
@@ -33,9 +33,9 @@ class CurrencyDropdown extends HookConsumerWidget {
           CurrencyModal.show(
               context,
               (value) => selectedCurrency.value =
-                  currencies.firstWhere((c) => c.label == value),
+                  currencies.firstWhere((c) => c.code.toString() == value),
               currencies,
-              selectedCurrency.value?.label.toString() ?? '');
+              selectedCurrency.value?.code.toString() ?? '');
         },
       ),
     );
