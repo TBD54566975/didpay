@@ -169,11 +169,11 @@ abstract class Loc {
   /// **'Next'**
   String get next;
 
-  /// No description provided for @usdcBalance.
+  /// No description provided for @accountBalance.
   ///
   /// In en, this message translates to:
-  /// **'USDC balance'**
-  String get usdcBalance;
+  /// **'Account balance'**
+  String get accountBalance;
 
   /// No description provided for @youDeposit.
   ///
@@ -264,12 +264,6 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'{txnType} quote'**
   String txnTypeQuote(String txnType);
-
-  /// No description provided for @accountBalance.
-  ///
-  /// In en, this message translates to:
-  /// **'Account balance'**
-  String get accountBalance;
 
   /// No description provided for @accept.
   ///
@@ -486,6 +480,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Send {amount} USDC'**
   String sendAmountUsdc(String amount);
+
+  /// No description provided for @availableBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Available balance: '**
+  String get availableBalance;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

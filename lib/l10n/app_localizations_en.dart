@@ -44,7 +44,7 @@ class LocEn extends Loc {
   String get next => 'Next';
 
   @override
-  String get usdcBalance => 'USDC balance';
+  String get accountBalance => 'Account balance';
 
   @override
   String get youDeposit => 'You deposit';
@@ -92,9 +92,6 @@ class LocEn extends Loc {
   String txnTypeQuote(String txnType) {
     return '$txnType quote';
   }
-
-  @override
-  String get accountBalance => 'Account balance';
 
   @override
   String get accept => 'Accept';
@@ -209,4 +206,7 @@ class LocEn extends Loc {
   String sendAmountUsdc(String amount) {
     return 'Send $amount USDC';
   }
+
+  @override
+  String get availableBalance => 'Available balance: ';
 }

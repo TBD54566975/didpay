@@ -12,7 +12,7 @@
     "scanQrCode": "Don't know the recipient's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
-    "usdcBalance": "USDC balance",
+    "accountBalance": "Account balance",
     "youDeposit": "You deposit",
     "youWithdraw": "You withdraw",
     "youGet": "You get",
@@ -95,5 +95,6 @@
                 "type": "String"
             }
         }
-    }
+    },
+    "availableBalance": "Available balance: "
 }
