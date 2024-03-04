@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/request/review_request_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -15,7 +16,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
   final String payinCurrency;
   final String payoutCurrency;
   final String exchangeRate;
-  final String transactionType;
+  final TransactionType transactionType;
 
   const PaymentDetailsPage({
     required this.payinAmount,
@@ -164,7 +165,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
       subtitle: Text(
         paymentName == null
             ? Loc.of(context).serviceFeesMayApply
-            : Loc.of(context).serviceFeeAmount(fee, 'USD'),
+            : Loc.of(context).serviceFeeAmount(fee, payinCurrency),
         style: Theme.of(context).textTheme.bodySmall,
       ),
       trailing: const Icon(Icons.chevron_right),
@@ -174,6 +175,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             builder: (context) => SearchPaymentMethodsPage(
               selectedPaymentMethod: selectedPaymentMethod,
               paymentMethods: filteredPaymentMethods,
+              payinCurrency: payinCurrency,
             ),
           ),
         );

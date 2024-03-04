@@ -15,7 +15,7 @@ class ReviewRequestPage extends HookWidget {
   final String exchangeRate;
   final String serviceFee;
   final String paymentName;
-  final String transactionType;
+  final TransactionType transactionType;
   final Map<String, String> formData;
 
   const ReviewRequestPage({
@@ -126,7 +126,7 @@ class ReviewRequestPage extends HookWidget {
           ),
           const SizedBox(height: Grid.xxs),
           Text(
-            transactionType == Type.deposit
+            transactionType == TransactionType.deposit
                 ? Loc.of(context).youPay
                 : Loc.of(context).withdrawAmount,
             style: Theme.of(context).textTheme.bodySmall,
@@ -150,7 +150,7 @@ class ReviewRequestPage extends HookWidget {
           ),
           const SizedBox(height: Grid.xxs),
           Text(
-            transactionType == Type.deposit
+            transactionType == TransactionType.deposit
                 ? Loc.of(context).depositAmount
                 : Loc.of(context).youGet,
             style: Theme.of(context).textTheme.bodySmall,
