@@ -22,9 +22,17 @@ class SendPage extends HookWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(
-              child: Send(
-                amount: amount,
-                keyPress: keyPress,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Send(
+                    amount: amount,
+                    keyPress: keyPress,
+                  ),
+                  const SizedBox(height: Grid.xxs),
+                  Text('${Loc.of(context).usdcBalance}: \$0',
+                      style: Theme.of(context).textTheme.titleMedium),
+                ],
               ),
             ),
             Padding(
