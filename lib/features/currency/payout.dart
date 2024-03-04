@@ -9,7 +9,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class Payout extends HookWidget {
   final double payinAmount;
-  final String transactionType;
+  final TransactionType transactionType;
   final ValueNotifier<double> payoutAmount;
   final ValueNotifier<Currency?> currency;
 
@@ -23,9 +23,11 @@ class Payout extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedAmount = transactionType == Type.withdrawal
-        ? Currency.formatFromDouble(payoutAmount.value,
-            currency: currency.value?.label)
+    final formattedAmount = transactionType == TransactionType.withdraw
+        ? Currency.formatFromDouble(
+            payoutAmount.value,
+            currency: currency.value?.code.toString(),
+          )
         : Currency.formatFromDouble(payoutAmount.value);
 
     useEffect(() {
@@ -34,7 +36,7 @@ class Payout extends HookWidget {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (currency.value == null) return;
 
-        payoutAmount.value = transactionType == Type.deposit
+        payoutAmount.value = transactionType == TransactionType.deposit
             ? payinAmount / exchangeRate
             : payinAmount * exchangeRate;
       });
@@ -62,12 +64,12 @@ class Payout extends HookWidget {
               ),
             ),
             const SizedBox(width: Grid.half),
-            transactionType == Type.withdrawal
+            transactionType == TransactionType.withdraw
                 ? CurrencyDropdown(selectedCurrency: currency)
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                     child: Text(
-                      Loc.of(context).usd,
+                      CurrencyCode.usdc.toString(),
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ),
