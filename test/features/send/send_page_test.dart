@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:flutter/material.dart';
@@ -38,13 +39,13 @@ void main() async {
         await tester.tap(find.text('$i'));
         await tester.pumpAndSettle();
 
-        expect(find.text('\$$i'), findsOneWidget);
+        expect(find.widgetWithText(AutoSizeText, '$i'), findsOneWidget);
 
         await tester.tap(find.text('<'));
         await tester.pumpAndSettle();
       }
 
-      expect(find.text('\$0'), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '0'), findsOneWidget);
     });
 
     // TODO: uncomment this test as part of issue #81
