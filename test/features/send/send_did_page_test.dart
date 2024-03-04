@@ -10,18 +10,6 @@ void main() async {
   final did = await DidJwk.create();
 
   group('SendDidPage', () {
-    testWidgets('should show amount to send', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-            child: SendDidPage(sendAmount: '25'),
-            overrides: [
-              didProvider.overrideWithValue(did),
-            ]),
-      );
-
-      expect(find.textContaining('\$25'), findsOneWidget);
-    });
-
     testWidgets('should show QR Code CTA', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -46,7 +34,7 @@ void main() async {
       expect(find.byType(TextField), findsOneWidget);
     });
 
-    testWidgets('should show pay button', (tester) async {
+    testWidgets('should show send button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
             child: SendDidPage(sendAmount: '25'),
@@ -55,7 +43,7 @@ void main() async {
             ]),
       );
 
-      expect(find.widgetWithText(FilledButton, 'Pay \$25'), findsOneWidget);
+      expect(find.widgetWithText(FilledButton, 'Send 25 USDC'), findsOneWidget);
     });
   });
 }

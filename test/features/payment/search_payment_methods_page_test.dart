@@ -31,6 +31,7 @@ void main() {
             selectedPaymentMethod:
                 ValueNotifier<PaymentMethod>(_paymentMethods.first),
             paymentMethods: _paymentMethods,
+            payinCurrency: '',
           ),
         ),
       );
@@ -47,6 +48,7 @@ void main() {
             selectedPaymentMethod:
                 ValueNotifier<PaymentMethod>(_paymentMethods.first),
             paymentMethods: _paymentMethods,
+            payinCurrency: '',
           ),
         ),
       );
@@ -68,6 +70,7 @@ void main() {
           child: SearchPaymentMethodsPage(
             selectedPaymentMethod: selectedPaymentMethod,
             paymentMethods: _paymentMethods,
+            payinCurrency: '',
           ),
         ),
       );
@@ -90,6 +93,7 @@ void main() {
           child: SearchPaymentMethodsPage(
             selectedPaymentMethod: selectedPaymentMethod,
             paymentMethods: _paymentMethods,
+            payinCurrency: '',
           ),
         ),
       );

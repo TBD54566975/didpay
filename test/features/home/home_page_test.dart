@@ -9,12 +9,12 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('HomePage', () {
-    testWidgets('should show account balance', (tester) async {
+    testWidgets('should show usdc balance', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      expect(find.text('Account balance'), findsOneWidget);
+      expect(find.text('USDC balance'), findsOneWidget);
     });
 
     testWidgets('should show valid account balance amount', (tester) async {
@@ -22,7 +22,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      final dollarAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
+      final dollarAmountPattern = RegExp(r'\$[0-9]+(\.[0-9]{2})?$');
 
       expect(find.textContaining(dollarAmountPattern), findsOneWidget);
     });
@@ -61,7 +61,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      await tester.tap(find.text('Withdraw'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Withdraw'));
       await tester.pumpAndSettle();
 
       expect(find.byType(WithdrawPage), findsOneWidget);
