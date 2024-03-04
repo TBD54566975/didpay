@@ -13,15 +13,12 @@ class Currency {
     required this.icon,
   });
 
-  static String formatFromString(String amount,
-      {String? currency, bool? showSymbol}) {
+  static String formatFromString(String amount, {String? currency}) {
     final parsedAmount = double.tryParse(amount) ?? 0.0;
-    return formatFromDouble(parsedAmount,
-        currency: currency, showSymbol: showSymbol);
+    return formatFromDouble(parsedAmount, currency: currency);
   }
 
-  static String formatFromDouble(double amount,
-      {String? currency, bool? showSymbol}) {
+  static String formatFromDouble(double amount, {String? currency}) {
     if (currency == CurrencyCode.btc.toString()) {
       return NumberFormat.currency(
         symbol: '',
@@ -29,16 +26,10 @@ class Currency {
       ).format(amount);
     }
 
-    return (showSymbol == true
-            ? NumberFormat.simpleCurrency(
-                name: currency,
-                decimalDigits: amount % 1 == 0 ? 0 : 2,
-              )
-            : NumberFormat.currency(
-                symbol: '',
-                decimalDigits: amount % 1 == 0 ? 0 : 2,
-              ))
-        .format(amount);
+    return NumberFormat.currency(
+      symbol: '',
+      decimalDigits: amount % 1 == 0 ? 0 : 2,
+    ).format(amount);
   }
 }
 

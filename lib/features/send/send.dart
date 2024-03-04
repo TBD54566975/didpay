@@ -21,8 +21,7 @@ class Send extends HookWidget {
   Widget build(BuildContext context) {
     final shouldAnimate = useState(false);
 
-    final formattedAmount =
-        Currency.formatFromString(amount.value, showSymbol: true);
+    final formattedAmount = Currency.formatFromString(amount.value);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -73,11 +72,18 @@ class Send extends HookWidget {
                           fontSize: 80.0,
                           fontWeight: FontWeight.bold,
                         ),
-                        maxFontSize: 80.0,
-                        minFontSize:
-                            Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                                16.0,
                         maxLines: 1,
+                      ),
+                    ),
+                    const SizedBox(width: Grid.half),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                      child: Text(
+                        CurrencyCode.usdc.toString(),
+                        style:
+                            Theme.of(context).textTheme.displayMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
                       ),
                     ),
                   ],

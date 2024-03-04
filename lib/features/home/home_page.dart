@@ -15,7 +15,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final txns = ref.watch(transactionsProvider);
-    final accountBalance = Currency.formatFromDouble(0, showSymbol: true);
+    final accountBalance = Currency.formatFromDouble(0);
 
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).home)),
@@ -56,7 +56,7 @@ class HomePage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              Loc.of(context).usdcBalance,
+              Loc.of(context).accountBalance,
               style: Theme.of(context).textTheme.labelMedium?.copyWith(
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -75,13 +75,18 @@ class HomePage extends HookConsumerWidget {
                           Theme.of(context).textTheme.displayMedium?.copyWith(
                                 fontWeight: FontWeight.bold,
                               ),
-                      maxFontSize:
-                          Theme.of(context).textTheme.displayMedium?.fontSize ??
-                              45.0,
-                      minFontSize:
-                          Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16.0,
                       maxLines: 1,
+                    ),
+                  ),
+                  const SizedBox(width: Grid.half),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                    child: Text(
+                      '${CurrencyCode.usdc}',
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                   ),
                 ],
@@ -155,19 +160,19 @@ class HomePage extends HookConsumerWidget {
 
         return ListTile(
           title: Text(
-            txn.type.toString(),
+            '${txn.type}',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           subtitle: Text(
-            txn.status.toString(),
+            '${txn.status}',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w300,
                 ),
           ),
           trailing: Text(
-              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc.toString()}'),
+              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc}'),
           leading: Container(
             width: Grid.md,
             height: Grid.md,
