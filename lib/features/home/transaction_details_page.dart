@@ -67,7 +67,7 @@ class TransactionDetailsPage extends HookWidget {
         ),
         const SizedBox(height: Grid.xxs),
         Text(
-          '${txn.status}',
+          '${txn.type}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
