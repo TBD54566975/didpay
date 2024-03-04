@@ -35,9 +35,6 @@ class LocEn extends Loc {
   String get to => 'To:';
 
   @override
-  String get pay => 'Pay';
-
-  @override
   String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
@@ -47,7 +44,7 @@ class LocEn extends Loc {
   String get next => 'Next';
 
   @override
-  String get accountBalance => 'Account balance';
+  String get usdcBalance => 'USDC balance';
 
   @override
   String get youDeposit => 'You deposit';
@@ -86,12 +83,18 @@ class LocEn extends Loc {
   String get youPaid => 'You paid';
 
   @override
+  String get youReceive => 'You receive';
+
+  @override
   String get youReceived => 'You received';
 
   @override
   String txnTypeQuote(String txnType) {
     return '$txnType quote';
   }
+
+  @override
+  String get accountBalance => 'Account balance';
 
   @override
   String get accept => 'Accept';
@@ -201,4 +204,9 @@ class LocEn extends Loc {
 
   @override
   String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String sendAmountUsdc(String amount) {
+    return 'Send $amount USDC';
+  }
 }

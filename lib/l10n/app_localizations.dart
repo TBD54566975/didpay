@@ -151,12 +151,6 @@ abstract class Loc {
   /// **'To:'**
   String get to;
 
-  /// No description provided for @pay.
-  ///
-  /// In en, this message translates to:
-  /// **'Pay'**
-  String get pay;
-
   /// No description provided for @scanQrCode.
   ///
   /// In en, this message translates to:
@@ -175,11 +169,11 @@ abstract class Loc {
   /// **'Next'**
   String get next;
 
-  /// No description provided for @accountBalance.
+  /// No description provided for @usdcBalance.
   ///
   /// In en, this message translates to:
-  /// **'Account balance'**
-  String get accountBalance;
+  /// **'USDC balance'**
+  String get usdcBalance;
 
   /// No description provided for @youDeposit.
   ///
@@ -253,6 +247,12 @@ abstract class Loc {
   /// **'You paid'**
   String get youPaid;
 
+  /// No description provided for @youReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'You receive'**
+  String get youReceive;
+
   /// No description provided for @youReceived.
   ///
   /// In en, this message translates to:
@@ -264,6 +264,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'{txnType} quote'**
   String txnTypeQuote(String txnType);
+
+  /// No description provided for @accountBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Account balance'**
+  String get accountBalance;
 
   /// No description provided for @accept.
   ///
@@ -474,6 +480,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicy;
+
+  /// No description provided for @sendAmountUsdc.
+  ///
+  /// In en, this message translates to:
+  /// **'Send {amount} USDC'**
+  String sendAmountUsdc(String amount);
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
