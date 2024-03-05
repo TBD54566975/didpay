@@ -22,9 +22,9 @@ void main() {
         WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      final dollarAmountPattern = RegExp(r'\$[0-9]+\.[0-9]{2}$');
+      final numberPattern = RegExp(r'[0-9]+(\.[0-9]{2})?$');
 
-      expect(find.textContaining(dollarAmountPattern), findsOneWidget);
+      expect(find.textContaining(numberPattern), findsOneWidget);
     });
 
     testWidgets('should show deposit button', (tester) async {
@@ -61,7 +61,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const HomePage()),
       );
 
-      await tester.tap(find.text('Withdraw'));
+      await tester.tap(find.widgetWithText(FilledButton, 'Withdraw'));
       await tester.pumpAndSettle();
 
       expect(find.byType(WithdrawPage), findsOneWidget);

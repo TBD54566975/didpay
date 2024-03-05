@@ -44,7 +44,7 @@ void main() {
         await tester.tap(find.text('$i'));
         await tester.pumpAndSettle();
 
-        expect(find.text('\$$i'), findsAtLeast(1));
+        expect(find.text('$i'), findsAtLeast(1));
 
         await tester.tap(find.text('<'));
         await tester.pumpAndSettle();

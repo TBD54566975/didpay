@@ -11,7 +11,7 @@ void main() {
   group('Payin', () {
     final amount = ValueNotifier<String>('70');
     final currency = ValueNotifier<Currency?>(
-      Currency(exchangeRate: 17, label: 'KRW', icon: Icons.abc),
+      Currency(exchangeRate: 17, code: CurrencyCode.mxn, icon: Icons.abc),
     );
     final keyPress = ValueNotifier<PayinKeyPress>(PayinKeyPress(0, ''));
 
@@ -19,7 +19,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -34,7 +34,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -42,14 +42,14 @@ void main() {
         ),
       );
 
-      expect(find.textContaining('KRW'), findsOneWidget);
+      expect(find.textContaining('MXN'), findsOneWidget);
     });
 
     testWidgets('should show deposit label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -64,7 +64,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.withdrawal,
+            transactionType: TransactionType.withdraw,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -79,7 +79,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -95,7 +95,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             amount: amount,
             keyPress: keyPress,
             currency: currency,
@@ -111,7 +111,7 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: Type.withdrawal,
+            transactionType: TransactionType.withdraw,
             amount: amount,
             keyPress: keyPress,
             currency: currency,

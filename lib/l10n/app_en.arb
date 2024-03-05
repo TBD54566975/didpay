@@ -9,7 +9,6 @@
     "deposit": "Deposit",
     "send": "Send",
     "to": "To:",
-    "pay": "Pay",
     "scanQrCode": "Don't know the recipient's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
@@ -26,6 +25,7 @@
     "transactionDetails": "Transaction details",
     "youPay": "You pay",
     "youPaid": "You paid",
+    "youReceive": "You receive",
     "youReceived": "You received",
     "txnTypeQuote": "{txnType} quote",
     "@txnTypeQuote": {
@@ -87,5 +87,14 @@
     "iCertifyThatIAgreeToThe": "I certify that I agree to the ",
     "userAgreement": "User Agreement",
     "andIHaveReadThe": ", and I have read the ",
-    "privacyPolicy": "Privacy Policy"
+    "privacyPolicy": "Privacy Policy",
+    "sendAmountUsdc": "Send {amount} USDC",
+    "@sendAmountUsdc": {
+        "placeholders": {
+            "amount": {
+                "type": "String"
+            }
+        }
+    },
+    "availableBalance": "Available balance: "
 }

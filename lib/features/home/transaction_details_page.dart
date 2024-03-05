@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:didpay/features/currency/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -11,6 +13,11 @@ class TransactionDetailsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final payoutAmount = Currency.formatFromDouble(txn.payoutAmount,
+        currency: txn.payoutCurrency);
+    final payinAmount =
+        Currency.formatFromDouble(txn.payinAmount, currency: txn.payinCurrency);
+
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).transactionDetails)),
       body: SafeArea(
@@ -23,14 +30,15 @@ class TransactionDetailsPage extends HookWidget {
                 child: Column(
                   children: [
                     _buildHeader(context),
-                    _buildAmount(context),
+                    _buildAmount(context, payoutAmount, payinAmount),
                     _buildStatus(context),
-                    if (txn.status != Status.failed) _buildDetails(context)
+                    if (txn.status != TransactionStatus.failed)
+                      _buildDetails(context, payoutAmount, payinAmount)
                   ],
                 ),
               ),
             ),
-            txn.status == Status.quoted
+            txn.status == TransactionStatus.quoted
                 ? _buildResponseButtons(context)
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -53,20 +61,13 @@ class TransactionDetailsPage extends HookWidget {
         const SizedBox(height: Grid.md),
         ExcludeSemantics(
           child: Center(
-            child: Container(
-                width: Grid.xxl,
-                height: Grid.xxl,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(Icons.attach_money,
-                    color: Theme.of(context).colorScheme.onPrimary)),
-          ),
+              child: txn.type == TransactionType.deposit
+                  ? const Icon(Icons.south_west)
+                  : const Icon(Icons.north_east)),
         ),
         const SizedBox(height: Grid.xxs),
         Text(
-          txn.type,
+          '${txn.type}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -75,17 +76,38 @@ class TransactionDetailsPage extends HookWidget {
     );
   }
 
-  Widget _buildAmount(BuildContext context) {
+  Widget _buildAmount(
+      BuildContext context, String payoutAmount, String payinAmount) {
     return Column(
       children: [
         const SizedBox(height: Grid.xxl),
-        Text(
-          '${txn.amount} USD',
-          style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                fontWeight: FontWeight.bold,
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Flexible(
+              child: AutoSizeText(
+                txn.type == TransactionType.deposit
+                    ? payoutAmount
+                    : payinAmount,
+                style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                maxLines: 1,
               ),
+            ),
+            const SizedBox(width: Grid.xs),
+            Text(
+              txn.type == TransactionType.deposit
+                  ? txn.payoutCurrency
+                  : txn.payinCurrency,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ],
         ),
-        // TODO: replace with createdAt time
         const Text('Mar 1 at 10:00 am'),
       ],
     );
@@ -99,7 +121,7 @@ class TransactionDetailsPage extends HookWidget {
             size: Grid.xl, color: _getStatusColor(context, txn.status)),
         const SizedBox(height: Grid.xxs),
         Text(
-          txn.status,
+          '${txn.status}',
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
               ),
@@ -108,45 +130,41 @@ class TransactionDetailsPage extends HookWidget {
     );
   }
 
-  IconData _getStatusIcon(String status) {
+  IconData _getStatusIcon(TransactionStatus status) {
     switch (status) {
-      case Status.quoted:
+      case TransactionStatus.quoted:
         return Icons.pending;
-      case Status.failed:
+      case TransactionStatus.failed:
         return Icons.error;
-      case Status.completed:
+      case TransactionStatus.completed:
         return Icons.check_circle;
       default:
         return Icons.help;
     }
   }
 
-  Color _getStatusColor(BuildContext context, String status) {
+  Color _getStatusColor(BuildContext context, TransactionStatus status) {
     var colorScheme = Theme.of(context).colorScheme;
     switch (status) {
-      case Status.failed:
+      case TransactionStatus.failed:
         return colorScheme.error;
-      case Status.completed:
+      case TransactionStatus.completed:
         return colorScheme.primary;
       default:
         return colorScheme.onSurface;
     }
   }
 
-  Widget _buildDetails(BuildContext context) {
-    final paymentLabel = txn.status == Status.quoted
-        ? Loc.of(context).youPay
-        : txn.type == Type.deposit
+  Widget _buildDetails(
+      BuildContext context, String payoutAmount, String payinAmount) {
+    final balanceLabel = Loc.of(context).accountBalance;
+    final paymentLabel = txn.status == TransactionStatus.quoted
+        ? txn.type == TransactionType.deposit
+            ? Loc.of(context).youPay
+            : Loc.of(context).youReceive
+        : txn.type == TransactionType.deposit
             ? Loc.of(context).youPaid
             : Loc.of(context).youReceived;
-
-    final balanceLabel = txn.status == Status.quoted
-        ? Loc.of(context).txnTypeQuote(txn.type)
-        : Loc.of(context).accountBalance;
-
-    final amount = txn.status == Status.completed
-        ? '${txn.type == Type.deposit ? '+' : '-'}${txn.amount}'
-        : txn.amount.toString();
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -168,7 +186,9 @@ class TransactionDetailsPage extends HookWidget {
                 Expanded(
                   flex: 2,
                   child: Text(
-                    '${txn.amount} USD',
+                    txn.type == TransactionType.deposit
+                        ? '$payinAmount ${txn.payinCurrency}'
+                        : '$payoutAmount ${txn.payoutCurrency}',
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.right,
                   ),
@@ -191,7 +211,9 @@ class TransactionDetailsPage extends HookWidget {
                 Expanded(
                   flex: 3,
                   child: Text(
-                    '$amount USD',
+                    txn.type == TransactionType.deposit
+                        ? '+$payoutAmount ${txn.payoutCurrency}'
+                        : '-$payinAmount ${txn.payinCurrency}',
                     style: Theme.of(context).textTheme.bodyLarge,
                     textAlign: TextAlign.right,
                   ),

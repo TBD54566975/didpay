@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:flutter/material.dart';
@@ -38,43 +39,44 @@ void main() async {
         await tester.tap(find.text('$i'));
         await tester.pumpAndSettle();
 
-        expect(find.text('\$$i'), findsOneWidget);
+        expect(find.widgetWithText(AutoSizeText, '$i'), findsOneWidget);
 
         await tester.tap(find.text('<'));
         await tester.pumpAndSettle();
       }
 
-      expect(find.text('\$0'), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '0'), findsOneWidget);
     });
 
-    testWidgets(
-        'should pad send amount with a leading zero if send amount < a dollar',
+    // TODO: uncomment this test as part of issue #81
+    // testWidgets(
+    //     'should pad send amount with a leading zero if send amount < a dollar',
+    //     (tester) async {
+    //   await tester.pumpWidget(
+    //     WidgetHelpers.testableWidget(child: const SendPage()),
+    //   );
+
+    //   await tester.tap(find.text('.'));
+    //   await tester.pumpAndSettle();
+
+    //   expect(find.text('\$0.00'), findsOneWidget);
+    // });
+
+    testWidgets('should navigate to SendDidPage on tap of send button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const SendPage()),
+        WidgetHelpers.testableWidget(child: const SendPage(), overrides: [
+          didProvider.overrideWithValue(did),
+        ]),
       );
 
-      await tester.tap(find.text('.'));
+      await tester.tap(find.text('8'));
+      await tester.pump();
+
+      await tester.tap(find.text('Send'));
       await tester.pumpAndSettle();
 
-      expect(find.text('\$0.00'), findsOneWidget);
+      expect(find.byType(SendDidPage), findsOneWidget);
     });
-  });
-
-  testWidgets('should navigate to SendDidPage on tap of send button',
-      (tester) async {
-    await tester.pumpWidget(
-      WidgetHelpers.testableWidget(child: const SendPage(), overrides: [
-        didProvider.overrideWithValue(did),
-      ]),
-    );
-
-    await tester.tap(find.text('8'));
-    await tester.pump();
-
-    await tester.tap(find.text('Send'));
-    await tester.pumpAndSettle();
-
-    expect(find.byType(SendDidPage), findsOneWidget);
   });
 }

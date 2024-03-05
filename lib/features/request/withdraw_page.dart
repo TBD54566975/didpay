@@ -39,7 +39,7 @@ class WithdrawPage extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Payin(
-                        transactionType: Type.withdrawal,
+                        transactionType: TransactionType.withdraw,
                         amount: payinAmount,
                         keyPress: keyPress,
                         currency: selectedCurrency,
@@ -47,15 +47,15 @@ class WithdrawPage extends HookConsumerWidget {
                       const SizedBox(height: Grid.sm),
                       Payout(
                         payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
-                        transactionType: Type.withdrawal,
+                        transactionType: TransactionType.withdraw,
                         payoutAmount: payoutAmount,
                         currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
                       FeeDetails(
-                          payinCurrency: Loc.of(context).usd,
+                          payinCurrency: CurrencyCode.usdc.toString(),
                           payoutCurrency:
-                              selectedCurrency.value?.label.toString() ?? '',
+                              selectedCurrency.value?.code.toString() ?? '',
                           exchangeRate:
                               selectedCurrency.value?.exchangeRate.toString() ??
                                   '',
@@ -86,8 +86,8 @@ class WithdrawPage extends HookConsumerWidget {
                                 '',
                         payoutAmount: payoutAmount.value.toString(),
                         payoutCurrency:
-                            selectedCurrency.value?.label.toString() ?? '',
-                        transactionType: Type.withdrawal,
+                            selectedCurrency.value?.code.toString() ?? '',
+                        transactionType: TransactionType.withdraw,
                       ),
                     ),
                   );

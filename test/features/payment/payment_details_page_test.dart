@@ -1,3 +1,4 @@
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:flutter/material.dart';
 import 'package:didpay/features/payment/payment_method.dart';
@@ -18,7 +19,7 @@ void main() {
             exchangeRate: '17',
             payoutAmount: '17.00',
             payoutCurrency: 'MXN',
-            transactionType: 'Deposit',
+            transactionType: TransactionType.deposit,
           ),
           overrides: overrides,
         );

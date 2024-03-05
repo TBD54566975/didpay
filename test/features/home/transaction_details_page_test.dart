@@ -11,7 +11,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: 'Deposit', status: '', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 0,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -19,35 +26,57 @@ void main() {
       expect(find.text('Deposit'), findsOneWidget);
     });
 
-    testWidgets('should show withdrawal header', (tester) async {
+    testWidgets('should show withdraw header', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: 'Withdrawal', status: '', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 0,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.withdraw,
+            ),
           ),
         ),
       );
 
-      expect(find.text('Withdrawal'), findsOneWidget);
+      expect(find.text('Withdraw'), findsOneWidget);
     });
 
     testWidgets('should show transaction amount', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: '', amount: 123.45),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: 'ASD',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
 
-      expect(find.text('123.45 USD'), findsExactly(3));
+      expect(find.text('123'), findsOneWidget);
+      expect(find.text('ASD'), findsOneWidget);
     });
 
     testWidgets('should show quoted transaction status', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Quoted', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.quoted,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -60,7 +89,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Completed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -73,7 +109,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Failed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.failed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -82,24 +125,18 @@ void main() {
       expect(find.byIcon(Icons.error), findsOneWidget);
     });
 
-    testWidgets('should show unknown transaction status', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Unknown', amount: 0),
-          ),
-        ),
-      );
-
-      expect(find.text('Unknown'), findsOneWidget);
-      expect(find.byIcon(Icons.help), findsOneWidget);
-    });
-
     testWidgets('should show you pay label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Quoted', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.quoted,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -111,7 +148,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: 'Deposit', status: 'Completed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: 'sad',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -123,8 +167,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn:
-                Transaction(type: 'Withdrawal', status: 'Completed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.withdraw,
+            ),
           ),
         ),
       );
@@ -136,7 +186,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Completed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -148,7 +205,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Quoted', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.quoted,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );
@@ -161,7 +225,14 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
-            txn: Transaction(type: '', status: 'Completed', amount: 0),
+            txn: Transaction(
+              payinAmount: 0,
+              payoutAmount: 123,
+              payinCurrency: '',
+              payoutCurrency: '',
+              status: TransactionStatus.completed,
+              type: TransactionType.deposit,
+            ),
           ),
         ),
       );

@@ -1,3 +1,4 @@
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/request/request_confirmation_page.dart';
 import 'package:didpay/features/request/review_request_page.dart';
 import 'package:didpay/shared/fee_details.dart';
@@ -16,7 +17,7 @@ void main() {
           exchangeRate: '17',
           payoutAmount: '17.00',
           payoutCurrency: 'MXN',
-          transactionType: 'Deposit',
+          transactionType: TransactionType.deposit,
           serviceFee: '9.0',
           paymentName: 'ABC Bank',
           formData: {'accountNumber': '1234567890'},
@@ -28,9 +29,9 @@ void main() {
       await tester.pumpWidget(
           WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
 
-      expect(find.text('\$1.00'), findsOneWidget);
+      expect(find.text('1'), findsOneWidget);
       expect(find.text('USD'), findsOneWidget);
-      expect(find.text('\$17.00'), findsOneWidget);
+      expect(find.text('17'), findsOneWidget);
       expect(find.text('MXN'), findsOneWidget);
     });
 

@@ -151,12 +151,6 @@ abstract class Loc {
   /// **'To:'**
   String get to;
 
-  /// No description provided for @pay.
-  ///
-  /// In en, this message translates to:
-  /// **'Pay'**
-  String get pay;
-
   /// No description provided for @scanQrCode.
   ///
   /// In en, this message translates to:
@@ -252,6 +246,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'You paid'**
   String get youPaid;
+
+  /// No description provided for @youReceive.
+  ///
+  /// In en, this message translates to:
+  /// **'You receive'**
+  String get youReceive;
 
   /// No description provided for @youReceived.
   ///
@@ -474,6 +474,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Privacy Policy'**
   String get privacyPolicy;
+
+  /// No description provided for @sendAmountUsdc.
+  ///
+  /// In en, this message translates to:
+  /// **'Send {amount} USDC'**
+  String sendAmountUsdc(String amount);
+
+  /// No description provided for @availableBalance.
+  ///
+  /// In en, this message translates to:
+  /// **'Available balance: '**
+  String get availableBalance;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -8,10 +8,12 @@ class SearchPaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
   final ValueNotifier<PaymentMethod?> selectedPaymentMethod;
   final List<PaymentMethod>? paymentMethods;
+  final String payinCurrency;
 
   SearchPaymentMethodsPage({
     required this.selectedPaymentMethod,
     required this.paymentMethods,
+    required this.payinCurrency,
     super.key,
   });
 
@@ -90,7 +92,7 @@ class SearchPaymentMethodsPage extends HookWidget {
           selected: selectedPaymentMethod.value == currentPaymentMethod,
           title: Text(paymentName ?? ''),
           subtitle: Text(
-            Loc.of(context).serviceFeeAmount(fee, 'USD'),
+            Loc.of(context).serviceFeeAmount(fee, payinCurrency),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing: selectedPaymentMethod.value == currentPaymentMethod

@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:didpay/features/currency/currency.dart';
 import 'package:flutter/material.dart';
 import 'package:didpay/features/request/deposit_page.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
@@ -13,6 +15,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final txns = ref.watch(transactionsProvider);
+    final accountBalance = Currency.formatFromDouble(0);
 
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).home)),
@@ -20,7 +23,7 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAccountBalance(context),
+            _buildAccountBalance(context, accountBalance),
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: Grid.side, vertical: Grid.xs),
@@ -40,7 +43,7 @@ class HomePage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildAccountBalance(BuildContext context) {
+  Widget _buildAccountBalance(BuildContext context, String accountBalance) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: Container(
@@ -60,11 +63,33 @@ class HomePage extends HookConsumerWidget {
             ),
             const SizedBox(height: Grid.xxs),
             Center(
-              child: Text(
-                '\$0.00',
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.baseline,
+                textBaseline: TextBaseline.alphabetic,
+                children: [
+                  Flexible(
+                    child: AutoSizeText(
+                      accountBalance,
+                      style:
+                          Theme.of(context).textTheme.displayMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                      maxLines: 1,
                     ),
+                  ),
+                  const SizedBox(width: Grid.half),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                    child: Text(
+                      '${CurrencyCode.usdc}',
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: Grid.xs),
@@ -128,37 +153,42 @@ class HomePage extends HookConsumerWidget {
   Widget _buildTransactionsList(BuildContext context, List<Transaction> txns) {
     return ListView(
       children: txns.map((txn) {
+        final payoutAmount = Currency.formatFromDouble(txn.payoutAmount,
+            currency: txn.payoutCurrency);
+        final payinAmount = Currency.formatFromDouble(txn.payinAmount,
+            currency: txn.payinCurrency);
+
         return ListTile(
-          // TODO: display name for payments and type for deposits/withdrawals
           title: Text(
-            txn.type,
+            '${txn.type}',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           subtitle: Text(
-            txn.status,
+            '${txn.status}',
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w300,
                 ),
           ),
-          trailing: Text(txn.amount.toString()),
+          trailing: Text(
+              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc}'),
           leading: Container(
-            width: Grid.lg,
-            height: Grid.lg,
+            width: Grid.md,
+            height: Grid.md,
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
-              shape: BoxShape.circle,
-            ),
-            // TODO: use $ or first letter of name based on txn type
+                color: Theme.of(context).colorScheme.surface,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(Grid.xxs)),
             child: Center(
-              child: Icon(Icons.attach_money,
-                  color: Theme.of(context).colorScheme.background),
+              child: txn.type == TransactionType.deposit
+                  ? const Icon(Icons.south_west)
+                  : const Icon(Icons.north_east),
             ),
           ),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
-              builder: (BuildContext context) {
+              builder: (_) {
                 return TransactionDetailsPage(
                   txn: txn,
                 );

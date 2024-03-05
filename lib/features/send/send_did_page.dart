@@ -78,7 +78,7 @@ class SendDidPage extends HookConsumerWidget {
                     );
                   }
                 },
-                child: Text('${Loc.of(context).pay} \$$sendAmount'),
+                child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
               ),
             ),
           ],

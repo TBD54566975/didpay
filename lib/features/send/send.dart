@@ -58,28 +58,40 @@ class Send extends HookWidget {
           shouldAnimate: shouldAnimate,
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Flexible(
-                    child: AutoSizeText(
-                      formattedAmount,
-                      style: Theme.of(context).textTheme.displayMedium,
-                      maxFontSize:
-                          Theme.of(context).textTheme.displayMedium?.fontSize ??
-                              45.0,
-                      minFontSize:
-                          Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16.0,
-                      maxLines: 1,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.baseline,
+                  textBaseline: TextBaseline.alphabetic,
+                  children: [
+                    Flexible(
+                      child: AutoSizeText(
+                        formattedAmount,
+                        style: const TextStyle(
+                          fontSize: 80.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        maxLines: 1,
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(width: Grid.half),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                      child: Text(
+                        CurrencyCode.usdc.toString(),
+                        style:
+                            Theme.of(context).textTheme.displayMedium?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
         ),
-        const SizedBox(height: Grid.lg),
       ],
     );
   }

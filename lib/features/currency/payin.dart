@@ -17,7 +17,7 @@ class PayinKeyPress {
 }
 
 class Payin extends HookWidget {
-  final String transactionType;
+  final TransactionType transactionType;
   final ValueNotifier<String> amount;
   final ValueNotifier<PayinKeyPress> keyPress;
   final ValueNotifier<Currency?> currency;
@@ -34,9 +34,11 @@ class Payin extends HookWidget {
   Widget build(BuildContext context) {
     final shouldAnimate = useState(false);
 
-    final formattedAmount = transactionType == Type.deposit
-        ? Currency.formatFromString(amount.value,
-            currency: currency.value?.label)
+    final formattedAmount = transactionType == TransactionType.deposit
+        ? Currency.formatFromString(
+            amount.value,
+            currency: currency.value?.code.toString(),
+          )
         : Currency.formatFromString(amount.value);
 
     useEffect(() {
@@ -52,11 +54,11 @@ class Payin extends HookWidget {
 
         shouldAnimate.value = (key == '<')
             ? !NumberValidationUtil.isValidDelete(current)
-            : (transactionType == Type.deposit
+            : (transactionType == TransactionType.deposit
                 ? !NumberValidationUtil.isValidInput(
                     current,
                     key,
-                    currency: currency.value?.label,
+                    currency: currency.value?.code.toString(),
                   )
                 : !NumberValidationUtil.isValidInput(current, key));
         if (shouldAnimate.value) return;
@@ -94,23 +96,17 @@ class Payin extends HookWidget {
                     child: AutoSizeText(
                       formattedAmount,
                       style: Theme.of(context).textTheme.displayMedium,
-                      maxFontSize:
-                          Theme.of(context).textTheme.displayMedium?.fontSize ??
-                              45.0,
-                      minFontSize:
-                          Theme.of(context).textTheme.bodyLarge?.fontSize ??
-                              16.0,
                       maxLines: 1,
                     ),
                   ),
                   const SizedBox(width: Grid.half),
-                  transactionType == Type.deposit
+                  transactionType == TransactionType.deposit
                       ? CurrencyDropdown(selectedCurrency: currency)
                       : Padding(
                           padding:
                               const EdgeInsets.symmetric(horizontal: Grid.xxs),
                           child: Text(
-                            Loc.of(context).usd,
+                            '${CurrencyCode.usdc}',
                             style: Theme.of(context).textTheme.headlineMedium,
                           ),
                         ),
@@ -121,7 +117,7 @@ class Payin extends HookWidget {
         ),
         const SizedBox(height: Grid.xs),
         Text(
-          transactionType == Type.deposit
+          transactionType == TransactionType.deposit
               ? Loc.of(context).youDeposit
               : Loc.of(context).youWithdraw,
           style: Theme.of(context).textTheme.bodyLarge,

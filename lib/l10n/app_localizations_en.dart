@@ -35,9 +35,6 @@ class LocEn extends Loc {
   String get to => 'To:';
 
   @override
-  String get pay => 'Pay';
-
-  @override
   String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
@@ -84,6 +81,9 @@ class LocEn extends Loc {
 
   @override
   String get youPaid => 'You paid';
+
+  @override
+  String get youReceive => 'You receive';
 
   @override
   String get youReceived => 'You received';
@@ -201,4 +201,12 @@ class LocEn extends Loc {
 
   @override
   String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String sendAmountUsdc(String amount) {
+    return 'Send $amount USDC';
+  }
+
+  @override
+  String get availableBalance => 'Available balance: ';
 }

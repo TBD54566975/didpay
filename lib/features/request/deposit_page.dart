@@ -39,7 +39,7 @@ class DepositPage extends HookConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Payin(
-                        transactionType: Type.deposit,
+                        transactionType: TransactionType.deposit,
                         amount: payinAmount,
                         keyPress: keyPress,
                         currency: selectedCurrency,
@@ -47,15 +47,15 @@ class DepositPage extends HookConsumerWidget {
                       const SizedBox(height: Grid.sm),
                       Payout(
                         payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
-                        transactionType: Type.deposit,
+                        transactionType: TransactionType.deposit,
                         payoutAmount: payoutAmount,
                         currency: selectedCurrency,
                       ),
                       const SizedBox(height: Grid.xl),
                       FeeDetails(
-                          payinCurrency: Loc.of(context).usd,
+                          payinCurrency: CurrencyCode.usdc.toString(),
                           payoutCurrency:
-                              selectedCurrency.value?.label.toString() ?? '',
+                              selectedCurrency.value?.code.toString() ?? '',
                           exchangeRate:
                               selectedCurrency.value?.exchangeRate.toString() ??
                                   '',
@@ -82,12 +82,12 @@ class DepositPage extends HookConsumerWidget {
                         payinAmount: payinAmount.value,
                         payoutAmount: payoutAmount.value.toString(),
                         payinCurrency:
-                            selectedCurrency.value?.label.toString() ?? '',
-                        payoutCurrency: Loc.of(context).usd,
+                            selectedCurrency.value?.code.toString() ?? '',
+                        payoutCurrency: CurrencyCode.usdc.toString(),
                         exchangeRate:
                             selectedCurrency.value?.exchangeRate.toString() ??
                                 '',
-                        transactionType: Type.deposit,
+                        transactionType: TransactionType.deposit,
                       ),
                     ),
                   );

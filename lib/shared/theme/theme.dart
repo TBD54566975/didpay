@@ -23,7 +23,7 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
             (Set<MaterialState> _) {
               return BorderSide(
                 color: lightColorScheme.secondary,
-                width: Grid.half,
+                width: Grid.quarter,
               );
             },
           ),
@@ -70,7 +70,7 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
             (Set<MaterialState> _) {
               return BorderSide(
                 color: darkColorScheme.secondary,
-                width: Grid.half,
+                width: Grid.quarter,
               );
             },
           ),

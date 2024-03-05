@@ -10,7 +10,7 @@ void main() {
   group('Payout', () {
     final amount = ValueNotifier<double>(2.0);
     final currency = ValueNotifier<Currency?>(
-      Currency(exchangeRate: 17, label: 'KRW', icon: Icons.abc),
+      Currency(exchangeRate: 17, code: CurrencyCode.mxn, icon: Icons.abc),
     );
 
     testWidgets('should show payout amount', (tester) async {
@@ -19,7 +19,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             currency: currency,
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             payinAmount: 34,
           ),
         ),
@@ -34,7 +34,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             currency: currency,
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             payinAmount: 0,
           ),
         ),
@@ -49,7 +49,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             currency: currency,
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             payinAmount: 0,
           ),
         ),
@@ -65,7 +65,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             currency: currency,
-            transactionType: Type.withdrawal,
+            transactionType: TransactionType.withdraw,
             payinAmount: 0,
           ),
         ),
@@ -81,7 +81,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             currency: currency,
-            transactionType: Type.deposit,
+            transactionType: TransactionType.deposit,
             payinAmount: 0,
           ),
         ),
