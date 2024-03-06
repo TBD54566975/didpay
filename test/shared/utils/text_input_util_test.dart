@@ -53,9 +53,8 @@ void main() {
     });
 
     test('should give no mask', () {
-      const pattern1 = r'[a-zA-Z]';
-
-      final formatter1 = TextInputUtil.getMaskFormatter(pattern1);
+      const pattern = r'[a-zA-Z]';
+      final formatter1 = TextInputUtil.getMaskFormatter(pattern);
       final formatter2 = TextInputUtil.getMaskFormatter(null);
 
       expect(formatter1.getMask(), null);
