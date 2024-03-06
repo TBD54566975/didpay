@@ -30,6 +30,7 @@ dependencies:
   qr_flutter: ^4.1.0
   device_info_plus: ^9.1.2
   auto_size_text: ^3.0.0
+  mask_text_input_formatter: ^2.9.0
 
 dev_dependencies:
   flutter_test:
