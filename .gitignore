@@ -1,5 +1,4 @@
 .hermit/
-.vscode/
 !.vscode/extensions.json
 /logs/
 
