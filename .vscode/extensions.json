@@ -1,7 +1,8 @@
 {
-    "recommendations": [
-      "dart-code.flutter",
-      "usernamehw.errorlens",
-    ]
-  }
-  
+  "recommendations": [
+    "Dart-Code.flutter",
+    "usernamehw.errorlens",
+    "redhat.vscode-yaml",
+    "yzhang.markdown-all-in-one"
+  ]
+}
