@@ -486,6 +486,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Available balance: '**
   String get availableBalance;
+
+  /// No description provided for @selectWallet.
+  ///
+  /// In en, this message translates to:
+  /// **'Select your wallet'**
+  String get selectWallet;
+
+  /// No description provided for @selectWalletDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'We recommend you use DidPay with a compatible digital wallet. Select from the following options.'**
+  String get selectWalletDescription;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
