@@ -61,7 +61,8 @@ const String bankSchema = '''
         "title": "Account number",
         "description": "Bank account number of the recipient",
         "minLength": 10,
-        "maxLength": 10
+        "maxLength": 10,
+        "pattern": "^[0-9]{10}\$"
       },
       "reason": {
         "title": "Reason for sending",
@@ -76,15 +77,16 @@ const String bankSchema = '''
     "additionalProperties": false
   }''';
 
-const String momoSchema = '''
+const String momoSchema = r'''
   {
     "properties": {
       "accountNumber": {
         "type": "string",
         "title": "Phone number",
         "description": "Mobile money account number of the recipient",
-        "minLength": 12,
-        "maxLength": 12
+        "minLength": 13,
+        "maxLength": 13,
+        "pattern": "^\\+2547[0-9]{8}$"
       },
       "reason": {
         "title": "Reason for sending",
