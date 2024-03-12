@@ -80,7 +80,10 @@ class DepositPage extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
                         payinAmount: payinAmount.value,
-                        payoutAmount: payoutAmount.value.toString(),
+                        payoutAmount: Currency.formatFromDouble(
+                          payoutAmount.value,
+                          currency: CurrencyCode.usdc.toString(),
+                        ),
                         payinCurrency:
                             selectedCurrency.value?.code.toString() ?? '',
                         payoutCurrency: CurrencyCode.usdc.toString(),
