@@ -33,6 +33,7 @@ class Payin extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final shouldAnimate = useState(false);
+    final decimalPaddingHint = useState('');
 
     final formattedAmount = transactionType == TransactionType.deposit
         ? Currency.formatFromString(
@@ -42,7 +43,10 @@ class Payin extends HookWidget {
         : Currency.formatFromString(amount.value);
 
     useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) => amount.value = '0');
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        amount.value = '0';
+        decimalPaddingHint.value = '';
+      });
       return;
     }, [currency.value]);
 
@@ -74,6 +78,18 @@ class Payin extends HookWidget {
                   ? key
                   : '$current$key';
         }
+
+        final decimalDigits = transactionType == TransactionType.deposit
+            ? Currency.getDecimalDigits(currency.value?.code)
+            : Currency.getDecimalDigits(CurrencyCode.usdc);
+        final hasDecimal = amount.value.contains('.');
+        final hintDigits = hasDecimal
+            ? decimalDigits - amount.value.split('.')[1].length
+            : decimalDigits;
+
+        decimalPaddingHint.value = hasDecimal && hintDigits > 0
+            ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
+            : '';
       });
 
       return;
@@ -93,10 +109,20 @@ class Payin extends HookWidget {
                 textBaseline: TextBaseline.alphabetic,
                 children: [
                   Flexible(
-                    child: AutoSizeText(
-                      formattedAmount,
-                      style: Theme.of(context).textTheme.displayMedium,
+                    child: AutoSizeText.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(text: formattedAmount),
+                          TextSpan(
+                            text: decimalPaddingHint.value,
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
                       maxLines: 1,
+                      style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
                   const SizedBox(width: Grid.half),

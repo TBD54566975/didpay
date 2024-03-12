@@ -20,15 +20,15 @@ class Send extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final shouldAnimate = useState(false);
+    final decimalPaddingHint = useState('');
 
     final formattedAmount = Currency.formatFromString(amount.value);
 
     useEffect(() {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        final current = amount.value;
         final key = keyPress.value.key;
         if (key == '') return;
-
-        final current = amount.value;
 
         shouldAnimate.value = (key == '<')
             ? !NumberValidationUtil.isValidDelete(current)
@@ -46,6 +46,16 @@ class Send extends HookWidget {
                   ? key
                   : '$current$key';
         }
+
+        final decimalDigits = Currency.getDecimalDigits(CurrencyCode.usdc);
+        final hasDecimal = amount.value.contains('.');
+        final hintDigits = hasDecimal
+            ? decimalDigits - amount.value.split('.')[1].length
+            : decimalDigits;
+
+        decimalPaddingHint.value = hasDecimal && hintDigits > 0
+            ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
+            : '';
       });
 
       return;
@@ -66,13 +76,23 @@ class Send extends HookWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     Flexible(
-                      child: AutoSizeText(
-                        formattedAmount,
+                      child: AutoSizeText.rich(
+                        TextSpan(
+                          children: [
+                            TextSpan(text: formattedAmount),
+                            TextSpan(
+                              text: decimalPaddingHint.value,
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                        maxLines: 1,
                         style: const TextStyle(
                           fontSize: 80.0,
                           fontWeight: FontWeight.bold,
                         ),
-                        maxLines: 1,
                       ),
                     ),
                     const SizedBox(width: Grid.half),
