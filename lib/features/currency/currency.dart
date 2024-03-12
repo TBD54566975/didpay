@@ -13,22 +13,42 @@ class Currency {
     required this.icon,
   });
 
-  static String formatFromString(String amount, {String? currency}) {
-    final parsedAmount = double.tryParse(amount) ?? 0.0;
-    return formatFromDouble(parsedAmount, currency: currency);
+  static int getDecimalDigits(CurrencyCode? currency) {
+    switch (currency) {
+      case CurrencyCode.usdc:
+      case CurrencyCode.usd:
+      case CurrencyCode.mxn:
+        return 2;
+      case CurrencyCode.btc:
+        return 8;
+      default:
+        return 2;
+    }
   }
 
-  static String formatFromDouble(double amount, {String? currency}) {
+  static String formatFromString(String amount, {String? currency}) {
+    final decimalDigits =
+        amount.contains('.') ? amount.split('.')[1].length : 0;
+    final parsedAmount = double.tryParse(amount) ?? 0.0;
+    return formatFromDouble(
+      parsedAmount,
+      currency: currency,
+      decimalDigits: decimalDigits,
+    );
+  }
+
+  static String formatFromDouble(double amount,
+      {String? currency, int? decimalDigits}) {
     if (currency == CurrencyCode.btc.toString()) {
       return NumberFormat.currency(
         symbol: '',
-        decimalDigits: amount % 1 == 0 ? 0 : 8,
+        decimalDigits: decimalDigits ?? (amount % 1 == 0 ? 0 : 8),
       ).format(amount);
     }
 
     return NumberFormat.currency(
       symbol: '',
-      decimalDigits: amount % 1 == 0 ? 0 : 2,
+      decimalDigits: decimalDigits ?? (amount % 1 == 0 ? 0 : 2),
     ).format(amount);
   }
 }
