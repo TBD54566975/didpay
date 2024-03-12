@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/request/request_confirmation_page.dart';
 import 'package:didpay/features/request/review_request_page.dart';
@@ -29,9 +30,9 @@ void main() {
       await tester.pumpWidget(
           WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
 
-      expect(find.text('1'), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '1.00'), findsOneWidget);
       expect(find.text('USD'), findsOneWidget);
-      expect(find.text('17'), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '17.00'), findsOneWidget);
       expect(find.text('MXN'), findsOneWidget);
     });
 
