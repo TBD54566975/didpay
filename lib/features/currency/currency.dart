@@ -15,10 +15,6 @@ class Currency {
 
   static int getDecimalDigits(CurrencyCode? currency) {
     switch (currency) {
-      case CurrencyCode.usdc:
-      case CurrencyCode.usd:
-      case CurrencyCode.mxn:
-        return 2;
       case CurrencyCode.btc:
         return 8;
       default:
