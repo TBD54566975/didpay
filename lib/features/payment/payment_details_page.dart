@@ -202,9 +202,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         payinCurrency: payinCurrency,
                         payoutCurrency: payoutCurrency,
                         exchangeRate: exchangeRate,
-                        serviceFee: selectedPaymentMethod.value!.fee ?? '0.00',
+                        serviceFee: selectedPaymentMethod.value?.fee ?? '0.00',
                         transactionType: transactionType,
-                        paymentName: selectedPaymentMethod.value!.kind
+                        paymentName: selectedPaymentMethod.value?.kind
                                 .split('_')
                                 .lastOrNull ??
                             '',
