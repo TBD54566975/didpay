@@ -1,3 +1,3 @@
 class FeatureFlags {
-  static bool get hasWalletPicker => false;
+  static bool get hasWalletPicker => true;
 }
