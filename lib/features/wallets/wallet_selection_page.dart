@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
 import 'package:didpay/features/wallets/wallet.dart';
@@ -55,7 +57,7 @@ class WalletSelectionPage extends HookConsumerWidget {
                         } else {
                           final result = await DidResolver.resolve(pfi.didUri);
                           final widgetService = result.didDocument?.service
-                              ?.firstWhere((e) => e.type == 'IDV');
+                              ?.firstWhereOrNull((e) => e.type == 'IDV');
                           final did = ref.read(didProvider);
                           final oidcParams = await ref
                               .read(idvServiceProvider)
