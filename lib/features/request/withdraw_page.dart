@@ -85,7 +85,8 @@ class WithdrawPage extends HookConsumerWidget {
                         payinCurrency: Loc.of(context).usd,
                         payoutAmount: Currency.formatFromDouble(
                           payoutAmount.value,
-                          currency: payoutCurrency,
+                          currency: CurrencyCode.values
+                              .byName(payoutCurrency.toLowerCase()),
                         ),
                         payoutCurrency: payoutCurrency,
                         exchangeRate:

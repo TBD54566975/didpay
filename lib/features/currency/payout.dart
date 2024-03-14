@@ -26,7 +26,7 @@ class Payout extends HookWidget {
     final formattedAmount = transactionType == TransactionType.withdraw
         ? Currency.formatFromDouble(
             payoutAmount.value,
-            currency: currency.value?.code.toString(),
+            currency: currency.value?.code,
           )
         : Currency.formatFromDouble(payoutAmount.value);
 

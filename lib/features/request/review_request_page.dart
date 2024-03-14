@@ -113,8 +113,11 @@ class ReviewRequestPage extends HookWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  Currency.formatFromString(payinAmount,
-                      currency: payinCurrency),
+                  Currency.formatFromString(
+                    payinAmount,
+                    currency:
+                        CurrencyCode.values.byName(payinCurrency.toLowerCase()),
+                  ),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
                 ),

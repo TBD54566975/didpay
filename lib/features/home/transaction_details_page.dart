@@ -13,10 +13,14 @@ class TransactionDetailsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final payoutAmount = Currency.formatFromDouble(txn.payoutAmount,
-        currency: txn.payoutCurrency);
-    final payinAmount =
-        Currency.formatFromDouble(txn.payinAmount, currency: txn.payinCurrency);
+    final payoutAmount = Currency.formatFromDouble(
+      txn.payoutAmount,
+      currency: CurrencyCode.values.byName(txn.payoutCurrency.toLowerCase()),
+    );
+    final payinAmount = Currency.formatFromDouble(
+      txn.payinAmount,
+      currency: CurrencyCode.values.byName(txn.payinCurrency.toLowerCase()),
+    );
 
     return Scaffold(
       appBar: AppBar(title: Text(Loc.of(context).transactionDetails)),

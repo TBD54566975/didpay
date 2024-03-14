@@ -38,7 +38,7 @@ class Payin extends HookWidget {
     final formattedAmount = transactionType == TransactionType.deposit
         ? Currency.formatFromString(
             amount.value,
-            currency: currency.value?.code.toString(),
+            currency: currency.value?.code,
           )
         : Currency.formatFromString(amount.value);
 

@@ -82,7 +82,7 @@ class DepositPage extends HookConsumerWidget {
                         payinAmount: payinAmount.value,
                         payoutAmount: Currency.formatFromDouble(
                           payoutAmount.value,
-                          currency: CurrencyCode.usdc.toString(),
+                          currency: CurrencyCode.usdc,
                         ),
                         payinCurrency:
                             selectedCurrency.value?.code.toString() ?? '',

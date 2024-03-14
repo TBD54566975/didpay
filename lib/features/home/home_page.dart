@@ -153,10 +153,15 @@ class HomePage extends HookConsumerWidget {
   Widget _buildTransactionsList(BuildContext context, List<Transaction> txns) {
     return ListView(
       children: txns.map((txn) {
-        final payoutAmount = Currency.formatFromDouble(txn.payoutAmount,
-            currency: txn.payoutCurrency);
-        final payinAmount = Currency.formatFromDouble(txn.payinAmount,
-            currency: txn.payinCurrency);
+        final payoutAmount = Currency.formatFromDouble(
+          txn.payoutAmount,
+          currency:
+              CurrencyCode.values.byName(txn.payoutCurrency.toLowerCase()),
+        );
+        final payinAmount = Currency.formatFromDouble(
+          txn.payinAmount,
+          currency: CurrencyCode.values.byName(txn.payinCurrency.toLowerCase()),
+        );
 
         return ListTile(
           title: Text(
