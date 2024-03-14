@@ -28,7 +28,8 @@ class WalletSelectionPage extends HookConsumerWidget {
     return Scaffold(
         appBar: AppBar(),
         body: switch (wallets) {
-          AsyncError(:final error) => Center(child: Text('Error: $error')),
+          AsyncError(:final error) =>
+            Center(child: Text('${Loc.of(context).error}: $error')),
           AsyncData(:final value) => SafeArea(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,

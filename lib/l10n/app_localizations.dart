@@ -498,6 +498,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'We recommend you use DidPay with a compatible digital wallet. Select from the following options.'**
   String get selectWalletDescription;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

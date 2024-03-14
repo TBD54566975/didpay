@@ -215,4 +215,7 @@ class LocEn extends Loc {
 
   @override
   String get selectWalletDescription => 'We recommend you use DidPay with a compatible digital wallet. Select from the following options.';
+
+  @override
+  String get error => 'Error';
 }
