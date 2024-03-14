@@ -116,7 +116,7 @@ class Payin extends HookWidget {
                           TextSpan(
                             text: decimalPaddingHint.value,
                             style: TextStyle(
-                              color: Colors.grey.shade600,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                           ),
                         ],
