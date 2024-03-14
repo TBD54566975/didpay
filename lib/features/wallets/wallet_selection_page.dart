@@ -85,32 +85,36 @@ class WalletSelectionPage extends HookConsumerWidget {
       children: wallets
           .map(
             (wallet) => ListTile(
-              title: Text(
-                wallet.name,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
-              ),
-              leading: Container(
-                width: Grid.md,
-                height: Grid.md,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(Grid.xxs)),
-                child: Center(
-                    child: Icon(
-                  Icons.wallet,
-                  color: Theme.of(context).colorScheme.primary,
-                )),
-              ),
-              trailing: (selectedWalletState.value?.name == wallet.name)
-                  ? Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : null,
-              onTap: () {
-                selectedWalletState.value = wallet;
-                if (selectedWalletState.value?.name != 'DidPay') {
+                title: Text(
+                  wallet.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
+                ),
+                leading: Container(
+                  width: Grid.md,
+                  height: Grid.md,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      shape: BoxShape.rectangle,
+                      borderRadius: BorderRadius.circular(Grid.xxs)),
+                  child: Center(
+                      child: Icon(
+                    Icons.wallet,
+                    color: Theme.of(context).colorScheme.primary,
+                  )),
+                ),
+                trailing: (selectedWalletState.value?.name == wallet.name)
+                    ? Icon(
+                        Icons.check,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () {
+                  selectedWalletState.value = wallet;
+
+                  if (selectedWalletState.value?.name == 'DidPay') {
+                    return;
+                  }
+
                   showModalBottomSheet<void>(
                     context: context,
                     builder: (BuildContext context) {
@@ -131,9 +135,7 @@ class WalletSelectionPage extends HookConsumerWidget {
                       );
                     },
                   );
-                }
-              },
-            ),
+                }),
           )
           .toList(),
     );
