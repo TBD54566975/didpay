@@ -38,17 +38,10 @@ class AgreementPage extends HookWidget {
                     ? null
                     : () {
                         Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) {
-                            if (Config.hasWalletPicker) {
-                              return WalletSelectionPage(
-                                pfi: pfi,
-                              );
-                            } else {
-                              return PfiVerificationPage(
-                                pfi: pfi,
-                              );
-                            }
-                          }),
+                          MaterialPageRoute(
+                              builder: (_) => Config.hasWalletPicker
+                                  ? WalletSelectionPage(pfi: pfi)
+                                  : PfiVerificationPage(pfi: pfi)),
                         );
                       },
                 child: Text(Loc.of(context).next),
