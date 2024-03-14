@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/request/request_confirmation_page.dart';
@@ -110,9 +111,16 @@ class ReviewRequestPage extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
-                Currency.formatFromString(payinAmount, currency: payinCurrency),
-                style: Theme.of(context).textTheme.headlineMedium,
+              Flexible(
+                child: AutoSizeText(
+                  Currency.formatFromString(
+                    payinAmount,
+                    currency:
+                        CurrencyCode.values.byName(payinCurrency.toLowerCase()),
+                  ),
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  maxLines: 1,
+                ),
               ),
               const SizedBox(width: Grid.half),
               Padding(
@@ -136,10 +144,12 @@ class ReviewRequestPage extends HookWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
-                Currency.formatFromString(payoutAmount,
-                    currency: payoutCurrency),
-                style: Theme.of(context).textTheme.headlineMedium,
+              Flexible(
+                child: AutoSizeText(
+                  payoutAmount,
+                  style: Theme.of(context).textTheme.headlineMedium,
+                  maxLines: 1,
+                ),
               ),
               const SizedBox(width: Grid.xs),
               Text(

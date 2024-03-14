@@ -76,17 +76,22 @@ class WithdrawPage extends HookConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
               child: FilledButton(
                 onPressed: () {
+                  final payoutCurrency =
+                      selectedCurrency.value?.code.toString() ?? '';
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
                         payinAmount: payinAmount.value,
                         payinCurrency: Loc.of(context).usd,
+                        payoutAmount: Currency.formatFromDouble(
+                          payoutAmount.value,
+                          currency: CurrencyCode.values
+                              .byName(payoutCurrency.toLowerCase()),
+                        ),
+                        payoutCurrency: payoutCurrency,
                         exchangeRate:
                             selectedCurrency.value?.exchangeRate.toString() ??
                                 '',
-                        payoutAmount: payoutAmount.value.toString(),
-                        payoutCurrency:
-                            selectedCurrency.value?.code.toString() ?? '',
                         transactionType: TransactionType.withdraw,
                       ),
                     ),

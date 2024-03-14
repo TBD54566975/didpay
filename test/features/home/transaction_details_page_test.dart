@@ -14,8 +14,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 0,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -33,8 +33,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 0,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.withdraw,
             ),
@@ -52,8 +52,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: 'ASD',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -62,7 +62,7 @@ void main() {
       );
 
       expect(find.text('123'), findsOneWidget);
-      expect(find.text('ASD'), findsOneWidget);
+      expect(find.text('USDC'), findsOneWidget);
     });
 
     testWidgets('should show quoted transaction status', (tester) async {
@@ -72,8 +72,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.quoted,
               type: TransactionType.deposit,
             ),
@@ -92,8 +92,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -112,8 +112,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.failed,
               type: TransactionType.deposit,
             ),
@@ -132,8 +132,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.quoted,
               type: TransactionType.deposit,
             ),
@@ -151,8 +151,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: 'sad',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -170,8 +170,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.withdraw,
             ),
@@ -189,8 +189,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -208,8 +208,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.quoted,
               type: TransactionType.deposit,
             ),
@@ -228,8 +228,8 @@ void main() {
             txn: Transaction(
               payinAmount: 0,
               payoutAmount: 123,
-              payinCurrency: '',
-              payoutCurrency: '',
+              payinCurrency: 'USDC',
+              payoutCurrency: 'USDC',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
