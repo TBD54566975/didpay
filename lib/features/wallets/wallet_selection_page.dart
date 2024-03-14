@@ -97,11 +97,10 @@ class WalletSelectionPage extends HookConsumerWidget {
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(Grid.xxs)),
                 child: Center(
-                  child: Text(
-                    '💳',
-                    style: Theme.of(context).textTheme.headlineSmall,
-                  ),
-                ),
+                    child: Icon(
+                  Icons.wallet,
+                  color: Theme.of(context).colorScheme.primary,
+                )),
               ),
               trailing: (selectedWalletState.value?.name == wallet.name)
                   ? Icon(
