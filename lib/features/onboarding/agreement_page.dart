@@ -1,4 +1,4 @@
-import 'package:didpay/config/feature_flags.dart';
+import 'package:didpay/config/config.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
 import 'package:didpay/features/wallets/wallet_selection_page.dart';
@@ -39,7 +39,7 @@ class AgreementPage extends HookWidget {
                     : () {
                         Navigator.of(context).push(
                           MaterialPageRoute(builder: (_) {
-                            if (FeatureFlags.hasWalletPicker) {
+                            if (Config.hasWalletPicker) {
                               return WalletSelectionPage(
                                 pfi: pfi,
                               );
