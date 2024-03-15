@@ -19,7 +19,7 @@ dependencies:
       ref: main
 
   collection: ^1.18.0
-  flutter_hooks: ^0.20.3  
+  flutter_hooks: ^0.20.3
   flutter_secure_storage: ^9.0.0
   hooks_riverpod: ^2.4.9
   http: ^1.1.2
@@ -30,6 +30,7 @@ dependencies:
   qr_flutter: ^4.1.0
   device_info_plus: ^9.1.2
   auto_size_text: ^3.0.0
+  url_launcher: ^6.2.5
   mask_text_input_formatter: ^2.9.0
 
 dev_dependencies:
@@ -41,12 +42,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   fonts:
-      - family: IBMPlexMono
-        fonts:
-          - asset: assets/fonts/IBMPlexMono-Regular.ttf
-          - asset: assets/fonts/IBMPlexMono-Medium.ttf
-            weight: 500
-          - asset: assets/fonts/IBMPlexMono-Bold.ttf
-            weight: 700
-          - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
-            weight: 600
+    - family: IBMPlexMono
+      fonts:
+        - asset: assets/fonts/IBMPlexMono-Regular.ttf
+        - asset: assets/fonts/IBMPlexMono-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/IBMPlexMono-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
+          weight: 600

@@ -209,4 +209,13 @@ class LocEn extends Loc {
 
   @override
   String get availableBalance => 'Available balance: ';
+
+  @override
+  String get selectWallet => 'Select your wallet';
+
+  @override
+  String get selectWalletDescription => 'We recommend you use DidPay with a compatible digital wallet. Select from the following options.';
+
+  @override
+  String get error => 'Error';
 }

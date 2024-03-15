@@ -1,5 +1,7 @@
+import 'package:didpay/config/config.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
+import 'package:didpay/features/wallets/wallet_selection_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/gestures.dart';
@@ -37,10 +39,9 @@ class AgreementPage extends HookWidget {
                     : () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => PfiVerificationPage(
-                              pfi: pfi,
-                            ),
-                          ),
+                              builder: (_) => Config.hasWalletPicker
+                                  ? WalletSelectionPage(pfi: pfi)
+                                  : PfiVerificationPage(pfi: pfi)),
                         );
                       },
                 child: Text(Loc.of(context).next),

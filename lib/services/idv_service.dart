@@ -5,13 +5,9 @@ import 'package:web5/web5.dart';
 class IdvService {
   static const _expirationDuration = Duration(minutes: 5);
 
-  Future<Map<String, dynamic>> getIdvRequest(
-      String idvAuthRequestUrl, BearerDid did) async {
-    final queryParameters = await _getQueryParameters(idvAuthRequestUrl);
-    final authRequest = queryParameters['request'] ??
-        (throw Exception('Auth request not found'));
+  Future<String> getIdvRequest(String idvAuthRequestUrl, BearerDid did) async {
+    final decodedJwt = await getAuthRequest(idvAuthRequestUrl);
 
-    final decodedJwt = await _decodeJwt(authRequest);
     final nonce = decodedJwt.claims.misc?['nonce'] ??
         (throw Exception('Nonce not found'));
     final clientId = decodedJwt.claims.misc?['client_id'] ??
@@ -20,16 +16,34 @@ class IdvService {
         (throw Exception('Response URI not found'));
 
     final idToken = await _computeIdToken(did, clientId, nonce);
-    return await _postAuthResponse(responseUri, idToken);
+    final authResponse = await _postAuthResponse(responseUri, idToken);
+
+    final idvUrl =
+        authResponse['url'] ?? (throw Exception('IDV request missing url'));
+
+    return idvUrl;
   }
 
-  Future<Map<String, String>> _getQueryParameters(String uri) async {
+  Future<DecodedJwt> getAuthRequest(String idvAuthRequestUrl) async {
+    final response = await http.get(Uri.parse(idvAuthRequestUrl));
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to load auth request with status code: ${response.statusCode}');
+    }
+
+    final queryParameters = await _getQueryParameters(response);
+    final authRequest = queryParameters['request'] ??
+        (throw Exception('Auth request not found'));
+
+    final decodedJwt = await _decodeJwt(authRequest);
+
+    return decodedJwt;
+  }
+
+  Future<Map<String, String>> _getQueryParameters(
+      http.Response response) async {
     try {
-      final response = await http.get(Uri.parse(uri));
-      if (response.statusCode != 200) {
-        throw Exception(
-            'Failed to load auth request with status code: ${response.statusCode}');
-      }
       return Uri.splitQueryString(response.body);
     } catch (e) {
       throw Exception('Error getting query parameters: $e');

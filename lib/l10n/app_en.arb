@@ -35,7 +35,6 @@
             }
         }
     },
-    "accountBalance": "Account balance",
     "accept": "Accept",
     "reject": "Reject",
     "yourRequestWasSent": "Your request was sent!",
@@ -96,5 +95,8 @@
             }
         }
     },
-    "availableBalance": "Available balance: "
+    "availableBalance": "Available balance: ",
+    "selectWallet": "Select your wallet",
+    "selectWalletDescription": "We recommend you use DidPay with a compatible digital wallet. Select from the following options.",
+    "error": "Error"
 }
