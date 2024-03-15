@@ -6,7 +6,7 @@ class IdvService {
   static const _expirationDuration = Duration(minutes: 5);
 
   Future<String> getIdvRequest(String idvAuthRequestUrl, BearerDid did) async {
-    final decodedJwt = await getAuthRequest(idvAuthRequestUrl, did);
+    final decodedJwt = await getAuthRequest(idvAuthRequestUrl);
 
     final nonce = decodedJwt.claims.misc?['nonce'] ??
         (throw Exception('Nonce not found'));
@@ -24,8 +24,7 @@ class IdvService {
     return idvUrl;
   }
 
-  Future<DecodedJwt> getAuthRequest(
-      String idvAuthRequestUrl, BearerDid did) async {
+  Future<DecodedJwt> getAuthRequest(String idvAuthRequestUrl) async {
     final response = await http.get(Uri.parse(idvAuthRequestUrl));
 
     if (response.statusCode != 200) {

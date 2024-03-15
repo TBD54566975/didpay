@@ -59,12 +59,11 @@ class WalletSelectionPage extends HookConsumerWidget {
                           final result = await DidResolver.resolve(pfi.didUri);
                           final widgetService = result.didDocument?.service
                               ?.firstWhereOrNull((e) => e.type == 'IDV');
-                          final did = ref.read(didProvider);
+
                           final oidcParams = await ref
                               .read(idvServiceProvider)
                               .getAuthRequest(
-                                  'http://${widgetService?.serviceEndpoint}',
-                                  did);
+                                  'http://${widgetService?.serviceEndpoint}');
                           LinkingService().launchWallet(oidcParams.claims.misc,
                               selectedWallet.value?.url);
                         }
