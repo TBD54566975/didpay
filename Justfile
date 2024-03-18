@@ -43,6 +43,7 @@ test-packages:
 # Analyze the project's Dart code
 analyze:
   #!/bin/bash
+  dart fix --apply
   flutter analyze
   for dir in packages/*; do \
     if [ -d $dir ]; then \

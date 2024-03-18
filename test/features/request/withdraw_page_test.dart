@@ -1,8 +1,8 @@
 import 'package:didpay/features/currency/payin.dart';
 import 'package:didpay/features/currency/payout.dart';
-import 'package:flutter/material.dart';
 import 'package:didpay/features/request/withdraw_page.dart';
 import 'package:didpay/shared/fee_details.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -40,7 +40,7 @@ void main() {
         WidgetHelpers.testableWidget(child: const WithdrawPage()),
       );
 
-      for (int i = 1; i <= 9; i++) {
+      for (var i = 1; i <= 9; i++) {
         await tester.tap(find.text('$i'));
         await tester.pumpAndSettle();
 

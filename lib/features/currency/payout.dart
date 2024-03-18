@@ -30,22 +30,24 @@ class Payout extends HookWidget {
           )
         : Currency.formatFromDouble(payoutAmount.value);
 
-    useEffect(() {
-      final exchangeRate = currency.value?.exchangeRate ?? 1.0;
+    useEffect(
+      () {
+        final exchangeRate = currency.value?.exchangeRate ?? 1.0;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (currency.value == null) return;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (currency.value == null) return;
 
-        payoutAmount.value = transactionType == TransactionType.deposit
-            ? payinAmount / exchangeRate
-            : payinAmount * exchangeRate;
-      });
+          payoutAmount.value = transactionType == TransactionType.deposit
+              ? payinAmount / exchangeRate
+              : payinAmount * exchangeRate;
+        });
 
-      return;
-    }, [payinAmount]);
+        return;
+      },
+      [payinAmount],
+    );
 
     return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(

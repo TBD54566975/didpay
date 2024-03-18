@@ -1,9 +1,9 @@
 import 'dart:math';
 
-import 'package:didpay/l10n/app_localizations.dart';
-import 'package:flutter/material.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';

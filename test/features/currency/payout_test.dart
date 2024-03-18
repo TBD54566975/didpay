@@ -8,7 +8,7 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('Payout', () {
-    final amount = ValueNotifier<double>(2.0);
+    final amount = ValueNotifier<double>(2);
     final currency = ValueNotifier<Currency?>(
       Currency(exchangeRate: 17, code: CurrencyCode.mxn, icon: Icons.abc),
     );

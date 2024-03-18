@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/search_payment_methods_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';

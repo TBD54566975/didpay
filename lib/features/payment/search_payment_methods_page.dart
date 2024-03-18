@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 class SearchPaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
@@ -43,8 +43,9 @@ class SearchPaymentMethodsPage extends HookWidget {
                       decoration: InputDecoration(
                         labelText: Loc.of(context).search,
                         prefixIcon: const Padding(
-                            padding: EdgeInsets.only(top: Grid.xs),
-                            child: Icon(Icons.search)),
+                          padding: EdgeInsets.only(top: Grid.xs),
+                          child: Icon(Icons.search),
+                        ),
                       ),
                       onChanged: (value) => searchText.value = value,
                     ),
@@ -74,8 +75,10 @@ class SearchPaymentMethodsPage extends HookWidget {
     List<PaymentMethod>? paymentMethods,
   ) {
     final filteredPaymentMethods = paymentMethods
-        ?.where((entry) =>
-            entry.kind.toLowerCase().contains(searchText.value.toLowerCase()))
+        ?.where(
+          (entry) =>
+              entry.kind.toLowerCase().contains(searchText.value.toLowerCase()),
+        )
         .toList();
 
     return ListView.builder(
@@ -83,9 +86,9 @@ class SearchPaymentMethodsPage extends HookWidget {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
         final paymentName = currentPaymentMethod?.kind.split('_').lastOrNull;
-        final fee = (double.tryParse(currentPaymentMethod?.fee ?? '0.00')
+        final fee = double.tryParse(currentPaymentMethod?.fee ?? '0.00')
                 ?.toStringAsFixed(2) ??
-            '0.00');
+            '0.00';
 
         return ListTile(
           visualDensity: VisualDensity.compact,
