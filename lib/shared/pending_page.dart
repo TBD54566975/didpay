@@ -1,6 +1,6 @@
+import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/shared/theme/grid.dart';
 
 class PendingPage extends HookWidget {
   final String text;
@@ -21,7 +21,7 @@ class PendingPage extends HookWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: Grid.sm),
-            const Center(child: CircularProgressIndicator())
+            const Center(child: CircularProgressIndicator()),
           ],
         ),
       ),

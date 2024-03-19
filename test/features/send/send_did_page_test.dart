@@ -1,6 +1,6 @@
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:flutter/material.dart';
 import 'package:didpay/features/send/send_did_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:web5/web5.dart';
 
@@ -13,10 +13,11 @@ void main() async {
     testWidgets('should show QR Code CTA', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: SendDidPage(sendAmount: '25'),
-            overrides: [
-              didProvider.overrideWithValue(did),
-            ]),
+          child: SendDidPage(sendAmount: '25'),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
       );
 
       expect(find.textContaining('Scan their QR code'), findsOneWidget);
@@ -25,10 +26,11 @@ void main() async {
     testWidgets('should show input field', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: SendDidPage(sendAmount: '25'),
-            overrides: [
-              didProvider.overrideWithValue(did),
-            ]),
+          child: SendDidPage(sendAmount: '25'),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
       );
 
       expect(find.byType(TextField), findsOneWidget);
@@ -37,10 +39,11 @@ void main() async {
     testWidgets('should show send button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: SendDidPage(sendAmount: '25'),
-            overrides: [
-              didProvider.overrideWithValue(did),
-            ]),
+          child: SendDidPage(sendAmount: '25'),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
       );
 
       expect(find.widgetWithText(FilledButton, 'Send 25 USDC'), findsOneWidget);

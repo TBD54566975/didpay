@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO: remove this file when tbdex-dart is ready
+// TODO(ethan-tbd): remove this file when tbdex-dart is ready
 class PaymentMethod {
   final String kind;
   final String name;
@@ -67,7 +67,7 @@ final paymentMethodProvider = StateProvider<List<PaymentMethod>?>((ref) {
   return _defaultList;
 });
 
-const String bankSchema = '''
+const String bankSchema = r'''
   {
     "properties": {
       "accountNumber": {
@@ -76,7 +76,7 @@ const String bankSchema = '''
         "description": "Bank account number of the recipient",
         "minLength": 10,
         "maxLength": 10,
-        "pattern": "^[0-9]{10}\$"
+        "pattern": "^[0-9]{10}$"
       },
       "reason": {
         "title": "Reason for sending",

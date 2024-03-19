@@ -31,11 +31,12 @@ class CurrencyDropdown extends HookConsumerWidget {
         ),
         onPressed: () {
           CurrencyModal.show(
-              context,
-              (value) => selectedCurrency.value =
-                  currencies.firstWhere((c) => c.code.toString() == value),
-              currencies,
-              selectedCurrency.value?.code.toString() ?? '');
+            context,
+            (value) => selectedCurrency.value =
+                currencies.firstWhere((c) => c.code.toString() == value),
+            currencies,
+            selectedCurrency.value?.code.toString() ?? '',
+          );
         },
       ),
     );

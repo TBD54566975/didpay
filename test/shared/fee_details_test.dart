@@ -24,12 +24,13 @@ void main() {
     testWidgets('should show est rate', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: const FeeDetails(
-          payinCurrency: 'USD',
-          payoutCurrency: 'MXN',
-          exchangeRate: '17',
-          serviceFee: '0',
-        )),
+          child: const FeeDetails(
+            payinCurrency: 'USD',
+            payoutCurrency: 'MXN',
+            exchangeRate: '17',
+            serviceFee: '0',
+          ),
+        ),
       );
 
       expect(find.text('Est. rate'), findsOneWidget);
@@ -38,12 +39,13 @@ void main() {
     testWidgets('should show exchange rate', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: const FeeDetails(
-          payinCurrency: 'USD',
-          payoutCurrency: 'MXN',
-          exchangeRate: '17',
-          serviceFee: '0',
-        )),
+          child: const FeeDetails(
+            payinCurrency: 'USD',
+            payoutCurrency: 'MXN',
+            exchangeRate: '17',
+            serviceFee: '0',
+          ),
+        ),
       );
       final exchangeRatePattern = RegExp(r'1 [A-Z]{3} = \d+ [A-Z]{3}');
 
@@ -53,12 +55,13 @@ void main() {
     testWidgets('should show service fee', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: const FeeDetails(
-          payinCurrency: 'USD',
-          payoutCurrency: 'MXN',
-          exchangeRate: '17',
-          serviceFee: '0',
-        )),
+          child: const FeeDetails(
+            payinCurrency: 'USD',
+            payoutCurrency: 'MXN',
+            exchangeRate: '17',
+            serviceFee: '0',
+          ),
+        ),
       );
 
       expect(find.text('Service fee'), findsOneWidget);

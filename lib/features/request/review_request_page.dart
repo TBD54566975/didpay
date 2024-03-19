@@ -164,7 +164,7 @@ class ReviewRequestPage extends HookWidget {
                 ? Loc.of(context).depositAmount
                 : Loc.of(context).youGet,
             style: Theme.of(context).textTheme.bodySmall,
-          )
+          ),
         ],
       );
 
@@ -193,8 +193,10 @@ class ReviewRequestPage extends HookWidget {
           children: [
             Text(paymentName, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: Grid.xxs),
-            Text(_obscureAccountNumber(formData['accountNumber']!),
-                style: Theme.of(context).textTheme.bodyLarge),
+            Text(
+              _obscureAccountNumber(formData['accountNumber']!),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ],
         ),
       );

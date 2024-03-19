@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/send_did_page.dart';
-import 'package:flutter/material.dart';
 import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/shared/number_pad.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:web5/web5.dart';
 
@@ -35,7 +35,7 @@ void main() async {
         WidgetHelpers.testableWidget(child: const SendPage()),
       );
 
-      for (int i = 1; i <= 9; i++) {
+      for (var i = 1; i <= 9; i++) {
         await tester.tap(find.text('$i'));
         await tester.pumpAndSettle();
 
@@ -48,7 +48,7 @@ void main() async {
       expect(find.widgetWithText(AutoSizeText, '0'), findsOneWidget);
     });
 
-    // TODO: uncomment this test as part of issue #81
+    // TODO(ethan-tbd): uncomment this test as part of issue #81
     // testWidgets(
     //     'should pad send amount with a leading zero if send amount < a dollar',
     //     (tester) async {
@@ -65,9 +65,12 @@ void main() async {
     testWidgets('should navigate to SendDidPage on tap of send button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const SendPage(), overrides: [
-          didProvider.overrideWithValue(did),
-        ]),
+        WidgetHelpers.testableWidget(
+          child: const SendPage(),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
       );
 
       await tester.tap(find.text('8'));

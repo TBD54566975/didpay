@@ -14,11 +14,16 @@ class PfiPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPfi = useState<Pfi?>(null);
 
-    useEffect(() {
-      Future.delayed(
-          Duration.zero, () => ref.read(pfisProvider.notifier).reload());
-      return null;
-    }, []);
+    useEffect(
+      () {
+        Future.delayed(
+          Duration.zero,
+          () => ref.read(pfisProvider.notifier).reload(),
+        );
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -87,7 +92,10 @@ class PfiPage extends HookConsumerWidget {
   }
 
   Widget _buildList(
-      BuildContext context, WidgetRef ref, ValueNotifier<Pfi?> selectedPfi) {
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<Pfi?> selectedPfi,
+  ) {
     return ref.watch(pfisProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => _buildError(context, ref, error),
@@ -120,18 +128,19 @@ class PfiPage extends HookConsumerWidget {
 
   Widget _buildError(BuildContext context, WidgetRef ref, Object error) {
     return Center(
-        child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(error.toString()),
-        const SizedBox(height: Grid.xxs),
-        FilledButton(
-          onPressed: () {
-            ref.read(pfisProvider.notifier).reload();
-          },
-          child: const Text('Reload'),
-        )
-      ],
-    ));
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(error.toString()),
+          const SizedBox(height: Grid.xxs),
+          FilledButton(
+            onPressed: () {
+              ref.read(pfisProvider.notifier).reload();
+            },
+            child: const Text('Reload'),
+          ),
+        ],
+      ),
+    );
   }
 }

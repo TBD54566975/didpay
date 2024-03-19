@@ -1,14 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/search_payment_types_page.dart';
-import 'package:didpay/features/request/review_request_page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/search_payment_methods_page.dart';
+import 'package:didpay/features/payment/search_payment_types_page.dart';
+import 'package:didpay/features/request/review_request_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/json_schema_form.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
@@ -160,9 +160,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
     List<PaymentMethod>? filteredPaymentMethods,
   ) {
     final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) <= 1;
-    final fee = (double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
+    final fee = double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
             ?.toStringAsFixed(2) ??
-        '0.00');
+        '0.00';
 
     return Column(
       children: [
@@ -233,8 +233,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
           );
   }
 
-  bool _isValidOnSubmit(Map<String, String> formData,
-      ValueNotifier<PaymentMethod?> selectedPaymentMethod) {
+  bool _isValidOnSubmit(
+    Map<String, String> formData,
+    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+  ) {
     return formData['accountNumber'] != null &&
         selectedPaymentMethod.value!.kind.split('_').lastOrNull != null;
   }

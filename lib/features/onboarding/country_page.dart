@@ -94,9 +94,9 @@ class CountryPage extends HookConsumerWidget {
                 width: Grid.md,
                 height: Grid.md,
                 decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    shape: BoxShape.rectangle,
-                    borderRadius: BorderRadius.circular(Grid.xxs)),
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(Grid.xxs),
+                ),
                 child: Center(
                   child: _buildFlag(context, c.code),
                 ),
@@ -123,7 +123,7 @@ class CountryPage extends HookConsumerWidget {
     final firstChar = countryCode.codeUnitAt(0) - asciiOffset + flagOffset;
     final secondChar = countryCode.codeUnitAt(1) - asciiOffset + flagOffset;
 
-    String emoji =
+    var emoji =
         String.fromCharCode(firstChar) + String.fromCharCode(secondChar);
 
     return Text(

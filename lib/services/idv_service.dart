@@ -29,7 +29,8 @@ class IdvService {
 
     if (response.statusCode != 200) {
       throw Exception(
-          'Failed to load auth request with status code: ${response.statusCode}');
+        'Failed to load auth request with status code: ${response.statusCode}',
+      );
     }
 
     final queryParameters = await _getQueryParameters(response);
@@ -42,10 +43,11 @@ class IdvService {
   }
 
   Future<Map<String, String>> _getQueryParameters(
-      http.Response response) async {
+    http.Response response,
+  ) async {
     try {
       return Uri.splitQueryString(response.body);
-    } catch (e) {
+    } on Exception catch (e) {
       throw Exception('Error getting query parameters: $e');
     }
   }
@@ -53,13 +55,16 @@ class IdvService {
   Future<DecodedJwt> _decodeJwt(String jwt) async {
     try {
       return await Jwt.verify(jwt);
-    } catch (e) {
+    } on Exception catch (e) {
       throw Exception('Error decoding JWT: $e');
     }
   }
 
   Future<String> _computeIdToken(
-      BearerDid did, String clientId, String nonce) async {
+    BearerDid did,
+    String clientId,
+    String nonce,
+  ) async {
     try {
       final nowEpochSeconds = DateTime.now().millisecondsSinceEpoch ~/ 1000;
       final exp = nowEpochSeconds + _expirationDuration.inSeconds;
@@ -76,13 +81,15 @@ class IdvService {
       );
 
       return await Jwt.sign(did: did, payload: claims);
-    } catch (e) {
+    } on Exception catch (e) {
       throw Exception('Error computing ID token: $e');
     }
   }
 
   Future<Map<String, dynamic>> _postAuthResponse(
-      String uri, String idToken) async {
+    String uri,
+    String idToken,
+  ) async {
     try {
       final authResponse = await http.post(
         Uri.parse(uri),
@@ -95,11 +102,12 @@ class IdvService {
 
       if (authResponse.statusCode != 200) {
         throw Exception(
-            'Failed to send auth response with status code: ${authResponse.statusCode}');
+          'Failed to send auth response with status code: ${authResponse.statusCode}',
+        );
       }
 
       return json.decode(authResponse.body);
-    } catch (e) {
+    } on Exception catch (e) {
       throw Exception('Error getting idv request: $e');
     }
   }

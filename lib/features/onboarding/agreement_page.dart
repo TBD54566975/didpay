@@ -39,9 +39,10 @@ class AgreementPage extends HookWidget {
                     : () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                              builder: (_) => Config.hasWalletPicker
-                                  ? WalletSelectionPage(pfi: pfi)
-                                  : PfiVerificationPage(pfi: pfi)),
+                            builder: (_) => Config.hasWalletPicker
+                                ? WalletSelectionPage(pfi: pfi)
+                                : PfiVerificationPage(pfi: pfi),
+                          ),
                         );
                       },
                 child: Text(Loc.of(context).next),
@@ -82,9 +83,11 @@ class AgreementPage extends HookWidget {
   }
 
   Widget _buildUserAndPrivacyAgreement(
-      BuildContext context, ValueNotifier<bool> hasAgreed) {
+    BuildContext context,
+    ValueNotifier<bool> hasAgreed,
+  ) {
     return Padding(
-      padding: const EdgeInsets.only(left: 5.0, right: Grid.side),
+      padding: const EdgeInsets.only(left: 5, right: Grid.side),
       child: GestureDetector(
         onTapUp: (_) => hasAgreed.value = !hasAgreed.value,
         child: Row(
@@ -103,19 +106,21 @@ class AgreementPage extends HookWidget {
                   children: <TextSpan>[
                     TextSpan(text: Loc.of(context).iCertifyThatIAgreeToThe),
                     TextSpan(
-                        text: Loc.of(context).userAgreement,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        recognizer: TapGestureRecognizer()),
+                      text: Loc.of(context).userAgreement,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      recognizer: TapGestureRecognizer(),
+                    ),
                     TextSpan(text: Loc.of(context).andIHaveReadThe),
                     TextSpan(
-                        text: Loc.of(context).privacyPolicy,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                        recognizer: TapGestureRecognizer()),
-                    const TextSpan(text: '.')
+                      text: Loc.of(context).privacyPolicy,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      recognizer: TapGestureRecognizer(),
+                    ),
+                    const TextSpan(text: '.'),
                   ],
                 ),
               ),

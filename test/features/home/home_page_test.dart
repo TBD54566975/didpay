@@ -1,8 +1,8 @@
-import 'package:flutter/material.dart';
-import 'package:didpay/features/request/deposit_page.dart';
 import 'package:didpay/features/home/home_page.dart';
-import 'package:didpay/features/request/withdraw_page.dart';
 import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/request/deposit_page.dart';
+import 'package:didpay/features/request/withdraw_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
@@ -79,7 +79,9 @@ void main() {
 
       expect(find.text('No transactions yet'), findsOneWidget);
       expect(
-          find.text('Start by adding funds to your account!'), findsOneWidget);
+        find.text('Start by adding funds to your account!'),
+        findsOneWidget,
+      );
       expect(find.text('Get started'), findsOneWidget);
     });
 

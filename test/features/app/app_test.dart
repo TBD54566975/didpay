@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  testWidgets('should show AppTabs', (WidgetTester tester) async {
+  testWidgets('should show AppTabs', (tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const App(onboarding: true)),
     );

@@ -1,11 +1,11 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/app/app.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:didpay/shared/constants.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web5/web5.dart';
@@ -15,7 +15,7 @@ void main() async {
 
   final sharedPreferences = await SharedPreferences.getInstance();
 
-  FlutterSecureStorage storage = const FlutterSecureStorage(
+  var storage = const FlutterSecureStorage(
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
@@ -23,14 +23,16 @@ void main() async {
   final did = await getOrCreateDid(storage);
   final vc = await storage.read(key: Constants.verifiableCredentialKey);
 
-  runApp(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-      secureStorageProvider.overrideWithValue(storage),
-      didProvider.overrideWithValue(did),
-    ],
-    child: App(onboarding: vc == null),
-  ));
+  runApp(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+        secureStorageProvider.overrideWithValue(storage),
+        didProvider.overrideWithValue(did),
+      ],
+      child: App(onboarding: vc == null),
+    ),
+  );
 }
 
 Future<BearerDid> getOrCreateDid(FlutterSecureStorage storage) async {
@@ -39,7 +41,7 @@ Future<BearerDid> getOrCreateDid(FlutterSecureStorage storage) async {
   if (existingPortableDidJson != null) {
     final portableDidJson = json.decode(existingPortableDidJson);
     final portableDid = PortableDid.fromJson(portableDidJson);
-    return await BearerDid.import(portableDid);
+    return BearerDid.import(portableDid);
   }
 
   final did = await DidJwk.create();

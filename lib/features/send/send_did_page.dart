@@ -1,11 +1,11 @@
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:didpay/features/send/send_confirmation_page.dart';
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/services/service_providers.dart';
+import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/theme/grid.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 
@@ -13,7 +13,7 @@ class SendDidPage extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final String sendAmount;
 
-  SendDidPage({super.key, required this.sendAmount});
+  SendDidPage({required this.sendAmount, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,14 +24,17 @@ class SendDidPage extends HookConsumerWidget {
     final errorText = useState<String?>(null);
     final controller = useTextEditingController();
 
-    useEffect(() {
-      Future.microtask(() async {
-        isPhysicalDevice.value =
-            await ref.read(deviceInfoServiceProvider).isPhysicalDevice();
-      });
+    useEffect(
+      () {
+        Future.microtask(() async {
+          isPhysicalDevice.value =
+              await ref.read(deviceInfoServiceProvider).isPhysicalDevice();
+        });
 
-      return null;
-    }, []);
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -73,7 +76,9 @@ class SendDidPage extends HookConsumerWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => SendConfirmationPage(
-                            did: did.uri, amount: sendAmount),
+                          did: did.uri,
+                          amount: sendAmount,
+                        ),
                       ),
                     );
                   }
@@ -129,8 +134,9 @@ class SendDidPage extends HookConsumerWidget {
                 enableSuggestions: false,
                 autocorrect: false,
                 decoration: InputDecoration(
-                    labelText: Loc.of(context).didPrefix,
-                    errorText: errorText.value),
+                  labelText: Loc.of(context).didPrefix,
+                  errorText: errorText.value,
+                ),
                 validator: (value) => value == null
                     ? Loc.of(context).thisFieldCannotBeEmpty
                     : null,
@@ -179,7 +185,7 @@ class SendDidPage extends HookConsumerWidget {
     return !result.hasError();
   }
 
-  void _scanQrCode(
+  Future<void> _scanQrCode(
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<String?> errorText,

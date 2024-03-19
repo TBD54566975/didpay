@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  testWidgets('should start on HomePage', (WidgetTester tester) async {
+  testWidgets('should start on HomePage', (tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );
@@ -15,7 +15,7 @@ void main() {
     expect(find.byType(HomePage), findsOneWidget);
   });
 
-  testWidgets('should show SendPage when tapped', (WidgetTester tester) async {
+  testWidgets('should show SendPage when tapped', (tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );
@@ -25,8 +25,7 @@ void main() {
     expect(find.byType(SendPage), findsOneWidget);
   });
 
-  testWidgets('should show AccountPage when tapped',
-      (WidgetTester tester) async {
+  testWidgets('should show AccountPage when tapped', (tester) async {
     await tester.pumpWidget(
       WidgetHelpers.testableWidget(child: const AppTabs()),
     );

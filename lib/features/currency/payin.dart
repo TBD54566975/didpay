@@ -42,58 +42,64 @@ class Payin extends HookWidget {
           )
         : Currency.formatFromString(amount.value);
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        amount.value = '0';
-        decimalPaddingHint.value = '';
-      });
-      return;
-    }, [currency.value]);
+    useEffect(
+      () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          amount.value = '0';
+          decimalPaddingHint.value = '';
+        });
+        return;
+      },
+      [currency.value],
+    );
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final current = amount.value;
-        final key = keyPress.value.key;
-        if (key == '') return;
+    useEffect(
+      () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final current = amount.value;
+          final key = keyPress.value.key;
+          if (key == '') return;
 
-        shouldAnimate.value = (key == '<')
-            ? !NumberValidationUtil.isValidDelete(current)
-            : (transactionType == TransactionType.deposit
-                ? !NumberValidationUtil.isValidInput(
-                    current,
-                    key,
-                    currency: currency.value?.code.toString(),
-                  )
-                : !NumberValidationUtil.isValidInput(current, key));
-        if (shouldAnimate.value) return;
+          shouldAnimate.value = (key == '<')
+              ? !NumberValidationUtil.isValidDelete(current)
+              : (transactionType == TransactionType.deposit
+                  ? !NumberValidationUtil.isValidInput(
+                      current,
+                      key,
+                      currency: currency.value?.code.toString(),
+                    )
+                  : !NumberValidationUtil.isValidInput(current, key));
+          if (shouldAnimate.value) return;
 
-        if (key == '<') {
-          amount.value = (current.length > 1)
-              ? current.substring(0, current.length - 1)
-              : '0';
-        } else {
-          amount.value = (current == '0' && key == '.')
-              ? '$current$key'
-              : (current == '0')
-                  ? key
-                  : '$current$key';
-        }
+          if (key == '<') {
+            amount.value = (current.length > 1)
+                ? current.substring(0, current.length - 1)
+                : '0';
+          } else {
+            amount.value = (current == '0' && key == '.')
+                ? '$current$key'
+                : (current == '0')
+                    ? key
+                    : '$current$key';
+          }
 
-        final decimalDigits = transactionType == TransactionType.deposit
-            ? Currency.getDecimalDigits(currency.value?.code)
-            : Currency.getDecimalDigits(CurrencyCode.usdc);
-        final hasDecimal = amount.value.contains('.');
-        final hintDigits = hasDecimal
-            ? decimalDigits - amount.value.split('.')[1].length
-            : decimalDigits;
+          final decimalDigits = transactionType == TransactionType.deposit
+              ? Currency.getDecimalDigits(currency.value?.code)
+              : Currency.getDecimalDigits(CurrencyCode.usdc);
+          final hasDecimal = amount.value.contains('.');
+          final hintDigits = hasDecimal
+              ? decimalDigits - amount.value.split('.')[1].length
+              : decimalDigits;
 
-        decimalPaddingHint.value = hasDecimal && hintDigits > 0
-            ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
-            : '';
-      });
+          decimalPaddingHint.value = hasDecimal && hintDigits > 0
+              ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
+              : '';
+        });
 
-      return;
-    }, [keyPress.value]);
+        return;
+      },
+      [keyPress.value],
+    );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,7 +107,6 @@ class Payin extends HookWidget {
         ShakeAnimatedWidget(
           shouldAnimate: shouldAnimate,
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -147,7 +152,7 @@ class Payin extends HookWidget {
               ? Loc.of(context).youDeposit
               : Loc.of(context).youWithdraw,
           style: Theme.of(context).textTheme.bodyLarge,
-        )
+        ),
       ],
     );
   }

@@ -1,12 +1,12 @@
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/services/service_providers.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_confirmation_page.dart';
+import 'package:didpay/services/service_providers.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/material.dart';
 
 class PfiVerificationPage extends HookConsumerWidget {
   final Pfi pfi;
@@ -15,17 +15,17 @@ class PfiVerificationPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final controller = useMemoized(() => WebViewController())
+    final controller = useMemoized(WebViewController.new)
       ..setBackgroundColor(Theme.of(context).colorScheme.background)
       ..setNavigationDelegate(
         NavigationDelegate(
-          onProgress: (int progress) {
+          onProgress: (progress) {
             // Update loading bar.
           },
-          onPageStarted: (String url) {},
-          onPageFinished: (String url) {},
-          onWebResourceError: (WebResourceError error) {},
-          onNavigationRequest: (NavigationRequest request) {
+          onPageStarted: (url) {},
+          onPageFinished: (url) {},
+          onWebResourceError: (error) {},
+          onNavigationRequest: (request) {
             if (request.url.startsWith('didpay://kyc')) {
               _handleDidPay(context, request.url);
               return NavigationDecision.prevent;
@@ -35,34 +35,37 @@ class PfiVerificationPage extends HookConsumerWidget {
         ),
       );
 
-    useEffect(() {
-      Future.microtask(() async {
-        final result = await DidResolver.resolve(pfi.didUri);
-        final widgetService =
-            result.didDocument?.service?.firstWhere((e) => e.type == 'IDV');
-        if (widgetService?.serviceEndpoint == null) {
-          final snackBar = SnackBar(
-            content: const Text('PFI does not support KYC widget'),
+    useEffect(
+      () {
+        Future.microtask(() async {
+          final result = await DidResolver.resolve(pfi.didUri);
+          final widgetService =
+              result.didDocument?.service?.firstWhere((e) => e.type == 'IDV');
+          if (widgetService?.serviceEndpoint == null) {
+            final snackBar = SnackBar(
+              content: const Text('PFI does not support KYC widget'),
+              // ignore: use_build_context_synchronously
+              backgroundColor: Theme.of(context).colorScheme.error,
+            );
+
             // ignore: use_build_context_synchronously
-            backgroundColor: Theme.of(context).colorScheme.error,
-          );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            return;
+          }
 
-          // ignore: use_build_context_synchronously
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          return;
-        }
+          final did = ref.read(didProvider);
+          final idvUrl = await ref
+              .read(idvServiceProvider)
+              .getIdvRequest('http://${widgetService?.serviceEndpoint}', did);
 
-        final did = ref.read(didProvider);
-        final idvUrl = await ref
-            .read(idvServiceProvider)
-            .getIdvRequest('http://${widgetService?.serviceEndpoint}', did);
+          final fullPath = '$idvUrl&callback_uri=didpay://kyc';
+          await controller.loadRequest(Uri.parse(fullPath));
+        });
 
-        final fullPath = '$idvUrl&callback_uri=didpay://kyc';
-        controller.loadRequest(Uri.parse(fullPath));
-      });
-
-      return null;
-    }, []);
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('PFI Verification')),

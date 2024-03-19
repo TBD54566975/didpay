@@ -12,16 +12,13 @@ class WalletService {
 
     if (response.statusCode != 200) {
       throw Exception(
-          'Failed to load wallets from HTTP, error code: ${response.statusCode}');
+        'Failed to load wallets from HTTP, error code: ${response.statusCode}',
+      );
     }
 
-    final data = json.decode(response.body);
-    final List<dynamic> walletsJson = data['wallets'];
-    final List<Wallet> wallets = walletsJson
-        .map((walletJson) => Wallet.fromJson(walletJson))
-        .cast<Wallet>()
+    final data = json.decode(response.body) as Map<String, dynamic>;
+    return (data['wallets'] as List<dynamic>)
+        .map((item) => Wallet.fromJson(item as Map<String, dynamic>))
         .toList();
-
-    return wallets;
   }
 }
