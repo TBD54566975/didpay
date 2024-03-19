@@ -2,16 +2,16 @@ import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:didpay/shared/constants.dart';
 import 'package:didpay/shared/pending_page.dart';
 import 'package:didpay/shared/success_page.dart';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
 
 class PfiConfirmationPage extends HookConsumerWidget {
@@ -28,10 +28,13 @@ class PfiConfirmationPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vcJwt = ref.watch(vcProvider);
 
-    useEffect(() {
-      verifyCredential(ref);
-      return null;
-    }, []);
+    useEffect(
+      () {
+        verifyCredential(ref);
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       body: SafeArea(
@@ -48,21 +51,24 @@ class PfiConfirmationPage extends HookConsumerWidget {
         result.didDocument?.service?.firstWhereOrNull((e) => e.type == 'PFI');
 
     if (pfiService == null) {
-      // Add real error handling here...
+      // TODO(ethan-tbd): Add real error handling here...
       throw Exception('PFI service endpoint not found');
     }
 
     var uri = Uri.parse(
-        '${pfiService.serviceEndpoint}/credential?transactionId=$transactionId');
+      '${pfiService.serviceEndpoint}/credential?transactionId=$transactionId',
+    );
     final response = await http.get(uri);
     if (response.statusCode != 200) {
       // Add real error handling here...
       throw Exception('Failed to get credential');
     }
 
-    final jsonResponse = json.decode(response.body);
-    ref.read(secureStorageProvider).write(
-        key: Constants.verifiableCredentialKey, value: jsonResponse['jwt']);
+    final jsonResponse = json.decode(response.body) as Map<String, dynamic>;
+    await ref.read(secureStorageProvider).write(
+          key: Constants.verifiableCredentialKey,
+          value: jsonResponse['jwt'],
+        );
     ref.read(vcProvider.notifier).state = jsonResponse['jwt'];
   }
 }

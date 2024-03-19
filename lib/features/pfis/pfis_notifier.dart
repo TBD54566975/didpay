@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:didpay/config/config.dart';
-import 'package:http/http.dart' as http;
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/services/service_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:http/http.dart' as http;
 
 final pfisProvider = AsyncNotifierProvider<PfisAsyncNotifier, List<Pfi>>(
-  () => PfisAsyncNotifier(),
+  PfisAsyncNotifier.new,
 );
 
 class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
@@ -33,11 +33,16 @@ class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
       return;
     }
 
-    ref.read(sharedPreferencesProvider).setString(_cacheKey, response.body);
+    await ref
+        .read(sharedPreferencesProvider)
+        .setString(_cacheKey, response.body);
 
-    state = AsyncData((json.decode(response.body) as List)
-        .map((p) => Pfi.fromJson(p))
-        .toList());
+    state = AsyncData(
+      List<Pfi>.from(
+        (json.decode(response.body) as List)
+            .map((item) => Pfi.fromJson(item as Map<String, dynamic>)),
+      ),
+    );
   }
 
   Future<List<Pfi>> _loadFromCache() async {
@@ -46,8 +51,10 @@ class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
       return [];
     }
 
-    return (json.decode(cachedData) as List)
-        .map((p) => Pfi.fromJson(p))
-        .toList();
+    return List<Pfi>.from(
+      (json.decode(cachedData) as List).map(
+        (item) => Pfi.fromJson(item as Map<String, dynamic>),
+      ),
+    );
   }
 }

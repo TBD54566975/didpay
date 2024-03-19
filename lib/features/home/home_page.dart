@@ -1,12 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
-import 'package:flutter/material.dart';
-import 'package:didpay/features/request/deposit_page.dart';
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
+import 'package:didpay/features/request/deposit_page.dart';
 import 'package:didpay/features/request/withdraw_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/features/home/transaction.dart';
+import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -26,7 +26,9 @@ class HomePage extends HookConsumerWidget {
             _buildAccountBalance(context, accountBalance),
             Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: Grid.side, vertical: Grid.xs),
+                horizontal: Grid.side,
+                vertical: Grid.xs,
+              ),
               child: Text(
                 Loc.of(context).activity,
                 style: Theme.of(context).textTheme.bodyMedium,
@@ -98,22 +100,28 @@ class HomePage extends HookConsumerWidget {
               children: [
                 Expanded(
                   child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
                           builder: (context) => const DepositPage(),
-                        ));
-                      },
-                      child: Text(Loc.of(context).deposit)),
+                        ),
+                      );
+                    },
+                    child: Text(Loc.of(context).deposit),
+                  ),
                 ),
                 const SizedBox(width: Grid.xs),
                 Expanded(
                   child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
                           builder: (context) => const WithdrawPage(),
-                        ));
-                      },
-                      child: Text(Loc.of(context).withdraw)),
+                        ),
+                      );
+                    },
+                    child: Text(Loc.of(context).withdraw),
+                  ),
                 ),
               ],
             ),
@@ -140,9 +148,11 @@ class HomePage extends HookConsumerWidget {
           FilledButton(
             child: Text(Loc.of(context).getStarted),
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => const DepositPage(),
-              ));
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const DepositPage(),
+                ),
+              );
             },
           ),
         ],
@@ -177,14 +187,15 @@ class HomePage extends HookConsumerWidget {
                 ),
           ),
           trailing: Text(
-              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc}'),
+            '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc}',
+          ),
           leading: Container(
             width: Grid.md,
             height: Grid.md,
             decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                shape: BoxShape.rectangle,
-                borderRadius: BorderRadius.circular(Grid.xxs)),
+              color: Theme.of(context).colorScheme.surface,
+              borderRadius: BorderRadius.circular(Grid.xxs),
+            ),
             child: Center(
               child: txn.type == TransactionType.deposit
                   ? const Icon(Icons.south_west)

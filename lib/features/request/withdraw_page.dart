@@ -2,13 +2,13 @@ import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/currency/payin.dart';
 import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
-import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/number_pad.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WithdrawPage extends HookConsumerWidget {
@@ -19,7 +19,7 @@ class WithdrawPage extends HookConsumerWidget {
     final currencies = ref.watch(currencyProvider);
 
     final payinAmount = useState('0');
-    final payoutAmount = useState(0.0);
+    final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedCurrency = useState<Currency?>(currencies[0]);
 
@@ -34,7 +34,9 @@ class WithdrawPage extends HookConsumerWidget {
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                      horizontal: Grid.side, vertical: Grid.sm),
+                    horizontal: Grid.side,
+                    vertical: Grid.sm,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -53,13 +55,14 @@ class WithdrawPage extends HookConsumerWidget {
                       ),
                       const SizedBox(height: Grid.xl),
                       FeeDetails(
-                          payinCurrency: CurrencyCode.usdc.toString(),
-                          payoutCurrency:
-                              selectedCurrency.value?.code.toString() ?? '',
-                          exchangeRate:
-                              selectedCurrency.value?.exchangeRate.toString() ??
-                                  '',
-                          serviceFee: '0')
+                        payinCurrency: CurrencyCode.usdc.toString(),
+                        payoutCurrency:
+                            selectedCurrency.value?.code.toString() ?? '',
+                        exchangeRate:
+                            selectedCurrency.value?.exchangeRate.toString() ??
+                                '',
+                        serviceFee: '0',
+                      ),
                     ],
                   ),
                 ),

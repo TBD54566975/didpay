@@ -19,39 +19,45 @@ class ShakeAnimatedWidget extends HookWidget {
       duration: const Duration(milliseconds: 130),
     );
 
-    final animation = Tween(begin: 0.0, end: 1.0).animate(
+    final animation = Tween(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: controller,
         curve: const _SineCurve(count: 0.6),
       ),
     );
 
-    useEffect(() {
-      controller.addStatusListener((status) {
-        if (status == AnimationStatus.completed) {
-          Future.delayed(const Duration(milliseconds: 0), () {
-            shouldAnimate.value = false;
-            controller.reverse();
-          });
-        }
-      });
-      return;
-    }, []);
+    useEffect(
+      () {
+        controller.addStatusListener((status) {
+          if (status == AnimationStatus.completed) {
+            Future.delayed(Duration.zero, () {
+              shouldAnimate.value = false;
+              controller.reverse();
+            });
+          }
+        });
+        return;
+      },
+      [],
+    );
 
-    useEffect(() {
-      if (shouldAnimate.value) {
-        controller.reset();
-        controller.forward();
-      }
-      return null;
-    }, [super.hashCode]);
+    useEffect(
+      () {
+        if (shouldAnimate.value) {
+          controller.reset();
+          controller.forward();
+        }
+        return null;
+      },
+      [super.hashCode],
+    );
 
     return AnimatedBuilder(
       animation: animation,
       child: child,
       builder: (context, child) {
         return Transform.translate(
-          offset: Offset(12 * animation.value, 0),
+          offset: Offset(12.0 * animation.value, 0),
           child: child,
         );
       },

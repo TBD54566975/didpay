@@ -1,10 +1,11 @@
+import 'package:didpay/shared/json_schema_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:didpay/shared/json_schema_form.dart';
+
 import '../helpers/widget_helpers.dart';
 
 void main() {
-  const String jsonSchemaString = '''
+  const jsonSchemaString = r'''
   {
     "properties": {
       "name": {
@@ -18,7 +19,7 @@ void main() {
         "title": "Email",
         "description": "Enter your email",
         "type": "string",
-        "pattern": "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\$"
+        "pattern": "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$"
       }
     },
     "required": ["name", "email"]
@@ -79,12 +80,16 @@ void main() {
 
       await tester.enterText(find.byType(TextFormField).at(0), 'John');
       await tester.enterText(
-          find.byType(TextFormField).at(1), 'john@example.com');
+        find.byType(TextFormField).at(1),
+        'john@example.com',
+      );
       await tester.tap(find.text('Next'));
       await tester.pump();
 
       expect(
-          submittedData, equals({'name': 'John', 'email': 'john@example.com'}));
+        submittedData,
+        equals({'name': 'John', 'email': 'john@example.com'}),
+      );
     });
   });
 }

@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../helpers/widget_helpers.dart';
 
 void main() {
-  List<String> numberKeys = [
+  var numberKeys = <String>[
     '1',
     '2',
     '3',
@@ -30,7 +30,7 @@ void main() {
         ),
       );
 
-      for (String key in numberKeys) {
+      for (final key in numberKeys) {
         expect(find.text(key), findsOneWidget);
       }
     });
@@ -45,7 +45,7 @@ void main() {
         ),
       );
 
-      for (int i = 0; i < 3; i++) {
+      for (var i = 0; i < 3; i++) {
         await tester.tap(find.text('$i'));
         await tester.pump();
         expect(text.value, i.toString());

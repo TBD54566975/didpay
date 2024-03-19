@@ -1,11 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
+import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/success_page.dart';
+import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/success_page.dart';
-import 'package:didpay/features/home/transaction.dart';
 
 class TransactionDetailsPage extends HookWidget {
   final Transaction txn;
@@ -37,7 +37,7 @@ class TransactionDetailsPage extends HookWidget {
                     _buildAmount(context, payoutAmount, payinAmount),
                     _buildStatus(context),
                     if (txn.status != TransactionStatus.failed)
-                      _buildDetails(context, payoutAmount, payinAmount)
+                      _buildDetails(context, payoutAmount, payinAmount),
                   ],
                 ),
               ),
@@ -65,9 +65,10 @@ class TransactionDetailsPage extends HookWidget {
         const SizedBox(height: Grid.md),
         ExcludeSemantics(
           child: Center(
-              child: txn.type == TransactionType.deposit
-                  ? const Icon(Icons.south_west)
-                  : const Icon(Icons.north_east)),
+            child: txn.type == TransactionType.deposit
+                ? const Icon(Icons.south_west)
+                : const Icon(Icons.north_east),
+          ),
         ),
         const SizedBox(height: Grid.xxs),
         Text(
@@ -81,7 +82,10 @@ class TransactionDetailsPage extends HookWidget {
   }
 
   Widget _buildAmount(
-      BuildContext context, String payoutAmount, String payinAmount) {
+    BuildContext context,
+    String payoutAmount,
+    String payinAmount,
+  ) {
     return Column(
       children: [
         const SizedBox(height: Grid.xxl),
@@ -121,8 +125,11 @@ class TransactionDetailsPage extends HookWidget {
     return Column(
       children: [
         const SizedBox(height: Grid.lg),
-        Icon(_getStatusIcon(txn.status),
-            size: Grid.xl, color: _getStatusColor(context, txn.status)),
+        Icon(
+          _getStatusIcon(txn.status),
+          size: Grid.xl,
+          color: _getStatusColor(context, txn.status),
+        ),
         const SizedBox(height: Grid.xxs),
         Text(
           '${txn.status}',
@@ -142,8 +149,6 @@ class TransactionDetailsPage extends HookWidget {
         return Icons.error;
       case TransactionStatus.completed:
         return Icons.check_circle;
-      default:
-        return Icons.help;
     }
   }
 
@@ -152,15 +157,18 @@ class TransactionDetailsPage extends HookWidget {
     switch (status) {
       case TransactionStatus.failed:
         return colorScheme.error;
+      case TransactionStatus.quoted:
+        return colorScheme.onSurface;
       case TransactionStatus.completed:
         return colorScheme.primary;
-      default:
-        return colorScheme.onSurface;
     }
   }
 
   Widget _buildDetails(
-      BuildContext context, String payoutAmount, String payinAmount) {
+    BuildContext context,
+    String payoutAmount,
+    String payinAmount,
+  ) {
     final balanceLabel = Loc.of(context).accountBalance;
     final paymentLabel = txn.status == TransactionStatus.quoted
         ? txn.type == TransactionType.deposit
@@ -180,7 +188,6 @@ class TransactionDetailsPage extends HookWidget {
             child: Row(
               children: [
                 Expanded(
-                  flex: 1,
                   child: Text(
                     paymentLabel,
                     style: Theme.of(context).textTheme.bodyLarge,

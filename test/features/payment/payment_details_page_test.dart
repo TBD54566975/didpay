@@ -1,8 +1,8 @@
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
-import 'package:flutter/material.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/search_payment_methods_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -10,8 +10,9 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('PaymentDetailsPage', () {
-    Widget paymentDetailsPageTestWidget(
-            {List<Override> overrides = const []}) =>
+    Widget paymentDetailsPageTestWidget({
+      List<Override> overrides = const [],
+    }) =>
         WidgetHelpers.testableWidget(
           child: const PaymentDetailsPage(
             payinAmount: '1.00',
@@ -30,7 +31,9 @@ void main() {
       );
 
       expect(
-          find.text('Make sure this information is correct.'), findsOneWidget);
+        find.text('Make sure this information is correct.'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should show payment method selection zero state',
@@ -146,10 +149,14 @@ void main() {
       );
 
       expect(find.byType(SegmentedButton<String?>), findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
-          findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String?>, 'BANK'),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
+        findsOneWidget,
+      );
+      expect(
+        find.widgetWithText(SegmentedButton<String?>, 'BANK'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should show momo, bank, and wallet payment type segments',
@@ -179,17 +186,23 @@ void main() {
       );
 
       expect(find.byType(SegmentedButton<String?>), findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
-          findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String?>, 'BANK'),
-          findsOneWidget);
-      expect(find.widgetWithText(SegmentedButton<String?>, 'WALLET'),
-          findsOneWidget);
+      expect(
+        find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
+        findsOneWidget,
+      );
+      expect(
+        find.widgetWithText(SegmentedButton<String?>, 'BANK'),
+        findsOneWidget,
+      );
+      expect(
+        find.widgetWithText(SegmentedButton<String?>, 'WALLET'),
+        findsOneWidget,
+      );
     });
 
     testWidgets(
         'should show SearchPaymentMethodsPage on tap of select a payment method',
-        (WidgetTester tester) async {
+        (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(),

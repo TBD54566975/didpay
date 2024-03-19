@@ -12,8 +12,9 @@ void main() async {
     testWidgets('should show the DID', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-            child: const AccountDidPage(),
-            overrides: [didProvider.overrideWithValue(did)]),
+          child: const AccountDidPage(),
+          overrides: [didProvider.overrideWithValue(did)],
+        ),
       );
 
       expect(find.text(did.uri), findsOneWidget);

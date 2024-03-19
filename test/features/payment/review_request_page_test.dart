@@ -28,7 +28,8 @@ void main() {
   group('ReviewRequestPage', () {
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
-          WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
+        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+      );
 
       expect(find.widgetWithText(AutoSizeText, '1.00'), findsOneWidget);
       expect(find.text('USD'), findsOneWidget);
@@ -39,7 +40,8 @@ void main() {
     testWidgets('should show fee table with service fee and total',
         (tester) async {
       await tester.pumpWidget(
-          WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
+        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+      );
 
       expect(find.byType(FeeDetails), findsOneWidget);
       expect(find.text('9.00 MXN'), findsOneWidget);
@@ -48,14 +50,16 @@ void main() {
 
     testWidgets('should show bank name', (tester) async {
       await tester.pumpWidget(
-          WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
+        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+      );
 
       expect(find.text('ABC Bank'), findsOneWidget);
     });
 
     testWidgets('should show obscured account number', (tester) async {
       await tester.pumpWidget(
-          WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
+        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+      );
 
       expect(find.textContaining('•'), findsOneWidget);
       expect(find.textContaining('7890'), findsOneWidget);
@@ -65,7 +69,8 @@ void main() {
     testWidgets('should show request confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
-          WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()));
+        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+      );
 
       await tester.tap(find.text('Submit'));
       await tester.pumpAndSettle();

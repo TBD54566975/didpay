@@ -17,13 +17,16 @@ class JsonSchemaForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jsonSchema = json.decode(schema);
+    final jsonSchema = json.decode(schema) as Map<String, dynamic>;
+    final properties = jsonSchema['properties'] as Map<String, dynamic>?;
 
-    List<Widget> formFields = [];
-    jsonSchema['properties']?.forEach(
+    var formFields = <Widget>[];
+    properties?.forEach(
       (key, value) {
         final focusNode = useFocusNode();
-        final formatter = TextInputUtil.getMaskFormatter(value['pattern']);
+        final valueMap = value as Map<String, dynamic>;
+
+        final formatter = TextInputUtil.getMaskFormatter(valueMap['pattern']);
 
         formFields.add(
           TextFormField(
@@ -31,19 +34,20 @@ class JsonSchemaForm extends HookWidget {
             onTapOutside: (_) => focusNode.unfocus(),
             enableSuggestions: false,
             autocorrect: false,
-            keyboardType: TextInputUtil.getKeyboardType(value['pattern']),
+            keyboardType: TextInputUtil.getKeyboardType(valueMap['pattern']),
             decoration: InputDecoration(
-              labelText: value['title'] ?? key,
+              labelText: valueMap['title'] ?? key,
               hintText: formatter.getMask(),
             ),
             inputFormatters: [formatter],
             textInputAction: TextInputAction.next,
             validator: (_) => _validateField(
-                key,
-                TextInputUtil.formatNumericText(
-                  formatter.getMaskedText(),
-                ),
-                jsonSchema),
+              key,
+              TextInputUtil.formatNumericText(
+                formatter.getMaskedText(),
+              ),
+              jsonSchema,
+            ),
             onSaved: (_) => formData[key] = TextInputUtil.formatNumericText(
               formatter.getMaskedText(),
             ),
@@ -88,15 +92,20 @@ class JsonSchemaForm extends HookWidget {
     String? value,
     Map<String, dynamic> jsonSchema,
   ) {
-    if (jsonSchema['required']?.contains(key) &&
+    final requiredFields = jsonSchema['required'] as List<dynamic>?;
+    if ((requiredFields?.contains(key) ?? false) &&
         (value == null || value.isEmpty)) {
       return 'This field cannot be empty';
     }
 
     if (value != null && value.isNotEmpty) {
-      var minLength = jsonSchema['properties'][key]['minLength'] as int?;
-      var maxLength = jsonSchema['properties'][key]['maxLength'] as int?;
-      var pattern = jsonSchema['properties'][key]['pattern'] as String?;
+      // Cast the nested maps to `Map<String, dynamic>` to ensure type safety
+      final properties = jsonSchema['properties'] as Map<String, dynamic>?;
+      final fieldProperties = properties?[key] as Map<String, dynamic>?;
+
+      final minLength = fieldProperties?['minLength'] as int?;
+      final maxLength = fieldProperties?['maxLength'] as int?;
+      final pattern = fieldProperties?['pattern'] as String?;
 
       if (minLength != null &&
           minLength == maxLength &&

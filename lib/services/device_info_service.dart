@@ -7,8 +7,6 @@ class DeviceInfoService {
     final deviceInfo = DeviceInfoPlugin();
     return Platform.isIOS
         ? (await deviceInfo.iosInfo).isPhysicalDevice
-        : Platform.isAndroid
-            ? (await deviceInfo.androidInfo).isPhysicalDevice
-            : false;
+        : Platform.isAndroid && (await deviceInfo.androidInfo).isPhysicalDevice;
   }
 }

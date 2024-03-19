@@ -24,42 +24,45 @@ class Send extends HookWidget {
 
     final formattedAmount = Currency.formatFromString(amount.value);
 
-    useEffect(() {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final current = amount.value;
-        final key = keyPress.value.key;
-        if (key == '') return;
+    useEffect(
+      () {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          final current = amount.value;
+          final key = keyPress.value.key;
+          if (key == '') return;
 
-        shouldAnimate.value = (key == '<')
-            ? !NumberValidationUtil.isValidDelete(current)
-            : !NumberValidationUtil.isValidInput(current, key);
-        if (shouldAnimate.value) return;
+          shouldAnimate.value = (key == '<')
+              ? !NumberValidationUtil.isValidDelete(current)
+              : !NumberValidationUtil.isValidInput(current, key);
+          if (shouldAnimate.value) return;
 
-        if (key == '<') {
-          amount.value = (current.length > 1)
-              ? current.substring(0, current.length - 1)
-              : '0';
-        } else {
-          amount.value = (current == '0' && key == '.')
-              ? '$current$key'
-              : (current == '0')
-                  ? key
-                  : '$current$key';
-        }
+          if (key == '<') {
+            amount.value = (current.length > 1)
+                ? current.substring(0, current.length - 1)
+                : '0';
+          } else {
+            amount.value = (current == '0' && key == '.')
+                ? '$current$key'
+                : (current == '0')
+                    ? key
+                    : '$current$key';
+          }
 
-        final decimalDigits = Currency.getDecimalDigits(CurrencyCode.usdc);
-        final hasDecimal = amount.value.contains('.');
-        final hintDigits = hasDecimal
-            ? decimalDigits - amount.value.split('.')[1].length
-            : decimalDigits;
+          final decimalDigits = Currency.getDecimalDigits(CurrencyCode.usdc);
+          final hasDecimal = amount.value.contains('.');
+          final hintDigits = hasDecimal
+              ? decimalDigits - amount.value.split('.')[1].length
+              : decimalDigits;
 
-        decimalPaddingHint.value = hasDecimal && hintDigits > 0
-            ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
-            : '';
-      });
+          decimalPaddingHint.value = hasDecimal && hintDigits > 0
+              ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
+              : '';
+        });
 
-      return;
-    }, [keyPress.value]);
+        return;
+      },
+      [keyPress.value],
+    );
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -90,7 +93,7 @@ class Send extends HookWidget {
                         ),
                         maxLines: 1,
                         style: const TextStyle(
-                          fontSize: 80.0,
+                          fontSize: 80,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

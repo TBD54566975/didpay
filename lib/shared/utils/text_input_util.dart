@@ -13,19 +13,19 @@ class TextInputUtil {
     return MaskTextInputFormatter(
       mask: _createMask(pattern),
       filter: {
-        'X': RegExp(r'[0-9]'),
+        'X': RegExp('[0-9]'),
       },
     );
   }
 
   static TextInputType getKeyboardType(String? pattern) {
-    return pattern?.contains(RegExp(r'[a-zA-Z]')) ?? true
+    return pattern?.contains(RegExp('[a-zA-Z]')) ?? true
         ? TextInputType.text
         : TextInputType.phone;
   }
 
   static String formatNumericText(String text) {
-    return text.contains(RegExp(r'[a-zA-Z]')) ? text : text.replaceAll(' ', '');
+    return text.contains(RegExp('[a-zA-Z]')) ? text : text.replaceAll(' ', '');
   }
 
   static String? _createMask(String? pattern) {

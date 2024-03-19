@@ -164,24 +164,25 @@ class ReviewRequestPage extends HookWidget {
                 ? Loc.of(context).depositAmount
                 : Loc.of(context).youGet,
             style: Theme.of(context).textTheme.bodySmall,
-          )
+          ),
         ],
       );
 
   Widget _buildFeeDetails(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
         child: FeeDetails(
-            payinCurrency: Loc.of(context).usd,
-            payoutCurrency: payinCurrency != Loc.of(context).usd
-                ? payinCurrency
-                : payoutCurrency,
-            exchangeRate: exchangeRate,
-            serviceFee: double.parse(serviceFee).toStringAsFixed(2),
-            total: payinCurrency != Loc.of(context).usd
-                ? (double.parse(payinAmount) + double.parse(serviceFee))
-                    .toStringAsFixed(2)
-                : (double.parse(payoutAmount) + double.parse(serviceFee))
-                    .toStringAsFixed(2)),
+          payinCurrency: Loc.of(context).usd,
+          payoutCurrency: payinCurrency != Loc.of(context).usd
+              ? payinCurrency
+              : payoutCurrency,
+          exchangeRate: exchangeRate,
+          serviceFee: double.parse(serviceFee).toStringAsFixed(2),
+          total: payinCurrency != Loc.of(context).usd
+              ? (double.parse(payinAmount) + double.parse(serviceFee))
+                  .toStringAsFixed(2)
+              : (double.parse(payoutAmount) + double.parse(serviceFee))
+                  .toStringAsFixed(2),
+        ),
       );
 
   Widget _buildBankDetails(BuildContext context) => Padding(
@@ -191,8 +192,10 @@ class ReviewRequestPage extends HookWidget {
           children: [
             Text(paymentName, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: Grid.xxs),
-            Text(_obscureAccountNumber(formData['accountNumber']!),
-                style: Theme.of(context).textTheme.bodyLarge),
+            Text(
+              _obscureAccountNumber(formData['accountNumber']!),
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
           ],
         ),
       );

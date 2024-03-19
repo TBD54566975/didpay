@@ -11,7 +11,7 @@ void main() {
     });
 
     test('should give text keyboard type', () {
-      const pattern = r'[a-zA-Z]';
+      const pattern = '[a-zA-Z]';
 
       expect(TextInputUtil.getKeyboardType(null), TextInputType.text);
       expect(TextInputUtil.getKeyboardType(pattern), TextInputType.text);
@@ -53,7 +53,7 @@ void main() {
     });
 
     test('should give no mask', () {
-      const pattern = r'[a-zA-Z]';
+      const pattern = '[a-zA-Z]';
       final formatter1 = TextInputUtil.getMaskFormatter(pattern);
       final formatter2 = TextInputUtil.getMaskFormatter(null);
 
