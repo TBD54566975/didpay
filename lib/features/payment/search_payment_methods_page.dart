@@ -23,10 +23,7 @@ class SearchPaymentMethodsPage extends HookWidget {
     final focusNode = useFocusNode();
 
     return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: Text(Loc.of(context).paymentMethods),
-      ),
+      appBar: AppBar(scrolledUnderElevation: 0),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
