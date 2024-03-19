@@ -50,7 +50,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 0) < 2
+        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 0) <= 1
             ? selectedPaymentMethod.value = filteredPaymentMethods?.firstOrNull
             : null;
         return;
@@ -75,13 +75,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
               Loc.of(context).enterYourPaymentDetails,
             ),
             if (shouldShowPaymentTypeTile)
-              _buildPaymentTypeTile(
+              _buildPaymentTypeSelector(
                 context,
                 selectedPaymentType,
                 paymentTypes,
               ),
             if (shouldShowPaymentMethodTile)
-              _buildPaymentMethodTile(
+              _buildPaymentMethodSelector(
                 context,
                 selectedPaymentMethod,
                 filteredPaymentMethods,
@@ -121,7 +121,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildPaymentTypeTile(
+  Widget _buildPaymentTypeSelector(
     BuildContext context,
     ValueNotifier<String?> selectedPaymentType,
     Set<String?>? paymentTypes,
@@ -155,7 +155,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildPaymentMethodTile(
+  Widget _buildPaymentMethodSelector(
     BuildContext context,
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
     List<PaymentMethod>? filteredPaymentMethods,
