@@ -1,41 +1,55 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO: remove this file when FTL generated types are available
+// TODO: remove this file when tbdex-dart is ready
 class PaymentMethod {
   final String kind;
+  final String name;
   final String requiredPaymentDetails;
+  final String? group;
   final String? fee;
 
   PaymentMethod({
     required this.kind,
+    required this.name,
     required this.requiredPaymentDetails,
+    this.group,
     this.fee,
   });
 }
 
 final _defaultList = [
   PaymentMethod(
-    kind: 'BANK_ACCESS BANK',
+    kind: 'AB',
+    name: 'Access Bank',
     requiredPaymentDetails: bankSchema,
-    fee: '9.0',
+    group: 'Bank',
+    fee: '9',
   ),
   PaymentMethod(
-    kind: 'BANK_GT BANK',
+    kind: 'GTB',
+    name: 'GT Bank',
     requiredPaymentDetails: bankSchema,
-    fee: '8.0',
+    group: 'Bank',
+    fee: '8',
   ),
   PaymentMethod(
-    kind: 'BANK_UNITED BANK FOR AFRICA',
+    kind: 'UBFA',
+    name: 'United Bank for Africa',
     requiredPaymentDetails: bankSchema,
-    fee: '10.0',
+    group: 'Bank',
+    fee: '10',
   ),
   PaymentMethod(
-    kind: 'MOMO_MTN',
+    kind: 'MTN',
+    name: 'MTN',
     requiredPaymentDetails: momoSchema,
+    group: 'Mobile money',
   ),
   PaymentMethod(
-    kind: 'MOMO_MPESA',
+    kind: 'MPESA',
+    name: 'M-Pesa',
     requiredPaymentDetails: momoSchema,
+    group: 'Mobile money',
   ),
   // PaymentMethod(
   //   kind: 'WALLET_BTC ADDRESS',
