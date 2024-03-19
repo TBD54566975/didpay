@@ -8,15 +8,18 @@ import '../../helpers/widget_helpers.dart';
 final _paymentMethods = [
   PaymentMethod(
     kind: 'BANK_ACCESS BANK',
+    name: 'Access Bank',
     requiredPaymentDetails: bankSchema,
     fee: '9.0',
   ),
   PaymentMethod(
     kind: 'MOMO_MTN',
+    name: 'MTN',
     requiredPaymentDetails: momoSchema,
   ),
   PaymentMethod(
     kind: 'WALLET_BTC ADDRESS',
+    name: 'BTC Address',
     requiredPaymentDetails: walletSchema,
     fee: '5.0',
   ),
@@ -54,9 +57,9 @@ void main() {
       );
 
       expect(find.byType(ListTile), findsExactly(3));
-      expect(find.widgetWithText(ListTile, 'ACCESS BANK'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'Access Bank'), findsOneWidget);
       expect(find.widgetWithText(ListTile, 'MTN'), findsOneWidget);
-      expect(find.widgetWithText(ListTile, 'BTC ADDRESS'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'BTC Address'), findsOneWidget);
     });
 
     testWidgets('should show a payment method after valid search',
