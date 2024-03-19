@@ -510,18 +510,6 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select a payment type'**
   String get selectPaymentType;
-
-  /// No description provided for @paymentMethods.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment methods'**
-  String get paymentMethods;
-
-  /// No description provided for @paymentTypes.
-  ///
-  /// In en, this message translates to:
-  /// **'Payment types'**
-  String get paymentTypes;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

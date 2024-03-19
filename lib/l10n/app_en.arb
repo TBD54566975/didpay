@@ -92,7 +92,5 @@
     "selectWallet": "Select your wallet",
     "selectWalletDescription": "We recommend you use DidPay with a compatible digital wallet. Select from the following options.",
     "error": "Error",
-    "selectPaymentType": "Select a payment type",
-    "paymentMethods": "Payment methods",
-    "paymentTypes": "Payment types"
+    "selectPaymentType": "Select a payment type"
 }

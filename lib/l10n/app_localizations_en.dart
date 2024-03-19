@@ -219,10 +219,4 @@ class LocEn extends Loc {
 
   @override
   String get selectPaymentType => 'Select a payment type';
-
-  @override
-  String get paymentMethods => 'Payment methods';
-
-  @override
-  String get paymentTypes => 'Payment types';
 }
