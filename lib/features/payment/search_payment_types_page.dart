@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 
-class SearchPaymentMethodsPage extends HookWidget {
+class SearchPaymentTypesPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final ValueNotifier<PaymentMethod?> selectedPaymentMethod;
-  final List<PaymentMethod>? paymentMethods;
+  final ValueNotifier<String?> selectedPaymentType;
+  final Set<String?>? paymentTypes;
   final String payinCurrency;
 
-  SearchPaymentMethodsPage({
-    required this.selectedPaymentMethod,
-    required this.paymentMethods,
+  SearchPaymentTypesPage({
+    required this.selectedPaymentType,
+    required this.paymentTypes,
     required this.payinCurrency,
     super.key,
   });
@@ -25,7 +24,7 @@ class SearchPaymentMethodsPage extends HookWidget {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: Text(Loc.of(context).paymentMethods),
+        title: Text(Loc.of(context).paymentTypes),
       ),
       body: SafeArea(
         child: Column(
@@ -66,9 +65,9 @@ class SearchPaymentMethodsPage extends HookWidget {
             Expanded(
               child: _buildList(
                 context,
-                selectedPaymentMethod,
+                selectedPaymentType,
                 searchText,
-                paymentMethods,
+                paymentTypes,
               ),
             ),
           ],
@@ -79,42 +78,35 @@ class SearchPaymentMethodsPage extends HookWidget {
 
   Widget _buildList(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+    ValueNotifier<String?> selectedPaymentMethod,
     ValueNotifier<String> searchText,
-    List<PaymentMethod>? paymentMethods,
+    Set<String?>? paymentTypes,
   ) {
-    final filteredPaymentMethods = paymentMethods
+    final filteredPaymentTypes = paymentTypes
         ?.where((entry) =>
-            entry.name.toLowerCase().contains(searchText.value.toLowerCase()))
+            entry?.toLowerCase().contains(searchText.value.toLowerCase()) ??
+            false)
         .toList();
 
     return ListView.builder(
       itemBuilder: (context, index) {
-        final currentPaymentMethod =
-            filteredPaymentMethods?.elementAtOrNull(index);
-        final fee = (double.tryParse(currentPaymentMethod?.fee ?? '0.00')
-                ?.toStringAsFixed(2) ??
-            '0.00');
+        final currentPaymentType = filteredPaymentTypes?.elementAtOrNull(index);
 
         return ListTile(
           visualDensity: VisualDensity.compact,
-          selected: selectedPaymentMethod.value == currentPaymentMethod,
-          title: Text(currentPaymentMethod?.name ?? ''),
-          subtitle: Text(
-            Loc.of(context).serviceFeeAmount(fee, payinCurrency),
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
-          trailing: selectedPaymentMethod.value == currentPaymentMethod
+          selected: selectedPaymentMethod.value == currentPaymentType,
+          title: Text(currentPaymentType ?? ''),
+          trailing: selectedPaymentMethod.value == currentPaymentType
               ? const Icon(Icons.check)
               : null,
           onTap: () {
             selectedPaymentMethod.value =
-                currentPaymentMethod ?? selectedPaymentMethod.value;
+                currentPaymentType ?? selectedPaymentMethod.value;
             Navigator.of(context).pop();
           },
         );
       },
-      itemCount: filteredPaymentMethods?.length,
+      itemCount: filteredPaymentTypes?.length,
     );
   }
 }
