@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 
-import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
 import 'package:didpay/features/wallets/wallet.dart';
 import 'package:didpay/features/wallets/wallets_provider.dart';
