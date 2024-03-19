@@ -41,14 +41,7 @@
     "yourPaymentWasSent": "Your payment was sent!",
     "verificationComplete": "Verification complete!",
     "makeSureInfoIsCorrect": "Make sure this information is correct.",
-    "enterYourPaymentChannelDetails": "Enter your {paymentChannel} details",
-    "@enterYourPaymentChannelDetails": {
-         "placeholders": {
-            "paymentChannel": {
-                "type": "String"
-            }
-        }
-    },
+    "enterYourPaymentDetails": "Enter your payment details",
     "serviceFeeAmount": "Service fee: {amount} {currency}",
     "@serviceFeeAmount": {
         "placeholders": {
@@ -98,5 +91,8 @@
     "availableBalance": "Available balance: ",
     "selectWallet": "Select your wallet",
     "selectWalletDescription": "We recommend you use DidPay with a compatible digital wallet. Select from the following options.",
-    "error": "Error"
+    "error": "Error",
+    "selectPaymentType": "Select a payment type",
+    "paymentMethods": "Payment methods",
+    "paymentTypes": "Payment types"
 }
