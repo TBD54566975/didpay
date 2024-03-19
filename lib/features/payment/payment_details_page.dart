@@ -58,9 +58,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
       [selectedPaymentType.value],
     );
 
-    final bool shouldShowPaymentTypeSelector =
+    final shouldShowPaymentTypeSelector =
         paymentTypes != null && paymentTypes.length > 1;
-    final bool shouldShowPaymentMethodSelector =
+    final shouldShowPaymentMethodSelector =
         !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
     return Scaffold(
@@ -159,7 +159,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
     List<PaymentMethod>? filteredPaymentMethods,
   ) {
-    final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) < 2;
+    final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) <= 1;
     final fee = (double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
             ?.toStringAsFixed(2) ??
         '0.00');
