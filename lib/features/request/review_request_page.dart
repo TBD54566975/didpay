@@ -178,9 +178,11 @@ class ReviewRequestPage extends HookWidget {
             exchangeRate: exchangeRate,
             serviceFee: double.parse(serviceFee).toStringAsFixed(2),
             total: payinCurrency != Loc.of(context).usd
-                ? (double.parse(payinAmount) + double.parse(serviceFee))
+                ? (double.parse(payinAmount.replaceAll(',', '')) +
+                        double.parse(serviceFee))
                     .toStringAsFixed(2)
-                : (double.parse(payoutAmount) + double.parse(serviceFee))
+                : (double.parse(payoutAmount.replaceAll(',', '')) +
+                        double.parse(serviceFee))
                     .toStringAsFixed(2)),
       );
 
