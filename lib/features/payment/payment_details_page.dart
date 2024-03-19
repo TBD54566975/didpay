@@ -58,11 +58,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
       [selectedPaymentType.value],
     );
 
-    final bool shouldShowPaymentTypeTile =
+    final bool shouldShowPaymentTypeSelector =
         paymentTypes != null && paymentTypes.length > 1;
-    final bool shouldShowPaymentMethodTile =
-        (paymentTypes == null || paymentTypes.length <= 1) ||
-            selectedPaymentType.value != null;
+    final bool shouldShowPaymentMethodSelector =
+        !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
     return Scaffold(
       appBar: AppBar(),
@@ -74,13 +73,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
               context,
               Loc.of(context).enterYourPaymentDetails,
             ),
-            if (shouldShowPaymentTypeTile)
+            if (shouldShowPaymentTypeSelector)
               _buildPaymentTypeSelector(
                 context,
                 selectedPaymentType,
                 paymentTypes,
               ),
-            if (shouldShowPaymentMethodTile)
+            if (shouldShowPaymentMethodSelector)
               _buildPaymentMethodSelector(
                 context,
                 selectedPaymentMethod,
@@ -212,7 +211,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             child: JsonSchemaForm(
               schema: selectedPaymentMethod.value!.requiredPaymentDetails,
               onSubmit: (formData) {
-                if (isValidOnSubmit(formData, selectedPaymentMethod)) {
+                if (_isValidOnSubmit(formData, selectedPaymentMethod)) {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ReviewRequestPage(
@@ -234,7 +233,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
           );
   }
 
-  bool isValidOnSubmit(Map<String, String> formData,
+  bool _isValidOnSubmit(Map<String, String> formData,
       ValueNotifier<PaymentMethod?> selectedPaymentMethod) {
     return formData['accountNumber'] != null &&
         selectedPaymentMethod.value!.kind.split('_').lastOrNull != null;
