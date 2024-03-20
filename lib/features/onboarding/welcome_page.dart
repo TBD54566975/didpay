@@ -31,7 +31,9 @@ class WelcomePage extends HookWidget {
   Widget _buildHeader(BuildContext context, String title, String subtitle) =>
       Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Grid.side, vertical: Grid.xs),
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
         child: Column(
           children: [
             Align(
