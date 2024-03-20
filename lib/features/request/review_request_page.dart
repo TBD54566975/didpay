@@ -40,7 +40,7 @@ class ReviewRequestPage extends HookWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.side),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeader(context),
               Expanded(
@@ -57,21 +57,7 @@ class ReviewRequestPage extends HookWidget {
                   ),
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const RequestConfirmationPage(),
-                        ),
-                      );
-                    },
-                    child: Text(Loc.of(context).submit),
-                  ),
-                ],
-              ),
+              _buildSubmitButton(context),
             ],
           ),
         ),
@@ -200,6 +186,17 @@ class ReviewRequestPage extends HookWidget {
             ),
           ],
         ),
+      );
+
+  Widget _buildSubmitButton(BuildContext context) => FilledButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const RequestConfirmationPage(),
+            ),
+          );
+        },
+        child: Text(Loc.of(context).submit),
       );
 
   String _obscureAccountNumber(String input) {
