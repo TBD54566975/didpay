@@ -81,8 +81,10 @@ class SearchPaymentMethodsPage extends HookWidget {
     List<PaymentMethod>? paymentMethods,
   ) {
     final filteredPaymentMethods = paymentMethods
-        ?.where((entry) =>
-            entry.name.toLowerCase().contains(searchText.value.toLowerCase()))
+        ?.where(
+          (entry) =>
+              entry.name.toLowerCase().contains(searchText.value.toLowerCase()),
+        )
         .toList();
 
     return ListView.builder(

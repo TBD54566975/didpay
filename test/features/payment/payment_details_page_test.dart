@@ -145,7 +145,7 @@ void main() {
 
     testWidgets(
         'should show SearchPaymentTypesPage on tap of select a payment type',
-        (WidgetTester tester) async {
+        (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(),

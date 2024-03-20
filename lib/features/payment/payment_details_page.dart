@@ -94,7 +94,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildHeader(BuildContext context, String title) => Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Grid.side, vertical: Grid.xs),
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
         child: Column(
           children: [
             Align(
@@ -147,7 +149,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 ),
               );
             },
-          )
+          ),
         ],
       );
 
