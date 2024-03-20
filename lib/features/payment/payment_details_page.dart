@@ -92,67 +92,64 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _buildHeader(BuildContext context, String title) => Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Grid.side, vertical: Grid.xs),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              Loc.of(context).makeSureInfoIsCorrect,
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                Loc.of(context).makeSureInfoIsCorrect,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget _buildPaymentTypeSelector(
     BuildContext context,
     ValueNotifier<String?> selectedPaymentType,
     Set<String?>? paymentTypes,
-  ) {
-    return Column(
-      children: [
-        const SizedBox(height: Grid.xxs),
-        ListTile(
-          title: Text(
-            selectedPaymentType.value == null
-                ? Loc.of(context).selectPaymentType
-                : selectedPaymentType.value ?? '',
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.primary,
+  ) =>
+      Column(
+        children: [
+          const SizedBox(height: Grid.xxs),
+          ListTile(
+            title: Text(
+              selectedPaymentType.value == null
+                  ? Loc.of(context).selectPaymentType
+                  : selectedPaymentType.value ?? '',
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+            trailing: const Icon(Icons.chevron_right),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SearchPaymentTypesPage(
+                    selectedPaymentType: selectedPaymentType,
+                    paymentTypes: paymentTypes,
+                    payinCurrency: payinCurrency,
+                  ),
                 ),
-          ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SearchPaymentTypesPage(
-                  selectedPaymentType: selectedPaymentType,
-                  paymentTypes: paymentTypes,
-                  payinCurrency: payinCurrency,
-                ),
-              ),
-            );
-          },
-        )
-      ],
-    );
-  }
+              );
+            },
+          )
+        ],
+      );
 
   Widget _buildPaymentMethodSelector(
     BuildContext context,
@@ -204,34 +201,34 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget _buildForm(
     BuildContext context,
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
-  ) {
-    return selectedPaymentMethod.value == null
-        ? _buildDisabledButton(context)
-        : Expanded(
-            child: JsonSchemaForm(
-              schema: selectedPaymentMethod.value!.requiredPaymentDetails,
-              onSubmit: (formData) {
-                if (_isValidOnSubmit(formData, selectedPaymentMethod)) {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ReviewRequestPage(
-                        payinAmount: payinAmount,
-                        payoutAmount: payoutAmount,
-                        payinCurrency: payinCurrency,
-                        payoutCurrency: payoutCurrency,
-                        exchangeRate: exchangeRate,
-                        serviceFee: selectedPaymentMethod.value?.fee ?? '0.00',
-                        transactionType: transactionType,
-                        paymentName: selectedPaymentMethod.value?.name ?? '',
-                        formData: formData,
+  ) =>
+      selectedPaymentMethod.value == null
+          ? _buildDisabledButton(context)
+          : Expanded(
+              child: JsonSchemaForm(
+                schema: selectedPaymentMethod.value!.requiredPaymentDetails,
+                onSubmit: (formData) {
+                  if (_isValidOnSubmit(formData, selectedPaymentMethod)) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ReviewRequestPage(
+                          payinAmount: payinAmount,
+                          payoutAmount: payoutAmount,
+                          payinCurrency: payinCurrency,
+                          payoutCurrency: payoutCurrency,
+                          exchangeRate: exchangeRate,
+                          serviceFee:
+                              selectedPaymentMethod.value?.fee ?? '0.00',
+                          transactionType: transactionType,
+                          paymentName: selectedPaymentMethod.value?.name ?? '',
+                          formData: formData,
+                        ),
                       ),
-                    ),
-                  );
-                }
-              },
-            ),
-          );
-  }
+                    );
+                  }
+                },
+              ),
+            );
 
   bool _isValidOnSubmit(
     Map<String, String> formData,
@@ -241,21 +238,19 @@ class PaymentDetailsPage extends HookConsumerWidget {
         selectedPaymentMethod.value!.kind.split('_').lastOrNull != null;
   }
 
-  Widget _buildDisabledButton(BuildContext context) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: Container()),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-            child: FilledButton(
-              onPressed: null,
-              child: Text(Loc.of(context).next),
+  Widget _buildDisabledButton(BuildContext context) => Expanded(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: Container()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+              child: FilledButton(
+                onPressed: null,
+                child: Text(Loc.of(context).next),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
