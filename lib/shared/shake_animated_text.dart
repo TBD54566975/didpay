@@ -19,7 +19,7 @@ class ShakeAnimatedWidget extends HookWidget {
       duration: const Duration(milliseconds: 130),
     );
 
-    final animation = Tween(begin: 0, end: 1).animate(
+    final animation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(
         parent: controller,
         curve: const _SineCurve(count: 0.6),

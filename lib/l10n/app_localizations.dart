@@ -301,11 +301,11 @@ abstract class Loc {
   /// **'Make sure this information is correct.'**
   String get makeSureInfoIsCorrect;
 
-  /// No description provided for @enterYourPaymentChannelDetails.
+  /// No description provided for @enterYourPaymentDetails.
   ///
   /// In en, this message translates to:
-  /// **'Enter your {paymentChannel} details'**
-  String enterYourPaymentChannelDetails(String paymentChannel);
+  /// **'Enter your payment details'**
+  String get enterYourPaymentDetails;
 
   /// No description provided for @serviceFeeAmount.
   ///
@@ -504,6 +504,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Error'**
   String get error;
+
+  /// No description provided for @selectPaymentType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a payment type'**
+  String get selectPaymentType;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

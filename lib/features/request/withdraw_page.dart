@@ -85,7 +85,7 @@ class WithdrawPage extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
                         payinAmount: payinAmount.value,
-                        payinCurrency: Loc.of(context).usd,
+                        payinCurrency: CurrencyCode.usdc.toString(),
                         payoutAmount: Currency.formatFromDouble(
                           payoutAmount.value,
                           currency: CurrencyCode.values
