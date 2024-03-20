@@ -1,5 +1,6 @@
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/search_field.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -28,7 +29,11 @@ class SearchPaymentMethodsPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildSearchField(context, searchText, focusNode),
+            SearchField(
+              focusNode: focusNode,
+              formKey: _formKey,
+              searchText: searchText,
+            ),
             Expanded(
               child: _buildMethodsList(
                 context,
@@ -42,47 +47,6 @@ class SearchPaymentMethodsPage extends HookWidget {
       ),
     );
   }
-
-  Widget _buildSearchField(
-    BuildContext context,
-    ValueNotifier<String> searchText,
-    FocusNode focusNode,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.only(
-          left: Grid.side,
-          right: Grid.side,
-          bottom: Grid.xs,
-        ),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: Grid.xs),
-              TextFormField(
-                focusNode: focusNode,
-                onTapOutside: (_) => focusNode.unfocus(),
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  labelText: Loc.of(context).search,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: Grid.side,
-                  ),
-                  prefixIcon: const Icon(Icons.search),
-                  filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(Grid.xs),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-                onChanged: (value) => searchText.value = value,
-              ),
-            ],
-          ),
-        ),
-      );
 
   Widget _buildMethodsList(
     BuildContext context,
