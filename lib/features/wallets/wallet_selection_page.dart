@@ -39,40 +39,11 @@ class WalletSelectionPage extends HookConsumerWidget {
                 ),
                 Expanded(
                   child: SizedBox(
-                    height: 24,
+                    height: Grid.sm,
                     child: _buildWalletList(context, selectedWallet, value),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                  child: FilledButton(
-                    onPressed: () async {
-                      if (selectedWallet.value?.name == 'DidPay') {
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return PfiVerificationPage(pfi: pfi);
-                            },
-                          ),
-                        );
-                      } else {
-                        final result = await DidResolver.resolve(pfi.didUri);
-                        final widgetService = result.didDocument?.service
-                            ?.firstWhereOrNull((e) => e.type == 'IDV');
-
-                        final oidcParams =
-                            await ref.read(idvServiceProvider).getAuthRequest(
-                                  'http://${widgetService?.serviceEndpoint}',
-                                );
-                        await LinkingService().launchWallet(
-                          oidcParams.claims.misc,
-                          selectedWallet.value?.url,
-                        );
-                      }
-                    },
-                    child: Text(Loc.of(context).next),
-                  ),
-                ),
+                _buildNextButton(context, ref, selectedWallet.value),
               ],
             ),
           ),
@@ -85,94 +56,131 @@ class WalletSelectionPage extends HookConsumerWidget {
     BuildContext context,
     ValueNotifier<Wallet?> selectedWalletState,
     List<Wallet> wallets,
-  ) {
-    return ListView(
-      children: wallets
-          .map(
-            (wallet) => ListTile(
-              title: Text(
-                wallet.name,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
-              ),
-              leading: Container(
-                width: Grid.md,
-                height: Grid.md,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(Grid.xxs),
+  ) =>
+      ListView(
+        children: wallets
+            .map(
+              (wallet) => ListTile(
+                title: Text(
+                  wallet.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
                 ),
-                child: Center(
-                  child: Icon(
-                    Icons.wallet,
-                    color: Theme.of(context).colorScheme.primary,
+                leading: Container(
+                  width: Grid.md,
+                  height: Grid.md,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(Grid.xxs),
                   ),
-                ),
-              ),
-              trailing: (selectedWalletState.value?.name == wallet.name)
-                  ? Icon(
-                      Icons.check,
+                  child: Center(
+                    child: Icon(
+                      Icons.wallet,
                       color: Theme.of(context).colorScheme.primary,
-                    )
-                  : null,
-              onTap: () {
-                selectedWalletState.value = wallet;
-
-                if (selectedWalletState.value?.name == 'DidPay') {
-                  return;
-                }
-
-                showModalBottomSheet<void>(
-                  context: context,
-                  builder: (context) {
-                    return Container(
-                      padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-                      height: 200,
-                      child: const Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              'You have elected to store your credential in the TBD Identity Wallet. Make sure you have the TBD Identity Wallet app installed in order to continue.',
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          )
-          .toList(),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context, String title, String subtitle) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
+                    ),
                   ),
+                ),
+                trailing: (selectedWalletState.value?.name == wallet.name)
+                    ? Icon(
+                        Icons.check,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () {
+                  selectedWalletState.value = wallet;
+
+                  if (selectedWalletState.value?.name == 'DidPay') {
+                    return;
+                  }
+
+                  showModalBottomSheet<void>(
+                    context: context,
+                    builder: (context) {
+                      return Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Grid.sm),
+                        height: 200,
+                        child: const Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: <Widget>[
+                              Text(
+                                'You have elected to store your credential in the TBD Identity Wallet. Make sure you have the TBD Identity Wallet app installed in order to continue.',
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            )
+            .toList(),
+      );
+
+  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+
+  Widget _buildNextButton(
+    BuildContext context,
+    WidgetRef ref,
+    Wallet? selectedWallet,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () async {
+            if (selectedWallet?.name == 'DidPay') {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) {
+                    return PfiVerificationPage(pfi: pfi);
+                  },
+                ),
+              );
+            } else {
+              final result = await DidResolver.resolve(pfi.didUri);
+              final widgetService = result.didDocument?.service
+                  ?.firstWhereOrNull((e) => e.type == 'IDV');
+
+              final oidcParams =
+                  await ref.read(idvServiceProvider).getAuthRequest(
+                        'http://${widgetService?.serviceEndpoint}',
+                      );
+              await LinkingService().launchWallet(
+                oidcParams.claims.misc,
+                selectedWallet?.url,
+              );
+            }
+          },
+          child: Text(Loc.of(context).next),
+        ),
+      );
 }
