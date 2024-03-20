@@ -28,7 +28,7 @@ class AgreementPage extends HookWidget {
               Loc.of(context).termsOfService,
               Loc.of(context).exampleTerms,
             ),
-            Expanded(child: Container()),
+            const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
             _buildNextButton(context, hasAgreed),
           ],
