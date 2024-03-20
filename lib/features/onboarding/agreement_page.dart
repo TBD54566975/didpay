@@ -30,7 +30,7 @@ class AgreementPage extends HookWidget {
             ),
             const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
-            _buildNextButton(context, hasAgreed),
+            _buildNextButton(context, hasAgreed.value),
           ],
         ),
       ),
@@ -115,12 +115,12 @@ class AgreementPage extends HookWidget {
 
   Widget _buildNextButton(
     BuildContext context,
-    ValueNotifier<bool> hasAgreed,
+    bool hasAgreed,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
         child: FilledButton(
-          onPressed: !hasAgreed.value
+          onPressed: !hasAgreed
               ? null
               : () {
                   Navigator.of(context).push(

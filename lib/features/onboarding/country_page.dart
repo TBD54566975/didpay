@@ -28,7 +28,7 @@ class CountryPage extends HookConsumerWidget {
             Expanded(
               child: _buildCountryList(context, country, countries),
             ),
-            _buildNextButton(context, country),
+            _buildNextButton(context, country.value),
           ],
         ),
       ),
@@ -104,12 +104,12 @@ class CountryPage extends HookConsumerWidget {
 
   Widget _buildNextButton(
     BuildContext context,
-    ValueNotifier<String?> country,
+    String? country,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
         child: FilledButton(
-          onPressed: country.value == null
+          onPressed: country == null
               ? null
               : () {
                   Navigator.of(context).push(
