@@ -6,6 +6,7 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class PfiPage extends HookConsumerWidget {
   const PfiPage({super.key});
@@ -14,16 +15,11 @@ class PfiPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPfi = useState<Pfi?>(null);
 
-    useEffect(
-      () {
-        Future.delayed(
-          Duration.zero,
-          () => ref.read(pfisProvider.notifier).reload(),
-        );
-        return null;
-      },
-      [],
-    );
+    useEffect(() {
+      Future.delayed(
+          Duration.zero, () => ref.read(pfisProvider.notifier).reload());
+      return null;
+    }, []);
 
     return Scaffold(
       appBar: AppBar(),
@@ -31,11 +27,8 @@ class PfiPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(
-              context,
-              Loc.of(context).getStartedWithAPfi,
-              Loc.of(context).selectAPfi,
-            ),
+            _buildHeader(context, ref, Loc.of(context).getStartedWithAPfi,
+                Loc.of(context).selectAPfi),
             Expanded(
               child: _buildList(context, ref, selectedPfi),
             ),
@@ -63,7 +56,8 @@ class PfiPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) {
+  Widget _buildHeader(
+      BuildContext context, WidgetRef ref, String title, String subtitle) {
     return Padding(
       padding:
           const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
@@ -86,16 +80,32 @@ class PfiPage extends HookConsumerWidget {
               style: Theme.of(context).textTheme.bodyMedium,
             ),
           ),
+          const SizedBox(height: Grid.xs),
+          Align(
+            alignment: Alignment.topLeft,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => _MobileScannerScreen(
+                      onPfiScanned: (Pfi scannedPfi) {
+                        ref.read(pfisProvider.notifier).addPfi(scannedPfi);
+                      },
+                    ),
+                  ),
+                );
+              },
+              child: Text('Scan QR Code'),
+            ),
+          ),
         ],
       ),
     );
   }
 
   Widget _buildList(
-    BuildContext context,
-    WidgetRef ref,
-    ValueNotifier<Pfi?> selectedPfi,
-  ) {
+      BuildContext context, WidgetRef ref, ValueNotifier<Pfi?> selectedPfi) {
     return ref.watch(pfisProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => _buildError(context, ref, error),
@@ -128,18 +138,52 @@ class PfiPage extends HookConsumerWidget {
 
   Widget _buildError(BuildContext context, WidgetRef ref, Object error) {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(error.toString()),
-          const SizedBox(height: Grid.xxs),
-          FilledButton(
-            onPressed: () {
-              ref.read(pfisProvider.notifier).reload();
-            },
-            child: const Text('Reload'),
-          ),
-        ],
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(error.toString()),
+        const SizedBox(height: Grid.xxs),
+        FilledButton(
+          onPressed: () {
+            ref.read(pfisProvider.notifier).reload();
+          },
+          child: const Text('Reload'),
+        )
+      ],
+    ));
+  }
+}
+
+class _MobileScannerScreen extends StatelessWidget {
+  final Function(Pfi) onPfiScanned;
+
+  const _MobileScannerScreen({required this.onPfiScanned});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Scan QR Code'),
+      ),
+      body: MobileScanner(
+        onDetect: (barcode) {
+          if (barcode.barcodes.isNotEmpty) {
+            final qrCode = barcode.barcodes.first;
+            final didUri = qrCode.url?.url ?? '';
+            final id =
+                didUri.isNotEmpty ? Uri.parse(didUri).pathSegments.last : '';
+            final name = qrCode.displayValue ?? '';
+
+            final scannedPfi = Pfi(
+              id: id,
+              name: name,
+              didUri: didUri,
+            );
+
+            onPfiScanned(scannedPfi);
+            Navigator.pop(context);
+          }
+        },
       ),
     );
   }
