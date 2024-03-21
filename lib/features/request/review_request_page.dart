@@ -40,7 +40,7 @@ class ReviewRequestPage extends HookWidget {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.side),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeader(context),
               Expanded(
@@ -57,21 +57,7 @@ class ReviewRequestPage extends HookWidget {
                   ),
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const RequestConfirmationPage(),
-                        ),
-                      );
-                    },
-                    child: Text(Loc.of(context).submit),
-                  ),
-                ],
-              ),
+              _buildSubmitButton(context),
             ],
           ),
         ),
@@ -178,9 +164,11 @@ class ReviewRequestPage extends HookWidget {
           exchangeRate: exchangeRate,
           serviceFee: double.parse(serviceFee).toStringAsFixed(2),
           total: payinCurrency != Loc.of(context).usd
-              ? (double.parse(payinAmount) + double.parse(serviceFee))
+              ? (double.parse(payinAmount.replaceAll(',', '')) +
+                      double.parse(serviceFee))
                   .toStringAsFixed(2)
-              : (double.parse(payoutAmount) + double.parse(serviceFee))
+              : (double.parse(payoutAmount.replaceAll(',', '')) +
+                      double.parse(serviceFee))
                   .toStringAsFixed(2),
         ),
       );
@@ -198,6 +186,17 @@ class ReviewRequestPage extends HookWidget {
             ),
           ],
         ),
+      );
+
+  Widget _buildSubmitButton(BuildContext context) => FilledButton(
+        onPressed: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => const RequestConfirmationPage(),
+            ),
+          );
+        },
+        child: Text(Loc.of(context).submit),
       );
 
   String _obscureAccountNumber(String input) {

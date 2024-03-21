@@ -48,19 +48,18 @@ void main() async {
       expect(find.widgetWithText(AutoSizeText, '0'), findsOneWidget);
     });
 
-    // TODO(ethan-tbd): uncomment this test as part of issue #81
-    // testWidgets(
-    //     'should pad send amount with a leading zero if send amount < a dollar',
-    //     (tester) async {
-    //   await tester.pumpWidget(
-    //     WidgetHelpers.testableWidget(child: const SendPage()),
-    //   );
+    testWidgets(
+        'should pad send amount with a leading zero if send amount < a dollar',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const SendPage()),
+      );
 
-    //   await tester.tap(find.text('.'));
-    //   await tester.pumpAndSettle();
+      await tester.tap(find.text('.'));
+      await tester.pumpAndSettle();
 
-    //   expect(find.text('\$0.00'), findsOneWidget);
-    // });
+      expect(find.widgetWithText(AutoSizeText, '0.00'), findsOneWidget);
+    });
 
     testWidgets('should navigate to SendDidPage on tap of send button',
         (tester) async {

@@ -1,6 +1,6 @@
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -28,34 +28,13 @@ class SearchPaymentMethodsPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextFormField(
-                      focusNode: focusNode,
-                      onTapOutside: (_) => focusNode.unfocus(),
-                      enableSuggestions: false,
-                      autocorrect: false,
-                      decoration: InputDecoration(
-                        labelText: Loc.of(context).search,
-                        prefixIcon: const Padding(
-                          padding: EdgeInsets.only(top: Grid.xs),
-                          child: Icon(Icons.search),
-                        ),
-                      ),
-                      onChanged: (value) => searchText.value = value,
-                    ),
-                  ],
-                ),
-              ),
+            SearchField(
+              focusNode: focusNode,
+              formKey: _formKey,
+              searchText: searchText,
             ),
-            const SizedBox(height: Grid.xs),
             Expanded(
-              child: _buildList(
+              child: _buildMethodsList(
                 context,
                 selectedPaymentMethod,
                 searchText,
@@ -68,7 +47,7 @@ class SearchPaymentMethodsPage extends HookWidget {
     );
   }
 
-  Widget _buildList(
+  Widget _buildMethodsList(
     BuildContext context,
     ValueNotifier<PaymentMethod?> selectedPaymentMethod,
     ValueNotifier<String> searchText,
@@ -77,7 +56,7 @@ class SearchPaymentMethodsPage extends HookWidget {
     final filteredPaymentMethods = paymentMethods
         ?.where(
           (entry) =>
-              entry.kind.toLowerCase().contains(searchText.value.toLowerCase()),
+              entry.name.toLowerCase().contains(searchText.value.toLowerCase()),
         )
         .toList();
 
@@ -85,7 +64,6 @@ class SearchPaymentMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final paymentName = currentPaymentMethod?.kind.split('_').lastOrNull;
         final fee = double.tryParse(currentPaymentMethod?.fee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00';
@@ -93,7 +71,7 @@ class SearchPaymentMethodsPage extends HookWidget {
         return ListTile(
           visualDensity: VisualDensity.compact,
           selected: selectedPaymentMethod.value == currentPaymentMethod,
-          title: Text(paymentName ?? ''),
+          title: Text(currentPaymentMethod?.name ?? ''),
           subtitle: Text(
             Loc.of(context).serviceFeeAmount(fee, payinCurrency),
             style: Theme.of(context).textTheme.bodySmall,

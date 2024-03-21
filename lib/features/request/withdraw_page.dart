@@ -75,37 +75,47 @@ class WithdrawPage extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: Grid.sm),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: () {
-                  final payoutCurrency =
-                      selectedCurrency.value?.code.toString() ?? '';
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PaymentDetailsPage(
-                        payinAmount: payinAmount.value,
-                        payinCurrency: Loc.of(context).usd,
-                        payoutAmount: Currency.formatFromDouble(
-                          payoutAmount.value,
-                          currency: CurrencyCode.values
-                              .byName(payoutCurrency.toLowerCase()),
-                        ),
-                        payoutCurrency: payoutCurrency,
-                        exchangeRate:
-                            selectedCurrency.value?.exchangeRate.toString() ??
-                                '',
-                        transactionType: TransactionType.withdraw,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(Loc.of(context).next),
+            _buildNextButton(
+              context,
+              payinAmount.value,
+              Currency.formatFromDouble(
+                payoutAmount.value,
+                currency: CurrencyCode.values.byName(
+                  (selectedCurrency.value?.code.toString() ?? '').toLowerCase(),
+                ),
               ),
+              selectedCurrency.value,
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildNextButton(
+    BuildContext context,
+    String payinAmount,
+    String payoutAmount,
+    Currency? selectedCurrency,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PaymentDetailsPage(
+                  payinAmount: payinAmount,
+                  payinCurrency: CurrencyCode.usdc.toString(),
+                  payoutAmount: payoutAmount,
+                  payoutCurrency: selectedCurrency?.code.toString() ?? '',
+                  exchangeRate: selectedCurrency?.exchangeRate.toString() ?? '',
+                  transactionType: TransactionType.withdraw,
+                ),
+              ),
+            );
+          },
+          child: Text(Loc.of(context).next),
+        ),
+      );
 }

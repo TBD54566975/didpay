@@ -2,6 +2,7 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/search_payment_methods_page.dart';
+import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,29 +25,103 @@ void main() {
           ),
           overrides: overrides,
         );
-    testWidgets('should show make sure this information is correct',
-        (tester) async {
+    testWidgets('should show header', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: paymentDetailsPageTestWidget()),
       );
 
+      expect(find.text('Enter your payment details'), findsOneWidget);
       expect(
         find.text('Make sure this information is correct.'),
         findsOneWidget,
       );
     });
 
+    testWidgets('should show payment type selection zero state',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+          overrides: [
+            paymentMethodProvider.overrideWith(
+              (ref) => [
+                PaymentMethod(
+                  kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  group: 'Mobile money',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'BANK_GT BANK',
+                  name: 'GT Bank',
+                  group: 'Bank',
+                  requiredPaymentDetails: momoSchema,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      expect(find.text('Select a payment type'), findsOneWidget);
+    });
+
+    testWidgets('should not show payment type selector', (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+          overrides: [
+            paymentMethodProvider.overrideWith(
+              (ref) => [
+                PaymentMethod(
+                  kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  group: 'Mobile money',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'MOMO_MTN',
+                  name: 'MTN',
+                  requiredPaymentDetails: momoSchema,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      expect(find.text('Select a payment type'), findsNothing);
+    });
+
     testWidgets('should show payment method selection zero state',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: paymentDetailsPageTestWidget()),
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+          overrides: [
+            paymentMethodProvider.overrideWith(
+              (ref) => [
+                PaymentMethod(
+                  kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'MOMO_MTN',
+                  name: 'MTN',
+                  requiredPaymentDetails: momoSchema,
+                ),
+              ],
+            ),
+          ],
+        ),
       );
 
       expect(find.text('Select a payment method'), findsOneWidget);
       expect(find.text('Service fees may apply'), findsOneWidget);
     });
 
-    testWidgets('should show enter your momo details', (tester) async {
+    testWidgets('should show payment method without selector', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(),
@@ -55,6 +130,7 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
                   requiredPaymentDetails: momoSchema,
                 ),
               ],
@@ -63,70 +139,12 @@ void main() {
         ),
       );
 
-      expect(find.text('Enter your momo details'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'M-Pesa'), findsOneWidget);
+      expect(find.widgetWithIcon(Icon, Icons.chevron_right), findsNothing);
     });
 
-    testWidgets('should show enter your bank details', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: paymentDetailsPageTestWidget(),
-          overrides: [
-            paymentMethodProvider.overrideWith(
-              (ref) => [
-                PaymentMethod(
-                  kind: 'BANK_GT BANK',
-                  requiredPaymentDetails: bankSchema,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-      expect(find.text('Enter your bank details'), findsOneWidget);
-    });
-
-    testWidgets('should show enter your wallet details', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: paymentDetailsPageTestWidget(),
-          overrides: [
-            paymentMethodProvider.overrideWith(
-              (ref) => [
-                PaymentMethod(
-                  kind: 'WALLET_BTC ADDRESS',
-                  requiredPaymentDetails: walletSchema,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-      expect(find.text('Enter your wallet details'), findsOneWidget);
-    });
-
-    testWidgets('should show no payment type segments', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: paymentDetailsPageTestWidget(),
-          overrides: [
-            paymentMethodProvider.overrideWith(
-              (ref) => [
-                PaymentMethod(
-                  kind: 'MOMO_MPESA',
-                  requiredPaymentDetails: momoSchema,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-      expect(find.byType(SegmentedButton<String>), findsNothing);
-    });
-
-    testWidgets('should show momo and bank payment type segments',
+    testWidgets(
+        'should show SearchPaymentTypesPage on tap of select a payment type',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -136,11 +154,15 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  group: 'Mobile money',
                   requiredPaymentDetails: momoSchema,
                 ),
                 PaymentMethod(
                   kind: 'BANK_GT BANK',
-                  requiredPaymentDetails: bankSchema,
+                  name: 'GT Bank',
+                  group: 'Bank',
+                  requiredPaymentDetails: momoSchema,
                 ),
               ],
             ),
@@ -148,56 +170,9 @@ void main() {
         ),
       );
 
-      expect(find.byType(SegmentedButton<String?>), findsOneWidget);
-      expect(
-        find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(SegmentedButton<String?>, 'BANK'),
-        findsOneWidget,
-      );
-    });
-
-    testWidgets('should show momo, bank, and wallet payment type segments',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: paymentDetailsPageTestWidget(),
-          overrides: [
-            paymentMethodProvider.overrideWith(
-              (ref) => [
-                PaymentMethod(
-                  kind: 'MOMO_MPESA',
-                  requiredPaymentDetails: momoSchema,
-                ),
-                PaymentMethod(
-                  kind: 'BANK_GT BANK',
-                  requiredPaymentDetails: bankSchema,
-                ),
-                PaymentMethod(
-                  kind: 'WALLET_BTC ADDRESS',
-                  requiredPaymentDetails: walletSchema,
-                ),
-              ],
-            ),
-          ],
-        ),
-      );
-
-      expect(find.byType(SegmentedButton<String?>), findsOneWidget);
-      expect(
-        find.widgetWithText(SegmentedButton<String?>, 'MOMO'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(SegmentedButton<String?>, 'BANK'),
-        findsOneWidget,
-      );
-      expect(
-        find.widgetWithText(SegmentedButton<String?>, 'WALLET'),
-        findsOneWidget,
-      );
+      await tester.tap(find.text('Select a payment type'));
+      await tester.pumpAndSettle();
+      expect(find.byType(SearchPaymentTypesPage), findsOneWidget);
     });
 
     testWidgets(
@@ -211,6 +186,12 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'MOMO_MTN',
+                  name: 'MTN',
                   requiredPaymentDetails: momoSchema,
                 ),
               ],
@@ -225,6 +206,42 @@ void main() {
     });
 
     testWidgets(
+        'should show payment type after SearchPaymentTypesPage selection',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+          overrides: [
+            paymentMethodProvider.overrideWith(
+              (ref) => [
+                PaymentMethod(
+                  kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  group: 'Mobile money',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'BANK_GT BANK',
+                  name: 'GT Bank',
+                  group: 'Bank',
+                  requiredPaymentDetails: momoSchema,
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.tap(find.text('Select a payment type'));
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Bank'));
+      await tester.pumpAndSettle();
+
+      expect(find.widgetWithText(ListTile, 'Bank'), findsOneWidget);
+    });
+
+    testWidgets(
         'should show payment name after SearchPaymentMethodsPage selection',
         (tester) async {
       await tester.pumpWidget(
@@ -235,6 +252,12 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
+                  requiredPaymentDetails: momoSchema,
+                ),
+                PaymentMethod(
+                  kind: 'BANK_GT BANK',
+                  name: 'GT Bank',
                   requiredPaymentDetails: momoSchema,
                 ),
               ],
@@ -246,12 +269,10 @@ void main() {
       await tester.tap(find.text('Select a payment method'));
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('MPESA'));
+      await tester.tap(find.text('M-Pesa'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(ListTile), findsOneWidget);
-      expect(find.widgetWithText(ListTile, 'MPESA'), findsOneWidget);
-      expect(find.textContaining('Service fee: 0.0'), findsOneWidget);
+      expect(find.widgetWithText(ListTile, 'M-Pesa'), findsOneWidget);
     });
 
     testWidgets('should show momo schema form', (tester) async {
@@ -263,6 +284,7 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'MOMO_MPESA',
+                  name: 'M-Pesa',
                   requiredPaymentDetails: momoSchema,
                 ),
               ],
@@ -270,12 +292,6 @@ void main() {
           ],
         ),
       );
-
-      await tester.tap(find.text('Select a payment method'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('MPESA'));
-      await tester.pumpAndSettle();
 
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Phone number'), findsOneWidget);
@@ -291,6 +307,7 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'BANK_GT BANK',
+                  name: 'GT Bank',
                   requiredPaymentDetails: bankSchema,
                 ),
               ],
@@ -298,12 +315,6 @@ void main() {
           ],
         ),
       );
-
-      await tester.tap(find.text('Select a payment method'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('GT BANK'));
-      await tester.pumpAndSettle();
 
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Account number'), findsOneWidget);
@@ -319,6 +330,7 @@ void main() {
               (ref) => [
                 PaymentMethod(
                   kind: 'WALLET_BTC ADDRESS',
+                  name: 'BTC Address',
                   requiredPaymentDetails: walletSchema,
                 ),
               ],
@@ -326,12 +338,6 @@ void main() {
           ],
         ),
       );
-
-      await tester.tap(find.text('Select a payment method'));
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('BTC ADDRESS'));
-      await tester.pumpAndSettle();
 
       expect(find.byType(TextFormField), findsExactly(2));
       expect(find.text('Wallet address'), findsOneWidget);

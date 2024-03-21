@@ -1,7 +1,7 @@
 import 'package:didpay/features/currency/currency.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO(ethan-tbd): remove this file when FTL generated types are available
+// TODO(ethan-tbd): remove this file when tbdex-dart is ready
 class Transaction {
   final double payinAmount;
   final double payoutAmount;

@@ -21,50 +21,53 @@ class WelcomePage extends HookWidget {
               Loc.of(context).interactWithPfis,
             ),
             const Spacer(),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const CountryPage(),
-                    ),
-                  );
-                },
-                child: Text(Loc.of(context).getStarted),
-              ),
-            ),
+            _buildGetStartedButton(context),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
+
+  Widget _buildGetStartedButton(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const CountryPage(),
+              ),
+            );
+          },
+          child: Text(Loc.of(context).getStarted),
+        ),
+      );
 }

@@ -20,9 +20,6 @@ class LocEn extends Loc {
   String get whereAreYouLocated => 'Where are you located?';
 
   @override
-  String get home => 'Home';
-
-  @override
   String get done => 'Done';
 
   @override
@@ -112,9 +109,7 @@ class LocEn extends Loc {
   String get makeSureInfoIsCorrect => 'Make sure this information is correct.';
 
   @override
-  String enterYourPaymentChannelDetails(String paymentChannel) {
-    return 'Enter your $paymentChannel details';
-  }
+  String get enterYourPaymentDetails => 'Enter your payment details';
 
   @override
   String serviceFeeAmount(String amount, String currency) {
@@ -144,6 +139,12 @@ class LocEn extends Loc {
 
   @override
   String get myDid => 'My DID';
+
+  @override
+  String get myVc => 'My VC';
+
+  @override
+  String get vcNotFound => 'VC not found';
 
   @override
   String get copiedDid => 'Copied DID!';
@@ -218,4 +219,10 @@ class LocEn extends Loc {
 
   @override
   String get error => 'Error';
+
+  @override
+  String get selectPaymentType => 'Select a payment type';
+
+  @override
+  String get account => 'Account';
 }
