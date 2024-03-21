@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:didpay/features/onboarding/agreement_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -89,14 +90,14 @@ class PfiPage extends HookConsumerWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => _MobileScannerScreen(
-                      onPfiScanned: (Pfi scannedPfi) {
+                      onPfiScanned: (scannedPfi) {
                         ref.read(pfisProvider.notifier).addPfi(scannedPfi);
                       },
                     ),
                   ),
                 );
               },
-              child: Text('Scan QR Code'),
+              child: const Text('Scan QR Code'),
             ),
           ),
         ],
@@ -156,32 +157,38 @@ class PfiPage extends HookConsumerWidget {
 
 class _MobileScannerScreen extends StatelessWidget {
   final Function(Pfi) onPfiScanned;
+  final MobileScannerController scannerController = MobileScannerController();
 
-  const _MobileScannerScreen({required this.onPfiScanned});
+  _MobileScannerScreen({required this.onPfiScanned});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Scan QR Code'),
+        title: const Text('Scan QR Code'),
       ),
       body: MobileScanner(
+        controller: scannerController,
         onDetect: (barcode) {
           if (barcode.barcodes.isNotEmpty) {
             final qrCode = barcode.barcodes.first;
-            final didUri = qrCode.url?.url ?? '';
-            final id =
-                didUri.isNotEmpty ? Uri.parse(didUri).pathSegments.last : '';
-            final name = qrCode.displayValue ?? '';
+            try {
+              // Assuming qrCode.rawValue contains the JSON string
+              final json = jsonDecode(qrCode.rawValue!);
+              final scannedPfi = Pfi.fromJson(json);
 
-            final scannedPfi = Pfi(
-              id: id,
-              name: name,
-              didUri: didUri,
-            );
+              // Use the callback to handle the scanned Pfi
+              onPfiScanned(scannedPfi);
 
-            onPfiScanned(scannedPfi);
-            Navigator.pop(context);
+              // Stop scanning
+              scannerController.stop();
+
+              // Return to the previous screen
+              Navigator.pop(context);
+            } catch (e) {
+              // Handle JSON parsing error or invalid Pfi data
+              print('Error parsing PFI QR Code: $e');
+            }
           }
         },
       ),
