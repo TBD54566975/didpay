@@ -8,13 +8,12 @@ class CurrencyModal {
     Function(String) onPressed,
     List<Currency> currencies,
     String selectedCurrency,
-  ) {
-    return showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) {
-        return SafeArea(
+  ) =>
+      showModalBottomSheet(
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (context) => SafeArea(
           child: SizedBox(
             height: currencies.length * 80,
             child: Column(
@@ -50,8 +49,6 @@ class CurrencyModal {
               ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
 }

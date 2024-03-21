@@ -28,106 +28,112 @@ class AgreementPage extends HookWidget {
               Loc.of(context).termsOfService,
               Loc.of(context).exampleTerms,
             ),
-            Expanded(child: Container()),
+            const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
-            const SizedBox(height: Grid.xs),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: !hasAgreed.value
-                    ? null
-                    : () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (_) => Config.hasWalletPicker
-                                ? WalletSelectionPage(pfi: pfi)
-                                : PfiVerificationPage(pfi: pfi),
-                          ),
-                        );
-                      },
-                child: Text(Loc.of(context).next),
-              ),
-            ),
+            _buildNextButton(context, hasAgreed.value),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget _buildUserAndPrivacyAgreement(
     BuildContext context,
     ValueNotifier<bool> hasAgreed,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 5, right: Grid.side),
-      child: GestureDetector(
-        onTapUp: (_) => hasAgreed.value = !hasAgreed.value,
-        child: Row(
-          children: [
-            Checkbox(
-              value: hasAgreed.value,
-              onChanged: (newValue) => hasAgreed.value = newValue ?? false,
-            ),
-            const SizedBox(
-              width: Grid.xxs,
-            ),
-            Expanded(
-              child: RichText(
-                text: TextSpan(
-                  style: Theme.of(context).textTheme.bodySmall,
-                  children: <TextSpan>[
-                    TextSpan(text: Loc.of(context).iCertifyThatIAgreeToThe),
-                    TextSpan(
-                      text: Loc.of(context).userAgreement,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+  ) =>
+      Padding(
+        padding:
+            const EdgeInsets.only(left: 5, right: Grid.side, bottom: Grid.xs),
+        child: GestureDetector(
+          onTapUp: (_) => hasAgreed.value = !hasAgreed.value,
+          child: Row(
+            children: [
+              Checkbox(
+                value: hasAgreed.value,
+                onChanged: (newValue) => hasAgreed.value = newValue ?? false,
+              ),
+              const SizedBox(
+                width: Grid.xxs,
+              ),
+              Expanded(
+                child: RichText(
+                  text: TextSpan(
+                    style: Theme.of(context).textTheme.bodySmall,
+                    children: <TextSpan>[
+                      TextSpan(text: Loc.of(context).iCertifyThatIAgreeToThe),
+                      TextSpan(
+                        text: Loc.of(context).userAgreement,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        recognizer: TapGestureRecognizer(),
                       ),
-                      recognizer: TapGestureRecognizer(),
-                    ),
-                    TextSpan(text: Loc.of(context).andIHaveReadThe),
-                    TextSpan(
-                      text: Loc.of(context).privacyPolicy,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
+                      TextSpan(text: Loc.of(context).andIHaveReadThe),
+                      TextSpan(
+                        text: Loc.of(context).privacyPolicy,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                        recognizer: TapGestureRecognizer(),
                       ),
-                      recognizer: TapGestureRecognizer(),
-                    ),
-                    const TextSpan(text: '.'),
-                  ],
+                      const TextSpan(text: '.'),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
+
+  Widget _buildNextButton(
+    BuildContext context,
+    bool hasAgreed,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: !hasAgreed
+              ? null
+              : () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => Config.hasWalletPicker
+                          ? WalletSelectionPage(pfi: pfi)
+                          : PfiVerificationPage(pfi: pfi),
+                    ),
+                  );
+                },
+          child: Text(Loc.of(context).next),
+        ),
+      );
 }

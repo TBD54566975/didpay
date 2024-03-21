@@ -75,35 +75,45 @@ class DepositPage extends HookConsumerWidget {
               ),
             ),
             const SizedBox(height: Grid.sm),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PaymentDetailsPage(
-                        payinAmount: payinAmount.value,
-                        payoutAmount: Currency.formatFromDouble(
-                          payoutAmount.value,
-                          currency: CurrencyCode.usdc,
-                        ),
-                        payinCurrency:
-                            selectedCurrency.value?.code.toString() ?? '',
-                        payoutCurrency: CurrencyCode.usdc.toString(),
-                        exchangeRate:
-                            selectedCurrency.value?.exchangeRate.toString() ??
-                                '',
-                        transactionType: TransactionType.deposit,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(Loc.of(context).next),
+            _buildNextButton(
+              context,
+              payinAmount.value,
+              Currency.formatFromDouble(
+                payoutAmount.value,
+                currency: CurrencyCode.usdc,
               ),
+              selectedCurrency.value,
             ),
           ],
         ),
       ),
     );
   }
+
+  Widget _buildNextButton(
+    BuildContext context,
+    String payinAmount,
+    String payoutAmount,
+    Currency? selectedCurrency,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PaymentDetailsPage(
+                  payinAmount: payinAmount,
+                  payoutAmount: payoutAmount,
+                  payinCurrency: selectedCurrency?.code.toString() ?? '',
+                  payoutCurrency: CurrencyCode.usdc.toString(),
+                  exchangeRate: selectedCurrency?.exchangeRate.toString() ?? '',
+                  transactionType: TransactionType.deposit,
+                ),
+              ),
+            );
+          },
+          child: Text(Loc.of(context).next),
+        ),
+      );
 }

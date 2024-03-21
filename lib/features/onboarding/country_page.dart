@@ -28,93 +28,99 @@ class CountryPage extends HookConsumerWidget {
             Expanded(
               child: _buildCountryList(context, country, countries),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: country.value == null
-                    ? null
-                    : () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PfiPage(),
-                          ),
-                        );
-                      },
-                child: Text(Loc.of(context).next),
-              ),
-            ),
+            _buildNextButton(context, country.value),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
             ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 
   Widget _buildCountryList(
     BuildContext context,
     ValueNotifier<String?> country,
     List<Country> countries,
-  ) {
-    return ListView(
-      children: countries
-          .map(
-            (c) => ListTile(
-              title: Text(
-                c.name,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
-              ),
-              leading: Container(
-                width: Grid.md,
-                height: Grid.md,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(Grid.xxs),
+  ) =>
+      ListView(
+        children: countries
+            .map(
+              (c) => ListTile(
+                title: Text(
+                  c.name,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
                 ),
-                child: Center(
-                  child: _buildFlag(context, c.code),
+                leading: Container(
+                  width: Grid.md,
+                  height: Grid.md,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surface,
+                    borderRadius: BorderRadius.circular(Grid.xxs),
+                  ),
+                  child: Center(
+                    child: _buildFlag(context, c.code),
+                  ),
                 ),
+                trailing: (country.value == c.name)
+                    ? Icon(
+                        Icons.check,
+                        color: Theme.of(context).colorScheme.primary,
+                      )
+                    : null,
+                onTap: () {
+                  country.value = c.name;
+                },
               ),
-              trailing: (country.value == c.name)
-                  ? Icon(
-                      Icons.check,
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : null,
-              onTap: () {
-                country.value = c.name;
-              },
-            ),
-          )
-          .toList(),
-    );
-  }
+            )
+            .toList(),
+      );
+
+  Widget _buildNextButton(
+    BuildContext context,
+    String? country,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: country == null
+              ? null
+              : () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const PfiPage(),
+                    ),
+                  );
+                },
+          child: Text(Loc.of(context).next),
+        ),
+      );
 
   Widget _buildFlag(BuildContext context, String countryCode) {
     const asciiOffset = 0x41;

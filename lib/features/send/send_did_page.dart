@@ -48,7 +48,7 @@ class SendDidPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildScanQrTile(
+                    _buildScanQr(
                       context,
                       controller,
                       errorText,
@@ -66,26 +66,7 @@ class SendDidPage extends HookConsumerWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: () {
-                  if ((_formKey.currentState?.validate() ?? false) &&
-                      errorText.value == null) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SendConfirmationPage(
-                          did: did.uri,
-                          amount: sendAmount,
-                        ),
-                      ),
-                    );
-                  }
-                },
-                child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
-              ),
-            ),
+            _buildSendButton(context, did.uri, errorText.value),
           ],
         ),
       ),
@@ -98,87 +79,111 @@ class SendDidPage extends HookConsumerWidget {
     FocusNode focusNode,
     ValueNotifier<String?> errorText,
     String errorMessage,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: Form(
-        key: _formKey,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(right: Grid.xs),
-              child: Text(
-                Loc.of(context).to,
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium
-                    ?.copyWith(color: Theme.of(context).colorScheme.primary),
-              ),
-            ),
-            Expanded(
-              child: TextFormField(
-                focusNode: focusNode,
-                controller: controller,
-                onTap: () => errorText.value = null,
-                onTapOutside: (_) async {
-                  if (controller.text.isNotEmpty) {
-                    errorText.value = await _isValidDid(controller.text)
-                        ? null
-                        : errorMessage;
-                  }
-                  focusNode.unfocus();
-                },
-                maxLines: null,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: InputDecoration(
-                  labelText: Loc.of(context).didPrefix,
-                  errorText: errorText.value,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: Form(
+          key: _formKey,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(right: Grid.xs),
+                child: Text(
+                  Loc.of(context).to,
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium
+                      ?.copyWith(color: Theme.of(context).colorScheme.primary),
                 ),
-                validator: (value) => value == null
-                    ? Loc.of(context).thisFieldCannotBeEmpty
-                    : null,
               ),
-            ),
-          ],
+              Expanded(
+                child: TextFormField(
+                  focusNode: focusNode,
+                  controller: controller,
+                  onTap: () => errorText.value = null,
+                  onTapOutside: (_) async {
+                    if (controller.text.isNotEmpty) {
+                      errorText.value = await _isValidDid(controller.text)
+                          ? null
+                          : errorMessage;
+                    }
+                    focusNode.unfocus();
+                  },
+                  maxLines: null,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  decoration: InputDecoration(
+                    labelText: Loc.of(context).didPrefix,
+                    errorText: errorText.value,
+                  ),
+                  validator: (value) => value == null
+                      ? Loc.of(context).thisFieldCannotBeEmpty
+                      : null,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 
-  Widget _buildScanQrTile(
+  Widget _buildScanQr(
     BuildContext context,
     TextEditingController controller,
     ValueNotifier<String?> errorText,
     ValueNotifier<bool> isPhysicalDevice,
     String did,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
-      child: ListTile(
-        leading: const Icon(Icons.qr_code),
-        title: Text(
-          Loc.of(context).scanQrCode,
-          style: Theme.of(context).textTheme.bodyMedium,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
+        child: ListTile(
+          leading: const Icon(Icons.qr_code),
+          title: Text(
+            Loc.of(context).scanQrCode,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          trailing: const Icon(Icons.chevron_right),
+          onTap: () => isPhysicalDevice.value
+              ? _scanQrCode(
+                  context,
+                  controller,
+                  errorText,
+                  Loc.of(context).noDidQrCodeFound,
+                )
+              : _simulateScanQrCode(
+                  context,
+                  controller,
+                  did,
+                ),
         ),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: () => isPhysicalDevice.value
-            ? _scanQrCode(
+      );
+
+  Widget _buildSendButton(
+    BuildContext context,
+    String did,
+    String? errorText,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            if ((_formKey.currentState?.validate() ?? false) &&
+                errorText == null) {
+              Navigator.push(
                 context,
-                controller,
-                errorText,
-                Loc.of(context).noDidQrCodeFound,
-              )
-            : _simulateScanQrCode(
-                context,
-                controller,
-                did,
-              ),
-      ),
-    );
-  }
+                MaterialPageRoute(
+                  builder: (context) => SendConfirmationPage(
+                    did: did,
+                    amount: sendAmount,
+                  ),
+                ),
+              );
+            }
+          },
+          child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
+        ),
+      );
 
   Future<bool> _isValidDid(String did) async {
     final result = await DidResolver.resolve(did);

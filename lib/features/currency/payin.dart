@@ -9,13 +9,6 @@ import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PayinKeyPress {
-  final int count;
-  final String key;
-
-  PayinKeyPress(this.count, this.key);
-}
-
 class Payin extends HookWidget {
   final TransactionType transactionType;
   final ValueNotifier<String> amount;
@@ -156,4 +149,11 @@ class Payin extends HookWidget {
       ],
     );
   }
+}
+
+class PayinKeyPress {
+  final int count;
+  final String key;
+
+  PayinKeyPress(this.count, this.key);
 }

@@ -30,7 +30,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        verifyCredential(ref);
+        _verifyCredential(ref);
         return null;
       },
       [],
@@ -45,7 +45,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
     );
   }
 
-  Future<void> verifyCredential(WidgetRef ref) async {
+  Future<void> _verifyCredential(WidgetRef ref) async {
     final result = await DidResolver.resolve(pfi.didUri);
     final pfiService =
         result.didDocument?.service?.firstWhereOrNull((e) => e.type == 'PFI');

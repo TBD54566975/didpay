@@ -121,12 +121,6 @@ abstract class Loc {
   /// **'Where are you located?'**
   String get whereAreYouLocated;
 
-  /// No description provided for @home.
-  ///
-  /// In en, this message translates to:
-  /// **'Home'**
-  String get home;
-
   /// No description provided for @done.
   ///
   /// In en, this message translates to:
@@ -361,6 +355,18 @@ abstract class Loc {
   /// **'My DID'**
   String get myDid;
 
+  /// No description provided for @myVc.
+  ///
+  /// In en, this message translates to:
+  /// **'My VC'**
+  String get myVc;
+
+  /// No description provided for @vcNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'VC not found'**
+  String get vcNotFound;
+
   /// No description provided for @copiedDid.
   ///
   /// In en, this message translates to:
@@ -510,6 +516,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select a payment type'**
   String get selectPaymentType;
+
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -4,7 +4,6 @@
     "getStarted": "Get started",
     "interactWithPfis": "Interact with PFIs (Participating Financial Institutions) and send money to others around the world",
     "whereAreYouLocated": "Where are you located?",
-    "home": "Home",
     "done": "Done",
     "deposit": "Deposit",
     "send": "Send",
@@ -61,6 +60,8 @@
     "invalidDid": "Invalid DID",
     "noDidQrCodeFound": "No DID QR Code found",
     "myDid": "My DID",
+    "myVc": "My VC",
+    "vcNotFound": "VC not found",
     "copiedDid": "Copied DID!",
     "simulatedQrCodeScan": "Simulated QR code scan!",
     "sendingPayment": "Sending payment...",
@@ -92,5 +93,6 @@
     "selectWallet": "Select your wallet",
     "selectWalletDescription": "We recommend you use DidPay with a compatible digital wallet. Select from the following options.",
     "error": "Error",
-    "selectPaymentType": "Select a payment type"
+    "selectPaymentType": "Select a payment type",
+    "account": "Account"
 }
