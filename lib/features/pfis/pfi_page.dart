@@ -2,12 +2,12 @@ import 'dart:convert';
 import 'package:didpay/features/onboarding/agreement_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
+import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
 
 class PfiPage extends HookConsumerWidget {
   const PfiPage({super.key});
@@ -98,17 +98,21 @@ class PfiPage extends HookConsumerWidget {
             Align(
               alignment: Alignment.topLeft,
               child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
+                onPressed: () async {
+                  final scannedJson = await Navigator.push<String>(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => _MobileScannerScreen(
-                        onPfiScanned: (scannedPfi) {
-                          ref.read(pfisProvider.notifier).addPfi(scannedPfi);
-                        },
-                      ),
-                    ),
+                    MaterialPageRoute(builder: (context) => const ScanQrPage()),
                   );
+                  if (scannedJson != null) {
+                    try {
+                      final json = jsonDecode(scannedJson);
+                      final scannedPfi = Pfi.fromJson(json);
+                      ref.read(pfisProvider.notifier).addPfi(scannedPfi);
+                    } catch (e) {
+                      // Handle JSON parsing error or invalid Pfi data
+                      print('Error parsing PFI QR Code: $e');
+                    }
+                  }
                 },
                 child: const Text('Scan QR Code'),
               ),
@@ -142,7 +146,7 @@ class PfiPage extends HookConsumerWidget {
                             color: Theme.of(context).colorScheme.primary,
                           )
                         : null,
-                    onTap: () async {
+                    onTap: () {
                       selectedPfi.value = pfi;
                     },
                   ),
@@ -168,45 +172,4 @@ class PfiPage extends HookConsumerWidget {
           ],
         ),
       );
-}
-
-class _MobileScannerScreen extends StatelessWidget {
-  final Function(Pfi) onPfiScanned;
-  final MobileScannerController scannerController = MobileScannerController();
-
-  _MobileScannerScreen({required this.onPfiScanned});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Scan QR Code'),
-      ),
-      body: MobileScanner(
-        controller: scannerController,
-        onDetect: (barcode) {
-          if (barcode.barcodes.isNotEmpty) {
-            final qrCode = barcode.barcodes.first;
-            try {
-              // Assuming qrCode.rawValue contains the JSON string
-              final json = jsonDecode(qrCode.rawValue!);
-              final scannedPfi = Pfi.fromJson(json);
-
-              // Use the callback to handle the scanned Pfi
-              onPfiScanned(scannedPfi);
-
-              // Stop scanning
-              scannerController.stop();
-
-              // Return to the previous screen
-              Navigator.pop(context);
-            } catch (e) {
-              // Handle JSON parsing error or invalid Pfi data
-              print('Error parsing PFI QR Code: $e');
-            }
-          }
-        },
-      ),
-    );
-  }
 }
