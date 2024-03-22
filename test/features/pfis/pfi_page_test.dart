@@ -14,13 +14,10 @@ void main() {
         ),
       );
 
-      // Wait for all animations and scheduled frames to complete
       await tester.pumpAndSettle();
 
-      // Verify the title 'Get started with a PFI' is present
       expect(find.text('Get started with a PFI'), findsOneWidget);
 
-      // Verify the 'Scan QR Code' button is present
       expect(
           find.widgetWithText(ElevatedButton, 'Scan QR Code'), findsOneWidget);
     });

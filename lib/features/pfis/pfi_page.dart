@@ -16,11 +16,16 @@ class PfiPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPfi = useState<Pfi?>(null);
 
-    useEffect(() {
-      Future.delayed(
-          Duration.zero, () => ref.read(pfisProvider.notifier).reload());
-      return null;
-    }, []);
+    useEffect(
+      () {
+        Future.delayed(
+          Duration.zero,
+          () => ref.read(pfisProvider.notifier).reload(),
+        );
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -28,8 +33,12 @@ class PfiPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(context, ref, Loc.of(context).getStartedWithAPfi,
-                Loc.of(context).selectAPfi),
+            _buildHeader(
+              context,
+              ref,
+              Loc.of(context).getStartedWithAPfi,
+              Loc.of(context).selectAPfi,
+            ),
             Expanded(
               child: _buildList(context, ref, selectedPfi),
             ),
@@ -58,55 +67,61 @@ class PfiPage extends HookConsumerWidget {
   }
 
   Widget _buildHeader(
-      BuildContext context, WidgetRef ref, String title, String subtitle) {
-    return Padding(
-      padding:
-          const EdgeInsets.symmetric(horizontal: Grid.side, vertical: Grid.xs),
-      child: Column(
-        children: [
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: Text(
-              subtitle,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-          const SizedBox(height: Grid.xs),
-          Align(
-            alignment: Alignment.topLeft,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => _MobileScannerScreen(
-                      onPfiScanned: (scannedPfi) {
-                        ref.read(pfisProvider.notifier).addPfi(scannedPfi);
-                      },
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    String subtitle,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+            horizontal: Grid.side, vertical: Grid.xs),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                  ),
-                );
-              },
-              child: const Text('Scan QR Code'),
+              ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => _MobileScannerScreen(
+                        onPfiScanned: (scannedPfi) {
+                          ref.read(pfisProvider.notifier).addPfi(scannedPfi);
+                        },
+                      ),
+                    ),
+                  );
+                },
+                child: const Text('Scan QR Code'),
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _buildList(
-      BuildContext context, WidgetRef ref, ValueNotifier<Pfi?> selectedPfi) {
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<Pfi?> selectedPfi,
+  ) {
     return ref.watch(pfisProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => _buildError(context, ref, error),
@@ -137,22 +152,22 @@ class PfiPage extends HookConsumerWidget {
         );
   }
 
-  Widget _buildError(BuildContext context, WidgetRef ref, Object error) {
-    return Center(
+  Widget _buildError(BuildContext context, WidgetRef ref, Object error) =>
+      Center(
         child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(error.toString()),
-        const SizedBox(height: Grid.xxs),
-        FilledButton(
-          onPressed: () {
-            ref.read(pfisProvider.notifier).reload();
-          },
-          child: const Text('Reload'),
-        )
-      ],
-    ));
-  }
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(error.toString()),
+            const SizedBox(height: Grid.xxs),
+            FilledButton(
+              onPressed: () {
+                ref.read(pfisProvider.notifier).reload();
+              },
+              child: const Text('Reload'),
+            ),
+          ],
+        ),
+      );
 }
 
 class _MobileScannerScreen extends StatelessWidget {
