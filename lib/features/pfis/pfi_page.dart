@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'package:didpay/features/onboarding/agreement_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
+import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -33,26 +35,46 @@ class PfiPage extends HookConsumerWidget {
           children: [
             _buildHeader(
               context,
+              ref,
               Loc.of(context).getStartedWithAPfi,
               Loc.of(context).selectAPfi,
             ),
             Expanded(
-              child: _buildPfiList(context, ref, selectedPfi),
+              child: _buildList(context, ref, selectedPfi),
             ),
             const SizedBox(height: Grid.xs),
-            _buildNextButton(context, ref, selectedPfi.value),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+              child: FilledButton(
+                onPressed: selectedPfi.value == null
+                    ? null
+                    : () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => AgreementPage(
+                              pfi: selectedPfi.value!,
+                            ),
+                          ),
+                        );
+                      },
+                child: Text(Loc.of(context).next),
+              ),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+  Widget _buildHeader(
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    String subtitle,
+  ) =>
       Padding(
         padding: const EdgeInsets.symmetric(
-          horizontal: Grid.side,
-          vertical: Grid.xs,
-        ),
+            horizontal: Grid.side, vertical: Grid.xs),
         child: Column(
           children: [
             Align(
@@ -72,43 +94,67 @@ class PfiPage extends HookConsumerWidget {
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final scannedJson = await Navigator.push<String>(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ScanQrPage()),
+                  );
+                  if (scannedJson != null) {
+                    try {
+                      final json = jsonDecode(scannedJson);
+                      final scannedPfi = Pfi.fromJson(json);
+                      ref.read(pfisProvider.notifier).addPfi(scannedPfi);
+                    } catch (e) {
+                      // Handle JSON parsing error or invalid Pfi data
+                      print('Error parsing PFI QR Code: $e');
+                    }
+                  }
+                },
+                child: const Text('Scan QR Code'),
+              ),
+            ),
           ],
         ),
       );
 
-  Widget _buildPfiList(
+  Widget _buildList(
     BuildContext context,
     WidgetRef ref,
     ValueNotifier<Pfi?> selectedPfi,
-  ) =>
-      ref.watch(pfisProvider).when(
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => _buildError(context, ref, error),
-            data: (pfis) => ListView(
-              children: pfis
-                  .map(
-                    (pfi) => ListTile(
-                      title: Text(
-                        pfi.name,
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
-                      ),
-                      subtitle: Text(pfi.didUri),
-                      trailing: (selectedPfi.value == pfi)
-                          ? Icon(
-                              Icons.check,
-                              color: Theme.of(context).colorScheme.primary,
-                            )
-                          : null,
-                      onTap: () async {
-                        selectedPfi.value = pfi;
-                      },
+  ) {
+    return ref.watch(pfisProvider).when(
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => _buildError(context, ref, error),
+          data: (pfis) => ListView(
+            children: pfis
+                .map(
+                  (pfi) => ListTile(
+                    title: Text(
+                      pfi.name,
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                     ),
-                  )
-                  .toList(),
-            ),
-          );
+                    subtitle: Text(pfi.didUri),
+                    trailing: (selectedPfi.value == pfi)
+                        ? Icon(
+                            Icons.check,
+                            color: Theme.of(context).colorScheme.primary,
+                          )
+                        : null,
+                    onTap: () {
+                      selectedPfi.value = pfi;
+                    },
+                  ),
+                )
+                .toList(),
+          ),
+        );
+  }
 
   Widget _buildError(BuildContext context, WidgetRef ref, Object error) =>
       Center(
@@ -124,29 +170,6 @@ class PfiPage extends HookConsumerWidget {
               child: const Text('Reload'),
             ),
           ],
-        ),
-      );
-
-  Widget _buildNextButton(
-    BuildContext context,
-    WidgetRef ref,
-    Pfi? selectedPfi,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: selectedPfi == null
-              ? null
-              : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => AgreementPage(
-                        pfi: selectedPfi,
-                      ),
-                    ),
-                  );
-                },
-          child: Text(Loc.of(context).next),
         ),
       );
 }

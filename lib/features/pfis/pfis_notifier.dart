@@ -17,6 +17,12 @@ class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
   @override
   FutureOr<List<Pfi>> build() => _loadFromCache();
 
+  void addPfi(Pfi newPfi) {
+    final currentPfis = state.value ?? [];
+    final updatedPfis = [...currentPfis, newPfi];
+    state = AsyncData(updatedPfis);
+  }
+
   Future<void> reload() async {
     if (Config.devPfis.isNotEmpty) {
       state = AsyncData(Config.devPfis);
