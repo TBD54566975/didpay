@@ -225,4 +225,13 @@ class LocEn extends Loc {
 
   @override
   String get account => 'Account';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get failed => 'Failed';
+
+  @override
+  String get completed => 'Completed';
 }

@@ -94,5 +94,8 @@
     "selectWalletDescription": "We recommend you use DidPay with a compatible digital wallet. Select from the following options.",
     "error": "Error",
     "selectPaymentType": "Select a payment type",
-    "account": "Account"
+    "account": "Account",
+    "pending": "Pending",
+    "failed": "Failed",
+    "completed": "Completed"
 }
