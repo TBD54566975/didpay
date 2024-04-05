@@ -26,7 +26,7 @@ final _defaultList = [
     payoutAmount: 1.47,
     payinCurrency: CurrencyCode.mxn.toString(),
     payoutCurrency: CurrencyCode.usdc.toString(),
-    status: TransactionStatus.quoted,
+    status: TransactionStatus.pending,
     type: TransactionType.deposit,
   ),
   Transaction(
@@ -34,7 +34,7 @@ final _defaultList = [
     payoutAmount: 17,
     payinCurrency: CurrencyCode.usdc.toString(),
     payoutCurrency: CurrencyCode.mxn.toString(),
-    status: TransactionStatus.quoted,
+    status: TransactionStatus.pending,
     type: TransactionType.withdraw,
   ),
   Transaction(
@@ -69,7 +69,7 @@ final transactionsProvider = StateProvider<List<Transaction>>((ref) {
 
 enum TransactionStatus {
   failed,
-  quoted,
+  pending,
   completed;
 
   @override
