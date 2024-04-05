@@ -1,13 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/success_page.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-// TODO(ethan-tbd): Change layout of page
 class TransactionDetailsPage extends HookWidget {
   final Transaction txn;
 
@@ -33,31 +30,18 @@ class TransactionDetailsPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  children: [
-                    _buildHeader(context),
-                    _buildAmount(
-                      context,
-                      payoutAmount,
-                      payinAmount,
-                    ),
-                    _buildStatus(context),
-                    if (txn.status != TransactionStatus.failed)
-                      _buildDetails(
-                        context,
-                        payoutAmount,
-                        payinAmount,
-                      ),
-                  ],
-                ),
-              ),
+            _buildHeader(context),
+            Flexible(child: Container()),
+            _buildAmounts(
+              context,
+              payoutAmount,
+              payinAmount,
             ),
-            txn.status == TransactionStatus.quoted
-                ? _buildResponseButtons(context)
-                : _buildDoneButton(context),
+            Flexible(
+              flex: 3,
+              child: Container(),
+            ),
+            _buildStatusButton(context),
           ],
         ),
       ),
@@ -66,12 +50,12 @@ class TransactionDetailsPage extends HookWidget {
 
   Widget _buildHeader(BuildContext context) => Column(
         children: [
-          const SizedBox(height: Grid.md),
+          const SizedBox(height: Grid.xs),
           ExcludeSemantics(
             child: Center(
               child: txn.type == TransactionType.deposit
-                  ? const Icon(Icons.south_west)
-                  : const Icon(Icons.north_east),
+                  ? const Icon(Icons.south_west, size: Grid.lg)
+                  : const Icon(Icons.north_east, size: Grid.lg),
             ),
           ),
           const SizedBox(height: Grid.xxs),
@@ -84,7 +68,7 @@ class TransactionDetailsPage extends HookWidget {
         ],
       );
 
-  Widget _buildAmount(
+  Widget _buildAmounts(
     BuildContext context,
     String payoutAmount,
     String payinAmount,
@@ -102,7 +86,7 @@ class TransactionDetailsPage extends HookWidget {
                   txn.type == TransactionType.deposit
                       ? payoutAmount
                       : payinAmount,
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                  style: Theme.of(context).textTheme.displayLarge?.copyWith(
                         fontWeight: FontWeight.bold,
                       ),
                   maxLines: 1,
@@ -113,166 +97,88 @@ class TransactionDetailsPage extends HookWidget {
                 txn.type == TransactionType.deposit
                     ? txn.payoutCurrency
                     : txn.payinCurrency,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
               ),
             ],
           ),
-          const Text('Mar 1 at 10:00 am'),
-        ],
-      );
-
-  Widget _buildStatus(BuildContext context) => Column(
-        children: [
-          const SizedBox(height: Grid.lg),
-          Icon(
-            _getStatusIcon(txn.status),
-            size: Grid.xl,
-            color: _getStatusColor(context, txn.status),
+          const SizedBox(height: Grid.xxs),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Flexible(
+                child: AutoSizeText(
+                  txn.type == TransactionType.deposit
+                      ? payinAmount
+                      : payoutAmount,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                  maxLines: 1,
+                ),
+              ),
+              const SizedBox(width: Grid.xs),
+              Text(
+                txn.type == TransactionType.deposit
+                    ? txn.payinCurrency
+                    : txn.payoutCurrency,
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
+              ),
+            ],
           ),
           const SizedBox(height: Grid.xxs),
           Text(
-            '${txn.status}',
+            'Mar 1 at 10:00 am',
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.onSurface,
                 ),
           ),
         ],
       );
 
-  Widget _buildResponseButtons(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-        child: Row(
-          children: [
-            Expanded(
-              child: FilledButton(
-                onPressed: () {},
-                child: Text(Loc.of(context).reject),
-              ),
-            ),
-            const SizedBox(width: Grid.sm),
-            Expanded(
-              child: FilledButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SuccessPage(
-                        text: Loc.of(context).yourRequestWasSent,
-                      ),
-                    ),
-                  );
-                },
-                child: Text(Loc.of(context).accept),
-              ),
-            ),
-          ],
-        ),
-      );
-
-  Widget _buildDoneButton(BuildContext context) => Padding(
+  Widget _buildStatusButton(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          child: Text(Loc.of(context).done),
+        child: OutlinedButton(
+          onPressed: () => {},
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(
+              color: Theme.of(context).colorScheme.onSurface,
+              width: Grid.quarter,
+            ),
+            splashFactory: NoSplash.splashFactory,
+          ),
+          child: _getStatusText(context, txn.status),
         ),
       );
 
-  Widget _buildDetails(
-    BuildContext context,
-    String payoutAmount,
-    String payinAmount,
-  ) {
-    final balanceLabel = Loc.of(context).accountBalance;
-    final paymentLabel = txn.status == TransactionStatus.quoted
-        ? txn.type == TransactionType.deposit
-            ? Loc.of(context).youPay
-            : Loc.of(context).youReceive
-        : txn.type == TransactionType.deposit
-            ? Loc.of(context).youPaid
-            : Loc.of(context).youReceived;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: Column(
-        children: [
-          const SizedBox(height: Grid.xxl),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    paymentLabel,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    txn.type == TransactionType.deposit
-                        ? '$payinAmount ${txn.payinCurrency}'
-                        : '$payoutAmount ${txn.payoutCurrency}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
-            child: Row(
-              children: [
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    balanceLabel,
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.left,
-                  ),
-                ),
-                Expanded(
-                  flex: 3,
-                  child: Text(
-                    txn.type == TransactionType.deposit
-                        ? '+$payoutAmount ${txn.payoutCurrency}'
-                        : '-$payinAmount ${txn.payinCurrency}',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                    textAlign: TextAlign.right,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  IconData _getStatusIcon(TransactionStatus status) {
+  Text _getStatusText(BuildContext context, TransactionStatus status) {
     switch (status) {
-      case TransactionStatus.quoted:
-        return Icons.pending;
+      case TransactionStatus.pending:
+        return Text(
+          'Pending',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+        );
       case TransactionStatus.failed:
-        return Icons.error;
+        return Text(
+          'Failed',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.error,
+              ),
+        );
       case TransactionStatus.completed:
-        return Icons.check_circle;
-    }
-  }
-
-  Color _getStatusColor(BuildContext context, TransactionStatus status) {
-    var colorScheme = Theme.of(context).colorScheme;
-    switch (status) {
-      case TransactionStatus.failed:
-        return colorScheme.error;
-      case TransactionStatus.quoted:
-        return colorScheme.onSurface;
-      case TransactionStatus.completed:
-        return colorScheme.primary;
+        return Text(
+          'Completed',
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: Theme.of(context).colorScheme.tertiary,
+              ),
+        );
     }
   }
 }
