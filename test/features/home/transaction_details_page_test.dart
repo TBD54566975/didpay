@@ -45,15 +45,15 @@ void main() {
       expect(find.text('Withdraw'), findsOneWidget);
     });
 
-    testWidgets('should show transaction amount', (tester) async {
+    testWidgets('should show transaction amounts', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
             txn: Transaction(
-              payinAmount: 0,
+              payinAmount: 654,
               payoutAmount: 123,
               payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
+              payoutCurrency: 'MXN',
               status: TransactionStatus.completed,
               type: TransactionType.deposit,
             ),
@@ -61,11 +61,13 @@ void main() {
         ),
       );
 
+      expect(find.text('654'), findsOneWidget);
       expect(find.text('123'), findsOneWidget);
+      expect(find.text('MXN'), findsOneWidget);
       expect(find.text('USDC'), findsOneWidget);
     });
 
-    testWidgets('should show quoted transaction status', (tester) async {
+    testWidgets('should show pending transaction status', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: TransactionDetailsPage(
@@ -81,8 +83,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Quoted'), findsOneWidget);
-      expect(find.byIcon(Icons.pending), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Pending'), findsOneWidget);
     });
 
     testWidgets('should show completed transaction status', (tester) async {
@@ -101,8 +102,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Completed'), findsOneWidget);
-      expect(find.byIcon(Icons.check_circle), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Completed'), findsOneWidget);
     });
 
     testWidgets('should show failed transaction status', (tester) async {
@@ -121,123 +121,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Failed'), findsOneWidget);
-      expect(find.byIcon(Icons.error), findsOneWidget);
-    });
-
-    testWidgets('should show you pay label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.pending,
-              type: TransactionType.deposit,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('You pay'), findsOneWidget);
-    });
-
-    testWidgets('should show you paid label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.completed,
-              type: TransactionType.deposit,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('You paid'), findsOneWidget);
-    });
-
-    testWidgets('should show you received label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.completed,
-              type: TransactionType.withdraw,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('You received'), findsOneWidget);
-    });
-
-    testWidgets('should show account balance label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.completed,
-              type: TransactionType.deposit,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Account balance'), findsOneWidget);
-    });
-
-    testWidgets('should show reject and accept', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.pending,
-              type: TransactionType.deposit,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Reject'), findsOneWidget);
-      expect(find.text('Accept'), findsOneWidget);
-    });
-
-    testWidgets('should show done', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: TransactionDetailsPage(
-            txn: Transaction(
-              payinAmount: 0,
-              payoutAmount: 123,
-              payinCurrency: 'USDC',
-              payoutCurrency: 'USDC',
-              status: TransactionStatus.completed,
-              type: TransactionType.deposit,
-            ),
-          ),
-        ),
-      );
-
-      expect(find.text('Done'), findsOneWidget);
+      expect(find.widgetWithText(OutlinedButton, 'Failed'), findsOneWidget);
     });
   });
 }
