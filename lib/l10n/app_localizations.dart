@@ -522,6 +522,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Account'**
   String get account;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed'**
+  String get failed;
+
+  /// No description provided for @completed.
+  ///
+  /// In en, this message translates to:
+  /// **'Completed'**
+  String get completed;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
