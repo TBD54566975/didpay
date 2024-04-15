@@ -46,17 +46,23 @@ class SendPage extends HookWidget {
     );
   }
 
-  Widget _buildSendButton(BuildContext context, String amount) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => SendDidPage(sendAmount: amount),
-              ),
-            );
-          },
-          child: Text(Loc.of(context).send),
+  Widget _buildSendButton(BuildContext context, String amount) {
+    final disabled = double.tryParse(amount) == 0;
+
+    void onPressed() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => SendDidPage(sendAmount: amount),
         ),
       );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      child: FilledButton(
+        onPressed: disabled ? null : onPressed ,
+        child: Text(Loc.of(context).send),
+      ),
+    );
+  }
 }

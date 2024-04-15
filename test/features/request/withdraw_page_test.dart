@@ -34,6 +34,37 @@ void main() {
       expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
     });
 
+    testWidgets('should show disabled next button while payin in 0',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const WithdrawPage()),
+      );
+
+      final nextButton = find.widgetWithText(FilledButton, 'Next');
+
+      expect(
+        tester.widget<FilledButton>(nextButton).onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets('should show enabled next button when payin is not 0',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const WithdrawPage()),
+      );
+
+      await tester.tap(find.text('1'));
+      await tester.pumpAndSettle();
+
+      final nextButton = find.widgetWithText(FilledButton, 'Next');
+
+      expect(
+        tester.widget<FilledButton>(nextButton).onPressed,
+        isNotNull,
+      );
+    });
+
     testWidgets('should change withdraw input amount after number pad press',
         (tester) async {
       await tester.pumpWidget(
