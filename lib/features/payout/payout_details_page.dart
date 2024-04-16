@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_method.dart';
-import 'package:didpay/features/payment/search_payment_methods_page.dart';
+import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
-import 'package:didpay/features/request/review_request_page.dart';
+import 'package:didpay/features/payout/search_payout_methods_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -11,57 +11,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class PaymentDetailsPage extends HookConsumerWidget {
+class PayoutDetailsPage extends HookConsumerWidget {
   final String payinAmount;
   final String payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
   final String exchangeRate;
+  final String offeringId;
   final TransactionType transactionType;
+  final List<PaymentMethod> payoutMethods;
 
-  const PaymentDetailsPage({
+  const PayoutDetailsPage({
     required this.payinAmount,
     required this.payoutAmount,
     required this.payinCurrency,
     required this.payoutCurrency,
     required this.exchangeRate,
+    required this.offeringId,
     required this.transactionType,
+    required this.payoutMethods,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final paymentMethods = ref.watch(paymentMethodProvider);
+    final payoutTypes =
+        payoutMethods.map((method) => method.group).whereType<String>().toSet();
 
-    final paymentTypes = paymentMethods
-        ?.map((method) => method.group)
-        .whereType<String>()
-        .toSet();
+    final selectedPayoutType = useState<String?>(null);
+    final selectedPayoutMethod = useState<PaymentMethod?>(null);
 
-    final selectedPaymentType = useState<String?>(null);
-    final selectedPaymentMethod = useState<PaymentMethod?>(null);
-
-    final filteredPaymentMethods = paymentMethods
-        ?.where(
+    final filteredPayoutMethods = payoutMethods
+        .where(
           (method) =>
-              method.group?.contains(selectedPaymentType.value ?? '') ?? true,
+              method.group?.contains(selectedPayoutType.value ?? '') ?? true,
         )
         .toList();
 
     useEffect(
       () {
-        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 0) <= 1
-            ? selectedPaymentMethod.value = filteredPaymentMethods?.firstOrNull
+        selectedPayoutMethod.value = (filteredPayoutMethods.length) <= 1
+            ? selectedPayoutMethod.value = filteredPayoutMethods.firstOrNull
             : null;
         return;
       },
-      [selectedPaymentType.value],
+      [selectedPayoutType.value],
     );
 
-    final shouldShowPaymentTypeSelector =
-        paymentTypes != null && paymentTypes.length > 1;
-    final shouldShowPaymentMethodSelector =
-        !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
+    final shouldShowPayoutTypeSelector = payoutTypes.length > 1;
+    final shouldShowPayoutMethodSelector =
+        !shouldShowPayoutTypeSelector || selectedPayoutType.value != null;
 
     return Scaffold(
       appBar: AppBar(),
@@ -73,19 +72,19 @@ class PaymentDetailsPage extends HookConsumerWidget {
               context,
               Loc.of(context).enterYourPaymentDetails,
             ),
-            if (shouldShowPaymentTypeSelector)
-              _buildPaymentTypeSelector(
+            if (shouldShowPayoutTypeSelector)
+              _buildPayoutTypeSelector(
                 context,
-                selectedPaymentType,
-                paymentTypes,
+                selectedPayoutType,
+                payoutTypes,
               ),
-            if (shouldShowPaymentMethodSelector)
-              _buildPaymentMethodSelector(
+            if (shouldShowPayoutMethodSelector)
+              _buildPayoutMethodSelector(
                 context,
-                selectedPaymentMethod,
-                filteredPaymentMethods,
+                selectedPayoutMethod,
+                filteredPayoutMethods,
               ),
-            _buildForm(context, selectedPaymentMethod),
+            _buildForm(context, selectedPayoutMethod),
           ],
         ),
       ),
@@ -120,19 +119,19 @@ class PaymentDetailsPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildPaymentTypeSelector(
+  Widget _buildPayoutTypeSelector(
     BuildContext context,
-    ValueNotifier<String?> selectedPaymentType,
-    Set<String?>? paymentTypes,
+    ValueNotifier<String?> selectedPayoutType,
+    Set<String?>? payoutTypes,
   ) =>
       Column(
         children: [
           const SizedBox(height: Grid.xxs),
           ListTile(
             title: Text(
-              selectedPaymentType.value == null
+              selectedPayoutType.value == null
                   ? Loc.of(context).selectPaymentType
-                  : selectedPaymentType.value ?? '',
+                  : selectedPayoutType.value ?? '',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -142,8 +141,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => SearchPaymentTypesPage(
-                    selectedPaymentType: selectedPaymentType,
-                    paymentTypes: paymentTypes,
+                    selectedPaymentType: selectedPayoutType,
+                    paymentTypes: payoutTypes,
                     payinCurrency: payinCurrency,
                   ),
                 ),
@@ -153,29 +152,36 @@ class PaymentDetailsPage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildPaymentMethodSelector(
+  Widget _buildPayoutMethodSelector(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
-    List<PaymentMethod>? filteredPaymentMethods,
+    ValueNotifier<PaymentMethod?> selectedPayoutMethod,
+    List<PaymentMethod>? filteredPayoutMethods,
   ) {
-    final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) <= 1;
-    final fee = double.tryParse(selectedPaymentMethod.value?.fee ?? '0.00')
+    final isSelectionDisabled = (filteredPayoutMethods?.length ?? 0) <= 1;
+    final fee = double.tryParse(selectedPayoutMethod.value?.fee ?? '0.00')
             ?.toStringAsFixed(2) ??
         '0.00';
+
+    if (isSelectionDisabled) {
+      selectedPayoutMethod.value = filteredPayoutMethods?.firstOrNull;
+    }
 
     return Column(
       children: [
         const SizedBox(height: Grid.xxs),
         ListTile(
           title: Text(
-            selectedPaymentMethod.value?.name ??
-                Loc.of(context).selectPaymentMethod,
+            selectedPayoutMethod.value == null
+                ? Loc.of(context).selectPaymentMethod
+                : selectedPayoutMethod.value?.name ??
+                    selectedPayoutMethod.value?.kind ??
+                    '',
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
           ),
           subtitle: Text(
-            selectedPaymentMethod.value?.name == null
+            selectedPayoutMethod.value?.name == null
                 ? Loc.of(context).serviceFeesMayApply
                 : Loc.of(context).serviceFeeAmount(fee, payinCurrency),
             style: Theme.of(context).textTheme.bodySmall,
@@ -187,10 +193,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
               : () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => SearchPaymentMethodsPage(
-                        selectedPaymentMethod: selectedPaymentMethod,
-                        paymentMethods: filteredPaymentMethods,
-                        payinCurrency: payinCurrency,
+                      builder: (context) => SearchPayoutMethodsPage(
+                        selectedPayoutMethod: selectedPayoutMethod,
+                        payoutMethods: filteredPayoutMethods,
+                        payoutCurrency: payinCurrency,
                       ),
                     ),
                   );
@@ -202,43 +208,35 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildForm(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+    ValueNotifier<PaymentMethod?> selectedPayoutMethod,
   ) =>
-      selectedPaymentMethod.value == null
+      selectedPayoutMethod.value == null
           ? _buildDisabledButton(context)
           : Expanded(
               child: JsonSchemaForm(
-                schema: selectedPaymentMethod.value!.requiredPaymentDetails,
+                // TODO(ethan-tbd): use selectedPayoutMethod.value?.requiredPaymentDetails?.toJson() when tbdex is in
+                schema: selectedPayoutMethod.value!.requiredPaymentDetails,
                 onSubmit: (formData) {
-                  if (_isValidOnSubmit(formData, selectedPaymentMethod)) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ReviewRequestPage(
-                          payinAmount: payinAmount,
-                          payoutAmount: payoutAmount,
-                          payinCurrency: payinCurrency,
-                          payoutCurrency: payoutCurrency,
-                          exchangeRate: exchangeRate,
-                          serviceFee:
-                              selectedPaymentMethod.value?.fee ?? '0.00',
-                          transactionType: transactionType,
-                          paymentName: selectedPaymentMethod.value?.name ?? '',
-                          formData: formData,
-                        ),
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => ReviewPaymentPage(
+                        payinAmount: payinAmount,
+                        payoutAmount: payoutAmount,
+                        payinCurrency: payinCurrency,
+                        payoutCurrency: payoutCurrency,
+                        exchangeRate: exchangeRate,
+                        serviceFee: selectedPayoutMethod.value?.fee ?? '0.00',
+                        transactionType: transactionType,
+                        paymentName: selectedPayoutMethod.value?.name ??
+                            selectedPayoutMethod.value?.kind ??
+                            '',
+                        formData: formData,
                       ),
-                    );
-                  }
+                    ),
+                  );
                 },
               ),
             );
-
-  bool _isValidOnSubmit(
-    Map<String, String> formData,
-    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
-  ) {
-    return formData['accountNumber'] != null &&
-        selectedPaymentMethod.value!.kind.split('_').lastOrNull != null;
-  }
 
   Widget _buildDisabledButton(BuildContext context) => Expanded(
         child: Column(

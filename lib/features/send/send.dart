@@ -1,8 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
-import 'package:didpay/features/currency/payin.dart';
+import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -22,7 +23,7 @@ class Send extends HookWidget {
     final shouldAnimate = useState(false);
     final decimalPaddingHint = useState('');
 
-    final formattedAmount = Currency.formatFromString(amount.value);
+    final formattedAmount = CurrencyUtil.formatFromString(amount.value);
 
     useEffect(
       () {
@@ -48,7 +49,7 @@ class Send extends HookWidget {
                     : '$current$key';
           }
 
-          final decimalDigits = Currency.getDecimalDigits(CurrencyCode.usdc);
+          final decimalDigits = CurrencyUtil.getDecimalDigits('USDC');
           final hasDecimal = amount.value.contains('.');
           final hintDigits = hasDecimal
               ? decimalDigits - amount.value.split('.')[1].length

@@ -1,22 +1,26 @@
 import 'package:didpay/features/currency/currency.dart';
-import 'package:didpay/features/currency/payin.dart';
-import 'package:didpay/features/currency/payout.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payin/payin_details_page.dart';
+import 'package:didpay/features/payment/payment_method.dart';
+import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class WithdrawPage extends HookConsumerWidget {
-  const WithdrawPage({super.key});
+class DepositPage extends HookConsumerWidget {
+  const DepositPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // TODO(ethan-tbd): replace providers with actual offering when tbdex is in
     final currencies = ref.watch(currencyProvider);
+    final payinMethods = ref.read(paymentMethodProvider);
 
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
@@ -35,13 +39,13 @@ class WithdrawPage extends HookConsumerWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: Grid.side,
-                    vertical: Grid.sm,
+                    vertical: Grid.xs,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Payin(
-                        transactionType: TransactionType.withdraw,
+                        transactionType: TransactionType.deposit,
                         amount: payinAmount,
                         keyPress: keyPress,
                         currency: selectedCurrency,
@@ -49,7 +53,7 @@ class WithdrawPage extends HookConsumerWidget {
                       const SizedBox(height: Grid.sm),
                       Payout(
                         payinAmount: double.tryParse(payinAmount.value) ?? 0.0,
-                        transactionType: TransactionType.withdraw,
+                        transactionType: TransactionType.deposit,
                         payoutAmount: payoutAmount,
                         currency: selectedCurrency,
                       ),
@@ -78,13 +82,12 @@ class WithdrawPage extends HookConsumerWidget {
             _buildNextButton(
               context,
               payinAmount.value,
-              Currency.formatFromDouble(
+              CurrencyUtil.formatFromDouble(
                 payoutAmount.value,
-                currency: CurrencyCode.values.byName(
-                  (selectedCurrency.value?.code.toString() ?? '').toLowerCase(),
-                ),
+                currency: 'USDC',
               ),
               selectedCurrency.value,
+              payinMethods,
             ),
           ],
         ),
@@ -97,22 +100,24 @@ class WithdrawPage extends HookConsumerWidget {
     String payinAmount,
     String payoutAmount,
     Currency? selectedCurrency,
+    List<PaymentMethod>? payinMethods,
   ) {
     final disabled = double.tryParse(payinAmount) == 0;
 
-    void onPressed() =>
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => PaymentDetailsPage(
-            payinAmount: payinAmount,
-            payinCurrency: CurrencyCode.usdc.toString(),
-            payoutAmount: payoutAmount,
-            payoutCurrency: selectedCurrency?.code.toString() ?? '',
-            exchangeRate: selectedCurrency?.exchangeRate.toString() ?? '',
-            transactionType: TransactionType.withdraw,
+    void onPressed() => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PayinDetailsPage(
+              payinAmount: payinAmount,
+              payoutAmount: payoutAmount,
+              payinCurrency: selectedCurrency?.code.toString() ?? '',
+              payoutCurrency: CurrencyCode.usdc.toString(),
+              exchangeRate: selectedCurrency?.exchangeRate.toString() ?? '',
+              offeringId: '',
+              transactionType: TransactionType.deposit,
+              payinMethods: payinMethods ?? [],
+            ),
           ),
-        ),
-      );
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),

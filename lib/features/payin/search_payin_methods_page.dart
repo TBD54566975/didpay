@@ -4,15 +4,16 @@ import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class SearchPaymentMethodsPage extends HookWidget {
+// TODO(ethan-tbd): replace PaymentMethod with PayinMethod when tbdex is in
+class SearchPayinMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final ValueNotifier<PaymentMethod?> selectedPaymentMethod;
-  final List<PaymentMethod>? paymentMethods;
+  final ValueNotifier<PaymentMethod?> selectedPayinMethod;
+  final List<PaymentMethod>? payinMethods;
   final String payinCurrency;
 
-  SearchPaymentMethodsPage({
-    required this.selectedPaymentMethod,
-    required this.paymentMethods,
+  SearchPayinMethodsPage({
+    required this.selectedPayinMethod,
+    required this.payinMethods,
     required this.payinCurrency,
     super.key,
   });
@@ -36,9 +37,9 @@ class SearchPaymentMethodsPage extends HookWidget {
             Expanded(
               child: _buildMethodsList(
                 context,
-                selectedPaymentMethod,
+                selectedPayinMethod,
                 searchText,
-                paymentMethods,
+                payinMethods,
               ),
             ),
           ],
@@ -49,12 +50,13 @@ class SearchPaymentMethodsPage extends HookWidget {
 
   Widget _buildMethodsList(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+    ValueNotifier<PaymentMethod?> selectedPayinMethod,
     ValueNotifier<String> searchText,
-    List<PaymentMethod>? paymentMethods,
+    List<PaymentMethod>? payinMethods,
   ) {
-    final filteredPaymentMethods = paymentMethods
+    final filteredPaymentMethods = payinMethods
         ?.where(
+          // TODO(ethan-tbd): use entry.kind if name is null when tbdex is in
           (entry) =>
               entry.name.toLowerCase().contains(searchText.value.toLowerCase()),
         )
@@ -70,18 +72,20 @@ class SearchPaymentMethodsPage extends HookWidget {
 
         return ListTile(
           visualDensity: VisualDensity.compact,
-          selected: selectedPaymentMethod.value == currentPaymentMethod,
-          title: Text(currentPaymentMethod?.name ?? ''),
+          selected: selectedPayinMethod.value == currentPaymentMethod,
+          title: Text(
+            currentPaymentMethod?.name ?? currentPaymentMethod?.kind ?? '',
+          ),
           subtitle: Text(
             Loc.of(context).serviceFeeAmount(fee, payinCurrency),
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          trailing: selectedPaymentMethod.value == currentPaymentMethod
+          trailing: selectedPayinMethod.value == currentPaymentMethod
               ? const Icon(Icons.check)
               : null,
           onTap: () {
-            selectedPaymentMethod.value =
-                currentPaymentMethod ?? selectedPaymentMethod.value;
+            selectedPayinMethod.value =
+                currentPaymentMethod ?? selectedPayinMethod.value;
             Navigator.of(context).pop();
           },
         );

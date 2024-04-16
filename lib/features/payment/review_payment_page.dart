@@ -1,14 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/request/request_confirmation_page.dart';
+import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class ReviewRequestPage extends HookWidget {
+class ReviewPaymentPage extends HookWidget {
   final String payinAmount;
   final String payoutAmount;
   final String payinCurrency;
@@ -19,7 +19,7 @@ class ReviewRequestPage extends HookWidget {
   final TransactionType transactionType;
   final Map<String, String> formData;
 
-  const ReviewRequestPage({
+  const ReviewPaymentPage({
     required this.payinAmount,
     required this.payoutAmount,
     required this.payinCurrency,
@@ -52,7 +52,7 @@ class ReviewRequestPage extends HookWidget {
                       const SizedBox(height: Grid.sm),
                       _buildAmounts(context),
                       _buildFeeDetails(context),
-                      _buildBankDetails(context),
+                      _buildPaymentDetails(context),
                     ],
                   ),
                 ),
@@ -72,7 +72,7 @@ class ReviewRequestPage extends HookWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                Loc.of(context).reviewYourRequest,
+                Loc.of(context).reviewYourPayment,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -99,10 +99,9 @@ class ReviewRequestPage extends HookWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  Currency.formatFromString(
+                  CurrencyUtil.formatFromString(
                     payinAmount,
-                    currency:
-                        CurrencyCode.values.byName(payinCurrency.toLowerCase()),
+                    currency: payinCurrency.toUpperCase(),
                   ),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
@@ -173,16 +172,23 @@ class ReviewRequestPage extends HookWidget {
         ),
       );
 
-  Widget _buildBankDetails(BuildContext context) => Padding(
+  Widget _buildPaymentDetails(BuildContext context) => Padding(
         padding: const EdgeInsets.only(bottom: Grid.xs),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(paymentName, style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: Grid.xxs),
-            Text(
-              _obscureAccountNumber(formData['accountNumber']!),
-              style: Theme.of(context).textTheme.bodyLarge,
+            ...formData.entries.map(
+              (entry) => Padding(
+                padding: const EdgeInsets.only(
+                  bottom: Grid.xxs,
+                ),
+                child: Text(
+                  entry.value,
+                  style: Theme.of(context).textTheme.bodyMedium,
+                ),
+              ),
             ),
           ],
         ),
@@ -192,17 +198,10 @@ class ReviewRequestPage extends HookWidget {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const RequestConfirmationPage(),
+              builder: (context) => const PaymentConfirmationPage(),
             ),
           );
         },
         child: Text(Loc.of(context).submit),
       );
-
-  String _obscureAccountNumber(String input) {
-    if (input.length <= 4) {
-      return input;
-    }
-    return '${'•' * (input.length - 4)} ${input.substring(input.length - 4)}';
-  }
 }

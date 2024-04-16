@@ -2,10 +2,11 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
-import 'package:didpay/features/request/deposit_page.dart';
-import 'package:didpay/features/request/withdraw_page.dart';
+import 'package:didpay/features/payin/deposit_page.dart';
+import 'package:didpay/features/payout/withdraw_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,7 +17,7 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final txns = ref.watch(transactionsProvider);
     // TODO(ethan-tbd): Replace with actual account balance
-    final accountBalance = Currency.formatFromDouble(0);
+    final accountBalance = CurrencyUtil.formatFromDouble(0);
 
     return Scaffold(
       body: SafeArea(
@@ -175,15 +176,13 @@ class HomePage extends HookConsumerWidget {
   Widget _buildTransactionsList(BuildContext context, List<Transaction> txns) =>
       ListView(
         children: txns.map((txn) {
-          final payoutAmount = Currency.formatFromDouble(
+          final payoutAmount = CurrencyUtil.formatFromDouble(
             txn.payoutAmount,
-            currency:
-                CurrencyCode.values.byName(txn.payoutCurrency.toLowerCase()),
+            currency: txn.payoutCurrency.toUpperCase(),
           );
-          final payinAmount = Currency.formatFromDouble(
+          final payinAmount = CurrencyUtil.formatFromDouble(
             txn.payinAmount,
-            currency:
-                CurrencyCode.values.byName(txn.payinCurrency.toLowerCase()),
+            currency: txn.payinCurrency.toUpperCase(),
           );
 
           return ListTile(

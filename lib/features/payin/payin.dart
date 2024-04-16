@@ -5,6 +5,7 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -29,11 +30,11 @@ class Payin extends HookWidget {
     final decimalPaddingHint = useState('');
 
     final formattedAmount = transactionType == TransactionType.deposit
-        ? Currency.formatFromString(
+        ? CurrencyUtil.formatFromString(
             amount.value,
-            currency: currency.value?.code,
+            currency: currency.value?.code.name.toUpperCase(),
           )
-        : Currency.formatFromString(amount.value);
+        : CurrencyUtil.formatFromString(amount.value);
 
     useEffect(
       () {
@@ -77,8 +78,10 @@ class Payin extends HookWidget {
           }
 
           final decimalDigits = transactionType == TransactionType.deposit
-              ? Currency.getDecimalDigits(currency.value?.code)
-              : Currency.getDecimalDigits(CurrencyCode.usdc);
+              ? CurrencyUtil.getDecimalDigits(
+                  currency.value?.code.name.toUpperCase(),
+                )
+              : CurrencyUtil.getDecimalDigits('USDC');
           final hasDecimal = amount.value.contains('.');
           final hintDigits = hasDecimal
               ? decimalDigits - amount.value.split('.')[1].length

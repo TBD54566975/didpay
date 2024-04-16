@@ -1,7 +1,7 @@
 import 'package:didpay/features/currency/currency.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO(ethan-tbd): remove this file when tbdex-dart is ready
+// TODO(ethan-tbd): remove this file when tbdex is in
 class Transaction {
   final double payinAmount;
   final double payoutAmount;

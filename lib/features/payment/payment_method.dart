@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO(ethan-tbd): remove this file when tbdex-dart is ready
+// TODO(ethan-tbd): remove this file when tbdex is in
 class PaymentMethod {
   final String kind;
   final String name;
