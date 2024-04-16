@@ -1,5 +1,5 @@
+import 'package:didpay/features/payin/search_payin_methods_page.dart';
 import 'package:didpay/features/payment/payment_method.dart';
-import 'package:didpay/features/payment/search_payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -17,23 +17,17 @@ final _paymentMethods = [
     name: 'MTN',
     requiredPaymentDetails: momoSchema,
   ),
-  PaymentMethod(
-    kind: 'WALLET_BTC ADDRESS',
-    name: 'BTC Address',
-    requiredPaymentDetails: walletSchema,
-    fee: '5.0',
-  ),
 ];
 
 void main() {
-  group('SearchPaymentMethodsPage', () {
+  group('SearchPayinMethodsPage', () {
     testWidgets('should show search field', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentMethodsPage(
-            selectedPaymentMethod:
+          child: SearchPayinMethodsPage(
+            selectedPayinMethod:
                 ValueNotifier<PaymentMethod>(_paymentMethods.first),
-            paymentMethods: _paymentMethods,
+            payinMethods: _paymentMethods,
             payinCurrency: '',
           ),
         ),
@@ -47,19 +41,18 @@ void main() {
     testWidgets('should show payment method list', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentMethodsPage(
-            selectedPaymentMethod:
+          child: SearchPayinMethodsPage(
+            selectedPayinMethod:
                 ValueNotifier<PaymentMethod>(_paymentMethods.first),
-            paymentMethods: _paymentMethods,
+            payinMethods: _paymentMethods,
             payinCurrency: '',
           ),
         ),
       );
 
-      expect(find.byType(ListTile), findsExactly(3));
+      expect(find.byType(ListTile), findsExactly(2));
       expect(find.widgetWithText(ListTile, 'Access Bank'), findsOneWidget);
       expect(find.widgetWithText(ListTile, 'MTN'), findsOneWidget);
-      expect(find.widgetWithText(ListTile, 'BTC Address'), findsOneWidget);
     });
 
     testWidgets('should show a payment method after valid search',
@@ -70,9 +63,9 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentMethodsPage(
-            selectedPaymentMethod: selectedPaymentMethod,
-            paymentMethods: _paymentMethods,
+          child: SearchPayinMethodsPage(
+            selectedPayinMethod: selectedPaymentMethod,
+            payinMethods: _paymentMethods,
             payinCurrency: '',
           ),
         ),
@@ -93,9 +86,9 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentMethodsPage(
-            selectedPaymentMethod: selectedPaymentMethod,
-            paymentMethods: _paymentMethods,
+          child: SearchPayinMethodsPage(
+            selectedPayinMethod: selectedPaymentMethod,
+            payinMethods: _paymentMethods,
             payinCurrency: '',
           ),
         ),

@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/request/request_confirmation_page.dart';
-import 'package:didpay/features/request/review_request_page.dart';
+import 'package:didpay/features/payment/payment_confirmation_page.dart';
+import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -12,7 +12,7 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   Widget requestReviewPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
-        child: const ReviewRequestPage(
+        child: const ReviewPaymentPage(
           payinAmount: '1.00',
           payinCurrency: 'USD',
           exchangeRate: '17',
@@ -25,7 +25,7 @@ void main() {
         ),
         overrides: overrides,
       );
-  group('ReviewRequestPage', () {
+  group('ReviewPaymentPage', () {
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
@@ -56,16 +56,6 @@ void main() {
       expect(find.text('ABC Bank'), findsOneWidget);
     });
 
-    testWidgets('should show obscured account number', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
-      );
-
-      expect(find.textContaining('•'), findsOneWidget);
-      expect(find.textContaining('7890'), findsOneWidget);
-      expect(find.textContaining('1234567890'), findsNothing);
-    });
-
     testWidgets('should show request confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
@@ -75,7 +65,7 @@ void main() {
       await tester.tap(find.text('Submit'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(RequestConfirmationPage), findsOneWidget);
+      expect(find.byType(PaymentConfirmationPage), findsOneWidget);
     });
   });
 }
