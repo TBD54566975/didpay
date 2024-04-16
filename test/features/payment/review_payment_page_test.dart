@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  Widget requestReviewPageTestWidget({List<Override> overrides = const []}) =>
+  Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewPaymentPage(
           payinAmount: '1.00',
@@ -28,7 +28,7 @@ void main() {
   group('ReviewPaymentPage', () {
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+        WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
 
       expect(find.widgetWithText(AutoSizeText, '1.00'), findsOneWidget);
@@ -40,7 +40,7 @@ void main() {
     testWidgets('should show fee table with service fee and total',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+        WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
 
       expect(find.byType(FeeDetails), findsOneWidget);
@@ -50,7 +50,7 @@ void main() {
 
     testWidgets('should show bank name', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+        WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
 
       expect(find.text('ABC Bank'), findsOneWidget);
@@ -59,7 +59,7 @@ void main() {
     testWidgets('should show request confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: requestReviewPageTestWidget()),
+        WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
 
       await tester.tap(find.text('Submit'));
