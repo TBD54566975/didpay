@@ -22,7 +22,7 @@ class SendDidPage extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
-    final controller = useTextEditingController();
+    final recipientDidController = useTextEditingController();
 
     useEffect(
       () {
@@ -50,14 +50,14 @@ class SendDidPage extends HookConsumerWidget {
                   children: [
                     _buildScanQr(
                       context,
-                      controller,
+                      recipientDidController,
                       errorText,
                       isPhysicalDevice,
                       did.uri,
                     ),
                     _buildForm(
                       context,
-                      controller,
+                      recipientDidController,
                       focusNode,
                       errorText,
                       Loc.of(context).invalidDid,
@@ -66,7 +66,12 @@ class SendDidPage extends HookConsumerWidget {
                 ),
               ),
             ),
-            _buildSendButton(context, did.uri, errorText.value),
+            _buildSendButton(
+              context,
+              did.uri,
+              recipientDidController.text,
+              errorText.value,
+            ),
           ],
         ),
       ),
@@ -75,7 +80,7 @@ class SendDidPage extends HookConsumerWidget {
 
   Widget _buildForm(
     BuildContext context,
-    TextEditingController controller,
+    TextEditingController recipientDidController,
     FocusNode focusNode,
     ValueNotifier<String?> errorText,
     String errorMessage,
@@ -101,13 +106,14 @@ class SendDidPage extends HookConsumerWidget {
               Expanded(
                 child: TextFormField(
                   focusNode: focusNode,
-                  controller: controller,
+                  controller: recipientDidController,
                   onTap: () => errorText.value = null,
                   onTapOutside: (_) async {
-                    if (controller.text.isNotEmpty) {
-                      errorText.value = await _isValidDid(controller.text)
-                          ? null
-                          : errorMessage;
+                    if (recipientDidController.text.isNotEmpty) {
+                      errorText.value =
+                          await _isValidDid(recipientDidController.text)
+                              ? null
+                              : errorMessage;
                     }
                     focusNode.unfocus();
                   },
@@ -130,7 +136,7 @@ class SendDidPage extends HookConsumerWidget {
 
   Widget _buildScanQr(
     BuildContext context,
-    TextEditingController controller,
+    TextEditingController recipientDidController,
     ValueNotifier<String?> errorText,
     ValueNotifier<bool> isPhysicalDevice,
     String did,
@@ -147,13 +153,13 @@ class SendDidPage extends HookConsumerWidget {
           onTap: () => isPhysicalDevice.value
               ? _scanQrCode(
                   context,
-                  controller,
+                  recipientDidController,
                   errorText,
                   Loc.of(context).noDidQrCodeFound,
                 )
               : _simulateScanQrCode(
                   context,
-                  controller,
+                  recipientDidController,
                   did,
                 ),
         ),
@@ -161,29 +167,34 @@ class SendDidPage extends HookConsumerWidget {
 
   Widget _buildSendButton(
     BuildContext context,
-    String did,
+    String senderDid,
+    String recipientDid,
     String? errorText,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: () {
-            if ((_formKey.currentState?.validate() ?? false) &&
-                errorText == null) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SendConfirmationPage(
-                    did: did,
-                    amount: sendAmount,
-                  ),
-                ),
-              );
-            }
-          },
-          child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
-        ),
-      );
+  ) {
+    final disabled = recipientDid.isEmpty || errorText != null;
+
+    void onPressed() {
+      if ((_formKey.currentState?.validate() ?? false) && errorText == null) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SendConfirmationPage(
+              did: senderDid,
+              amount: sendAmount,
+            ),
+          ),
+        );
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      child: FilledButton(
+        onPressed: disabled ? null : onPressed,
+        child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
+      ),
+    );
+  }
 
   Future<bool> _isValidDid(String did) async {
     final result = await DidResolver.resolve(did);
@@ -192,7 +203,7 @@ class SendDidPage extends HookConsumerWidget {
 
   Future<void> _scanQrCode(
     BuildContext context,
-    TextEditingController controller,
+    TextEditingController recipientDidController,
     ValueNotifier<String?> errorText,
     String errorMessage,
   ) async {
@@ -202,13 +213,13 @@ class SendDidPage extends HookConsumerWidget {
     );
 
     final isValid = qrValue != null && await _isValidDid(qrValue);
-    controller.text = isValid ? qrValue : '';
+    recipientDidController.text = isValid ? qrValue : '';
     errorText.value = isValid ? null : errorMessage;
   }
 
   void _simulateScanQrCode(
     BuildContext context,
-    TextEditingController controller,
+    TextEditingController recipientDidController,
     String did,
   ) {
     ScaffoldMessenger.of(context).showSnackBar(
@@ -216,6 +227,6 @@ class SendDidPage extends HookConsumerWidget {
         content: Text(Loc.of(context).simulatedQrCodeScan),
       ),
     );
-    controller.text = did;
+    recipientDidController.text = did;
   }
 }

@@ -1,4 +1,5 @@
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -47,6 +48,51 @@ void main() async {
       );
 
       expect(find.widgetWithText(FilledButton, 'Send 25 USDC'), findsOneWidget);
+    });
+
+    testWidgets(
+        'should show disabled send button while recipient DID is not set',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: SendDidPage(sendAmount: '25'),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
+      );
+
+      final sendButton = find.widgetWithText(FilledButton, 'Send 25 USDC');
+
+      expect(
+        tester.widget<FilledButton>(sendButton).onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets(
+        'should show enabled send button when while recipient DID is set',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: SendDidPage(sendAmount: '25'),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
+        ),
+      );
+
+      await tester.tap(
+        find.text("Don't know the recipient's DID? Scan their QR code"),
+      );
+      await tester.pumpAndSettle();
+
+      final sendButton = find.widgetWithText(FilledButton, 'Send 25 USDC');
+
+      expect(
+        tester.widget<FilledButton>(sendButton).onPressed,
+        isNotNull,
+      );
     });
   });
 }

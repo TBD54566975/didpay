@@ -29,6 +29,37 @@ void main() async {
       expect(find.widgetWithText(FilledButton, 'Send'), findsOneWidget);
     });
 
+    testWidgets('should show disabled next button while payin in 0',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const SendPage()),
+      );
+
+      final nextButton = find.widgetWithText(FilledButton, 'Send');
+
+      expect(
+        tester.widget<FilledButton>(nextButton).onPressed,
+        isNull,
+      );
+    });
+
+    testWidgets('should show enabled next button when payin is not 0',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: const SendPage()),
+      );
+
+      await tester.tap(find.text('1'));
+      await tester.pumpAndSettle();
+
+      final nextButton = find.widgetWithText(FilledButton, 'Send');
+
+      expect(
+        tester.widget<FilledButton>(nextButton).onPressed,
+        isNotNull,
+      );
+    });
+
     testWidgets('should change send amount after number pad press',
         (tester) async {
       await tester.pumpWidget(
@@ -73,7 +104,7 @@ void main() async {
       );
 
       await tester.tap(find.text('8'));
-      await tester.pump();
+      await tester.pumpAndSettle();
 
       await tester.tap(find.text('Send'));
       await tester.pumpAndSettle();
