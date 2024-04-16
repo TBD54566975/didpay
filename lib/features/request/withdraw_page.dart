@@ -100,7 +100,7 @@ class WithdrawPage extends HookConsumerWidget {
   ) {
     final disabled = double.tryParse(payinAmount) == 0;
 
-    void onPressed() {
+    void onPressed() =>
       Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => PaymentDetailsPage(
@@ -113,7 +113,6 @@ class WithdrawPage extends HookConsumerWidget {
           ),
         ),
       );
-    }
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
