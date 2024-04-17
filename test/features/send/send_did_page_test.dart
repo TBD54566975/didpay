@@ -1,5 +1,4 @@
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';

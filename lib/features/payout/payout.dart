@@ -4,6 +4,7 @@ import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -24,11 +25,11 @@ class Payout extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final formattedAmount = transactionType == TransactionType.withdraw
-        ? Currency.formatFromDouble(
+        ? CurrencyUtil.formatFromDouble(
             payoutAmount.value,
-            currency: currency.value?.code,
+            currency: currency.value?.code.name.toUpperCase(),
           )
-        : Currency.formatFromDouble(payoutAmount.value);
+        : CurrencyUtil.formatFromDouble(payoutAmount.value);
 
     useEffect(
       () {

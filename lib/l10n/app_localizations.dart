@@ -271,12 +271,6 @@ abstract class Loc {
   /// **'Reject'**
   String get reject;
 
-  /// No description provided for @yourRequestWasSent.
-  ///
-  /// In en, this message translates to:
-  /// **'Your request was sent!'**
-  String get yourRequestWasSent;
-
   /// No description provided for @yourPaymentWasSent.
   ///
   /// In en, this message translates to:
@@ -391,11 +385,11 @@ abstract class Loc {
   /// **'Verifying your identity...'**
   String get verifyingYourIdentity;
 
-  /// No description provided for @reviewYourRequest.
+  /// No description provided for @reviewYourPayment.
   ///
   /// In en, this message translates to:
-  /// **'Review your request'**
-  String get reviewYourRequest;
+  /// **'Review your payment'**
+  String get reviewYourPayment;
 
   /// No description provided for @depositAmount.
   ///
@@ -420,12 +414,6 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Submit'**
   String get submit;
-
-  /// No description provided for @sendingRequest.
-  ///
-  /// In en, this message translates to:
-  /// **'Sending request...'**
-  String get sendingRequest;
 
   /// No description provided for @selectYourCountry.
   ///

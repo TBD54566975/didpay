@@ -74,7 +74,9 @@ class PfiPage extends HookConsumerWidget {
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(
-            horizontal: Grid.side, vertical: Grid.xs),
+          horizontal: Grid.side,
+          vertical: Grid.xs,
+        ),
         child: Column(
           children: [
             Align(
@@ -108,9 +110,8 @@ class PfiPage extends HookConsumerWidget {
                       final json = jsonDecode(scannedJson);
                       final scannedPfi = Pfi.fromJson(json);
                       ref.read(pfisProvider.notifier).addPfi(scannedPfi);
-                    } catch (e) {
-                      // Handle JSON parsing error or invalid Pfi data
-                      print('Error parsing PFI QR Code: $e');
+                    } on FormatException catch (e) {
+                      throw Exception('Error parsing PFI QR Code: $e');
                     }
                   }
                 },

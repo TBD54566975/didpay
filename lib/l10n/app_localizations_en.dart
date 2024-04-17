@@ -97,9 +97,6 @@ class LocEn extends Loc {
   String get reject => 'Reject';
 
   @override
-  String get yourRequestWasSent => 'Your request was sent!';
-
-  @override
   String get yourPaymentWasSent => 'Your payment was sent!';
 
   @override
@@ -159,7 +156,7 @@ class LocEn extends Loc {
   String get verifyingYourIdentity => 'Verifying your identity...';
 
   @override
-  String get reviewYourRequest => 'Review your request';
+  String get reviewYourPayment => 'Review your payment';
 
   @override
   String get depositAmount => 'Deposit amount';
@@ -172,9 +169,6 @@ class LocEn extends Loc {
 
   @override
   String get submit => 'Submit';
-
-  @override
-  String get sendingRequest => 'Sending request...';
 
   @override
   String get selectYourCountry => 'Select your country to see what PFIs are available to you';

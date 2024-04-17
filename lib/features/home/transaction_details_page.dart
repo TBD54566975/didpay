@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -16,13 +16,13 @@ class TransactionDetailsPage extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final payoutAmount = Currency.formatFromDouble(
+    final payoutAmount = CurrencyUtil.formatFromDouble(
       txn.payoutAmount,
-      currency: CurrencyCode.values.byName(txn.payoutCurrency.toLowerCase()),
+      currency: txn.payoutCurrency.toUpperCase(),
     );
-    final payinAmount = Currency.formatFromDouble(
+    final payinAmount = CurrencyUtil.formatFromDouble(
       txn.payinAmount,
-      currency: CurrencyCode.values.byName(txn.payinCurrency.toLowerCase()),
+      currency: txn.payinCurrency.toUpperCase(),
     );
 
     return Scaffold(

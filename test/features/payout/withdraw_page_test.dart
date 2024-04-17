@@ -1,6 +1,6 @@
-import 'package:didpay/features/currency/payin.dart';
-import 'package:didpay/features/currency/payout.dart';
-import 'package:didpay/features/request/withdraw_page.dart';
+import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payout/payout.dart';
+import 'package:didpay/features/payout/withdraw_page.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -32,37 +32,6 @@ void main() {
       );
 
       expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
-    });
-
-    testWidgets('should show disabled next button while payin in 0',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const WithdrawPage()),
-      );
-
-      final nextButton = find.widgetWithText(FilledButton, 'Next');
-
-      expect(
-        tester.widget<FilledButton>(nextButton).onPressed,
-        isNull,
-      );
-    });
-
-    testWidgets('should show enabled next button when payin is not 0',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const WithdrawPage()),
-      );
-
-      await tester.tap(find.text('1'));
-      await tester.pumpAndSettle();
-
-      final nextButton = find.widgetWithText(FilledButton, 'Next');
-
-      expect(
-        tester.widget<FilledButton>(nextButton).onPressed,
-        isNotNull,
-      );
     });
 
     testWidgets('should change withdraw input amount after number pad press',

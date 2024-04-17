@@ -1,4 +1,4 @@
-import 'package:didpay/features/currency/payin.dart';
+import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/send/send.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -49,12 +49,11 @@ class SendPage extends HookWidget {
   Widget _buildSendButton(BuildContext context, String amount) {
     final disabled = double.tryParse(amount) == 0;
 
-    void onPressed() =>
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => SendDidPage(sendAmount: amount),
-        ),
-      );
+    void onPressed() => Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => SendDidPage(sendAmount: amount),
+          ),
+        );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
