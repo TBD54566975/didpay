@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
+import 'package:didpay/features/idv/idv_service.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfi_verification_page.dart';
 import 'package:didpay/features/wallets/wallet.dart';
+import 'package:didpay/features/wallets/wallet_linking_service.dart';
 import 'package:didpay/features/wallets/wallets_provider.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/services/linking_service.dart';
-import 'package:didpay/services/service_providers.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -174,7 +174,7 @@ class WalletSelectionPage extends HookConsumerWidget {
                   await ref.read(idvServiceProvider).getAuthRequest(
                         'http://${widgetService?.serviceEndpoint}',
                       );
-              await LinkingService().launchWallet(
+              await WalletLinkingService().launchWallet(
                 oidcParams.claims.misc,
                 selectedWallet?.url,
               );
