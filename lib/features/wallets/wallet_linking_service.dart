@@ -1,6 +1,9 @@
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class LinkingService {
+final linkingServiceProvider = Provider((ref) => WalletLinkingService());
+
+class WalletLinkingService {
   Future<void> launchWallet(
     Map<String, dynamic>? oidcParams,
     String? walletUrl,

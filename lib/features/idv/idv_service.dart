@@ -1,8 +1,16 @@
 import 'dart:convert';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
 
+final idvServiceProvider = Provider((ref) => IdvService());
+
 class IdvService {
+  final http.Client _httpClient;
+
+  IdvService({http.Client? httpClient})
+      : _httpClient = httpClient ?? http.Client();
+
   static const _expirationDuration = Duration(minutes: 5);
 
   Future<String> getIdvRequest(String idvAuthRequestUrl, BearerDid did) async {
@@ -25,7 +33,7 @@ class IdvService {
   }
 
   Future<DecodedJwt> getAuthRequest(String idvAuthRequestUrl) async {
-    final response = await http.get(Uri.parse(idvAuthRequestUrl));
+    final response = await _httpClient.get(Uri.parse(idvAuthRequestUrl));
 
     if (response.statusCode != 200) {
       throw Exception(
@@ -91,7 +99,7 @@ class IdvService {
     String idToken,
   ) async {
     try {
-      final authResponse = await http.post(
+      final authResponse = await _httpClient.post(
         Uri.parse(uri),
         body: json.encode(
           {

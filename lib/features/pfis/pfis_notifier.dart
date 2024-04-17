@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:didpay/config/config.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/services/service_providers.dart';
+import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 

@@ -1,8 +1,8 @@
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/device/device_info_service.dart';
 import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/services/service_providers.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';

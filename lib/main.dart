@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/app/app.dart';
-import 'package:didpay/services/service_providers.dart';
+import 'package:didpay/features/storage/storage_service.dart';
 import 'package:didpay/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
