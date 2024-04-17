@@ -19,7 +19,6 @@ void main() {
 
   group('IdvService', () {
     test('should get IDV request', () async {
-      // arrange
       final uri = Uri.parse('http://idv.com');
       final uri2 = Uri.parse('response_uri');
       final bearerDid = await DidJwk.create();
@@ -41,12 +40,8 @@ void main() {
       when(() => mockHttpClient.post(uri2, body: any(named: 'body')))
           .thenAnswer((_) async => http.Response('{"url": "123"}', 200));
 
-      // act
       final result = await subject.getIdvRequest('http://idv.com', bearerDid);
-
-      // assert
       expect(result, '123');
-
       verify(() => mockHttpClient.get(Uri.parse('http://idv.com')));
     });
   });
