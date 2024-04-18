@@ -1,21 +1,61 @@
-import 'package:didpay/features/payment/payment_method.dart';
+import 'dart:convert';
+
 import 'package:didpay/features/payout/search_payout_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:json_schema/json_schema.dart';
+import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/widget_helpers.dart';
 
+final schema = JsonSchema.create(
+  jsonDecode(r'''
+        {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "cardNumber": {
+              "type": "string",
+              "title": "Card number",
+              "description": "The 16-digit debit card number",
+              "minLength": 16,
+              "maxLength": 16
+            },
+            "expiryDate": {
+              "type": "string",
+              "description": "The expiry date of the card in MM/YY format",
+              "pattern": "^(0[1-9]|1[0-2])\\/([0-9]{2})$"
+            },
+            "cardHolderName": {
+              "type": "string",
+              "description": "Name of the cardholder as it appears on the card"
+            },
+            "cvv": {
+              "type": "string",
+              "description": "The 3-digit CVV code",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "required": ["cardNumber", "expiryDate", "cardHolderName", "cvv"],
+          "additionalProperties": false
+        }
+    '''),
+);
+
 final _paymentMethods = [
-  PaymentMethod(
+  PayoutMethod(
+    estimatedSettlementTime: 1,
     kind: 'BANK_ACCESS BANK',
     name: 'Access Bank',
-    requiredPaymentDetails: bankSchema,
+    requiredPaymentDetails: schema,
     fee: '9.0',
   ),
-  PaymentMethod(
+  PayoutMethod(
+    estimatedSettlementTime: 1,
     kind: 'MOMO_MTN',
     name: 'MTN',
-    requiredPaymentDetails: momoSchema,
+    requiredPaymentDetails: schema,
   ),
 ];
 
@@ -25,10 +65,10 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: SearchPayoutMethodsPage(
-            selectedPayoutMethod:
-                ValueNotifier<PaymentMethod>(_paymentMethods.first),
-            payoutMethods: _paymentMethods,
             payoutCurrency: '',
+            selectedPayoutMethod:
+                ValueNotifier<PayoutMethod>(_paymentMethods.first),
+            payoutMethods: _paymentMethods,
           ),
         ),
       );
@@ -42,10 +82,10 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: SearchPayoutMethodsPage(
-            selectedPayoutMethod:
-                ValueNotifier<PaymentMethod>(_paymentMethods.first),
-            payoutMethods: _paymentMethods,
             payoutCurrency: '',
+            selectedPayoutMethod:
+                ValueNotifier<PayoutMethod>(_paymentMethods.first),
+            payoutMethods: _paymentMethods,
           ),
         ),
       );
@@ -57,16 +97,16 @@ void main() {
 
     testWidgets('should show a payment method after valid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier<PaymentMethod>(
+      final selectedPaymentMethod = ValueNotifier<PayoutMethod>(
         _paymentMethods.first,
       );
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: SearchPayoutMethodsPage(
+            payoutCurrency: '',
             selectedPayoutMethod: selectedPaymentMethod,
             payoutMethods: _paymentMethods,
-            payoutCurrency: '',
           ),
         ),
       );
@@ -80,16 +120,16 @@ void main() {
 
     testWidgets('should show no payment methods after invalid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier<PaymentMethod>(
+      final selectedPaymentMethod = ValueNotifier<PayoutMethod>(
         _paymentMethods.first,
       );
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: SearchPayoutMethodsPage(
+            payoutCurrency: '',
             selectedPayoutMethod: selectedPaymentMethod,
             payoutMethods: _paymentMethods,
-            payoutCurrency: '',
           ),
         ),
       );

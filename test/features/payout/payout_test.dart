@@ -1,16 +1,41 @@
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('Payout', () {
     final amount = ValueNotifier<double>(2);
-    final currency = ValueNotifier<Currency?>(
-      Currency(exchangeRate: 17, code: CurrencyCode.mxn, icon: Icons.abc),
+    final offering = ValueNotifier<Offering?>(
+      Offering.create(
+        'pfiDid',
+        OfferingData(
+          description: '',
+          payoutUnitsPerPayinUnit: '1',
+          payin: PayinDetails(
+            currencyCode: 'AUD',
+            min: '0.01',
+            max: '100.00',
+            methods: [
+              PayinMethod(
+                kind: 'DEBIT_CARD',
+              ),
+            ],
+          ),
+          payout: PayoutDetails(
+            currencyCode: 'USDC',
+            methods: [
+              PayoutMethod(
+                estimatedSettlementTime: 0,
+                kind: 'DEBIT_CARD',
+              ),
+            ],
+          ),
+        ),
+      ),
     );
 
     testWidgets('should show payout amount', (tester) async {
@@ -18,9 +43,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
-            currency: currency,
+            selectedOffering: offering,
             transactionType: TransactionType.deposit,
             payinAmount: 34,
+            offerings: const [],
           ),
         ),
       );
@@ -33,14 +59,15 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
-            currency: currency,
+            selectedOffering: offering,
             transactionType: TransactionType.deposit,
             payinAmount: 0,
+            offerings: const [],
           ),
         ),
       );
 
-      expect(find.textContaining('USD'), findsOneWidget);
+      expect(find.textContaining('USDC'), findsOneWidget);
     });
 
     testWidgets('should show the `You get` label', (tester) async {
@@ -48,9 +75,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
-            currency: currency,
+            selectedOffering: offering,
             transactionType: TransactionType.deposit,
             payinAmount: 0,
+            offerings: const [],
           ),
         ),
       );
@@ -64,9 +92,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
-            currency: currency,
+            selectedOffering: offering,
             transactionType: TransactionType.withdraw,
             payinAmount: 0,
+            offerings: const [],
           ),
         ),
       );
@@ -80,9 +109,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
-            currency: currency,
+            selectedOffering: offering,
             transactionType: TransactionType.deposit,
             payinAmount: 0,
+            offerings: const [],
           ),
         ),
       );

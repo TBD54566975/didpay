@@ -1,17 +1,42 @@
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('Payin', () {
     final amount = ValueNotifier<String>('70');
-    final currency = ValueNotifier<Currency?>(
-      Currency(exchangeRate: 17, code: CurrencyCode.mxn, icon: Icons.abc),
+    final offering = ValueNotifier<Offering?>(
+      Offering.create(
+        'pfiDid',
+        OfferingData(
+          description: '',
+          payoutUnitsPerPayinUnit: '1',
+          payin: PayinDetails(
+            currencyCode: 'AUD',
+            min: '0.01',
+            max: '100.00',
+            methods: [
+              PayinMethod(
+                kind: 'DEBIT_CARD',
+              ),
+            ],
+          ),
+          payout: PayoutDetails(
+            currencyCode: 'USDC',
+            methods: [
+              PayoutMethod(
+                estimatedSettlementTime: 0,
+                kind: 'DEBIT_CARD',
+              ),
+            ],
+          ),
+        ),
+      ),
     );
     final keyPress = ValueNotifier<PayinKeyPress>(PayinKeyPress(0, ''));
 
@@ -20,9 +45,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
@@ -35,14 +61,15 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
 
-      expect(find.textContaining('MXN'), findsOneWidget);
+      expect(find.textContaining('AUD'), findsOneWidget);
     });
 
     testWidgets('should show deposit label', (tester) async {
@@ -50,9 +77,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
@@ -65,9 +93,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.withdraw,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
@@ -80,9 +109,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
@@ -96,9 +126,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
@@ -112,9 +143,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.withdraw,
+            offerings: const [],
             amount: amount,
             keyPress: keyPress,
-            currency: currency,
+            selectedOffering: offering,
           ),
         ),
       );
