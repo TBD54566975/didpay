@@ -9,11 +9,13 @@ cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cl
 # Install Hermit using Homebrew
 HOMEBREW_NO_AUTO_UPDATE=1 # disable homebrew's automatic updates.
 HOMEBREW_NO_INSTALL_CLEANUP=1 # disable homebrew's cleanup after installation.
-brew install hermit
+
+
+export PATH=$PATH:"$PWD/bin"
 
 # Activate Hermit environment
 source ./bin/activate-hermit
-export PATH=$PATH:"$PWD/bin"
+
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
 flutter precache --ios
