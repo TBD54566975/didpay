@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -9,18 +8,21 @@ import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tbdex/tbdex.dart';
 
 class Payin extends HookWidget {
   final TransactionType transactionType;
   final ValueNotifier<String> amount;
   final ValueNotifier<PayinKeyPress> keyPress;
-  final ValueNotifier<Currency?> currency;
+  final ValueNotifier<Offering?> selectedOffering;
+  final List<Offering> offerings;
 
   const Payin({
     required this.transactionType,
     required this.amount,
     required this.keyPress,
-    required this.currency,
+    required this.selectedOffering,
+    required this.offerings,
     super.key,
   });
 
@@ -29,12 +31,10 @@ class Payin extends HookWidget {
     final shouldAnimate = useState(false);
     final decimalPaddingHint = useState('');
 
-    final formattedAmount = transactionType == TransactionType.deposit
-        ? CurrencyUtil.formatFromString(
-            amount.value,
-            currency: currency.value?.code.name.toUpperCase(),
-          )
-        : CurrencyUtil.formatFromString(amount.value);
+    final formattedAmount = CurrencyUtil.formatFromString(
+      amount.value,
+      currency: selectedOffering.value?.data.payin.currencyCode,
+    );
 
     useEffect(
       () {
@@ -44,7 +44,7 @@ class Payin extends HookWidget {
         });
         return;
       },
-      [currency.value],
+      [selectedOffering.value],
     );
 
     useEffect(
@@ -60,7 +60,7 @@ class Payin extends HookWidget {
                   ? !NumberValidationUtil.isValidInput(
                       current,
                       key,
-                      currency: currency.value?.code.toString(),
+                      currency: selectedOffering.value?.data.payin.currencyCode,
                     )
                   : !NumberValidationUtil.isValidInput(current, key));
           if (shouldAnimate.value) return;
@@ -77,11 +77,10 @@ class Payin extends HookWidget {
                     : '$current$key';
           }
 
-          final decimalDigits = transactionType == TransactionType.deposit
-              ? CurrencyUtil.getDecimalDigits(
-                  currency.value?.code.name.toUpperCase(),
-                )
-              : CurrencyUtil.getDecimalDigits('USDC');
+          final decimalDigits = CurrencyUtil.getDecimalDigits(
+            selectedOffering.value?.data.payin.currencyCode,
+          );
+
           final hasDecimal = amount.value.contains('.');
           final hintDigits = hasDecimal
               ? decimalDigits - amount.value.split('.')[1].length
@@ -127,31 +126,43 @@ class Payin extends HookWidget {
                     ),
                   ),
                   const SizedBox(width: Grid.half),
-                  transactionType == TransactionType.deposit
-                      ? CurrencyDropdown(selectedCurrency: currency)
-                      : Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: Grid.xxs),
-                          child: Text(
-                            '${CurrencyCode.usdc}',
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ),
+                  _buildPayinCurrency(context),
                 ],
               ),
             ],
           ),
         ),
         const SizedBox(height: Grid.xs),
-        Text(
-          transactionType == TransactionType.deposit
-              ? Loc.of(context).youDeposit
-              : Loc.of(context).youWithdraw,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        _buildPayinLabel(context),
       ],
     );
   }
+
+  Widget _buildPayinCurrency(BuildContext context) {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return CurrencyDropdown(
+          transactionType: transactionType,
+          selectedOffering: selectedOffering,
+          offerings: offerings,
+        );
+      case TransactionType.withdraw:
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+          child: Text(
+            selectedOffering.value?.data.payin.currencyCode ?? '',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        );
+    }
+  }
+
+  Widget _buildPayinLabel(BuildContext context) => Text(
+        transactionType == TransactionType.deposit
+            ? Loc.of(context).youDeposit
+            : Loc.of(context).youWithdraw,
+        style: Theme.of(context).textTheme.bodyLarge,
+      );
 }
 
 class PayinKeyPress {

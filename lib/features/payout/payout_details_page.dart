@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/payout/search_payout_methods_page.dart';
@@ -10,6 +9,7 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tbdex/tbdex.dart';
 
 class PayoutDetailsPage extends HookConsumerWidget {
   final String payinAmount;
@@ -19,7 +19,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
   final String exchangeRate;
   final String offeringId;
   final TransactionType transactionType;
-  final List<PaymentMethod> payoutMethods;
+  final List<PayoutMethod> payoutMethods;
 
   const PayoutDetailsPage({
     required this.payinAmount,
@@ -39,7 +39,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
         payoutMethods.map((method) => method.group).whereType<String>().toSet();
 
     final selectedPayoutType = useState<String?>(null);
-    final selectedPayoutMethod = useState<PaymentMethod?>(null);
+    final selectedPayoutMethod = useState<PayoutMethod?>(null);
 
     final filteredPayoutMethods = payoutMethods
         .where(
@@ -154,8 +154,8 @@ class PayoutDetailsPage extends HookConsumerWidget {
 
   Widget _buildPayoutMethodSelector(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPayoutMethod,
-    List<PaymentMethod>? filteredPayoutMethods,
+    ValueNotifier<PayoutMethod?> selectedPayoutMethod,
+    List<PayoutMethod>? filteredPayoutMethods,
   ) {
     final isSelectionDisabled = (filteredPayoutMethods?.length ?? 0) <= 1;
     final fee = double.tryParse(selectedPayoutMethod.value?.fee ?? '0.00')
@@ -194,9 +194,9 @@ class PayoutDetailsPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SearchPayoutMethodsPage(
+                        payoutCurrency: payinCurrency,
                         selectedPayoutMethod: selectedPayoutMethod,
                         payoutMethods: filteredPayoutMethods,
-                        payoutCurrency: payinCurrency,
                       ),
                     ),
                   );
@@ -208,14 +208,14 @@ class PayoutDetailsPage extends HookConsumerWidget {
 
   Widget _buildForm(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPayoutMethod,
+    ValueNotifier<PayoutMethod?> selectedPayoutMethod,
   ) =>
       selectedPayoutMethod.value == null
           ? _buildDisabledButton(context)
           : Expanded(
               child: JsonSchemaForm(
-                // TODO(ethan-tbd): use selectedPayoutMethod.value?.requiredPaymentDetails?.toJson() when tbdex is in
-                schema: selectedPayoutMethod.value!.requiredPaymentDetails,
+                schema: selectedPayoutMethod.value?.requiredPaymentDetails
+                    ?.toJson(),
                 onSubmit: (formData) {
                   Navigator.of(context).push(
                     MaterialPageRoute(

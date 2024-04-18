@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -7,18 +6,21 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tbdex/tbdex.dart';
 
 class Payout extends HookWidget {
   final double payinAmount;
   final TransactionType transactionType;
   final ValueNotifier<double> payoutAmount;
-  final ValueNotifier<Currency?> currency;
+  final ValueNotifier<Offering?> selectedOffering;
+  final List<Offering> offerings;
 
   const Payout({
     required this.payinAmount,
     required this.transactionType,
     required this.payoutAmount,
-    required this.currency,
+    required this.selectedOffering,
+    required this.offerings,
     super.key,
   });
 
@@ -27,16 +29,19 @@ class Payout extends HookWidget {
     final formattedAmount = transactionType == TransactionType.withdraw
         ? CurrencyUtil.formatFromDouble(
             payoutAmount.value,
-            currency: currency.value?.code.name.toUpperCase(),
+            currency: selectedOffering.value?.data.payout.currencyCode,
           )
         : CurrencyUtil.formatFromDouble(payoutAmount.value);
 
     useEffect(
       () {
-        final exchangeRate = currency.value?.exchangeRate ?? 1.0;
+        final exchangeRate = double.tryParse(
+              selectedOffering.value?.data.payoutUnitsPerPayinUnit ?? '',
+            ) ??
+            1;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (currency.value == null) return;
+          if (selectedOffering.value == null) return;
 
           payoutAmount.value = transactionType == TransactionType.deposit
               ? payinAmount / exchangeRate
@@ -64,11 +69,15 @@ class Payout extends HookWidget {
             ),
             const SizedBox(width: Grid.half),
             transactionType == TransactionType.withdraw
-                ? CurrencyDropdown(selectedCurrency: currency)
+                ? CurrencyDropdown(
+                    transactionType: transactionType,
+                    selectedOffering: selectedOffering,
+                    offerings: offerings,
+                  )
                 : Padding(
                     padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                     child: Text(
-                      '${CurrencyCode.usdc}',
+                      selectedOffering.value?.data.payout.currencyCode ?? '',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ),
