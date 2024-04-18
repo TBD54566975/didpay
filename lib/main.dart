@@ -40,7 +40,7 @@ Future<BearerDid> getOrCreateDid(FlutterSecureStorage storage) async {
       await storage.read(key: Constants.portableDidKey);
   if (existingPortableDidJson != null) {
     final portableDidJson = json.decode(existingPortableDidJson);
-    final portableDid = PortableDid.fromJson(portableDidJson);
+    final portableDid = PortableDid.fromMap(portableDidJson);
     return BearerDid.import(portableDid);
   }
 
