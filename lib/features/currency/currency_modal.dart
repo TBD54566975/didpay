@@ -35,20 +35,15 @@ class CurrencyModal {
                           selectedOffering.value = offering;
                           Navigator.pop(context);
                         },
-                        // leading: Icon(c.icon),
                         title: _buildCurrencyTitle(
                           context,
                           offering,
                           transactionType,
                         ),
-                        subtitle: Text(
-                          offering.data.payoutUnitsPerPayinUnit,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface,
-                              ),
+                        subtitle: _buildCurrencySubtitle(
+                          context,
+                          offering,
+                          transactionType,
                         ),
                         trailing: (selectedOffering.value == offering)
                             ? const Icon(Icons.check)
@@ -73,5 +68,17 @@ class CurrencyModal {
             ? offering.data.payin.currencyCode
             : offering.data.payout.currencyCode,
         style: Theme.of(context).textTheme.titleMedium,
+      );
+
+  static Widget _buildCurrencySubtitle(
+    BuildContext context,
+    Offering offering,
+    TransactionType transactionType,
+  ) =>
+      Text(
+        '1 ${offering.data.payin.currencyCode} = ${offering.data.payoutUnitsPerPayinUnit} ${offering.data.payout.currencyCode}',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
       );
 }
