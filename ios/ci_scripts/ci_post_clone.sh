@@ -9,17 +9,18 @@ cd $CI_PRIMARY_REPOSITORY_PATH # change working directory to the root of your cl
 # Install CocoaPods using Homebrew.
 HOMEBREW_NO_AUTO_UPDATE=1 # disable homebrew's automatic updates.
 brew install cocoapods
+
+# Install Hermit
 brew install hermit
 
-# activate hermit
-export PATH="$PATH:./bin"
-. ./bin/activate-hermit
+# Activate Hermit environment
+./bin/hermit env --raw >> "$GITHUB_ENV"
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
 flutter precache --ios
 
 # Install Flutter dependencies.
-just get 
+just get
 
 # Install CocoaPods dependencies.
 cd ios && pod install # run `pod install` in the `ios` directory.
