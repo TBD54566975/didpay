@@ -12,6 +12,7 @@ brew install cocoapods
 brew install hermit
 
 # activate hermit
+export PATH="$PATH:./bin"
 . ./bin/activate-hermit
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
