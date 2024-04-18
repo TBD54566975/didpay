@@ -46,8 +46,11 @@ Future<BearerDid> getOrCreateDid(FlutterSecureStorage storage) async {
 
   final did = await DidJwk.create();
   final portableDid = await did.export();
-  final portableDidJson = json.encode(portableDid);
+  final portableDidJson = jsonEncode(portableDid.map);
 
-  await storage.write(key: Constants.portableDidKey, value: portableDidJson);
+  await storage.write(
+    key: Constants.portableDidKey,
+    value: portableDidJson,
+  );
   return did;
 }
