@@ -1,4 +1,3 @@
-import 'package:didpay/features/currency/currency.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 // TODO(ethan-tbd): remove this file when tbdex is in
@@ -24,40 +23,40 @@ final _defaultList = [
   Transaction(
     payinAmount: 25,
     payoutAmount: 1.47,
-    payinCurrency: CurrencyCode.mxn.toString(),
-    payoutCurrency: CurrencyCode.usdc.toString(),
+    payinCurrency: 'MXN',
+    payoutCurrency: 'USDC',
     status: TransactionStatus.pending,
     type: TransactionType.deposit,
   ),
   Transaction(
     payinAmount: 1,
     payoutAmount: 17,
-    payinCurrency: CurrencyCode.usdc.toString(),
-    payoutCurrency: CurrencyCode.mxn.toString(),
+    payinCurrency: 'USDC',
+    payoutCurrency: 'MXN',
     status: TransactionStatus.pending,
     type: TransactionType.withdraw,
   ),
   Transaction(
     payinAmount: 0.00085,
     payoutAmount: 35.42,
-    payinCurrency: CurrencyCode.btc.toString(),
-    payoutCurrency: CurrencyCode.usdc.toString(),
+    payinCurrency: 'BTC',
+    payoutCurrency: 'USDC',
     status: TransactionStatus.completed,
     type: TransactionType.deposit,
   ),
   Transaction(
     payinAmount: 33,
     payoutAmount: 0.000792,
-    payinCurrency: CurrencyCode.usdc.toString(),
-    payoutCurrency: CurrencyCode.btc.toString(),
+    payinCurrency: 'USDC',
+    payoutCurrency: 'BTC',
     status: TransactionStatus.completed,
     type: TransactionType.withdraw,
   ),
   Transaction(
     payinAmount: 1,
     payoutAmount: 1,
-    payinCurrency: CurrencyCode.usdc.toString(),
-    payoutCurrency: CurrencyCode.usd.toString(),
+    payinCurrency: 'USDC',
+    payoutCurrency: 'USD',
     status: TransactionStatus.failed,
     type: TransactionType.withdraw,
   ),

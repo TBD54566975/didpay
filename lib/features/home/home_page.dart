@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
@@ -76,7 +75,7 @@ class HomePage extends HookConsumerWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                       child: Text(
-                        '${CurrencyCode.usdc}',
+                        'USDC',
                         style: Theme.of(context)
                             .textTheme
                             .headlineMedium
@@ -199,7 +198,7 @@ class HomePage extends HookConsumerWidget {
                   ),
             ),
             trailing: Text(
-              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} ${CurrencyCode.usdc}',
+              '${txn.type == TransactionType.deposit ? payoutAmount : payinAmount} USDC',
             ),
             leading: Container(
               width: Grid.md,
