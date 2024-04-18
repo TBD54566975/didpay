@@ -18,6 +18,11 @@ dependencies:
       path: packages/web5
       ref: main
 
+  tbdex:
+    git:
+      url: https://github.com/TBD54566975/tbdex-dart.git
+      ref: main
+
   collection: ^1.18.0
   flutter_hooks: ^0.20.3
   flutter_secure_storage: ^9.0.0
