@@ -12,8 +12,8 @@ HOMEBREW_NO_INSTALL_CLEANUP=1 # disable homebrew's cleanup after installation.
 brew install hermit
 
 # Activate Hermit environment
-./bin/hermit env --export > hermit_env.sh
-source hermit_env.sh
+source ./bin/activate-hermit
+export PATH=$PATH:"$PWD/bin"
 
 # Install Flutter artifacts for iOS (--ios), or macOS (--macos) platforms.
 flutter precache --ios
