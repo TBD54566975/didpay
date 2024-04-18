@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class JsonSchemaForm extends HookWidget {
-  final String schema;
+  final String? schema;
   final void Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
@@ -17,7 +17,23 @@ class JsonSchemaForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final jsonSchema = json.decode(schema) as Map<String, dynamic>;
+    if (schema == null) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Spacer(),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+            child: FilledButton(
+              onPressed: () => onSubmit(formData),
+              child: Text(Loc.of(context).next),
+            ),
+          ),
+        ],
+      );
+    }
+
+    final jsonSchema = json.decode(schema ?? '') as Map<String, dynamic>;
     final properties = jsonSchema['properties'] as Map<String, dynamic>?;
 
     var formFields = <Widget>[];
