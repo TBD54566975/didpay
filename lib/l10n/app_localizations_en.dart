@@ -109,6 +109,9 @@ class LocEn extends Loc {
   String get enterYourPaymentDetails => 'Enter your payment details';
 
   @override
+  String get enterTheirPaymentDetails => 'Enter their payment details';
+
+  @override
   String serviceFeeAmount(String amount, String currency) {
     return 'Service fee: $amount $currency';
   }
@@ -228,4 +231,16 @@ class LocEn extends Loc {
 
   @override
   String get completed => 'Completed';
+
+  @override
+  String get youSend => 'You send';
+
+  @override
+  String get theyGet => 'They get';
+
+  @override
+  String get sendMoneyAbroad => 'Send money abroad';
+
+  @override
+  String get selectCountryToGetStarted => 'Select a country to get started';
 }
