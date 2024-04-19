@@ -62,6 +62,10 @@ class PayoutDetailsPage extends HookConsumerWidget {
     final shouldShowPayoutMethodSelector =
         !shouldShowPayoutTypeSelector || selectedPayoutType.value != null;
 
+    final headerTitle = transactionType == TransactionType.send
+        ? Loc.of(context).enterTheirPaymentDetails
+        : Loc.of(context).enterYourPaymentDetails;
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -70,7 +74,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
           children: [
             _buildHeader(
               context,
-              Loc.of(context).enterYourPaymentDetails,
+              headerTitle,
             ),
             if (shouldShowPayoutTypeSelector)
               _buildPayoutTypeSelector(

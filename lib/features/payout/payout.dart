@@ -68,27 +68,39 @@ class Payout extends HookWidget {
               ),
             ),
             const SizedBox(width: Grid.half),
-            transactionType == TransactionType.withdraw
-                ? CurrencyDropdown(
-                    transactionType: transactionType,
-                    selectedOffering: selectedOffering,
-                    offerings: offerings,
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
-                    child: Text(
-                      selectedOffering.value?.data.payout.currencyCode ?? '',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
+            _buildPayoutCurrency(context),
           ],
         ),
         const SizedBox(height: Grid.xs),
-        Text(
-          Loc.of(context).youGet,
-          style: Theme.of(context).textTheme.bodyLarge,
-        ),
+        _buildPayoutLabel(context),
       ],
     );
   }
+
+  Widget _buildPayoutCurrency(BuildContext context) {
+    switch (transactionType) {
+      case TransactionType.withdraw:
+        return CurrencyDropdown(
+          transactionType: transactionType,
+          selectedOffering: selectedOffering,
+          offerings: offerings,
+        );
+      case TransactionType.deposit:
+      case TransactionType.send:
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+          child: Text(
+            selectedOffering.value?.data.payout.currencyCode ?? '',
+            style: Theme.of(context).textTheme.headlineMedium,
+          ),
+        );
+    }
+  }
+
+  Widget _buildPayoutLabel(BuildContext context) => Text(
+        transactionType == TransactionType.send
+            ? Loc.of(context).theyGet
+            : Loc.of(context).youGet,
+        style: Theme.of(context).textTheme.bodyLarge,
+      );
 }

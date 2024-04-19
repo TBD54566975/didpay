@@ -118,12 +118,7 @@ class ReviewPaymentPage extends HookWidget {
             ],
           ),
           const SizedBox(height: Grid.xxs),
-          Text(
-            transactionType == TransactionType.deposit
-                ? Loc.of(context).youPay
-                : Loc.of(context).withdrawAmount,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          _buildPayinLabel(context),
           const SizedBox(height: Grid.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -144,14 +139,35 @@ class ReviewPaymentPage extends HookWidget {
             ],
           ),
           const SizedBox(height: Grid.xxs),
-          Text(
-            transactionType == TransactionType.deposit
-                ? Loc.of(context).depositAmount
-                : Loc.of(context).youGet,
-            style: Theme.of(context).textTheme.bodySmall,
-          ),
+          _buildPayoutLabel(context),
         ],
       );
+
+  Widget _buildPayinLabel(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodySmall;
+    final labels = {
+      TransactionType.deposit: Loc.of(context).youPay,
+      TransactionType.withdraw: Loc.of(context).withdrawAmount,
+      TransactionType.send: Loc.of(context).youSend,
+    };
+
+    final label = labels[transactionType] ?? 'unknown transaction type';
+
+    return Text(label, style: style);
+  }
+
+  Widget _buildPayoutLabel(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodySmall;
+    final labels = {
+      TransactionType.deposit: Loc.of(context).depositAmount,
+      TransactionType.withdraw: Loc.of(context).youGet,
+      TransactionType.send: Loc.of(context).theyGet,
+    };
+
+    final label = labels[transactionType] ?? 'unknown transaction type';
+
+    return Text(label, style: style);
+  }
 
   Widget _buildFeeDetails(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
