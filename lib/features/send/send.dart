@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/currency/currency.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -103,7 +102,7 @@ class Send extends HookWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                       child: Text(
-                        CurrencyCode.usdc.toString(),
+                        'USDC',
                         style:
                             Theme.of(context).textTheme.displayMedium?.copyWith(
                                   fontWeight: FontWeight.bold,

@@ -1,13 +1,14 @@
-import 'package:didpay/features/currency/currency.dart';
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:tbdex/tbdex.dart';
 
 class CurrencyModal {
   static Future<dynamic> show(
     BuildContext context,
-    Function(String) onPressed,
-    List<Currency> currencies,
-    String selectedCurrency,
+    TransactionType transactionType,
+    ValueNotifier<Offering?> selectedOffering,
+    List<Offering> offerings,
   ) =>
       showModalBottomSheet(
         useSafeArea: true,
@@ -15,7 +16,7 @@ class CurrencyModal {
         context: context,
         builder: (context) => SafeArea(
           child: SizedBox(
-            height: currencies.length * 80,
+            height: 100 + (offerings.length * 30),
             child: Column(
               children: [
                 Padding(
@@ -28,18 +29,23 @@ class CurrencyModal {
                 ),
                 Expanded(
                   child: ListView(
-                    children: currencies.map((c) {
+                    children: offerings.map((offering) {
                       return ListTile(
                         onTap: () {
-                          onPressed(c.code.toString());
+                          selectedOffering.value = offering;
                           Navigator.pop(context);
                         },
-                        leading: Icon(c.icon),
-                        title: Text(
-                          '${c.code}',
-                          style: Theme.of(context).textTheme.titleMedium,
+                        title: _buildCurrencyTitle(
+                          context,
+                          offering,
+                          transactionType,
                         ),
-                        trailing: (selectedCurrency == c.code.toString())
+                        subtitle: _buildCurrencySubtitle(
+                          context,
+                          offering,
+                          transactionType,
+                        ),
+                        trailing: (selectedOffering.value == offering)
                             ? const Icon(Icons.check)
                             : null,
                       );
@@ -50,5 +56,29 @@ class CurrencyModal {
             ),
           ),
         ),
+      );
+
+  static Widget _buildCurrencyTitle(
+    BuildContext context,
+    Offering offering,
+    TransactionType transactionType,
+  ) =>
+      Text(
+        transactionType == TransactionType.deposit
+            ? offering.data.payin.currencyCode
+            : offering.data.payout.currencyCode,
+        style: Theme.of(context).textTheme.titleMedium,
+      );
+
+  static Widget _buildCurrencySubtitle(
+    BuildContext context,
+    Offering offering,
+    TransactionType transactionType,
+  ) =>
+      Text(
+        '1 ${offering.data.payin.currencyCode} = ${offering.data.payoutUnitsPerPayinUnit} ${offering.data.payout.currencyCode}',
+        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(context).colorScheme.onSurface,
+            ),
       );
 }

@@ -1,20 +1,20 @@
-import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:tbdex/tbdex.dart';
 
-// TODO(ethan-tbd): replace PaymentMethod with PayinMethod when tbdex is in
 class SearchPayinMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final ValueNotifier<PaymentMethod?> selectedPayinMethod;
-  final List<PaymentMethod>? payinMethods;
+
   final String payinCurrency;
+  final ValueNotifier<PayinMethod?> selectedPayinMethod;
+  final List<PayinMethod>? payinMethods;
 
   SearchPayinMethodsPage({
+    required this.payinCurrency,
     required this.selectedPayinMethod,
     required this.payinMethods,
-    required this.payinCurrency,
     super.key,
   });
 
@@ -50,15 +50,15 @@ class SearchPayinMethodsPage extends HookWidget {
 
   Widget _buildMethodsList(
     BuildContext context,
-    ValueNotifier<PaymentMethod?> selectedPayinMethod,
+    ValueNotifier<PayinMethod?> selectedPayinMethod,
     ValueNotifier<String> searchText,
-    List<PaymentMethod>? payinMethods,
+    List<PayinMethod>? payinMethods,
   ) {
     final filteredPaymentMethods = payinMethods
         ?.where(
-          // TODO(ethan-tbd): use entry.kind if name is null when tbdex is in
-          (entry) =>
-              entry.name.toLowerCase().contains(searchText.value.toLowerCase()),
+          (entry) => (entry.name ?? entry.kind)
+              .toLowerCase()
+              .contains(searchText.value.toLowerCase()),
         )
         .toList();
 

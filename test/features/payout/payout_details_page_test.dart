@@ -1,17 +1,55 @@
+import 'dart:convert';
+
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/payout/payout_details_page.dart';
 import 'package:didpay/features/payout/search_payout_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:json_schema/json_schema.dart';
+import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('PayoutDetailsPage', () {
+    final schema = JsonSchema.create(
+      jsonDecode(r'''
+        {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "cardNumber": {
+              "type": "string",
+              "title": "Card number",
+              "description": "The 16-digit debit card number",
+              "minLength": 16,
+              "maxLength": 16
+            },
+            "expiryDate": {
+              "type": "string",
+              "description": "The expiry date of the card in MM/YY format",
+              "pattern": "^(0[1-9]|1[0-2])\\/([0-9]{2})$"
+            },
+            "cardHolderName": {
+              "type": "string",
+              "description": "Name of the cardholder as it appears on the card"
+            },
+            "cvv": {
+              "type": "string",
+              "description": "The 3-digit CVV code",
+              "minLength": 3,
+              "maxLength": 3
+            }
+          },
+          "required": ["cardNumber", "expiryDate", "cardHolderName", "cvv"],
+          "additionalProperties": false
+        }
+    '''),
+    );
+
     Widget paymentDetailsPageTestWidget({
-      List<PaymentMethod> payoutMethods = const [],
+      List<PayoutMethod> payoutMethods = const [],
     }) =>
         WidgetHelpers.testableWidget(
           child: PayoutDetailsPage(
@@ -44,17 +82,17 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
-                requiredPaymentDetails: bankSchema,
               ),
             ],
           ),
@@ -69,16 +107,16 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MTN',
                 name: 'MTN',
-                requiredPaymentDetails: momoSchema,
               ),
             ],
           ),
@@ -94,15 +132,15 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MTN',
                 name: 'MTN',
-                requiredPaymentDetails: momoSchema,
               ),
             ],
           ),
@@ -118,10 +156,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
-                requiredPaymentDetails: momoSchema,
               ),
             ],
           ),
@@ -139,17 +177,17 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
-                requiredPaymentDetails: bankSchema,
               ),
             ],
           ),
@@ -168,15 +206,15 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MTN',
                 name: 'MTN',
-                requiredPaymentDetails: momoSchema,
               ),
             ],
           ),
@@ -195,17 +233,17 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
-                requiredPaymentDetails: bankSchema,
               ),
             ],
           ),
@@ -222,21 +260,21 @@ void main() {
     });
 
     testWidgets(
-        'should show payment name after SearchPaymentMethodsPage selection',
+        'should show payment name after SearchPayoutMethodsPage selection',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
-                requiredPaymentDetails: momoSchema,
               ),
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
-                requiredPaymentDetails: bankSchema,
               ),
             ],
           ),
@@ -257,19 +295,22 @@ void main() {
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
             payoutMethods: [
-              PaymentMethod(
+              PayoutMethod(
+                estimatedSettlementTime: 1,
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
-                requiredPaymentDetails: momoSchema,
+                requiredPaymentDetails: schema,
               ),
             ],
           ),
         ),
       );
 
-      expect(find.byType(TextFormField), findsExactly(2));
-      expect(find.text('Phone number'), findsOneWidget);
-      expect(find.text('Reason for sending'), findsOneWidget);
+      expect(find.byType(TextFormField), findsExactly(4));
+      expect(find.text('Card number'), findsOneWidget);
+      expect(find.text('expiryDate'), findsOneWidget);
+      expect(find.text('cardHolderName'), findsOneWidget);
+      expect(find.text('cvv'), findsOneWidget);
     });
   });
 }
