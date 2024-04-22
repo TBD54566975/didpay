@@ -295,6 +295,12 @@ abstract class Loc {
   /// **'Enter your payment details'**
   String get enterYourPaymentDetails;
 
+  /// No description provided for @enterTheirPaymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter their payment details'**
+  String get enterTheirPaymentDetails;
+
   /// No description provided for @serviceFeeAmount.
   ///
   /// In en, this message translates to:
@@ -528,6 +534,30 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Completed'**
   String get completed;
+
+  /// No description provided for @youSend.
+  ///
+  /// In en, this message translates to:
+  /// **'You send'**
+  String get youSend;
+
+  /// No description provided for @theyGet.
+  ///
+  /// In en, this message translates to:
+  /// **'They get'**
+  String get theyGet;
+
+  /// No description provided for @sendMoneyAbroad.
+  ///
+  /// In en, this message translates to:
+  /// **'Send money abroad'**
+  String get sendMoneyAbroad;
+
+  /// No description provided for @selectCountryToGetStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a country to get started'**
+  String get selectCountryToGetStarted;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

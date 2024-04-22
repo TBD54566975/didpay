@@ -77,7 +77,8 @@ enum TransactionStatus {
 
 enum TransactionType {
   deposit,
-  withdraw;
+  withdraw,
+  send;
 
   @override
   String toString() => name.substring(0, 1).toUpperCase() + name.substring(1);

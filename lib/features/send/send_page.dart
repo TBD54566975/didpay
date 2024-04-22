@@ -1,4 +1,5 @@
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/remittance/remittance_country_page.dart';
 import 'package:didpay/features/send/send.dart';
 import 'package:didpay/features/send/send_did_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -16,7 +17,18 @@ class SendPage extends HookWidget {
     final keyPress = useState(PayinKeyPress(0, ''));
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.language, size: Grid.md),
+          onPressed: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => const RemittanceCountryPage(),
+              ),
+            );
+          },
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,

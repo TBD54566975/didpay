@@ -40,6 +40,7 @@
     "verificationComplete": "Verification complete!",
     "makeSureInfoIsCorrect": "Make sure this information is correct.",
     "enterYourPaymentDetails": "Enter your payment details",
+    "enterTheirPaymentDetails": "Enter their payment details",
     "serviceFeeAmount": "Service fee: {amount} {currency}",
     "@serviceFeeAmount": {
         "placeholders": {
@@ -95,5 +96,9 @@
     "account": "Account",
     "pending": "Pending",
     "failed": "Failed",
-    "completed": "Completed"
+    "completed": "Completed",
+    "youSend": "You send",
+    "theyGet": "They get",
+    "sendMoneyAbroad": "Send money abroad",
+    "selectCountryToGetStarted": "Select a country to get started"
 }

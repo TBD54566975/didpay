@@ -62,6 +62,10 @@ class PayinDetailsPage extends HookConsumerWidget {
     final shouldShowPayinMethodSelector =
         !shouldShowPayinTypeSelector || selectedPayinType.value != null;
 
+    final headerTitle = transactionType == TransactionType.send
+        ? Loc.of(context).enterTheirPaymentDetails
+        : Loc.of(context).enterYourPaymentDetails;
+
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -70,7 +74,7 @@ class PayinDetailsPage extends HookConsumerWidget {
           children: [
             _buildHeader(
               context,
-              Loc.of(context).enterYourPaymentDetails,
+              headerTitle,
             ),
             if (shouldShowPayinTypeSelector)
               _buildPayinTypeSelector(

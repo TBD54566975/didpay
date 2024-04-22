@@ -147,6 +147,7 @@ class Payin extends HookWidget {
           offerings: offerings,
         );
       case TransactionType.withdraw:
+      case TransactionType.send:
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(
@@ -157,12 +158,18 @@ class Payin extends HookWidget {
     }
   }
 
-  Widget _buildPayinLabel(BuildContext context) => Text(
-        transactionType == TransactionType.deposit
-            ? Loc.of(context).youDeposit
-            : Loc.of(context).youWithdraw,
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
+  Widget _buildPayinLabel(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyLarge;
+    final labels = {
+      TransactionType.deposit: Loc.of(context).youDeposit,
+      TransactionType.withdraw: Loc.of(context).youWithdraw,
+      TransactionType.send: Loc.of(context).youSend,
+    };
+
+    final label = labels[transactionType] ?? 'unknown transaction type';
+
+    return Text(label, style: style);
+  }
 }
 
 class PayinKeyPress {
