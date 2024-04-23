@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/remittance/remittance_page.dart';
@@ -17,12 +18,13 @@ void main() {
 
   final jsonList = jsonDecode(jsonString) as List<dynamic>;
   final offerings = [Offering.fromJson(jsonList[0])];
+  const country = Country(name: 'United States', code: 'US');
 
   group('RemittancePage', () {
     testWidgets('should show payin and payout', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(countryCode: ''),
+          child: const RemittancePage(country: country),
           overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
         ),
       );
@@ -35,7 +37,7 @@ void main() {
     testWidgets('should show fee details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(countryCode: ''),
+          child: const RemittancePage(country: country),
           overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
         ),
       );
@@ -47,7 +49,7 @@ void main() {
     testWidgets('should show next button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(countryCode: ''),
+          child: const RemittancePage(country: country),
           overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
         ),
       );
@@ -60,7 +62,7 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(countryCode: ''),
+          child: const RemittancePage(country: country),
           overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
         ),
       );

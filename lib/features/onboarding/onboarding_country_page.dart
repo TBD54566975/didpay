@@ -1,19 +1,18 @@
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/countries/country.dart';
-import 'package:didpay/features/remittance/remittance_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class RemittanceCountryPage extends HookConsumerWidget {
-  const RemittanceCountryPage({super.key});
+class OnboardingCountryPage extends HookConsumerWidget {
+  const OnboardingCountryPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final country = useState<Country?>(null);
-
     useEffect(
       () {
         Future.delayed(
@@ -33,13 +32,13 @@ class RemittanceCountryPage extends HookConsumerWidget {
           children: [
             _buildHeader(
               context,
-              Loc.of(context).sendMoneyAbroad,
-              Loc.of(context).selectCountryToGetStarted,
+              Loc.of(context).whereAreYouLocated,
+              Loc.of(context).selectYourCountry,
             ),
             Expanded(
-              child: _buildCountryList(context, ref, country),
+              child: _buildCountryList(context, ref),
             ),
-            _buildNextButton(context, country.value),
+            _buildNextButton(context, ref),
           ],
         ),
       ),
@@ -78,44 +77,51 @@ class RemittanceCountryPage extends HookConsumerWidget {
   Widget _buildCountryList(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<Country?> selectedCountry,
   ) =>
       ref.watch(countriesProvider).when(
-            data: (countries) => ListView.builder(
-              itemCount: countries.length,
-              itemBuilder: (context, index) {
-                final country = countries[index];
-                final isSelected = selectedCountry.value?.code == country.code;
+            data: (countries) {
+              final selectedCountry = ref.watch(countryProvider);
 
-                return Country.buildCountryTile(
-                  context,
-                  country,
-                  isSelected: isSelected,
-                  onTap: () => selectedCountry.value = country,
-                );
-              },
-            ),
+              return ListView.builder(
+                itemCount: countries.length,
+                itemBuilder: (context, index) {
+                  final country = countries[index];
+                  final isSelected = selectedCountry?.code == country.code;
+
+                  return Country.buildCountryTile(
+                    context,
+                    country,
+                    isSelected: isSelected,
+                    onTap: () =>
+                        ref.read(countryProvider.notifier).state = country,
+                  );
+                },
+              );
+            },
             loading: () => const Center(child: CircularProgressIndicator()),
             error: (error, _) => Center(child: Text(error.toString())),
           );
 
   Widget _buildNextButton(
     BuildContext context,
-    Country? country,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: country == null
-              ? null
-              : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => RemittancePage(country: country),
-                    ),
-                  );
-                },
-          child: Text(Loc.of(context).next),
-        ),
-      );
+    WidgetRef ref,
+  ) {
+    final country = ref.watch(countryProvider);
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+      child: FilledButton(
+        onPressed: country == null
+            ? null
+            : () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => const AppTabs(),
+                  ),
+                );
+              },
+        child: Text(Loc.of(context).next),
+      ),
+    );
+  }
 }

@@ -6,7 +6,7 @@ final offeringsProvider =
   try {
     // TODO(ethan-tbd): don't hardcode the DID
     final offerings = await TbdexHttpClient.getOfferings(
-      'did:dht:74hg1efatndi8enx3e4z6c4u8ieh1xfkyay4ntg4dg1w6risu35y',
+      'did:web:localhost%3A8892:ingress',
     );
     return offerings;
   } on Exception catch (e) {

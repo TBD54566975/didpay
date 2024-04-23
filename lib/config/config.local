@@ -1,12 +1,27 @@
+import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 
 class Config {
-  static const List<Pfi> devPfis = [
-    Pfi(
-        id: 'dev',
-        name: 'Dev PFI',
-        didUri: 'did:dht:74hg1efatndi8enx3e4z6c4u8ieh1xfkyay4ntg4dg1w6risu35y'),
-  ];
+  static const countryToPfiMap = {
+    _us: _tbdPfi,
+    _mx: _tbdPfi,
+  };
+
+  static const _us = Country(name: 'United States', code: 'US');
+  static const _mx = Country(name: 'Mexico', code: 'MX');
+
+  static const _tbdPfi = Pfi(
+    id: '1',
+    name: 'TBD PFI',
+    didUri: 'did:web:localhost%3A8892:ingress',
+  );
+
+  static List<Country> devCountries = [_us, _mx];
+  static List<Pfi> devPfis = [_tbdPfi];
+
   static const pfisJsonUrl =
       'https://raw.githubusercontent.com/TBD54566975/pfi-providers-data/main/pfis.json';
+
+  // feature flags
+  static bool get hasWalletPicker => false;
 }

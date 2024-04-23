@@ -3,7 +3,7 @@ class Pfi {
   final String name;
   final String didUri;
 
-  Pfi({
+  const Pfi({
     required this.id,
     required this.name,
     required this.didUri,
