@@ -1,17 +1,29 @@
-import 'package:didpay/features/onboarding/country.dart';
+import 'package:didpay/features/countries/countries_notifier.dart';
+import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/remittance/remittance_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class RemittanceCountryPage extends HookWidget {
+class RemittanceCountryPage extends HookConsumerWidget {
   const RemittanceCountryPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final countries = [Country(name: 'Mexico', code: 'MX')];
-    final countryCode = useState<String?>(null);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final country = useState<Country?>(null);
+
+    useEffect(
+      () {
+        Future.delayed(
+          Duration.zero,
+          () => ref.read(countriesProvider.notifier).reload(),
+        );
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -25,9 +37,9 @@ class RemittanceCountryPage extends HookWidget {
               Loc.of(context).selectCountryToGetStarted,
             ),
             Expanded(
-              child: _buildCountryList(context, countryCode, countries),
+              child: _buildCountryList(context, ref, country),
             ),
-            _buildNextButton(context, countryCode.value),
+            _buildNextButton(context, country.value),
           ],
         ),
       ),
@@ -65,76 +77,45 @@ class RemittanceCountryPage extends HookWidget {
 
   Widget _buildCountryList(
     BuildContext context,
-    ValueNotifier<String?> country,
-    List<Country> countries,
+    WidgetRef ref,
+    ValueNotifier<Country?> selectedCountry,
   ) =>
-      ListView(
-        children: countries
-            .map(
-              (c) => ListTile(
-                title: Text(
-                  c.name,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(),
-                ),
-                leading: Container(
-                  width: Grid.md,
-                  height: Grid.md,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surface,
-                    borderRadius: BorderRadius.circular(Grid.xxs),
-                  ),
-                  child: Center(
-                    child: _buildFlag(context, c.code),
-                  ),
-                ),
-                trailing: (country.value == c.name)
-                    ? Icon(
-                        Icons.check,
-                        color: Theme.of(context).colorScheme.primary,
-                      )
-                    : null,
-                onTap: () {
-                  country.value = c.name;
-                },
-              ),
-            )
-            .toList(),
-      );
+      ref.watch(countriesProvider).when(
+            data: (countries) => ListView.builder(
+              itemCount: countries.length,
+              itemBuilder: (context, index) {
+                final country = countries[index];
+                final isSelected = selectedCountry.value?.code == country.code;
+
+                return Country.buildCountryTile(
+                  context,
+                  country,
+                  isSelected: isSelected,
+                  onTap: () => selectedCountry.value = country,
+                );
+              },
+            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error: (error, _) => Center(child: Text(error.toString())),
+          );
 
   Widget _buildNextButton(
     BuildContext context,
-    String? countryCode,
+    Country? country,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
         child: FilledButton(
-          onPressed: countryCode == null
+          onPressed: country == null
               ? null
               : () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) =>
-                          RemittancePage(countryCode: countryCode),
+                      builder: (context) => RemittancePage(country: country),
                     ),
                   );
                 },
           child: Text(Loc.of(context).next),
         ),
       );
-
-  Widget _buildFlag(BuildContext context, String countryCode) {
-    const asciiOffset = 0x41;
-    const flagOffset = 0x1F1E6;
-
-    final firstChar = countryCode.codeUnitAt(0) - asciiOffset + flagOffset;
-    final secondChar = countryCode.codeUnitAt(1) - asciiOffset + flagOffset;
-
-    var emoji =
-        String.fromCharCode(firstChar) + String.fromCharCode(secondChar);
-
-    return Text(
-      emoji,
-      style: Theme.of(context).textTheme.headlineSmall,
-    );
-  }
 }
