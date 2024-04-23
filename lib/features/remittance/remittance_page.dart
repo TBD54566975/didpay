@@ -1,3 +1,4 @@
+import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payout/payout.dart';
@@ -14,14 +15,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class RemittancePage extends HookConsumerWidget {
-  // the alpha-2 code as described in the ISO 3166 international standard
-  final String countryCode;
+  final Country country;
 
-  const RemittancePage({required this.countryCode, super.key});
+  const RemittancePage({required this.country, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO(ethan-tbd): use countryCode to filter offerings
+    // TODO(ethan-tbd): use country to filter offerings
     final offerings = ref.watch(offeringsProvider);
 
     final payinAmount = useState('0');
