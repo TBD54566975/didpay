@@ -2,7 +2,7 @@ import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 
 class Config {
-  static const countryToPfiMap = {
+  static const _countryToPfiMap = {
     _us: _tbdPfi,
     _mx: _tbdPfi,
   };
@@ -24,4 +24,6 @@ class Config {
 
   // feature flags
   static bool get hasWalletPicker => false;
+
+  static Pfi? getPfi(Country? country) => _countryToPfiMap[country];
 }
