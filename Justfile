@@ -26,6 +26,10 @@ build:
 # Run tests
 test: test-app test-packages
 
+# regenerate platform icons from assets/icon.jpg - if you replace the file run this:
+icons:
+  flutter pub run flutter_launcher_icons 
+
 # Run Flutter tests
 test-app:
   flutter test
