@@ -2,7 +2,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 final offeringsProvider =
-    FutureProvider.autoDispose<List<Offering>>((ref) async {
+    FutureProvider.family.autoDispose<List<Offering>, String>((ref, did) async {
   try {
     // TODO(ethan-tbd): don't hardcode the DID
     final offerings = await TbdexHttpClient.getOfferings(
