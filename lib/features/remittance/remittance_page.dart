@@ -1,3 +1,4 @@
+import 'package:didpay/config/config.dart';
 import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
@@ -21,8 +22,9 @@ class RemittancePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final pfi = Config.getPfi(country);
     // TODO(ethan-tbd): use country to filter offerings
-    final offerings = ref.watch(offeringsProvider);
+    final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
 
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);

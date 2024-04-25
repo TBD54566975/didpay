@@ -1,3 +1,5 @@
+import 'package:didpay/config/config.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payout/payout.dart';
@@ -18,8 +20,11 @@ class WithdrawPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final country = ref.read(countryProvider);
+    final pfi = Config.getPfi(country);
+
     // TODO(ethan-tbd): only use offerings with stored balance as payin
-    final offerings = ref.watch(offeringsProvider);
+    final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
 
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);

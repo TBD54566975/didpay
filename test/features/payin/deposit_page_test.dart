@@ -23,7 +23,9 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const DepositPage(),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings)
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -36,7 +38,9 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const DepositPage(),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings)
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -48,7 +52,9 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const DepositPage(),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings)
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -61,7 +67,9 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const DepositPage(),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings)
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -83,7 +91,9 @@ void main() {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: const DepositPage(),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings)
+          ],
         ),
       );
       await tester.pumpAndSettle();
