@@ -171,26 +171,23 @@ class SendDidPage extends HookConsumerWidget {
     String recipientDid,
     String? errorText,
   ) {
-    final disabled = recipientDid.isEmpty || errorText != null;
-
-    void onPressed() {
-      if ((_formKey.currentState?.validate() ?? false) && errorText == null) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SendConfirmationPage(
-              did: senderDid,
-              amount: sendAmount,
-            ),
-          ),
-        );
-      }
-    }
-
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Grid.side),
       child: FilledButton(
-        onPressed: disabled ? null : onPressed,
+        onPressed: () {
+          if ((_formKey.currentState?.validate() ?? false) &&
+              errorText == null) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SendConfirmationPage(
+                  did: senderDid,
+                  amount: sendAmount,
+                ),
+              ),
+            );
+          }
+        },
         child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
       ),
     );
