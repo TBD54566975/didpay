@@ -1,6 +1,6 @@
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-// TODO(ethan-tbd): remove this file when tbdex is in
+// TODO(ethan-tbd): remove this file, https://github.com/TBD54566975/didpay/issues/136
 class Transaction {
   final double payinAmount;
   final double payoutAmount;

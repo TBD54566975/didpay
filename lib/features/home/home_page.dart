@@ -16,7 +16,7 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final txns = ref.watch(transactionsProvider);
-    // TODO(ethan-tbd): Replace with actual account balance
+    // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
     final accountBalance = CurrencyUtil.formatFromDouble(0);
 
     return Scaffold(

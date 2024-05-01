@@ -6,7 +6,7 @@ import 'package:tbdex/tbdex.dart';
 final offeringsProvider =
     FutureProvider.family.autoDispose<List<Offering>, String>((ref, did) async {
   try {
-    // TODO(ethan-tbd): don't hardcode the DID
+    // TODO(ethan-tbd): don't hardcode the DID, https://github.com/TBD54566975/didpay/issues/133
     final offerings = await TbdexHttpClient.getOfferings(
       'did:web:localhost%3A8892:ingress',
     );
@@ -21,7 +21,7 @@ final rfqProvider =
   try {
     final did = ref.read(didProvider);
 
-    // TODO(ethan-tbd): don't hardcode the DID
+    // TODO(ethan-tbd): don't hardcode the DID, https://github.com/TBD54566975/didpay/issues/133
     final rfq = Rfq.create(
       'did:web:localhost%3A8892:ingress',
       did.uri,

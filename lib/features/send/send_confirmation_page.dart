@@ -4,8 +4,8 @@ import 'package:didpay/shared/success_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-// TODO(ethan-tbd): make HookConsumerWidget after pfi is implemented
 class SendConfirmationPage extends HookWidget {
+  // TODO(ethan-tbd): replace with DAP, https://github.com/TBD54566975/didpay/issues/135
   final String did;
   final String amount;
 
@@ -36,7 +36,7 @@ class SendConfirmationPage extends HookWidget {
     );
   }
 
-  // TODO(ethan-tbd): replace with call to pfi
+  // TODO(ethan-tbd): replace with call to pfi, https://github.com/TBD54566975/didpay/issues/135
   Future<void> sendPayment(ValueNotifier<String?> response) async {
     await Future.delayed(const Duration(milliseconds: 1000));
     response.value = 'success';
