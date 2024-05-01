@@ -2,7 +2,6 @@
   "recommendations": [
     "Dart-Code.flutter",
     "usernamehw.errorlens",
-    "redhat.vscode-yaml",
-    "esbenp.prettier-vscode"
+    "redhat.vscode-yaml"
   ]
 }
