@@ -29,7 +29,7 @@ XCode can be installed through the Mac App Store. We recommend using `Xcode 15.3
 
 #### Android Studio
 
-Android Studio is required to run DIDPay as an Android application using the Android Emulator
+Android Studio is required to run DIDPay as an Android application using the Android Emulator.
 
 ##### Installation
 
@@ -52,13 +52,23 @@ hermit install-hooks
 
 #### Starting development
 
-Make sure to get the latest Dart/Flutter packages by running `just get`.
+Run the following command to get the latest Dart/Flutter packages:
+
+```bash
+just get
+```
 
 Next, open up the Command Palette in Visual Studio Code with the shortcut:
 
 - Windows/Linux: `Ctrl+Shift+P`
 - macOS: `Cmd+Shift+P`
 
-and search for and click on `Flutter: Select Device` to bring up a list of available devices.
+Search for `Flutter: Select Device` to bring up a list of available devices.
 
-After selecting your preferred device (i.e. if you want to run DIDPay on the iOS simulator, hit `Start iOS Simulator` and wait for the simulator to boot up), simply run `just run` to build and start DIDPay on your simulator/device.
+Select your preferred device (i.e. if you want to run DIDPay on the iOS simulator, hit `Start iOS Simulator` and wait for the simulator to boot up).
+
+Run the following command to build and start DIDPay on the selected simulator/device:
+
+```bash
+just run
+```
