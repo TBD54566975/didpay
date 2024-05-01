@@ -30,7 +30,7 @@ class RemittancePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfi = Config.getPfi(country);
-    // TODO(ethan-tbd): use country to filter offerings
+    // TODO(ethan-tbd): use country to filter offerings, https://github.com/TBD54566975/didpay/issues/134
     final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
 
     final payinAmount = useState('0');

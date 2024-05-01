@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ReviewPaymentPage extends HookWidget {
-  // TODO(ethan-tbd): replace with quote
+  // TODO(ethan-tbd): replace with quote, https://github.com/TBD54566975/didpay/issues/131
   final RfqState rfqState;
   final PaymentState paymentState;
 

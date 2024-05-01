@@ -215,7 +215,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
               child: JsonSchemaForm(
                 schema: selectedPayoutMethod.requiredPaymentDetails?.toJson(),
                 onSubmit: (formData) {
-                  // TODO(ethan-tbd): wait for quote to come back before navigating
+                  // TODO(ethan-tbd): wait for quote to come back before navigating, https://github.com/TBD54566975/didpay/issues/131
                   ref.read(
                     rfqProvider(
                       rfqState.copyWith(payoutMethod: selectedPayoutMethod),

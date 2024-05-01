@@ -51,7 +51,7 @@ class PfiConfirmationPage extends HookConsumerWidget {
         result.didDocument?.service?.firstWhereOrNull((e) => e.type == 'PFI');
 
     if (pfiService == null) {
-      // TODO(ethan-tbd): Add real error handling here...
+      // TODO(ethan-tbd): add error handling here, https://github.com/TBD54566975/didpay/issues/125
       throw Exception('PFI service endpoint not found');
     }
 

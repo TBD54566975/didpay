@@ -27,7 +27,7 @@ class DepositPage extends HookConsumerWidget {
     final country = ref.read(countryProvider);
     final pfi = Config.getPfi(country);
 
-    // TODO(ethan-tbd): only use offerings with stored balance as payout
+    // TODO(ethan-tbd): filter offerings with STORED_BALANCE as payout, https://github.com/TBD54566975/didpay/issues/132
     final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
 
     final payinAmount = useState('0');
