@@ -1,31 +1,64 @@
-# DidPay - pay anyone with tbdex
+# DIDPay
 
-DidPay is a general purpose front end for tbdex that can be used or forked and modified. It runs as a mobile app. 
+> [!WARNING]
+> This repo is very much so in its early stages. 🚧
 
-## Introduction
+## Summary
 
-This is EXTREMELY a work in progress. 
-The aim is that this app can work with any tbdex liquidity node, discoverying the offerings and then running transactions all from a phone. 
+DIDPay is an open source mobile app that provides a way for individuals to interact with PFIs via tbDEX. Concretely, DIDPay provides a UI for individuals to interface with PFIs.
 
-## Running
+## Local Development
 
-* Install Hermit https://cashapp.github.io/hermit/ (on macos you can run `brew install hermit` and then `hermit shell-hooks`)
-* Ensure you have a mobile app simulator connected and running (XCode on macOS and running the Simulator app will do for example)
-* Run `just get`.
-* With your simulator running, run `just run` to build and start the app in the simulator.
+### Prerequisites
 
-A picture says a thousand words: 
+#### Visual Studio Code
 
-![shot1](https://github.com/TBD54566975/didpay/assets/14976/fe4600fa-9843-4770-ba6a-9e1bc4234d0d)
+Visual Studio Code is the recommended IDE to use with DIDPay.
 
-![shot2](https://github.com/TBD54566975/didpay/assets/14976/64948141-311e-41fb-a0b7-fe2160fd36be)
+##### Installation
 
-## Project Resources
+Visual Studio Code can be installed [here](https://code.visualstudio.com/download).
 
-| Resource                                   | Description                                                                    |
-| ------------------------------------------ | ------------------------------------------------------------------------------ |
-| [CODEOWNERS](./CODEOWNERS)                 | Outlines the project lead(s)                                                   |
-| [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md) | Expected behavior for project contributors, promoting a welcoming environment |
-| [CONTRIBUTING.md](./CONTRIBUTING.md)       | Developer guide to build, test, run, access CI, chat, discuss, file issues     |
-| [GOVERNANCE.md](./GOVERNANCE.md)           | Project governance                                                             |
-| [LICENSE](./LICENSE)                       | Apache License, Version 2.0                                                    |
+#### Xcode
+
+Xcode is required to run DIDPay as an iOS application using the XCode Simulator.
+
+##### Installation
+
+XCode can be installed through the Mac App Store. We recommend using `Xcode 15.3` and `iOS 17.4` as the XCode Simulator version.
+
+#### Android Studio
+
+Android Studio is required to run DIDPay as an Android application using the Android Emulator
+
+##### Installation
+
+Android Studio can be installed by following instructions [here](https://developer.android.com/studio/install).
+
+### Running Locally
+
+#### Initial Setup
+
+```bash
+git clone git@github.com:TBD54566975/didpay.git
+cd didpay
+
+. ./bin/activate-hermit
+hermit install-hooks
+```
+
+> [!TIP]
+> We use [Just](https://github.com/casey/just) to manage our local development tasks. To see what tasks are available, run `just -l` (list).
+
+#### Starting development
+
+Make sure to get the latest Dart/Flutter packages by running `just get`.
+
+Next, open up the Command Palette in Visual Studio Code with the shortcut:
+
+- Windows/Linux: `Ctrl+Shift+P`
+- macOS: `Cmd+Shift+P`
+
+and search for and click on `Flutter: Select Device` to bring up a list of available devices.
+
+After selecting your preferred device (i.e. if you want to run DIDPay on the iOS simulator, hit `Start iOS Simulator` and wait for the simulator to boot up), simply run `just run` to build and start DIDPay on your simulator/device.
