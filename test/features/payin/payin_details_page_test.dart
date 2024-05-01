@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin_details_page.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
@@ -53,14 +55,15 @@ void main() {
     }) =>
         WidgetHelpers.testableWidget(
           child: PayinDetailsPage(
-            payinAmount: '1.00',
-            payinCurrency: 'USD',
-            exchangeRate: '17',
-            payoutAmount: '17.00',
-            payoutCurrency: 'MXN',
-            offeringId: '',
-            transactionType: TransactionType.deposit,
-            payinMethods: payinMethods,
+            rfqState: const RfqState(),
+            paymentState: PaymentState(
+              payoutAmount: '17.00',
+              payinCurrency: 'USD',
+              payoutCurrency: 'MXN',
+              exchangeRate: '17',
+              transactionType: TransactionType.deposit,
+              payinMethods: payinMethods,
+            ),
           ),
         );
 

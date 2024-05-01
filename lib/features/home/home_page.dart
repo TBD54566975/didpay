@@ -3,6 +3,7 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
 import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
@@ -96,7 +97,8 @@ class HomePage extends HookConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const DepositPage(),
+                            builder: (context) =>
+                                const DepositPage(rfqState: RfqState()),
                           ),
                         );
                       },
@@ -109,7 +111,8 @@ class HomePage extends HookConsumerWidget {
                       onPressed: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (context) => const WithdrawPage(),
+                            builder: (context) =>
+                                const WithdrawPage(rfqState: RfqState()),
                           ),
                         );
                       },
@@ -163,7 +166,8 @@ class HomePage extends HookConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => const DepositPage(),
+                    builder: (context) =>
+                        const DepositPage(rfqState: RfqState()),
                   ),
                 );
               },
