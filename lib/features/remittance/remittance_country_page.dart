@@ -1,6 +1,7 @@
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/remittance/remittance_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -111,7 +112,10 @@ class RemittanceCountryPage extends HookConsumerWidget {
               : () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => RemittancePage(country: country),
+                      builder: (context) => RemittancePage(
+                        country: country,
+                        rfqState: const RfqState(),
+                      ),
                     ),
                   );
                 },

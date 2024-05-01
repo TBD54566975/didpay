@@ -3,7 +3,9 @@ import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payin/payin_details_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
@@ -16,7 +18,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class DepositPage extends HookConsumerWidget {
-  const DepositPage({super.key});
+  final RfqState rfqState;
+
+  const DepositPage({required this.rfqState, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,6 +99,7 @@ class DepositPage extends HookConsumerWidget {
                 const SizedBox(height: Grid.sm),
                 _buildNextButton(
                   context,
+                  rfqState,
                   payinAmount.value,
                   CurrencyUtil.formatFromDouble(
                     payoutAmount.value,
@@ -120,6 +125,7 @@ class DepositPage extends HookConsumerWidget {
 
   Widget _buildNextButton(
     BuildContext context,
+    RfqState rfqState,
     String payinAmount,
     String payoutAmount,
     Offering? selectedOffering,
@@ -129,15 +135,22 @@ class DepositPage extends HookConsumerWidget {
     void onPressed() => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PayinDetailsPage(
-              payinAmount: payinAmount,
-              payoutAmount: payoutAmount,
-              payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-              payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
-              exchangeRate:
-                  selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-              offeringId: selectedOffering?.metadata.id ?? '',
-              transactionType: TransactionType.deposit,
-              payinMethods: selectedOffering?.data.payin.methods ?? [],
+              rfqState: rfqState.copyWith(
+                payinAmount: payinAmount,
+                offeringId: selectedOffering?.metadata.id ?? '',
+                payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
+                payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
+              ),
+              paymentState: PaymentState(
+                payoutAmount: payoutAmount,
+                payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
+                payoutCurrency:
+                    selectedOffering?.data.payout.currencyCode ?? '',
+                exchangeRate:
+                    selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
+                transactionType: TransactionType.deposit,
+                payinMethods: selectedOffering?.data.payin.methods ?? [],
+              ),
             ),
           ),
         );

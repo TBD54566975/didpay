@@ -2,8 +2,10 @@ import 'package:didpay/config/config.dart';
 import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/payout/payout_details_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
@@ -17,8 +19,13 @@ import 'package:tbdex/tbdex.dart';
 
 class RemittancePage extends HookConsumerWidget {
   final Country country;
+  final RfqState rfqState;
 
-  const RemittancePage({required this.country, super.key});
+  const RemittancePage({
+    required this.country,
+    required this.rfqState,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -129,15 +136,22 @@ class RemittancePage extends HookConsumerWidget {
     void onPressed() => Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PayoutDetailsPage(
-              payinAmount: payinAmount,
-              payoutAmount: payoutAmount,
-              payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-              payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
-              exchangeRate:
-                  selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-              offeringId: selectedOffering?.metadata.id ?? '',
-              transactionType: TransactionType.send,
-              payoutMethods: selectedOffering?.data.payout.methods ?? [],
+              rfqState: rfqState.copyWith(
+                payinAmount: payinAmount,
+                offeringId: selectedOffering?.metadata.id ?? '',
+                payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
+                payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
+              ),
+              paymentState: PaymentState(
+                payoutAmount: payoutAmount,
+                payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
+                payoutCurrency:
+                    selectedOffering?.data.payout.currencyCode ?? '',
+                exchangeRate:
+                    selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
+                transactionType: TransactionType.deposit,
+                payoutMethods: selectedOffering?.data.payout.methods ?? [],
+              ),
             ),
           ),
         );
