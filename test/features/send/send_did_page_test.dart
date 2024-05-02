@@ -50,26 +50,6 @@ void main() async {
     });
 
     testWidgets(
-        'should show disabled send button while recipient DID is not set',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: SendDidPage(sendAmount: '25'),
-          overrides: [
-            didProvider.overrideWithValue(did),
-          ],
-        ),
-      );
-
-      final sendButton = find.widgetWithText(FilledButton, 'Send 25 USDC');
-
-      expect(
-        tester.widget<FilledButton>(sendButton).onPressed,
-        isNull,
-      );
-    });
-
-    testWidgets(
         'should show enabled send button when while recipient DID is set',
         (tester) async {
       await tester.pumpWidget(

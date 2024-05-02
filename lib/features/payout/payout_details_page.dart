@@ -1,8 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/payout/search_payout_methods_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
+import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -12,37 +15,27 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PayoutDetailsPage extends HookConsumerWidget {
-  final String payinAmount;
-  final String payoutAmount;
-  final String payinCurrency;
-  final String payoutCurrency;
-  final String exchangeRate;
-  final String offeringId;
-  final TransactionType transactionType;
-  final List<PayoutMethod> payoutMethods;
+  final RfqState rfqState;
+  final PaymentState paymentState;
 
   const PayoutDetailsPage({
-    required this.payinAmount,
-    required this.payoutAmount,
-    required this.payinCurrency,
-    required this.payoutCurrency,
-    required this.exchangeRate,
-    required this.offeringId,
-    required this.transactionType,
-    required this.payoutMethods,
+    required this.rfqState,
+    required this.paymentState,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final payoutTypes =
-        payoutMethods.map((method) => method.group).whereType<String>().toSet();
+    final payoutTypes = paymentState.payoutMethods
+        ?.map((method) => method.group)
+        .whereType<String>()
+        .toSet();
 
     final selectedPayoutType = useState<String?>(null);
     final selectedPayoutMethod = useState<PayoutMethod?>(null);
 
-    final filteredPayoutMethods = payoutMethods
-        .where(
+    final filteredPayoutMethods = paymentState.payoutMethods
+        ?.where(
           (method) =>
               method.group?.contains(selectedPayoutType.value ?? '') ?? true,
         )
@@ -50,19 +43,19 @@ class PayoutDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        selectedPayoutMethod.value = (filteredPayoutMethods.length) <= 1
-            ? selectedPayoutMethod.value = filteredPayoutMethods.firstOrNull
+        selectedPayoutMethod.value = (filteredPayoutMethods?.length ?? 1) <= 1
+            ? selectedPayoutMethod.value = filteredPayoutMethods?.firstOrNull
             : null;
         return;
       },
       [selectedPayoutType.value],
     );
 
-    final shouldShowPayoutTypeSelector = payoutTypes.length > 1;
+    final shouldShowPayoutTypeSelector = (payoutTypes?.length ?? 0) > 1;
     final shouldShowPayoutMethodSelector =
         !shouldShowPayoutTypeSelector || selectedPayoutType.value != null;
 
-    final headerTitle = transactionType == TransactionType.send
+    final headerTitle = paymentState.transactionType == TransactionType.send
         ? Loc.of(context).enterTheirPaymentDetails
         : Loc.of(context).enterYourPaymentDetails;
 
@@ -88,7 +81,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
                 selectedPayoutMethod,
                 filteredPayoutMethods,
               ),
-            _buildForm(context, selectedPayoutMethod),
+            _buildForm(context, ref, selectedPayoutMethod.value),
           ],
         ),
       ),
@@ -147,7 +140,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
                   builder: (context) => SearchPaymentTypesPage(
                     selectedPaymentType: selectedPayoutType,
                     paymentTypes: payoutTypes,
-                    payinCurrency: payinCurrency,
+                    payinCurrency: paymentState.payinCurrency,
                   ),
                 ),
               );
@@ -187,7 +180,8 @@ class PayoutDetailsPage extends HookConsumerWidget {
           subtitle: Text(
             selectedPayoutMethod.value?.name == null
                 ? Loc.of(context).serviceFeesMayApply
-                : Loc.of(context).serviceFeeAmount(fee, payinCurrency),
+                : Loc.of(context)
+                    .serviceFeeAmount(fee, paymentState.payinCurrency),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing:
@@ -198,7 +192,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => SearchPayoutMethodsPage(
-                        payoutCurrency: payinCurrency,
+                        payoutCurrency: paymentState.payinCurrency,
                         selectedPayoutMethod: selectedPayoutMethod,
                         payoutMethods: filteredPayoutMethods,
                       ),
@@ -212,29 +206,32 @@ class PayoutDetailsPage extends HookConsumerWidget {
 
   Widget _buildForm(
     BuildContext context,
-    ValueNotifier<PayoutMethod?> selectedPayoutMethod,
+    WidgetRef ref,
+    PayoutMethod? selectedPayoutMethod,
   ) =>
-      selectedPayoutMethod.value == null
+      selectedPayoutMethod == null
           ? _buildDisabledButton(context)
           : Expanded(
               child: JsonSchemaForm(
-                schema: selectedPayoutMethod.value?.requiredPaymentDetails
-                    ?.toJson(),
+                schema: selectedPayoutMethod.requiredPaymentDetails?.toJson(),
                 onSubmit: (formData) {
+                  // TODO(ethan-tbd): wait for quote to come back before navigating, https://github.com/TBD54566975/didpay/issues/131
+                  ref.read(
+                    rfqProvider(
+                      rfqState.copyWith(payoutMethod: selectedPayoutMethod),
+                    ),
+                  );
+
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => ReviewPaymentPage(
-                        payinAmount: payinAmount,
-                        payoutAmount: payoutAmount,
-                        payinCurrency: payinCurrency,
-                        payoutCurrency: payoutCurrency,
-                        exchangeRate: exchangeRate,
-                        serviceFee: selectedPayoutMethod.value?.fee ?? '0.00',
-                        transactionType: transactionType,
-                        paymentName: selectedPayoutMethod.value?.name ??
-                            selectedPayoutMethod.value?.kind ??
-                            '',
-                        formData: formData,
+                        rfqState: rfqState,
+                        paymentState: paymentState.copyWith(
+                          serviceFee: selectedPayoutMethod.fee,
+                          paymentName: selectedPayoutMethod.name ??
+                              selectedPayoutMethod.kind,
+                          formData: formData,
+                        ),
                       ),
                     ),
                   );

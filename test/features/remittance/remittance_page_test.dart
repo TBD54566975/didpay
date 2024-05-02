@@ -4,6 +4,7 @@ import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/remittance/remittance_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
@@ -24,8 +25,13 @@ void main() {
     testWidgets('should show payin and payout', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(country: country),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          child: const RemittancePage(
+            country: country,
+            rfqState: RfqState(),
+          ),
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -37,8 +43,13 @@ void main() {
     testWidgets('should show fee details', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(country: country),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          child: const RemittancePage(
+            country: country,
+            rfqState: RfqState(),
+          ),
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -49,8 +60,13 @@ void main() {
     testWidgets('should show next button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(country: country),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          child: const RemittancePage(
+            country: country,
+            rfqState: RfqState(),
+          ),
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings),
+          ],
         ),
       );
       await tester.pumpAndSettle();
@@ -62,8 +78,13 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const RemittancePage(country: country),
-          overrides: [offeringsProvider.overrideWith((ref) async => offerings)],
+          child: const RemittancePage(
+            country: country,
+            rfqState: RfqState(),
+          ),
+          overrides: [
+            offeringsProvider.overrideWith((ref, did) async => offerings),
+          ],
         ),
       );
       await tester.pumpAndSettle();

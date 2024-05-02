@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -9,26 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class ReviewPaymentPage extends HookWidget {
-  final String payinAmount;
-  final String payoutAmount;
-  final String payinCurrency;
-  final String payoutCurrency;
-  final String exchangeRate;
-  final String serviceFee;
-  final String paymentName;
-  final TransactionType transactionType;
-  final Map<String, String> formData;
+  // TODO(ethan-tbd): replace with quote, https://github.com/TBD54566975/didpay/issues/131
+  final RfqState rfqState;
+  final PaymentState paymentState;
 
   const ReviewPaymentPage({
-    required this.payinAmount,
-    required this.payoutAmount,
-    required this.payinCurrency,
-    required this.payoutCurrency,
-    required this.exchangeRate,
-    required this.serviceFee,
-    required this.paymentName,
-    required this.transactionType,
-    required this.formData,
+    required this.rfqState,
+    required this.paymentState,
     super.key,
   });
 
@@ -100,8 +89,8 @@ class ReviewPaymentPage extends HookWidget {
               Flexible(
                 child: AutoSizeText(
                   CurrencyUtil.formatFromString(
-                    payinAmount,
-                    currency: payinCurrency.toUpperCase(),
+                    rfqState.payinAmount ?? '0',
+                    currency: paymentState.payinCurrency.toUpperCase(),
                   ),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
@@ -111,7 +100,7 @@ class ReviewPaymentPage extends HookWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                 child: Text(
-                  payinCurrency,
+                  paymentState.payinCurrency,
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
@@ -126,14 +115,14 @@ class ReviewPaymentPage extends HookWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  payoutAmount,
+                  paymentState.payoutAmount,
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
                 ),
               ),
               const SizedBox(width: Grid.xs),
               Text(
-                payoutCurrency,
+                paymentState.payoutCurrency,
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
@@ -151,7 +140,8 @@ class ReviewPaymentPage extends HookWidget {
       TransactionType.send: Loc.of(context).youSend,
     };
 
-    final label = labels[transactionType] ?? 'unknown transaction type';
+    final label =
+        labels[paymentState.transactionType] ?? 'unknown transaction type';
 
     return Text(label, style: style);
   }
@@ -164,7 +154,8 @@ class ReviewPaymentPage extends HookWidget {
       TransactionType.send: Loc.of(context).theyGet,
     };
 
-    final label = labels[transactionType] ?? 'unknown transaction type';
+    final label =
+        labels[paymentState.transactionType] ?? 'unknown transaction type';
 
     return Text(label, style: style);
   }
@@ -173,17 +164,20 @@ class ReviewPaymentPage extends HookWidget {
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
         child: FeeDetails(
           payinCurrency: Loc.of(context).usd,
-          payoutCurrency: payinCurrency != Loc.of(context).usd
-              ? payinCurrency
-              : payoutCurrency,
-          exchangeRate: exchangeRate,
-          serviceFee: double.parse(serviceFee).toStringAsFixed(2),
-          total: payinCurrency != Loc.of(context).usd
-              ? (double.parse(payinAmount.replaceAll(',', '')) +
-                      double.parse(serviceFee))
+          payoutCurrency: paymentState.payinCurrency != Loc.of(context).usd
+              ? paymentState.payinCurrency
+              : paymentState.payoutCurrency,
+          exchangeRate: paymentState.exchangeRate,
+          serviceFee:
+              double.parse(paymentState.serviceFee ?? '0').toStringAsFixed(2),
+          total: paymentState.payinCurrency != Loc.of(context).usd
+              ? (double.parse(
+                        (rfqState.payinAmount ?? '0').replaceAll(',', ''),
+                      ) +
+                      double.parse(paymentState.serviceFee ?? '0'))
                   .toStringAsFixed(2)
-              : (double.parse(payoutAmount.replaceAll(',', '')) +
-                      double.parse(serviceFee))
+              : (double.parse(paymentState.payoutAmount.replaceAll(',', '')) +
+                      double.parse(paymentState.serviceFee ?? '0'))
                   .toStringAsFixed(2),
         ),
       );
@@ -193,9 +187,12 @@ class ReviewPaymentPage extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(paymentName, style: Theme.of(context).textTheme.bodyLarge),
+            Text(
+              paymentState.paymentName ?? '',
+              style: Theme.of(context).textTheme.bodyLarge,
+            ),
             const SizedBox(height: Grid.xxs),
-            ...formData.entries.map(
+            ...?paymentState.formData?.entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(
                   bottom: Grid.xxs,

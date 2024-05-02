@@ -318,7 +318,7 @@ packages:
     source: hosted
     version: "4.8.1"
   json_schema:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: json_schema
       sha256: f1bcf81647c347f53281dca9c8ea3e2b7b4d0eee5b4d1e4cee3173a5c162f358
@@ -663,7 +663,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "1129866805d5efe5ea5778c76e2b0ca7cd832da4"
+      resolved-ref: "498defebbbf444eac4ba501c94cfd5c7cfe61e95"
       url: "https://github.com/TBD54566975/tbdex-dart.git"
     source: git
     version: "1.0.0"
@@ -808,7 +808,7 @@ packages:
     description:
       path: "packages/web5"
       ref: main
-      resolved-ref: "3b7c7c393931f60a39e920af2e6c3d3226e648bc"
+      resolved-ref: ab92c4bde5662789b4b8c2fa00c5f373c20bfe6f
       url: "https://github.com/TBD54566975/web5-dart.git"
     source: git
     version: "0.1.0"
@@ -824,10 +824,10 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_android
-      sha256: f038ee2fae73b509dde1bc9d2c5a50ca92054282de17631a9a3d515883740934
+      sha256: dad3313c9ead95517bb1cae5e1c9d20ba83729d5a59e5e83c0a2d66203f27f91
       url: "https://pub.dev"
     source: hosted
-    version: "3.16.0"
+    version: "3.16.1"
   webview_flutter_platform_interface:
     dependency: transitive
     description:
@@ -848,10 +848,10 @@ packages:
     dependency: transitive
     description:
       name: win32
-      sha256: "0a989dc7ca2bb51eac91e8fd00851297cfffd641aa7538b165c62637ca0eaa4a"
+      sha256: "0eaf06e3446824099858367950a813472af675116bf63f008a4c2a75ae13e9cb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.0"
+    version: "5.5.0"
   win32_registry:
     dependency: transitive
     description:

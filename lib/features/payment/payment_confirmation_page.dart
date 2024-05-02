@@ -28,7 +28,7 @@ class PaymentConfirmationPage extends HookWidget {
     );
   }
 
-  // TODO(ethan-tbd): replace with call to pfi
+  // TODO(ethan-tbd): replace with call to pfi, https://github.com/TBD54566975/didpay/issues/125
   Future<void> sendPayment(ValueNotifier<String?> response) async {
     await Future.delayed(const Duration(milliseconds: 1000));
     response.value = 'success';

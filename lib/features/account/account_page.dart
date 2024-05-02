@@ -4,7 +4,7 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 
-// TODO(ethan-tbd): This page will be redesigned
+// TODO(ethan-tbd): redesign AccountPage, https://github.com/TBD54566975/didpay/issues/130
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});
 

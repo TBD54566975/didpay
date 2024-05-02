@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
+import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,15 +15,19 @@ void main() {
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewPaymentPage(
-          payinAmount: '1.00',
-          payinCurrency: 'USD',
-          exchangeRate: '17',
-          payoutAmount: '17.00',
-          payoutCurrency: 'MXN',
-          transactionType: TransactionType.deposit,
-          serviceFee: '9.0',
-          paymentName: 'ABC Bank',
-          formData: {'accountNumber': '1234567890'},
+          rfqState: RfqState(
+            payinAmount: '1.00',
+          ),
+          paymentState: PaymentState(
+            payoutAmount: '17.00',
+            payinCurrency: 'USD',
+            payoutCurrency: 'MXN',
+            exchangeRate: '17',
+            transactionType: TransactionType.deposit,
+            serviceFee: '9.0',
+            paymentName: 'ABC Bank',
+            formData: {'accountNumber': '1234567890'},
+          ),
         ),
         overrides: overrides,
       );
