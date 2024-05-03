@@ -28,6 +28,7 @@ final rfqProvider =
   }
 });
 
-final quoteProvider = AsyncNotifierProvider<QuoteAsyncNotifier, Quote?>(
+final quoteProvider =
+    AsyncNotifierProvider.autoDispose<QuoteAsyncNotifier, Quote?>(
   QuoteAsyncNotifier.new,
 );
