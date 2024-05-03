@@ -15,25 +15,17 @@ class PaymentDetails {
     BuildContext context,
     WidgetRef ref,
     RfqState rfqState,
-    PaymentState paymentState, {
-    PayinMethod? payinMethod,
-    PayoutMethod? payoutMethod,
-  }) {
-    bool isDisabled;
-    String? schema;
-    String? fee;
-    String? paymentName;
-    if (paymentState.transactionType == TransactionType.deposit) {
-      isDisabled = payinMethod == null;
-      schema = payinMethod?.requiredPaymentDetails?.toJson();
-      fee = payinMethod?.fee;
-      paymentName = payinMethod?.name ?? payinMethod?.kind;
-    } else {
-      isDisabled = payoutMethod == null;
-      schema = payoutMethod?.requiredPaymentDetails?.toJson();
-      fee = payoutMethod?.fee;
-      paymentName = payoutMethod?.name ?? payoutMethod?.kind;
-    }
+    PaymentState paymentState,
+  ) {
+    final paymentMethod =
+        paymentState.transactionType == TransactionType.deposit
+            ? rfqState.payinMethod
+            : rfqState.payoutMethod;
+
+    final isDisabled = paymentMethod.isDisabled;
+    final schema = paymentMethod.schema;
+    final fee = paymentMethod.serviceFee;
+    final paymentName = paymentMethod.paymentName;
 
     return isDisabled
         ? _buildDisabledButton(context)
@@ -73,4 +65,26 @@ class PaymentDetails {
           ],
         ),
       );
+}
+
+extension _PaymentMethodOperations on Object? {
+  bool get isDisabled => this == null;
+
+  String? get schema => this is PayinMethod
+      ? (this as PayinMethod?)?.requiredPaymentDetails?.toJson()
+      : this is PayoutMethod
+          ? (this as PayoutMethod?)?.requiredPaymentDetails?.toJson()
+          : null;
+
+  String? get serviceFee => this is PayinMethod
+      ? (this as PayinMethod?)?.fee
+      : this is PayoutMethod
+          ? (this as PayoutMethod?)?.fee
+          : null;
+
+  String? get paymentName => this is PayinMethod
+      ? (this as PayinMethod?)?.name ?? (this as PayinMethod?)?.kind
+      : this is PayoutMethod
+          ? (this as PayoutMethod?)?.name ?? (this as PayoutMethod?)?.kind
+          : null;
 }
