@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
+import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/fee_details.dart';
@@ -24,13 +25,16 @@ class ReviewPaymentPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    QuoteAsyncNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
     final quoteResult = ref.watch(quoteProvider);
 
     useEffect(
       () {
-        ref.read(rfqProvider(rfq));
-        ref.read(quoteProvider.notifier).startPolling(rfq.metadata.id);
-        return null;
+        Future.delayed(Duration.zero, () {
+          ref.read(rfqProvider(rfq));
+          getQuoteNotifier().startPolling(rfq.metadata.id);
+        });
+        return getQuoteNotifier().stopPolling;
       },
       [],
     );
@@ -67,7 +71,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
             loading: _loading,
             error: (error, stackTrace) => Center(
               child: Text(
-                'failed to get quote: $error',
+                'Failed to get quote: $error',
                 style: Theme.of(context).textTheme.displaySmall,
               ),
             ),
