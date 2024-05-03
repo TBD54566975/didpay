@@ -61,7 +61,7 @@ void main() {
               payinCurrency: 'USD',
               payoutCurrency: 'MXN',
               exchangeRate: '17',
-              transactionType: TransactionType.deposit,
+              transactionType: TransactionType.withdraw,
               payoutMethods: payoutMethods,
             ),
           ),
