@@ -65,3 +65,19 @@ coverage:
   flutter test --coverage
   genhtml coverage/lcov.info -o coverage/html
   open coverage/html/index.html
+
+# Set build number base on timestamp
+set-build-number:
+  #!/bin/bash
+  export PATH="$PATH:$HOME/.pub-cache/bin"
+  if ! command -v cider &> /dev/null
+  then
+      flutter pub global activate cider
+  else
+      echo "Cider is already installed."
+  fi
+  cider bump build --build=$(date '+%s')
+
+# Build android app bundle
+android-app-bundle:
+  flutter build appbundle

@@ -5,10 +5,10 @@ packages:
     dependency: transitive
     description:
       name: archive
-      sha256: "22600aa1e926be775fa5fe7e6894e7fb3df9efda8891c73f70fb3262399a432d"
+      sha256: "0763b45fa9294197a2885c8567927e2830ade852e5c896fd4ab7e0e348d0f373"
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.10"
+    version: "3.5.0"
   args:
     dependency: transitive
     description:
@@ -313,10 +313,10 @@ packages:
     dependency: transitive
     description:
       name: json_annotation
-      sha256: b10a7b2ff83d83c777edba3c6a0f97045ddadd56c944e1a23a3fdf43a1bf4467
+      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
       url: "https://pub.dev"
     source: hosted
-    version: "4.8.1"
+    version: "4.9.0"
   json_schema:
     dependency: "direct dev"
     description:
@@ -808,7 +808,7 @@ packages:
     description:
       path: "packages/web5"
       ref: main
-      resolved-ref: ab92c4bde5662789b4b8c2fa00c5f373c20bfe6f
+      resolved-ref: "1bc969484bf7613840f921231176adf43a5f0d2c"
       url: "https://github.com/TBD54566975/web5-dart.git"
     source: git
     version: "0.1.0"
