@@ -27,7 +27,7 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref, did) async => offerings),
+            offeringsProvider.overrideWith((ref) async => offerings),
           ],
         ),
       );
@@ -44,7 +44,7 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref, did) async => offerings),
+            offeringsProvider.overrideWith((ref) async => offerings),
           ],
         ),
       );
@@ -60,7 +60,7 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref, did) async => offerings),
+            offeringsProvider.overrideWith((ref) async => offerings),
           ],
         ),
       );
@@ -77,7 +77,7 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref, did) async => offerings),
+            offeringsProvider.overrideWith((ref) async => offerings),
           ],
         ),
       );
@@ -103,7 +103,7 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref, did) async => offerings),
+            offeringsProvider.overrideWith((ref) async => offerings),
           ],
         ),
       );

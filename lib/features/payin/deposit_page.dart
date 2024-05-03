@@ -1,5 +1,3 @@
-import 'package:didpay/config/config.dart';
-import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payin/payin_details_page.dart';
@@ -24,11 +22,8 @@ class DepositPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final country = ref.read(countryProvider);
-    final pfi = Config.getPfi(country);
-
     // TODO(ethan-tbd): filter offerings with STORED_BALANCE as payout, https://github.com/TBD54566975/didpay/issues/132
-    final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
+    final offerings = ref.watch(offeringsProvider);
 
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
@@ -137,7 +132,7 @@ class DepositPage extends HookConsumerWidget {
             builder: (context) => PayinDetailsPage(
               rfqState: rfqState.copyWith(
                 payinAmount: payinAmount,
-                offeringId: selectedOffering?.metadata.id ?? '',
+                offering: selectedOffering,
                 payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
                 payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
               ),

@@ -1,13 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
+import 'package:didpay/features/payment/payment_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -81,7 +79,12 @@ class PayinDetailsPage extends HookConsumerWidget {
                 selectedPayinMethod,
                 filteredPayinMethods,
               ),
-            _buildForm(context, ref, selectedPayinMethod.value),
+            PaymentDetails.buildForm(
+              context,
+              ref,
+              rfqState.copyWith(payinMethod: selectedPayinMethod.value),
+              paymentState,
+            ),
           ],
         ),
       ),
@@ -203,55 +206,4 @@ class PayinDetailsPage extends HookConsumerWidget {
       ],
     );
   }
-
-  Widget _buildForm(
-    BuildContext context,
-    WidgetRef ref,
-    PayinMethod? selectedPayinMethod,
-  ) =>
-      selectedPayinMethod == null
-          ? _buildDisabledButton(context)
-          : Expanded(
-              child: JsonSchemaForm(
-                schema: selectedPayinMethod.requiredPaymentDetails?.toJson(),
-                onSubmit: (formData) {
-                  // TODO(ethan-tbd): wait for quote to come back before navigating, https://github.com/TBD54566975/didpay/issues/131
-                  ref.read(
-                    rfqProvider(
-                      rfqState.copyWith(payinMethod: selectedPayinMethod),
-                    ),
-                  );
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ReviewPaymentPage(
-                        rfqState: rfqState,
-                        paymentState: paymentState.copyWith(
-                          serviceFee: selectedPayinMethod.fee,
-                          paymentName: selectedPayinMethod.name ??
-                              selectedPayinMethod.kind,
-                          formData: formData,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-
-  Widget _buildDisabledButton(BuildContext context) => Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: Container()),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: null,
-                child: Text(Loc.of(context).next),
-              ),
-            ),
-          ],
-        ),
-      );
 }

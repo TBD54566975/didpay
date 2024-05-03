@@ -1,4 +1,3 @@
-import 'package:didpay/config/config.dart';
 import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin.dart';
@@ -29,9 +28,8 @@ class RemittancePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pfi = Config.getPfi(country);
     // TODO(ethan-tbd): use country to filter offerings, https://github.com/TBD54566975/didpay/issues/134
-    final offerings = ref.watch(offeringsProvider(pfi?.didUri ?? ''));
+    final offerings = ref.watch(offeringsProvider);
 
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
@@ -138,7 +136,7 @@ class RemittancePage extends HookConsumerWidget {
             builder: (context) => PayoutDetailsPage(
               rfqState: rfqState.copyWith(
                 payinAmount: payinAmount,
-                offeringId: selectedOffering?.metadata.id ?? '',
+                offering: selectedOffering,
                 payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
                 payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
               ),
@@ -149,7 +147,7 @@ class RemittancePage extends HookConsumerWidget {
                     selectedOffering?.data.payout.currencyCode ?? '',
                 exchangeRate:
                     selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-                transactionType: TransactionType.deposit,
+                transactionType: TransactionType.send,
                 payoutMethods: selectedOffering?.data.payout.methods ?? [],
               ),
             ),
