@@ -82,9 +82,8 @@ class PayinDetailsPage extends HookConsumerWidget {
             PaymentDetails.buildForm(
               context,
               ref,
-              rfqState,
+              rfqState.copyWith(payinMethod: selectedPayinMethod.value),
               paymentState,
-              payinMethod: selectedPayinMethod.value,
             ),
           ],
         ),
