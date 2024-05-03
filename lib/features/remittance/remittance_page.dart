@@ -147,7 +147,7 @@ class RemittancePage extends HookConsumerWidget {
                     selectedOffering?.data.payout.currencyCode ?? '',
                 exchangeRate:
                     selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-                transactionType: TransactionType.deposit,
+                transactionType: TransactionType.send,
                 payoutMethods: selectedOffering?.data.payout.methods ?? [],
               ),
             ),
