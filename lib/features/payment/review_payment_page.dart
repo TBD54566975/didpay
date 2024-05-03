@@ -193,16 +193,15 @@ class ReviewPaymentPage extends HookConsumerWidget {
               ? quote.payin.currencyCode
               : quote.payout.currencyCode,
           exchangeRate: paymentState.exchangeRate,
-          serviceFee:
-              double.parse(paymentState.serviceFee ?? '0').toStringAsFixed(2),
-          total: quote.payin.currencyCode != Loc.of(context).usd
+          serviceFee: double.parse(quote.payout.fee ?? '0').toStringAsFixed(2),
+          total: paymentState.transactionType == TransactionType.deposit
               ? (double.parse(
                         quote.payin.amount.replaceAll(',', ''),
-                      ) +
-                      double.parse(paymentState.serviceFee ?? '0'))
+                      ) -
+                      double.parse(quote.payin.fee ?? '0'))
                   .toStringAsFixed(2)
-              : (double.parse(quote.payout.amount.replaceAll(',', '')) +
-                      double.parse(paymentState.serviceFee ?? '0'))
+              : (double.parse(quote.payout.amount.replaceAll(',', '')) -
+                      double.parse(quote.payout.fee ?? '0'))
                   .toStringAsFixed(2),
         ),
       );
