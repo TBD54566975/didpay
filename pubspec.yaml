@@ -43,6 +43,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^3.0.0
   mocktail: ^1.0.2
+  flutter_launcher_icons: ^0.13.1
   json_schema: ^5.1.7
 
 flutter:
@@ -57,3 +58,9 @@ flutter:
           weight: 700
         - asset: assets/fonts/IBMPlexMono-SemiBold.ttf
           weight: 600
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#ffffff"
