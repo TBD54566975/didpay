@@ -185,6 +185,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
     return Text(label, style: style);
   }
 
+  // TODO(ethan-tbd): clean up this widget, https://github.com/TBD54566975/didpay/issues/143
   Widget _buildFeeDetails(BuildContext context, QuoteData quote) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
         child: FeeDetails(
