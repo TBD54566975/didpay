@@ -1,0 +1,57 @@
+name: DIDPay Android Beta
+
+on:
+  schedule:
+    - cron: "0 8 * * *" # 8 AM UTC
+  workflow_dispatch:
+
+jobs:
+  android-beta:
+    name: Android build signed app bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v2
+        with:
+          distribution: "zulu"
+          java-version: "17"
+
+      - name: Init Hermit
+        uses: cashapp/activate-hermit@v1
+        with:
+          cache: true
+
+      - name: Install dependencies
+        run: just get
+
+      - name: Create didpay.keystore and key.properties file
+        run: |
+          run: echo "${{ secrets.BETA_ANDROID_KEY_STORE }}" | base64 --decode > android/app/didpay.keystore
+          echo "storePassword=${{ secrets.BETA_ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyPassword=${{ secrets.BETA_ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=didpay" >> android/key.properties
+          echo "storeFile=didpay.keystore" >> android/key.properties
+
+      - name: Setup cider for versioning
+        run: |
+          flutter pub global activate cider
+          echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+
+      - name: Version the build
+        id: versioning
+        run: |
+          just set-build-number
+          VERSION_NAME=$(cider version)
+          echo "Version Name: $VERSION_NAME"
+          echo "::set-output name=version_name::$VERSION_NAME"
+
+      - name: Build appbundle
+        run: just build-app-bundle
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: android-beta
+          path: build/app/outputs/bundle/release/app-release.aab
