@@ -1,40 +1,77 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:didpay/config/config.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class QuoteAsyncNotifier extends AsyncNotifier<Quote?> {
-  static const _refreshInterval = Duration(seconds: 2);
+class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
+  static const _maxCallsPerInterval = 10;
+  static const _maxPollingDuration = Duration(minutes: 2);
+
+  static final List<Duration> _backoffIntervals = [
+    const Duration(seconds: 1),
+    const Duration(seconds: 5),
+    const Duration(seconds: 10),
+    const Duration(seconds: 20),
+  ];
+
+  int _numCalls = 0;
   Timer? _timer;
+  DateTime? _pollingStart;
+  Duration _currentInterval = _backoffIntervals.first;
 
   @override
-  FutureOr<Quote?> build() {
-    return null;
-  }
+  FutureOr<Quote?> build() => null;
 
   void startPolling(String exchangeId) {
     _timer?.cancel();
-    _timer = Timer.periodic(_refreshInterval, (_) async {
+    _pollingStart ??= DateTime.now();
+
+    if (DateTime.now().difference(_pollingStart!) > _maxPollingDuration) {
+      state = AsyncValue.error(
+        Exception('forced timeout after 2 minutes'),
+        StackTrace.current,
+      );
+      stopPolling();
+      return;
+    }
+    state = const AsyncValue.loading();
+
+    _timer = Timer.periodic(_currentInterval, (_) async {
       try {
         final exchange = await _fetchExchange(exchangeId);
         if (_containsQuote(exchange)) {
           state = AsyncValue.data(_getQuote(exchange));
-          _stopPolling();
+          stopPolling();
         } else {
-          state = const AsyncValue.loading();
+          _increaseBackoff(exchangeId);
         }
       } on Exception catch (e) {
-        state = AsyncValue.error(e, StackTrace.current);
-        _stopPolling();
+        state = AsyncValue.error(
+          Exception('Failed to fetch exchange: $e'),
+          StackTrace.current,
+        );
+        stopPolling();
       }
     });
   }
 
-  void _stopPolling() {
+  void _increaseBackoff(String exchangeId) {
+    _currentInterval = _backoffIntervals[
+        min(_numCalls ~/ _maxCallsPerInterval, _backoffIntervals.length - 1)];
+    _numCalls++;
+
+    startPolling(exchangeId);
+  }
+
+  void stopPolling() {
     _timer?.cancel();
     _timer = null;
+    _pollingStart = null;
+    _numCalls = 0;
+    _currentInterval = _backoffIntervals.first;
   }
 
   Future<Exchange> _fetchExchange(String exchangeId) async {
