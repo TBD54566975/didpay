@@ -1,4 +1,4 @@
-name: DIDPay Android Beta
+name: Android Beta
 
 on:
   schedule:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   android-beta:
-    name: Android build signed app bundle
+    name: Android build beta
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
 
       - name: Create didpay.keystore and key.properties file
         run: |
-          run: echo "${{ secrets.BETA_ANDROID_KEY_STORE }}" | base64 --decode > android/app/didpay.keystore
+          echo "${{ secrets.BETA_ANDROID_KEY_STORE }}" | base64 --decode > android/app/didpay.keystore
           echo "storePassword=${{ secrets.BETA_ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyPassword=${{ secrets.BETA_ANDROID_KEYSTORE_PASSWORD }}" >> android/key.properties
           echo "keyAlias=didpay" >> android/key.properties
@@ -47,11 +47,28 @@ jobs:
           echo "Version Name: $VERSION_NAME"
           echo "::set-output name=version_name::$VERSION_NAME"
 
+      - name: Create tags
+        run: |
+          TAG_NAME="android-beta-${{ steps.versioning.outputs.version_name }}"
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_ENV
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git tag -a $TAG_NAME -m "Release $TAG_NAME"
+          git push origin $TAG_NAME
+
       - name: Build appbundle
-        run: just build-app-bundle
+        run: just android-apk
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v3
         with:
           name: android-beta
-          path: build/app/outputs/bundle/release/app-release.aab
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Create Github Release
+        uses: softprops/action-gh-release@v1
+        with:
+          generate_release_notes: true
+          prerelease: true
+          files: build/app/outputs/flutter-apk/app-release.apk
+          tag_name: ${{ env.TAG_NAME }}

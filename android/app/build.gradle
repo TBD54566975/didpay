@@ -61,11 +61,10 @@ android {
         release {
             keyAlias keyProperties['keyAlias']
             keyPassword keyProperties['keyPassword']
-            storeFile file(keyProperties['storeFile'])
+            storeFile keyProperties['storeFile'] ? file(keyProperties['storeFile']) : null
             storePassword keyProperties['storePassword']
         }
     }
-
     buildTypes {
         release {
             signingConfig signingConfigs.release

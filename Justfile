@@ -81,3 +81,7 @@ set-build-number:
 # Build android app bundle
 android-app-bundle:
   flutter build appbundle
+
+# Build android apk
+android-apk:
+  flutter build apk --release
