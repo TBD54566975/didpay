@@ -72,7 +72,7 @@ void main() {
       expect(find.textContaining('AUD'), findsOneWidget);
     });
 
-    testWidgets('should show deposit label', (tester) async {
+    testWidgets('should show pay label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: Payin(
@@ -85,7 +85,7 @@ void main() {
         ),
       );
 
-      expect(find.text('You deposit'), findsOneWidget);
+      expect(find.text('You pay'), findsOneWidget);
     });
 
     testWidgets('should show withdraw label', (tester) async {
