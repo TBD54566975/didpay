@@ -100,5 +100,19 @@
     "youSend": "You send",
     "theyGet": "They get",
     "sendMoneyAbroad": "Send money abroad",
-    "selectCountryToGetStarted": "Select a country to get started"
+    "selectCountryToGetStarted": "Select a country to get started",
+    "exchangeRate": "Exchange rate",
+    "txnTypeFee": "{txnType} fee",
+    "@txnTypeFee": {
+        "placeholders": {
+            "txnType": {
+                "type": "String"
+            }
+        }
+    },
+    "requestedAmount": "Requested amount",
+    "totalToAccount": "Total to account",
+    "totalToYou": "Total to you",
+    "totalToRecipient": "Total to recipient",
+    "pay": "Pay"
 }
