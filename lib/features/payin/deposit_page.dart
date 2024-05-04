@@ -69,16 +69,8 @@ class DepositPage extends HookConsumerWidget {
                           ),
                           const SizedBox(height: Grid.xl),
                           FeeDetails(
-                            payinCurrency: selectedOffering
-                                    .value?.data.payin.currencyCode ??
-                                '',
-                            payoutCurrency: selectedOffering
-                                    .value?.data.payout.currencyCode ??
-                                '',
-                            exchangeRate: selectedOffering
-                                    .value?.data.payoutUnitsPerPayinUnit ??
-                                '',
-                            serviceFee: '0',
+                            transactionType: TransactionType.deposit,
+                            offering: selectedOffering.value?.data,
                           ),
                         ],
                       ),
