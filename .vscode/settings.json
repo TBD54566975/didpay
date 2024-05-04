@@ -11,5 +11,11 @@
   },
   "[markdown]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "terminal.integrated.env.osx": {
+    "ACTIVE_HERMIT": null,
+    "HERMIT_ENV": null,
+    "HERMIT_ENV_OPS": null,
+    "HERMIT_BIN": null
+  },
 }
