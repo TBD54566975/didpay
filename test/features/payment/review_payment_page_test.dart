@@ -69,7 +69,7 @@ void main() async {
       await tester.pumpAndSettle();
 
       expect(find.byType(FeeDetails), findsOneWidget);
-      expect(find.text('0.50 MXN'), findsOneWidget);
+      expect(find.text('0.5 MXN'), findsOneWidget);
     });
 
     testWidgets('should show bank name', (tester) async {
@@ -81,14 +81,14 @@ void main() async {
       expect(find.text('ABC Bank'), findsOneWidget);
     });
 
-    testWidgets('should show request confirmation page on tap of submit button',
+    testWidgets('should show payment confirmation page on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Submit'));
+      await tester.tap(find.text('Pay 10.11 USD'));
       await tester.pumpAndSettle();
 
       expect(find.byType(PaymentConfirmationPage), findsOneWidget);

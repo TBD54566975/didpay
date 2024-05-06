@@ -558,6 +558,48 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select a country to get started'**
   String get selectCountryToGetStarted;
+
+  /// No description provided for @exchangeRate.
+  ///
+  /// In en, this message translates to:
+  /// **'Exchange rate'**
+  String get exchangeRate;
+
+  /// No description provided for @txnTypeFee.
+  ///
+  /// In en, this message translates to:
+  /// **'{txnType} fee'**
+  String txnTypeFee(String txnType);
+
+  /// No description provided for @requestedAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'Requested amount'**
+  String get requestedAmount;
+
+  /// No description provided for @totalToAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Total to account'**
+  String get totalToAccount;
+
+  /// No description provided for @totalToYou.
+  ///
+  /// In en, this message translates to:
+  /// **'Total to you'**
+  String get totalToYou;
+
+  /// No description provided for @totalToRecipient.
+  ///
+  /// In en, this message translates to:
+  /// **'Total to recipient'**
+  String get totalToRecipient;
+
+  /// No description provided for @pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get pay;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

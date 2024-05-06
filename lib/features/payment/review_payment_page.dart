@@ -64,7 +64,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      _buildSubmitButton(context),
+                      _buildSubmitButton(context, quote.data),
                     ],
                   )
                 : _loading(),
@@ -136,7 +136,10 @@ class ReviewPaymentPage extends HookConsumerWidget {
             ],
           ),
           const SizedBox(height: Grid.xxs),
-          _buildPayinLabel(context),
+          Text(
+            Loc.of(context).requestedAmount,
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
           const SizedBox(height: Grid.sm),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -161,26 +164,12 @@ class ReviewPaymentPage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildPayinLabel(BuildContext context) {
-    final style = Theme.of(context).textTheme.bodySmall;
-    final labels = {
-      TransactionType.deposit: Loc.of(context).youPay,
-      TransactionType.withdraw: Loc.of(context).withdrawAmount,
-      TransactionType.send: Loc.of(context).youSend,
-    };
-
-    final label =
-        labels[paymentState.transactionType] ?? 'unknown transaction type';
-
-    return Text(label, style: style);
-  }
-
   Widget _buildPayoutLabel(BuildContext context) {
     final style = Theme.of(context).textTheme.bodySmall;
     final labels = {
-      TransactionType.deposit: Loc.of(context).depositAmount,
-      TransactionType.withdraw: Loc.of(context).youGet,
-      TransactionType.send: Loc.of(context).theyGet,
+      TransactionType.deposit: Loc.of(context).totalToAccount,
+      TransactionType.withdraw: Loc.of(context).totalToYou,
+      TransactionType.send: Loc.of(context).totalToRecipient,
     };
 
     final label =
@@ -189,25 +178,11 @@ class ReviewPaymentPage extends HookConsumerWidget {
     return Text(label, style: style);
   }
 
-  // TODO(ethan-tbd): clean up this widget, https://github.com/TBD54566975/didpay/issues/143
   Widget _buildFeeDetails(BuildContext context, QuoteData quote) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
         child: FeeDetails(
-          payinCurrency: Loc.of(context).usd,
-          payoutCurrency: quote.payin.currencyCode != Loc.of(context).usd
-              ? quote.payin.currencyCode
-              : quote.payout.currencyCode,
-          exchangeRate: paymentState.exchangeRate,
-          serviceFee: double.parse(quote.payout.fee ?? '0').toStringAsFixed(2),
-          total: paymentState.transactionType == TransactionType.deposit
-              ? (double.parse(
-                        quote.payin.amount.replaceAll(',', ''),
-                      ) -
-                      double.parse(quote.payin.fee ?? '0'))
-                  .toStringAsFixed(2)
-              : (double.parse(quote.payout.amount.replaceAll(',', '')) -
-                      double.parse(quote.payout.fee ?? '0'))
-                  .toStringAsFixed(2),
+          transactionType: paymentState.transactionType,
+          quote: quote,
         ),
       );
 
@@ -236,7 +211,8 @@ class ReviewPaymentPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildSubmitButton(BuildContext context) => FilledButton(
+  Widget _buildSubmitButton(BuildContext context, QuoteData quote) =>
+      FilledButton(
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
@@ -244,6 +220,8 @@ class ReviewPaymentPage extends HookConsumerWidget {
             ),
           );
         },
-        child: Text(Loc.of(context).submit),
+        child: Text(
+          '${Loc.of(context).pay} ${FeeDetails.calculateTotalAmount(quote)} ${quote.payin.currencyCode}',
+        ),
       );
 }

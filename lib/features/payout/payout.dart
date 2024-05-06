@@ -97,10 +97,16 @@ class Payout extends HookWidget {
     }
   }
 
-  Widget _buildPayoutLabel(BuildContext context) => Text(
-        transactionType == TransactionType.send
-            ? Loc.of(context).theyGet
-            : Loc.of(context).youGet,
-        style: Theme.of(context).textTheme.bodyLarge,
-      );
+  Widget _buildPayoutLabel(BuildContext context) {
+    final style = Theme.of(context).textTheme.bodyLarge;
+    final labels = {
+      TransactionType.deposit: Loc.of(context).youDeposit,
+      TransactionType.withdraw: Loc.of(context).youGet,
+      TransactionType.send: Loc.of(context).theyGet,
+    };
+
+    final label = labels[transactionType] ?? 'unknown transaction type';
+
+    return Text(label, style: style);
+  }
 }

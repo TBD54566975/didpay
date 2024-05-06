@@ -76,7 +76,7 @@ void main() {
           child: Payout(
             payoutAmount: amount,
             selectedOffering: offering,
-            transactionType: TransactionType.deposit,
+            transactionType: TransactionType.withdraw,
             payinAmount: 0,
             offerings: const [],
           ),

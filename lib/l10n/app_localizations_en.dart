@@ -243,4 +243,27 @@ class LocEn extends Loc {
 
   @override
   String get selectCountryToGetStarted => 'Select a country to get started';
+
+  @override
+  String get exchangeRate => 'Exchange rate';
+
+  @override
+  String txnTypeFee(String txnType) {
+    return '$txnType fee';
+  }
+
+  @override
+  String get requestedAmount => 'Requested amount';
+
+  @override
+  String get totalToAccount => 'Total to account';
+
+  @override
+  String get totalToYou => 'Total to you';
+
+  @override
+  String get totalToRecipient => 'Total to recipient';
+
+  @override
+  String get pay => 'Pay';
 }

@@ -161,7 +161,7 @@ class Payin extends HookWidget {
   Widget _buildPayinLabel(BuildContext context) {
     final style = Theme.of(context).textTheme.bodyLarge;
     final labels = {
-      TransactionType.deposit: Loc.of(context).youDeposit,
+      TransactionType.deposit: Loc.of(context).youPay,
       TransactionType.withdraw: Loc.of(context).youWithdraw,
       TransactionType.send: Loc.of(context).youSend,
     };
