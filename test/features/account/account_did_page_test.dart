@@ -6,7 +6,7 @@ import 'package:web5/web5.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() async {
-  final did = await DidJwk.create();
+  final did = await DidDht.create();
 
   group('AccountDidPage', () {
     testWidgets('should show the DID', (tester) async {

@@ -301,6 +301,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.18.1"
+  iregexp:
+    dependency: transitive
+    description:
+      name: iregexp
+      sha256: "143859dcaeecf6f683102786762d70a47ef8441a0d2287a158172d32d38799cf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   js:
     dependency: transitive
     description:
@@ -317,6 +325,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.9.0"
+  json_path:
+    dependency: transitive
+    description:
+      name: json_path
+      sha256: "149d32ceb7dc22422ea6d09e401fd688f54e1343bc9ff8c3cb1900ca3b1ad8b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.1"
   json_schema:
     dependency: "direct dev"
     description:
@@ -389,6 +405,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.8.0"
+  maybe_just_nothing:
+    dependency: transitive
+    description:
+      name: maybe_just_nothing
+      sha256: "0c06326e26d08f6ed43247404376366dc4d756cef23a4f1db765f546224c35e0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.3"
   meta:
     dependency: transitive
     description:
@@ -497,10 +521,10 @@ packages:
     dependency: transitive
     description:
       name: pointycastle
-      sha256: "79fbafed02cfdbe85ef3fd06c7f4bc2cbcba0177e61b765264853d4253b21744"
+      sha256: "4be0097fcf3fd3e8449e53730c631200ebc7b88016acecab2b0da2f0149222fe"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.9.1"
   qr:
     dependency: transitive
     description:
@@ -663,7 +687,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "498defebbbf444eac4ba501c94cfd5c7cfe61e95"
+      resolved-ref: "16c13c9485059fb5bf5eb21a06c684138e37b2d5"
       url: "https://github.com/TBD54566975/tbdex-dart.git"
     source: git
     version: "1.0.0"
@@ -808,7 +832,7 @@ packages:
     description:
       path: "packages/web5"
       ref: main
-      resolved-ref: "1bc969484bf7613840f921231176adf43a5f0d2c"
+      resolved-ref: "721fe2329d45eb19446f372e0f350185271f72ae"
       url: "https://github.com/TBD54566975/web5-dart.git"
     source: git
     version: "0.1.0"
