@@ -21,7 +21,7 @@ void main() {
     test('should get IDV request', () async {
       final uri = Uri.parse('http://idv.com');
       final uri2 = Uri.parse('response_uri');
-      final bearerDid = await DidJwk.create();
+      final bearerDid = await DidDht.create(publish: true);
       final jwtClaims = JwtClaims(
         iss: 'did:example:123',
         aud: 'clientId',

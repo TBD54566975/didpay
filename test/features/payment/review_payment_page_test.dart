@@ -25,7 +25,7 @@ void main() async {
   final rfqJson = jsonDecode(rfqString);
   final rfq = Rfq.fromJson(rfqJson);
 
-  final did = await DidJwk.create();
+  final did = await DidDht.create();
 
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(

@@ -7,7 +7,7 @@ import 'package:web5/web5.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() async {
-  final did = await DidJwk.create();
+  final did = await DidDht.create();
 
   group('SendDidPage', () {
     testWidgets('should show QR Code CTA', (tester) async {
