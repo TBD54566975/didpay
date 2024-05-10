@@ -14,26 +14,26 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class ReviewPaymentPage extends HookConsumerWidget {
-  final Rfq rfq;
+  final String exchangeId;
   final PaymentState paymentState;
 
   const ReviewPaymentPage({
-    required this.rfq,
+    required this.exchangeId,
     required this.paymentState,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final quoteStatus = ref.watch(quoteProvider);
     QuoteAsyncNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
-    final quoteResult = ref.watch(quoteProvider);
 
     useEffect(
       () {
-        Future.delayed(Duration.zero, () {
-          ref.read(rfqProvider(rfq));
-          getQuoteNotifier().startPolling(rfq.metadata.id);
-        });
+        Future.delayed(
+          Duration.zero,
+          () => getQuoteNotifier().startPolling(exchangeId),
+        );
         return getQuoteNotifier().stopPolling;
       },
       [],
@@ -44,12 +44,16 @@ class ReviewPaymentPage extends HookConsumerWidget {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-          child: quoteResult.when(
+          child: quoteStatus.when(
             data: (quote) => quote != null
                 ? Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      _buildHeader(context),
+                      _buildHeader(
+                        context,
+                        Loc.of(context).reviewYourPayment,
+                        Loc.of(context).makeSureInfoIsCorrect,
+                      ),
                       Expanded(
                         child: SingleChildScrollView(
                           physics: const BouncingScrollPhysics(),
@@ -64,17 +68,13 @@ class ReviewPaymentPage extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      _buildSubmitButton(context, quote.data),
+                      _buildSubmitButton(context, ref, quote),
                     ],
                   )
                 : _loading(),
             loading: _loading,
-            error: (error, stackTrace) => Center(
-              child: Text(
-                'Failed to get quote: $error',
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-            ),
+            error: (error, stackTrace) =>
+                _buildErrorWidget(context, ref, quoteStatus.error.toString()),
           ),
         ),
       ),
@@ -83,14 +83,36 @@ class ReviewPaymentPage extends HookConsumerWidget {
 
   Widget _loading() => const Center(child: CircularProgressIndicator());
 
-  Widget _buildHeader(BuildContext context) => Padding(
+  Widget _buildErrorWidget(
+    BuildContext context,
+    WidgetRef ref,
+    String errorMessage,
+  ) {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _buildHeader(context, Loc.of(context).errorFound, errorMessage),
+          Expanded(child: Container()),
+          FilledButton(
+            onPressed: () =>
+                ref.read(quoteProvider.notifier).startPolling(exchangeId),
+            child: Text(Loc.of(context).tapToRetry),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+      Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.xs),
         child: Column(
           children: [
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                Loc.of(context).reviewYourPayment,
+                title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -100,7 +122,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                Loc.of(context).makeSureInfoIsCorrect,
+                subtitle,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
@@ -211,7 +233,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildSubmitButton(BuildContext context, QuoteData quote) =>
+  Widget _buildSubmitButton(BuildContext context, WidgetRef ref, Quote quote) =>
       FilledButton(
         onPressed: () {
           Navigator.of(context).push(
@@ -221,7 +243,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
           );
         },
         child: Text(
-          '${Loc.of(context).pay} ${FeeDetails.calculateTotalAmount(quote)} ${quote.payin.currencyCode}',
+          '${Loc.of(context).pay} ${FeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
         ),
       );
 }

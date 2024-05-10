@@ -266,4 +266,10 @@ class LocEn extends Loc {
 
   @override
   String get pay => 'Pay';
+
+  @override
+  String get errorFound => 'Error found';
+
+  @override
+  String get tapToRetry => 'Tap to retry';
 }

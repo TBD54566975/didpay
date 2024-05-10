@@ -114,5 +114,7 @@
     "totalToAccount": "Total to account",
     "totalToYou": "Total to you",
     "totalToRecipient": "Total to recipient",
-    "pay": "Pay"
+    "pay": "Pay",
+    "errorFound": "Error found",
+    "tapToRetry": "Tap to retry"
 }

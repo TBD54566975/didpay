@@ -600,6 +600,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Pay'**
   String get pay;
+
+  /// No description provided for @errorFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Error found'**
+  String get errorFound;
+
+  /// No description provided for @tapToRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to retry'**
+  String get tapToRetry;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
