@@ -112,7 +112,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                Loc.of(context).reviewYourPayment,
+                title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -122,7 +122,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                Loc.of(context).makeSureInfoIsCorrect,
+                subtitle,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
