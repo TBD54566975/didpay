@@ -39,25 +39,23 @@ class PaymentDetails {
           // TODO(mistermoe): check requiredClaims and navigate to kcc flow if needed, https://github.com/TBD54566975/didpay/issues/122
           isLoading.value = true;
           ref.read(rfqProvider(rfq).future).then(
-                (_) => Navigator.of(context)
-                    .push(
-                      MaterialPageRoute(
-                        builder: (context) => ReviewPaymentPage(
-                          exchangeId: rfq.metadata.id,
-                          paymentState: paymentState.copyWith(
-                            serviceFee: fee,
-                            paymentName: paymentName,
-                            formData: formData,
-                          ),
-                        ),
-                      ),
-                    )
-                    .then(
-                      (_) => WidgetsBinding.instance
-                          .addPostFrameCallback((_) => isLoading.value = false),
+            (_) async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => ReviewPaymentPage(
+                    exchangeId: rfq.metadata.id,
+                    paymentState: paymentState.copyWith(
+                      serviceFee: fee,
+                      paymentName: paymentName,
+                      formData: formData,
                     ),
-                onError: (error) => isLoading.value = false,
+                  ),
+                ),
               );
+              isLoading.value = false;
+            },
+            onError: (_) => isLoading.value = false,
+          );
         },
       ),
     );
