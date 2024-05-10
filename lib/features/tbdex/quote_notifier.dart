@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:didpay/config/config.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/tbdex/tbdex_exceptions.dart';
+import 'package:didpay/shared/http_status.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
@@ -50,7 +52,7 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
         }
       } on Exception catch (e) {
         state = AsyncValue.error(
-          Exception('Failed to fetch exchange: $e'),
+          e,
           StackTrace.current,
         );
         stopPolling();
@@ -79,13 +81,17 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
     final country = ref.read(countryProvider);
     final pfi = Config.getPfi(country);
 
-    final exchange = await TbdexHttpClient.getExchange(
+    final response = await TbdexHttpClient.getExchange(
       did,
       pfi?.didUri ?? '',
       exchangeId,
     );
 
-    return exchange;
+    if (response.statusCode.category != HttpStatus.success) {
+      throw QuoteException('failed to retrieve quote', response.statusCode);
+    }
+
+    return response.data ?? [];
   }
 
   bool _containsQuote(Exchange exchange) =>
