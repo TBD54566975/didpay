@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/payin_details_page.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
@@ -10,10 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:tbdex/tbdex.dart';
+import 'package:web5/web5.dart';
 
 import '../../helpers/widget_helpers.dart';
 
-void main() {
+void main() async {
+  final did = await DidDht.create();
+
   group('PayinDetailsPage', () {
     final schema = JsonSchema.create(
       jsonDecode(r'''
@@ -65,6 +69,9 @@ void main() {
               payinMethods: payinMethods,
             ),
           ),
+          overrides: [
+            didProvider.overrideWithValue(did),
+          ],
         );
 
     testWidgets('should show header', (tester) async {

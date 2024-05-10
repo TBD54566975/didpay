@@ -20,18 +20,13 @@ import 'package:web5/web5.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() async {
-  const rfqString =
-      '{"metadata":{"kind":"rfq","to":"did:web:localhost%3A8892:ingress","from":"did:jwk:eyJrdHkiOiJPS1AiLCJhbGciOiJFZERTQSIsImtpZCI6ImRGU3FyQzlwZTBKc3kzVk1wRWpUVjdQalJTYlRvTXROWDI5dUZrRVZ3YTAiLCJjcnYiOiJFZDI1NTE5IiwieCI6Im9NQ0JpUTdpaWtWdk13aFRkRllYdHJSSFJaTmpmeDNyN1N0TlBQbVF0ak0ifQ","id":"rfq_01hwxpmsrje6cts27kdzy3n66y","exchangeId":"rfq_01hwxpmsrje6cts27kdzy3n66y","createdAt":"2024-05-02T22:26:20.060100Z","protocol":"1.0"},"data":{"offeringId":"offering_01hv22zfv1eptadkm92v278gh9","payin":{"amount":"22","kind":"STORED_BALANCE"},"payout":{"kind":"SPEI"},"claimsHash":"MyMUVjLdERoAqNHo0C_tGr1_QSN_jSZ_sM6U_X8rIgM"},"privateData":{"salt":"qZ8FwUP6Mz5BPYmyR59HoA","claims":[]},"signature":"eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpqd2s6ZXlKcmRIa2lPaUpQUzFBaUxDSmhiR2NpT2lKRlpFUlRRU0lzSW10cFpDSTZJbVJHVTNGeVF6bHdaVEJLYzNrelZrMXdSV3BVVmpkUWFsSlRZbFJ2VFhST1dESTVkVVpyUlZaM1lUQWlMQ0pqY25ZaU9pSkZaREkxTlRFNUlpd2llQ0k2SW05TlEwSnBVVGRwYVd0V2RrMTNhRlJrUmxsWWRISlNTRkphVG1wbWVETnlOMU4wVGxCUWJWRjBhazBpZlEjMCJ9..AwP6XJf1IYeMVgKg7xryN61o_ZT-E9JBMhjYWxDCIC_y9uUhQvAgvKa6FQkdiINtma0NulMsQyCS6NyhAdqSDA"}';
-  final rfqJson = jsonDecode(rfqString);
-  final rfq = Rfq.fromJson(rfqJson);
-
   final did = await DidDht.create();
 
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
-        child: ReviewPaymentPage(
-          rfq: rfq,
-          paymentState: const PaymentState(
+        child: const ReviewPaymentPage(
+          exchangeId: '',
+          paymentState: PaymentState(
             payoutAmount: '17.00',
             payinCurrency: 'USD',
             payoutCurrency: 'MXN',
