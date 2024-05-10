@@ -8,27 +8,41 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class JsonSchemaForm extends HookWidget {
   final String? schema;
+  final bool isDisabled;
+  final bool isLoading;
   final void Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> formData = {};
 
-  JsonSchemaForm({required this.schema, required this.onSubmit, super.key});
+  JsonSchemaForm({
+    required this.schema,
+    required this.onSubmit,
+    this.isDisabled = false,
+    this.isLoading = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
+    void onPressed(Map<String, String> data) {
+      if (schema == null) {
+        onSubmit(data);
+      } else {
+        if (_formKey.currentState != null &&
+            (_formKey.currentState?.validate() ?? false)) {
+          _formKey.currentState?.save();
+          onSubmit(data);
+        }
+      }
+    }
+
     if (schema == null) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Spacer(),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-            child: FilledButton(
-              onPressed: () => onSubmit(formData),
-              child: Text(Loc.of(context).next),
-            ),
-          ),
+          _buildNextButton(context, onPressed),
         ],
       );
     }
@@ -86,18 +100,7 @@ class JsonSchemaForm extends HookWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-            child: FilledButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  onSubmit(formData);
-                }
-              },
-              child: Text(Loc.of(context).next),
-            ),
-          ),
+          _buildNextButton(context, onPressed),
         ],
       ),
     );
@@ -144,4 +147,33 @@ class JsonSchemaForm extends HookWidget {
 
     return null;
   }
+
+  Widget _buildNextButton(
+    BuildContext context,
+    void Function(Map<String, String>) onPressed,
+  ) =>
+      Expanded(
+        child: Column(
+          crossAxisAlignment: isLoading
+              ? CrossAxisAlignment.center
+              : CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: Container()),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+              child: isDisabled
+                  ? FilledButton(
+                      onPressed: null,
+                      child: Text(Loc.of(context).next),
+                    )
+                  : isLoading
+                      ? const CircularProgressIndicator()
+                      : FilledButton(
+                          onPressed: () => onPressed(formData),
+                          child: Text(Loc.of(context).next),
+                        ),
+            ),
+          ],
+        ),
+      );
 }
