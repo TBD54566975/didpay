@@ -1,4 +1,6 @@
+import 'package:didpay/features/kcc/kcc_agreement_page.dart';
 import 'package:didpay/features/onboarding/onboarding_country_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';

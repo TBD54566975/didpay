@@ -7,12 +7,13 @@ import 'package:didpay/shared/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web5/web5.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
+  await Permission.camera.request();
   final sharedPreferences = await SharedPreferences.getInstance();
 
   var storage = const FlutterSecureStorage(

@@ -13,7 +13,8 @@ class Config {
   static const _tbdPfi = Pfi(
     id: '1',
     name: 'TBD PFI',
-    didUri: 'did:web:localhost%3A8892:ingress',
+    // didUri: 'did:web:localhost%3A8892:ingress',
+    didUri: 'did:web:192.168.50.27%3A8892:ingress',
   );
 
   static List<Country> devCountries = [_us, _mx];

@@ -9,8 +9,8 @@ final offeringsProvider =
   try {
     final country = ref.read(countryProvider);
     final pfi = Config.getPfi(country);
-    final offerings = await TbdexHttpClient.getOfferings(pfi?.didUri ?? '');
-    return offerings;
+    final offerings = await TbdexHttpClient.listOfferings(pfi?.didUri ?? '');
+    return offerings.data!;
   } on Exception catch (e) {
     throw Exception('Failed to load offerings: $e');
   }

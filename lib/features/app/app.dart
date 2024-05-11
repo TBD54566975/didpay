@@ -1,4 +1,5 @@
 import 'package:didpay/features/app/app_tabs.dart';
+import 'package:didpay/features/kcc/kcc_test_page.dart';
 import 'package:didpay/features/onboarding/welcome_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/theme.dart';
@@ -14,7 +15,8 @@ class App extends StatelessWidget {
       title: 'DIDPay',
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      home: onboarding ? const WelcomePage() : const AppTabs(),
+      // home: onboarding ? const WelcomePage() : const AppTabs(),
+      home: const KccTestPage(),
       localizationsDelegates: Loc.localizationsDelegates,
       supportedLocales: const [
         Locale('en', ''),

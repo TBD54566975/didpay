@@ -79,13 +79,13 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
     final country = ref.read(countryProvider);
     final pfi = Config.getPfi(country);
 
-    final exchange = await TbdexHttpClient.getExchange(
+    final resp = await TbdexHttpClient.getExchange(
       did,
       pfi?.didUri ?? '',
       exchangeId,
     );
 
-    return exchange;
+    return resp.data!;
   }
 
   bool _containsQuote(Exchange exchange) =>

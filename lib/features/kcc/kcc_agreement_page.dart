@@ -1,20 +1,19 @@
-import 'package:didpay/config/config.dart';
+import 'package:didpay/features/kcc/kcc_webview_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/pfis/pfi_verification_page.dart';
-import 'package:didpay/features/wallets/wallet_selection_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AgreementPage extends HookWidget {
-  final Pfi pfi;
+class KccAgreementPage extends HookConsumerWidget {
+  final NuPfi pfi;
 
-  const AgreementPage({required this.pfi, super.key});
+  const KccAgreementPage({required this.pfi, super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasAgreed = useState(false);
 
     return Scaffold(
@@ -30,7 +29,7 @@ class AgreementPage extends HookWidget {
             ),
             const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
-            _buildNextButton(context, hasAgreed.value),
+            _buildNextButton(context, ref, hasAgreed.value),
           ],
         ),
       ),
@@ -117,6 +116,7 @@ class AgreementPage extends HookWidget {
 
   Widget _buildNextButton(
     BuildContext context,
+    WidgetRef ref,
     bool hasAgreed,
   ) =>
       Padding(
@@ -127,9 +127,7 @@ class AgreementPage extends HookWidget {
               : () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (_) => Config.hasWalletPicker
-                          ? WalletSelectionPage(pfi: pfi)
-                          : PfiVerificationPage(pfi: pfi),
+                      builder: (_) => KccWebviewPage(pfi: pfi),
                     ),
                   );
                 },
