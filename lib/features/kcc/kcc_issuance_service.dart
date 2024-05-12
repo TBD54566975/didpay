@@ -45,7 +45,8 @@ class KccIssuanceService {
 
   /// Requests an access token from the PFI (aka KCC issuer) using the
   /// pre-authorized code from the IDV request.
-  /// Info on the request being sent can be found [here](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#name-token-endpoint)
+  ///
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#name-token-endpoint)
   Future<TokenResponse> getAccessToken(NuPfi pfi, IdvRequest idvRequest) async {
     //! TODO: replace this hardcoded endpoint with a request to well-known
     //! metadata endpoint to get actual endpoint
@@ -73,14 +74,6 @@ class KccIssuanceService {
         cause: e,
       );
     }
-
-    response = await httpClient.post(
-      tokenEndpoint,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(tokenRequest.toMap()),
-    );
 
     if (response.statusCode == 200) {
       try {
@@ -116,7 +109,163 @@ class KccIssuanceService {
     }
   }
 
-  Future<void> getVerifiableCredential(NuPfi pfi, TokenResponse tokenResponse) {
-    throw UnimplementedError();
+  Future<CredentialResponse> getVerifiableCredential(
+    NuPfi pfi,
+    IdvRequest idvRequest,
+    TokenResponse tokenResponse,
+    BearerDid bearerDid,
+  ) async {
+    // create proof jwt per https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-7.2.1.1
+    final proofClaims = JwtClaims(
+      aud: pfi.did.uri,
+      iss: bearerDid.uri,
+      misc: {'nonce': tokenResponse.cNonce},
+    );
+
+    //! TODO: update web5-dart to allow custom typ value
+    //! https://github.com/TBD54566975/web5-dart/issues/84
+    String proofJwt;
+    try {
+      proofJwt = await Jwt.sign(did: bearerDid, payload: proofClaims);
+    } on Exception catch (e) {
+      throw CredentialRequestException(
+        message: 'failed to sign proof jwt',
+        cause: e,
+      );
+    }
+
+    // TODO: check for tokenResponse.credential_identifiers before setting format
+    final credentialRequest = CredentialRequest(
+      format: 'jwt_vc_json',
+      proof: ProofJwt(jwt: proofJwt),
+    );
+
+    late http.Response response;
+    try {
+      response = await httpClient.post(
+        idvRequest.credentialOffer.credentialIssuerUrl,
+        headers: {
+          'Authorization': 'Bearer ${tokenResponse.accessToken}',
+          'Content-Type': 'application/json',
+        },
+        body: credentialRequest.toJson(),
+      );
+    } on Exception catch (e) {
+      throw CredentialRequestException(
+        message: 'failed to send credential request',
+        cause: e,
+      );
+    }
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      try {
+        return CredentialResponse.fromJson(response.body);
+      } on Exception catch (e) {
+        throw CredentialUnknownResponseException(
+          message: 'failed to parse response body',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      CredentialErrorResponse errorResp;
+      try {
+        errorResp = CredentialErrorResponse.fromJson(response.body);
+      } on Exception catch (e) {
+        throw CredentialUnknownResponseException(
+          message: 'failed to parse error response',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+
+      throw CredentialResponseException.fromErrorResponse(errorResp);
+    } else {
+      throw CredentialUnknownResponseException(
+        message: 'unexpected response status',
+        status: response.statusCode,
+        body: response.body,
+      );
+    }
+  }
+
+  /// used to receive a Credential previously requested using [getVerifiableCredential]
+  /// in cases where the Credential Issuer was not able to immediately issue the
+  /// Credential. Support for this endpoint is OPTIONAL.
+  ///
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-9)
+  Future<CredentialResponse> getDeferredVerifiableCredential(
+    NuPfi pfi,
+    IdvRequest idvRequest,
+    TokenResponse tokenResponse,
+    CredentialResponse previousCredentialResponse,
+    BearerDid bearerDid,
+  ) async {
+    if (previousCredentialResponse.transactionId == null) {
+      throw DeferredCredentialRequestException(
+        message: 'previous credential response does not have transaction id',
+      );
+    }
+
+    // TODO: Get Issuer metadata to get deferred credential endpoint
+    final deferredCredentialEndpoint = Uri.parse(
+      'https://example.com/deferred-credential-endpoint',
+    );
+
+    final deferredCredentialRequest = DeferredCredentialRequest(
+      transactionId: previousCredentialResponse.transactionId!,
+    );
+
+    http.Response response;
+    try {
+      response = await httpClient.post(
+        deferredCredentialEndpoint,
+        headers: {
+          'Authorization': 'Bearer ${tokenResponse.accessToken}',
+          'Content-Type': 'application/json',
+        },
+        body: deferredCredentialRequest.toJson(),
+      );
+    } on Exception catch (e) {
+      throw DeferredCredentialRequestException(
+        message: 'failed to send deferred credential request',
+        cause: e,
+      );
+    }
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      try {
+        return CredentialResponse.fromJson(response.body);
+      } on Exception catch (e) {
+        throw DeferredCredentialUnknownResponseException(
+          message: 'failed to parse response body',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+    } else if (response.statusCode >= 400 && response.statusCode < 500) {
+      DeferredCredentialErrorResponse errorResp;
+      try {
+        errorResp = DeferredCredentialErrorResponse.fromJson(response.body);
+      } on Exception catch (e) {
+        throw DeferredCredentialUnknownResponseException(
+          message: 'failed to parse error response',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+
+      throw DeferredCredentialResponseException.fromErrorResponse(errorResp);
+    } else {
+      throw DeferredCredentialUnknownResponseException(
+        message: 'unexpected response status',
+        status: response.statusCode,
+        body: response.body,
+      );
+    }
   }
 }

@@ -11,7 +11,7 @@ class CredentialRequest {
   /// parameters that are defined in Appendix A. When this parameter is used,
   /// the credential_identifier Credential Request parameter MUST NOT be present.
   /// [Reference](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#section-7.2-2.1)
-  String format;
+  String? format;
 
   /// OPTIONAL. Contains the proof of possession of the cryptographic
   /// key material the issued Credential would be bound to. The proof object is
@@ -22,7 +22,7 @@ class CredentialRequest {
   /// [Reference](https://openid.net/specs/openid-4-verifiable-credential-issuance-1_0.html#section-7.2-2.2.2.1)
   ProofJwt proof;
 
-  CredentialRequest({required this.format, required this.proof});
+  CredentialRequest({required this.proof, this.format});
 
   String toJson() {
     return jsonEncode(toMap());
@@ -30,8 +30,8 @@ class CredentialRequest {
 
   Map<String, dynamic> toMap() {
     return {
-      'format': format,
       'proof': proof.toMap(),
+      if (format != null) 'format': format,
     };
   }
 }

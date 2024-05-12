@@ -10,6 +10,7 @@ class TokenResponse {
   /// The type of the token issued as described in [Section 7.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-7.1).
   /// Value is case insensitive. Expected to be `bearer per [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750)
   String tokenType;
+
   int expiresIn;
 
   /// String containing a nonce to be used when creating a proof of possession
@@ -64,38 +65,37 @@ class TokenResponse {
 /// Enum representing OAuth 2.0 error codes as defined in [RFC 6749 Section 5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
 /// In addition to the error codes added in the [OID4VC spec](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.3).
 enum TokenResponseErrorCode {
-  /// The request is missing a required parameter, includes an
-  /// unsupported parameter value (other than grant type),
-  /// repeats a parameter, includes multiple credentials,
-  /// utilizes more than one mechanism for authenticating the
-  /// client, or is otherwise malformed.
+  /// Occurs if
+  /// * The Authorization Server does not expect a Transaction Code in the
+  ///   Pre-Authorized Code Flow but the Client provides a Transaction Code.
+  /// * The Authorization Server expects a Transaction Code in the
+  ///   Pre-Authorized Code Flow but the Client does not provide a
+  ///   Transaction Code.
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.3-3)
   invalidRequest('invalid_request'),
 
   /// The client is not authorized to request an authorization
   /// code using this method.
+  ///
+  /// [Reference](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
   unauthorizedClient('unauthorized_client'),
 
-  /// The resource owner or authorization server denied the request.
-  accessDenied('access_denied'),
+  /// The Client tried to send a Token Request with a Pre-Authorized Code
+  /// without a Client ID but the Authorization Server does not support
+  /// anonymous access.
+  ///
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.3-7)
+  invalidClient('invalid_client'),
 
-  /// The authorization server does not support obtaining an
-  /// authorization code using this method.
-  unsupportedResponseType('unsupported_response_type'),
+  /// The authorization grant type is not supported by the authorization server
+  ///
+  /// [Reference](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
+  unsupportedGrantType('unsupported_grant_type'),
 
   /// The requested scope is invalid, unknown, or malformed.
+  ///
+  /// [Reference](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
   invalidScope('invalid_scope'),
-
-  /// The authorization server encountered an unexpected condition that
-  /// prevented it from fulfilling the request. (This error code is needed
-  /// because a 500 Internal Server Error HTTP status code cannot
-  /// be returned to the client via an HTTP redirect.)
-  serverError('server_error'),
-
-  /// The authorization server is currently unable to handle the request
-  /// due to a temporary overloading or maintenance of the server.
-  /// (This error code is needed because a 503 Service Unavailable HTTP
-  /// status code cannot be returned to the client via an HTTP redirect.)
-  temporarilyUnavailable('temporarily_unavailable'),
 
   /// This error code is used if the Authorization Server is waiting for an
   /// End-User interaction or a downstream process to complete. The Wallet

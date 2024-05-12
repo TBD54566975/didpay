@@ -16,7 +16,7 @@ class IdvRequest {
 }
 
 class CredentialOffer {
-  String credentialIssuerUrl;
+  Uri credentialIssuerUrl;
   List<String> credentialConfigurationIds;
   Grants grants;
 
@@ -32,7 +32,7 @@ class CredentialOffer {
 
   factory CredentialOffer.fromJson(Map<String, dynamic> data) {
     return CredentialOffer(
-      credentialIssuerUrl: data['credential_issuer'],
+      credentialIssuerUrl: Uri.parse(data['credential_issuer']),
       credentialConfigurationIds:
           List<String>.from(data['credential_configuration_ids']),
       grants: Grants.fromJson(data['grants']),
