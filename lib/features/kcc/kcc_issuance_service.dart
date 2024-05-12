@@ -1,9 +1,6 @@
 import 'dart:convert';
 
-import 'package:didpay/features/kcc/idv_request.dart';
-import 'package:didpay/features/kcc/oid4vc_exception.dart';
-import 'package:didpay/features/kcc/siopv2.dart';
-import 'package:didpay/features/kcc/token_request.dart';
+import 'package:didpay/features/kcc/lib.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -89,7 +86,7 @@ class KccIssuanceService {
       try {
         return TokenResponse.fromJson(response.body);
       } on Exception catch (e) {
-        throw TokenResponseException(
+        throw TokenUnknownResponseException(
           message: 'failed to parse response body',
           status: response.statusCode,
           cause: e,
@@ -97,11 +94,11 @@ class KccIssuanceService {
         );
       }
     } else if (response.statusCode >= 400 && response.statusCode < 500) {
-      OID4VCErrorResponse errorResp;
+      TokenErrorResponse errorResp;
       try {
-        errorResp = OID4VCErrorResponse.fromJson(response.body);
+        errorResp = TokenErrorResponse.fromJson(response.body);
       } on Exception catch (e) {
-        throw TokenResponseException(
+        throw TokenUnknownResponseException(
           message: 'failed to parse error response',
           status: response.statusCode,
           cause: e,
@@ -109,9 +106,9 @@ class KccIssuanceService {
         );
       }
 
-      throw OID4VCException.fromErrorResponse(errorResp);
+      throw TokenResponseException.fromErrorResponse(errorResp);
     } else {
-      throw TokenResponseException(
+      throw TokenUnknownResponseException(
         message: 'unexpected response status',
         status: response.statusCode,
         body: response.body,

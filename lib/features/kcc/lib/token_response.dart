@@ -1,8 +1,69 @@
 import 'dart:convert';
 
+/// Represents a successful response to an access token request as described
+/// in [RFC 6749 Section 5.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.1).
+/// This includes fields specific to the OID4VCI per [Section 6.2](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.2)
+class TokenResponse {
+  /// The access token issued by the authorization server
+  String accessToken;
+
+  /// The type of the token issued as described in [Section 7.1](https://www.rfc-editor.org/rfc/rfc6749.html#section-7.1).
+  /// Value is case insensitive. Expected to be `bearer per [RFC 6750](https://www.rfc-editor.org/rfc/rfc6750)
+  String tokenType;
+  int expiresIn;
+
+  /// String containing a nonce to be used when creating a proof of possession
+  /// of the key proof (see Section 7.2). When received, the Wallet MUST use
+  /// this nonce value for its subsequent requests until the Credential Issuer
+  /// provides a fresh nonce.
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.2-4.1)
+  String cNonce;
+
+  /// Number denoting the lifetime in seconds of the c_nonce
+  /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.2-4.2)
+  int cNonceExpiresIn;
+
+  TokenResponse({
+    required this.accessToken,
+    required this.tokenType,
+    required this.expiresIn,
+    required this.cNonce,
+    required this.cNonceExpiresIn,
+  });
+
+  factory TokenResponse.fromJson(String input) {
+    final data = jsonDecode(input);
+    return TokenResponse.fromMap(data);
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
+  factory TokenResponse.fromMap(Map<String, dynamic> json) {
+    return TokenResponse(
+      accessToken: json['access_token'] as String,
+      tokenType: json['token_type'] as String,
+      expiresIn: json['expires_in'] as int,
+      cNonce: json['c_nonce'] as String,
+      cNonceExpiresIn: json['c_nonce_expires_in'] as int,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'access_token': accessToken,
+      'token_type': tokenType,
+      'expires_in': expiresIn,
+      'c_nonce': cNonce,
+      'c_nonce_expires_in': cNonceExpiresIn,
+    };
+  }
+}
+
 /// Enum representing OAuth 2.0 error codes as defined in [RFC 6749 Section 5.2](https://www.rfc-editor.org/rfc/rfc6749.html#section-5.2)
 /// In addition to the error codes added in the [OID4VC spec](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#section-6.3).
-enum OID4VCErrorCode {
+enum TokenResponseErrorCode {
   /// The request is missing a required parameter, includes an
   /// unsupported parameter value (other than grant type),
   /// repeats a parameter, includes multiple credentials,
@@ -57,14 +118,14 @@ enum OID4VCErrorCode {
   /// The machine-readable code of the error as specified in the OAuth 2.0 spec.
   final String code;
 
-  const OID4VCErrorCode(this.code);
+  const TokenResponseErrorCode(this.code);
 }
 
 /// Represents error responses returned from OAuth2.0 endpoints
 /// as defined in RFC 6749 Section 5.2.
-class OID4VCErrorResponse {
+class TokenErrorResponse {
   /// A single ASCII [error] code.
-  OID4VCErrorCode error;
+  TokenResponseErrorCode error;
 
   /// Optional text providing additional information, used to assist
   /// the client developer in understanding the error that occurred.
@@ -81,15 +142,15 @@ class OID4VCErrorResponse {
   /// authorization request. The exact value received from the client.
   String? state;
 
-  OID4VCErrorResponse({
+  TokenErrorResponse({
     required this.error,
     this.errorDescription,
     this.errorUri,
     this.state,
   });
 
-  factory OID4VCErrorResponse.fromJson(String input) {
-    return OID4VCErrorResponse.fromMap(jsonDecode(input));
+  factory TokenErrorResponse.fromJson(String input) {
+    return TokenErrorResponse.fromMap(jsonDecode(input));
   }
 
   String toJson() {
@@ -97,16 +158,17 @@ class OID4VCErrorResponse {
   }
 
   /// Creates an instance from a map.
-  factory OID4VCErrorResponse.fromMap(Map<String, dynamic> json) {
-    return OID4VCErrorResponse(
-      error: OID4VCErrorCode.values.firstWhere((e) => e.code == json['error']),
+  factory TokenErrorResponse.fromMap(Map<String, dynamic> json) {
+    return TokenErrorResponse(
+      error: TokenResponseErrorCode.values
+          .firstWhere((e) => e.code == json['error']),
       errorDescription: json['error_description'],
       errorUri: json['error_uri'],
       state: json['state'],
     );
   }
 
-  /// Converts the [OID4VCErrorResponse] to a map.
+  /// Converts the [TokenErrorResponse] to a map.
   Map<String, dynamic> toMap() {
     return {
       'error': error.code,
@@ -118,9 +180,9 @@ class OID4VCErrorResponse {
 }
 
 /// Custom exception for handling OID4VC Exceptions.
-class OID4VCException implements Exception {
-  /// see [OID4VCErrorCode]
-  final OID4VCErrorCode errorCode;
+class TokenResponseException implements Exception {
+  /// see [TokenResponseErrorCode]
+  final TokenResponseErrorCode errorCode;
 
   /// Optional text providing additional information, used to assist
   /// the client developer in understanding the error that occurred.
@@ -137,7 +199,7 @@ class OID4VCException implements Exception {
   /// authorization request. The exact value received from the client.
   final String? state;
 
-  OID4VCException({
+  TokenResponseException({
     required this.errorCode,
     this.errorDescription,
     this.errorUri,
@@ -149,13 +211,41 @@ class OID4VCException implements Exception {
     return 'OID4VCException: ${errorCode.code} - $errorDescription';
   }
 
-  /// Creates an [OID4VCException] from an [OID4VCErrorResponse].
-  static OID4VCException fromErrorResponse(OID4VCErrorResponse response) {
-    return OID4VCException(
+  /// Creates an [TokenResponseException] from an [TokenErrorResponse].
+  static TokenResponseException fromErrorResponse(TokenErrorResponse response) {
+    return TokenResponseException(
       errorCode: response.error,
       errorDescription: response.errorDescription,
       errorUri: response.errorUri,
       state: response.state,
     );
+  }
+}
+
+/// Exception thrown when there is an error in processing the token response.
+class TokenUnknownResponseException implements Exception {
+  final String message;
+  final int status;
+  final String? body;
+  final Exception? cause;
+
+  TokenUnknownResponseException({
+    required this.message,
+    required this.status,
+    this.body,
+    this.cause,
+  });
+
+  @override
+  String toString() {
+    final parts = ['TokenResponseException: $message', 'Status: $status'];
+
+    if (body != null) {
+      parts.add('Response Body: $body');
+    }
+    if (cause != null) {
+      parts.add('Caused by: $cause');
+    }
+    return parts.join('\n');
   }
 }
