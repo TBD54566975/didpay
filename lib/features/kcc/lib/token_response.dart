@@ -208,7 +208,7 @@ class TokenResponseException implements Exception {
 
   @override
   String toString() {
-    return 'OID4VCException: ${errorCode.code} - $errorDescription';
+    return 'TokenResponseException: ${errorCode.code} - $errorDescription';
   }
 
   /// Creates an [TokenResponseException] from an [TokenErrorResponse].

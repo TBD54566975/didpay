@@ -2,11 +2,8 @@ import 'dart:convert';
 
 import 'package:didpay/features/kcc/lib.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:web5/web5.dart';
-
-final kccIssuanceServiceProvider = Provider((ref) => KccIssuanceService());
 
 class KccIssuanceService {
   final http.Client httpClient;
@@ -47,16 +44,22 @@ class KccIssuanceService {
   /// pre-authorized code from the IDV request.
   ///
   /// [Reference](https://openid.github.io/OpenID4VCI/openid-4-verifiable-credential-issuance-wg-draft.html#name-token-endpoint)
-  Future<TokenResponse> getAccessToken(NuPfi pfi, IdvRequest idvRequest) async {
+  Future<TokenResponse> getAccessToken(
+    NuPfi pfi,
+    IdvRequest idvRequest,
+    BearerDid bearerDid,
+  ) async {
     //! TODO: replace this hardcoded endpoint with a request to well-known
     //! metadata endpoint to get actual endpoint
     final tokenEndpoint =
         pfi.idvServiceEndpoint.replace(path: '/ingress/oidc/token');
 
+    print("Token endpoint: $tokenEndpoint");
+
     final tokenRequest = TokenRequest(
       preAuthCode: idvRequest.credentialOffer.preAuthorizedCode,
       grantType: idvRequest.credentialOffer.grantType,
-      clientId: pfi.did.uri,
+      clientId: bearerDid.uri,
     );
 
     http.Response response;
@@ -122,11 +125,13 @@ class KccIssuanceService {
       misc: {'nonce': tokenResponse.cNonce},
     );
 
-    //! TODO: update web5-dart to allow custom typ value
-    //! https://github.com/TBD54566975/web5-dart/issues/84
     String proofJwt;
     try {
-      proofJwt = await Jwt.sign(did: bearerDid, payload: proofClaims);
+      proofJwt = await Jwt.sign(
+        did: bearerDid,
+        payload: proofClaims,
+        type: 'openid4vci-proof+jwt',
+      );
     } on Exception catch (e) {
       throw CredentialRequestException(
         message: 'failed to sign proof jwt',
@@ -140,10 +145,16 @@ class KccIssuanceService {
       proof: ProofJwt(jwt: proofJwt),
     );
 
+    print('url: ${idvRequest.credentialOffer.credentialIssuerUrl}');
+
     late http.Response response;
+
+    final credentialIssuerUrl = pfi.idvServiceEndpoint.replace(
+      path: '/ingress/credentials',
+    );
     try {
       response = await httpClient.post(
-        idvRequest.credentialOffer.credentialIssuerUrl,
+        credentialIssuerUrl,
         headers: {
           'Authorization': 'Bearer ${tokenResponse.accessToken}',
           'Content-Type': 'application/json',

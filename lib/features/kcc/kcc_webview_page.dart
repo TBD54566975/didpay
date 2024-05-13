@@ -1,15 +1,12 @@
-import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/kcc/idv_request.dart';
 import 'package:didpay/features/kcc/kcc_confirmation_page.dart';
-import 'package:didpay/features/kcc/kcc_issuance_service.dart';
+import 'package:didpay/features/kcc/providers.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class KccWebviewPage extends HookConsumerWidget {
+class KccWebviewPage extends StatelessWidget {
   final NuPfi pfi;
 
   const KccWebviewPage({
@@ -18,7 +15,7 @@ class KccWebviewPage extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final settings = InAppWebViewSettings(
       isInspectable: kDebugMode,
       mediaPlaybackRequiresUserGesture: false,
@@ -27,56 +24,52 @@ class KccWebviewPage extends HookConsumerWidget {
       iframeAllowFullscreen: true,
     );
 
-    final idvRequest = useState<IdvRequest?>(null);
-
-    useEffect(
-      () {
-        Future.microtask(() async {
-          final kccIssuance = ref.read(kccIssuanceServiceProvider);
-          final bearerDid = ref.read(didProvider);
-
-          idvRequest.value = await kccIssuance.getIdvRequest(pfi, bearerDid);
-        });
-
-        return null;
-      },
-      [],
-    );
-
     return Scaffold(
       appBar: AppBar(title: const Text('PFI Verification')),
-      body: idvRequest.value == null
-          ? const Center(child: CircularProgressIndicator())
-          : InAppWebView(
-              initialSettings: settings,
-              onWebViewCreated: (c) {
-                final fullPath = Uri.parse(idvRequest.value!.url)
-                    .replace(port: 5173, scheme: 'https')
-                    .toString();
+      body: Consumer(
+        builder: (context, ref, _) {
+          final idvRequest = ref.watch(idvRequestProvider(pfi));
 
-                c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
-              },
-              onCloseWindow: (controller) {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => KccConfirmationPage(
-                      pfi: pfi,
-                      idvRequest: idvRequest.value!,
+          return idvRequest.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            data: (idvRequest) {
+              return InAppWebView(
+                initialSettings: settings,
+                onWebViewCreated: (c) {
+                  final fullPath = Uri.parse(idvRequest.url)
+                      .replace(port: 5173, scheme: 'https')
+                      .toString();
+
+                  c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
+                },
+                onCloseWindow: (controller) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => KccConfirmationPage(
+                        pfi: pfi,
+                        idvRequest: idvRequest,
+                      ),
                     ),
-                  ),
-                );
-              },
-              onReceivedServerTrustAuthRequest: (controller, challenge) async {
-                return ServerTrustAuthResponse(
-                  action: ServerTrustAuthResponseAction.PROCEED,
-                );
-              },
-              onPermissionRequest: (controller, permissionRequest) async {
-                return PermissionResponse(
-                  action: PermissionResponseAction.GRANT,
-                );
-              },
-            ),
+                  );
+                },
+                onReceivedServerTrustAuthRequest:
+                    (controller, challenge) async {
+                  return ServerTrustAuthResponse(
+                    action: ServerTrustAuthResponseAction.PROCEED,
+                  );
+                },
+                onPermissionRequest: (controller, permissionRequest) async {
+                  return PermissionResponse(
+                    action: PermissionResponseAction.GRANT,
+                  );
+                },
+              );
+            },
+            error: (e, s) =>
+                const Center(child: Text('Failed to load IDV request')),
+          );
+        },
+      ),
     );
   }
 }
