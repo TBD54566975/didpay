@@ -160,16 +160,15 @@ class HomePage extends HookConsumerWidget {
             ),
           ),
           Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async => notifier.fetch(),
-              child: exchangesStatus.when(
-                data: (exchange) => exchange == null || exchange.isEmpty
-                    ? _buildEmptyState(context)
-                    : _buildTransactionsList(context, exchange),
-                error: (error, stackTrace) => _buildErrorState(context),
-                loading: () => const CircularProgressIndicator(),
-                skipLoadingOnReload: true,
-              ),
+            child: exchangesStatus.when(
+              data: (exchange) => exchange == null || exchange.isEmpty
+                  ? _buildEmptyState(context)
+                  : RefreshIndicator(
+                      onRefresh: () async => notifier.fetch(),
+                      child: _buildTransactionsList(context, exchange),
+                    ),
+              error: (error, stackTrace) => _buildErrorState(context),
+              loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ),
         ],
