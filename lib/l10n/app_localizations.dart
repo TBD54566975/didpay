@@ -612,6 +612,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Tap to retry'**
   String get tapToRetry;
+
+  /// No description provided for @unableToRetrieveTxns.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to retrieve transactions'**
+  String get unableToRetrieveTxns;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

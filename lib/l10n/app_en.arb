@@ -116,5 +116,6 @@
     "totalToRecipient": "Total to recipient",
     "pay": "Pay",
     "errorFound": "Error found",
-    "tapToRetry": "Tap to retry"
+    "tapToRetry": "Tap to retry",
+    "unableToRetrieveTxns": "Unable to retrieve transactions"
 }

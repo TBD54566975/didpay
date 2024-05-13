@@ -272,4 +272,7 @@ class LocEn extends Loc {
 
   @override
   String get tapToRetry => 'Tap to retry';
+
+  @override
+  String get unableToRetrieveTxns => 'Unable to retrieve transactions';
 }
