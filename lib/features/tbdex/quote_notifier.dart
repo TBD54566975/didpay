@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:didpay/config/config.dart';
-import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/tbdex/tbdex_exceptions.dart';
-import 'package:didpay/shared/http_status.dart';
+import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
@@ -43,7 +40,7 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
 
     _timer = Timer.periodic(_currentInterval, (_) async {
       try {
-        final exchange = await _fetchExchange(exchangeId);
+        final exchange = await ref.read(exchangeProvider(exchangeId).future);
         if (_containsQuote(exchange)) {
           state = AsyncValue.data(_getQuote(exchange));
           stopPolling();
@@ -74,24 +71,6 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
     _pollingStart = null;
     _numCalls = 0;
     _currentInterval = _backoffIntervals.first;
-  }
-
-  Future<Exchange> _fetchExchange(String exchangeId) async {
-    final did = ref.read(didProvider);
-    final country = ref.read(countryProvider);
-    final pfi = Config.getPfi(country);
-
-    final response = await TbdexHttpClient.getExchange(
-      did,
-      pfi?.didUri ?? '',
-      exchangeId,
-    );
-
-    if (response.statusCode.category != HttpStatus.success) {
-      throw QuoteException('failed to retrieve quote', response.statusCode);
-    }
-
-    return response.data ?? [];
   }
 
   bool _containsQuote(Exchange exchange) =>
