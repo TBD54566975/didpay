@@ -1,11 +1,13 @@
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:didpay/shared/theme/grid.dart';
+import 'package:flutter/material.dart';
+import 'package:tbdex/tbdex.dart';
 
-// TODO(ethan-tbd): remove this file, https://github.com/TBD54566975/didpay/issues/136
 class Transaction {
   final double payinAmount;
   final double payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
+  final DateTime createdAt;
   final TransactionStatus status;
   final TransactionType type;
 
@@ -14,57 +16,72 @@ class Transaction {
     required this.payoutAmount,
     required this.payinCurrency,
     required this.payoutCurrency,
+    required this.createdAt,
     required this.status,
     required this.type,
   });
+
+  factory Transaction.fromExchange(Exchange exchange) {
+    var payinAmount = '0';
+    var payoutAmount = '0';
+    var payinCurrency = 'USD';
+    var payoutCurrency = 'MXN';
+    var latestCreatedAt = DateTime.fromMillisecondsSinceEpoch(0);
+    var status = TransactionStatus.pending;
+    var type = TransactionType.send;
+
+    for (final msg in exchange) {
+      switch (msg.metadata.kind) {
+        case MessageKind.rfq:
+          payinAmount = (msg as Rfq).data.payin.amount;
+          break;
+        case MessageKind.quote:
+          payinAmount = (msg as Quote).data.payin.amount;
+          payoutAmount = msg.data.payout.amount;
+          payinCurrency = msg.data.payin.currencyCode;
+          payoutCurrency = msg.data.payout.currencyCode;
+          break;
+        case MessageKind.order:
+          status = TransactionStatus.completed;
+          break;
+        // TODO(ethan-tbd): add additional order statuses
+        case MessageKind.orderstatus:
+          status = TransactionStatus.completed;
+          break;
+        case MessageKind.close:
+          status = TransactionStatus.failed;
+          break;
+      }
+    }
+
+    type = (payinCurrency == 'STORED_BALANCE')
+        ? TransactionType.withdraw
+        : (payoutCurrency == 'STORED_BALANCE')
+            ? TransactionType.deposit
+            : type;
+
+    return Transaction(
+      payinAmount: double.parse(payinAmount),
+      payoutAmount: double.parse(payoutAmount),
+      payinCurrency: payinCurrency,
+      payoutCurrency: payoutCurrency,
+      createdAt: latestCreatedAt,
+      status: status,
+      type: type,
+    );
+  }
+
+  static Icon getIcon(TransactionType type, {double size = Grid.sm}) {
+    switch (type) {
+      case TransactionType.deposit:
+        return Icon(Icons.south_west, size: size);
+      case TransactionType.withdraw:
+        return Icon(Icons.north_east, size: size);
+      case TransactionType.send:
+        return Icon(Icons.attach_money, size: size);
+    }
+  }
 }
-
-final _defaultList = [
-  Transaction(
-    payinAmount: 25,
-    payoutAmount: 1.47,
-    payinCurrency: 'MXN',
-    payoutCurrency: 'USDC',
-    status: TransactionStatus.pending,
-    type: TransactionType.deposit,
-  ),
-  Transaction(
-    payinAmount: 1,
-    payoutAmount: 17,
-    payinCurrency: 'USDC',
-    payoutCurrency: 'MXN',
-    status: TransactionStatus.pending,
-    type: TransactionType.withdraw,
-  ),
-  Transaction(
-    payinAmount: 0.00085,
-    payoutAmount: 35.42,
-    payinCurrency: 'BTC',
-    payoutCurrency: 'USDC',
-    status: TransactionStatus.completed,
-    type: TransactionType.deposit,
-  ),
-  Transaction(
-    payinAmount: 33,
-    payoutAmount: 0.000792,
-    payinCurrency: 'USDC',
-    payoutCurrency: 'BTC',
-    status: TransactionStatus.completed,
-    type: TransactionType.withdraw,
-  ),
-  Transaction(
-    payinAmount: 1,
-    payoutAmount: 1,
-    payinCurrency: 'USDC',
-    payoutCurrency: 'USD',
-    status: TransactionStatus.failed,
-    type: TransactionType.withdraw,
-  ),
-];
-
-final transactionsProvider = StateProvider<List<Transaction>>((ref) {
-  return _defaultList;
-});
 
 enum TransactionStatus {
   failed,
