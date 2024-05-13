@@ -21,6 +21,10 @@ class OfferingException extends TbdexException {
   OfferingException(super.message, super.errorCode);
 }
 
-class QuoteException extends TbdexException {
-  QuoteException(super.message, super.errorCode);
+class ExchangeException extends TbdexException {
+  ExchangeException(super.message, super.errorCode);
+}
+
+class ExchangesException extends TbdexException {
+  ExchangesException(super.message, super.errorCode);
 }
