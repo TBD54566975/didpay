@@ -2,8 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/countries/country.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
@@ -15,13 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
-import 'package:web5/web5.dart';
 
 import '../../helpers/widget_helpers.dart';
 
-void main() async {
-  final did = await DidDht.create();
-
+void main() {
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewPaymentPage(
@@ -38,10 +33,6 @@ void main() async {
         ),
         overrides: [
           quoteProvider.overrideWith(_MockQuoteNotifier.new),
-          didProvider.overrideWithValue(did),
-          countryProvider.overrideWith(
-            (ref) => const Country(name: 'Mexico', code: 'MX'),
-          ),
         ],
       );
   group('ReviewPaymentPage', () {

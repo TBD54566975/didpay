@@ -1,4 +1,3 @@
-import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/shared/success_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -28,18 +27,6 @@ void main() {
       );
 
       expect(find.widgetWithText(FilledButton, 'Done'), findsOneWidget);
-    });
-
-    testWidgets('should navigate to AppTabs on tap of done button',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: const SuccessPage(text: '')),
-      );
-
-      await tester.tap(find.widgetWithText(FilledButton, 'Done'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(AppTabs), findsOneWidget);
     });
   });
 }

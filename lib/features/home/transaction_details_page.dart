@@ -54,9 +54,7 @@ class TransactionDetailsPage extends HookWidget {
           const SizedBox(height: Grid.xs),
           ExcludeSemantics(
             child: Center(
-              child: txn.type == TransactionType.deposit
-                  ? const Icon(Icons.south_west, size: Grid.lg)
-                  : const Icon(Icons.north_east, size: Grid.lg),
+              child: Transaction.getIcon(txn.type, size: Grid.lg),
             ),
           ),
           const SizedBox(height: Grid.xxs),
