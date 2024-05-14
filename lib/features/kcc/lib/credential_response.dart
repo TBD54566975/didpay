@@ -29,11 +29,10 @@ class CredentialResponse {
     return CredentialResponse.fromMap(jsonDecode(input));
   }
 
-  factory CredentialResponse.fromMap(String input) {
-    Map<String, dynamic> data = jsonDecode(input);
+  factory CredentialResponse.fromMap(Map<String, dynamic> input) {
     return CredentialResponse(
-      credential: data['credential'],
-      transactionId: data['transaction_id'],
+      credential: input['credential'],
+      transactionId: input['transaction_id'],
     );
   }
 }

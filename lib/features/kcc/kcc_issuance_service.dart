@@ -122,6 +122,7 @@ class KccIssuanceService {
     final proofClaims = JwtClaims(
       aud: pfi.did.uri,
       iss: bearerDid.uri,
+      iat: DateTime.now().toUtc().millisecondsSinceEpoch ~/ 1000,
       misc: {'nonce': tokenResponse.cNonce},
     );
 
@@ -145,10 +146,9 @@ class KccIssuanceService {
       proof: ProofJwt(jwt: proofJwt),
     );
 
-    print('url: ${idvRequest.credentialOffer.credentialIssuerUrl}');
-
     late http.Response response;
 
+    // TODO: replace with actual endpoint from issuer metadata endpoint
     final credentialIssuerUrl = pfi.idvServiceEndpoint.replace(
       path: '/ingress/credentials',
     );
