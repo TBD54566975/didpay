@@ -1,6 +1,5 @@
-import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/device/device_info_service.dart';
-import 'package:didpay/features/send/scan_qr_page.dart';
+import 'package:didpay/features/did_qr/did_qr.dart';
 import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -17,8 +16,6 @@ class SendDidPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final did = ref.watch(didProvider);
-
     final focusNode = useFocusNode();
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
@@ -26,11 +23,10 @@ class SendDidPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async {
-          isPhysicalDevice.value =
-              await ref.read(deviceInfoServiceProvider).isPhysicalDevice();
-        });
-
+        Future.microtask(
+          () async => isPhysicalDevice.value =
+              await ref.read(deviceInfoServiceProvider).isPhysicalDevice(),
+        );
         return null;
       },
       [],
@@ -48,12 +44,12 @@ class SendDidPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildScanQr(
+                    DidQr.buildScanTile(
                       context,
+                      Loc.of(context).scanRecipientQrCode,
                       recipientDidController,
                       errorText,
-                      isPhysicalDevice,
-                      did.uri,
+                      isPhysicalDevice: isPhysicalDevice.value,
                     ),
                     _buildForm(
                       context,
@@ -68,7 +64,6 @@ class SendDidPage extends HookConsumerWidget {
             ),
             _buildSendButton(
               context,
-              did.uri,
               recipientDidController.text,
               errorText.value,
             ),
@@ -134,40 +129,8 @@ class SendDidPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildScanQr(
-    BuildContext context,
-    TextEditingController recipientDidController,
-    ValueNotifier<String?> errorText,
-    ValueNotifier<bool> isPhysicalDevice,
-    String did,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(vertical: Grid.xxs),
-        child: ListTile(
-          leading: const Icon(Icons.qr_code),
-          title: Text(
-            Loc.of(context).scanQrCode,
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-          trailing: const Icon(Icons.chevron_right),
-          onTap: () => isPhysicalDevice.value
-              ? _scanQrCode(
-                  context,
-                  recipientDidController,
-                  errorText,
-                  Loc.of(context).noDidQrCodeFound,
-                )
-              : _simulateScanQrCode(
-                  context,
-                  recipientDidController,
-                  did,
-                ),
-        ),
-      );
-
   Widget _buildSendButton(
     BuildContext context,
-    String senderDid,
     String recipientDid,
     String? errorText,
   ) {
@@ -181,7 +144,7 @@ class SendDidPage extends HookConsumerWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SendConfirmationPage(
-                  did: senderDid,
+                  did: recipientDid,
                   amount: sendAmount,
                 ),
               ),
@@ -196,34 +159,5 @@ class SendDidPage extends HookConsumerWidget {
   Future<bool> _isValidDid(String did) async {
     final result = await DidResolver.resolve(did);
     return !result.hasError();
-  }
-
-  Future<void> _scanQrCode(
-    BuildContext context,
-    TextEditingController recipientDidController,
-    ValueNotifier<String?> errorText,
-    String errorMessage,
-  ) async {
-    // ignore: use_build_context_synchronously
-    final qrValue = await Navigator.of(context).push<String>(
-      MaterialPageRoute(builder: (context) => const ScanQrPage()),
-    );
-
-    final isValid = qrValue != null && await _isValidDid(qrValue);
-    recipientDidController.text = isValid ? qrValue : '';
-    errorText.value = isValid ? null : errorMessage;
-  }
-
-  void _simulateScanQrCode(
-    BuildContext context,
-    TextEditingController recipientDidController,
-    String did,
-  ) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(Loc.of(context).simulatedQrCodeScan),
-      ),
-    );
-    recipientDidController.text = did;
   }
 }
