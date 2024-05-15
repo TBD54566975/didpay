@@ -145,11 +145,11 @@ abstract class Loc {
   /// **'To:'**
   String get to;
 
-  /// No description provided for @scanQrCode.
+  /// No description provided for @scanRecipientQrCode.
   ///
   /// In en, this message translates to:
   /// **'Don\'t know the recipient\'s DID? Scan their QR code'**
-  String get scanQrCode;
+  String get scanRecipientQrCode;
 
   /// No description provided for @withdraw.
   ///

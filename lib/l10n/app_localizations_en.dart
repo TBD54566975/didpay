@@ -32,7 +32,7 @@ class LocEn extends Loc {
   String get to => 'To:';
 
   @override
-  String get scanQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
+  String get scanRecipientQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
   String get withdraw => 'Withdraw';
