@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class ScanQrPage extends HookWidget {
-  const ScanQrPage({super.key});
+class DidQrScanPage extends HookWidget {
+  const DidQrScanPage({super.key});
 
   @override
   Widget build(BuildContext context) {
