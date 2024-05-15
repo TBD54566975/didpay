@@ -8,7 +8,7 @@
     "deposit": "Deposit",
     "send": "Send",
     "to": "To:",
-    "scanQrCode": "Don't know the recipient's DID? Scan their QR code",
+    "scanRecipientQrCode": "Don't know the recipient's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
     "accountBalance": "Account balance",

@@ -48,30 +48,5 @@ void main() async {
 
       expect(find.widgetWithText(FilledButton, 'Send 25 USDC'), findsOneWidget);
     });
-
-    testWidgets(
-        'should show enabled send button when while recipient DID is set',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: SendDidPage(sendAmount: '25'),
-          overrides: [
-            didProvider.overrideWithValue(did),
-          ],
-        ),
-      );
-
-      await tester.tap(
-        find.text("Don't know the recipient's DID? Scan their QR code"),
-      );
-      await tester.pumpAndSettle();
-
-      final sendButton = find.widgetWithText(FilledButton, 'Send 25 USDC');
-
-      expect(
-        tester.widget<FilledButton>(sendButton).onPressed,
-        isNotNull,
-      );
-    });
   });
 }

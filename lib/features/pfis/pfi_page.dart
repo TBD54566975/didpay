@@ -1,8 +1,9 @@
 import 'dart:convert';
+
+import 'package:didpay/features/did_qr/did_qr_scan_page.dart';
 import 'package:didpay/features/onboarding/agreement_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/send/scan_qr_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -103,7 +104,8 @@ class PfiPage extends HookConsumerWidget {
                 onPressed: () async {
                   final scannedJson = await Navigator.push<String>(
                     context,
-                    MaterialPageRoute(builder: (context) => const ScanQrPage()),
+                    MaterialPageRoute(
+                        builder: (context) => const DidQrScanPage()),
                   );
                   if (scannedJson != null) {
                     try {
