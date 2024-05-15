@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/app/app.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/storage/storage_service.dart';
 import 'package:didpay/shared/constants.dart';
 import 'package:flutter/material.dart';
@@ -22,10 +24,12 @@ void main() async {
 
   final did = await getOrCreateDid(storage);
   final vc = await storage.read(key: Constants.verifiableCredentialKey);
+  final pfisNotifier = PfisNotifier(sharedPreferences, []);
 
   runApp(
     ProviderScope(
       overrides: [
+        pfisNotifierProvider.overrideWith((ref) => pfisNotifier),
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
         secureStorageProvider.overrideWithValue(storage),
         didProvider.overrideWithValue(did),

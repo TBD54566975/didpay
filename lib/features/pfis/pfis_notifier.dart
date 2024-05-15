@@ -1,66 +1,112 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:didpay/config/config.dart';
+import 'package:collection/collection.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:web5/web5.dart';
 
-final pfisProvider = AsyncNotifierProvider<PfisAsyncNotifier, List<Pfi>>(
-  PfisAsyncNotifier.new,
+final pfisNotifierProvider = StateNotifierProvider<PfisNotifier, List<Pfi>>(
+  (ref) => throw UnimplementedError(),
 );
 
-class PfisAsyncNotifier extends AsyncNotifier<List<Pfi>> {
-  final _cacheKey = 'didpay:pfis_cache';
+class PfisNotifier extends StateNotifier<List<Pfi>> {
+  static const String prefsKey = 'pfis';
+  final SharedPreferences prefs;
 
-  @override
-  FutureOr<List<Pfi>> build() => _loadFromCache();
+  PfisNotifier(this.prefs, super.state);
 
-  void addPfi(Pfi newPfi) {
-    final currentPfis = state.value ?? [];
-    final updatedPfis = [...currentPfis, newPfi];
-    state = AsyncData(updatedPfis);
-  }
-
-  Future<void> reload() async {
-    if (Config.devPfis.isNotEmpty) {
-      state = AsyncData(Config.devPfis);
+  Future<void> add(String did) async {
+    final pfi = state.firstWhereOrNull((pfi) => pfi.did == did);
+    if (pfi != null) {
       return;
     }
 
-    final pfis = await _loadFromCache();
-    // Show loading indicator if cache is empty
-    state = pfis.isEmpty ? const AsyncLoading() : AsyncData(pfis);
-
-    final response = await http.get(Uri.parse(Config.pfisJsonUrl));
-    if (response.statusCode != 200) {
-      state = AsyncError('Failed to load PFIs', StackTrace.current);
-      return;
+    try {
+      await validatePfi(did);
+    } on Exception catch (e) {
+      throw Exception('Failed to add PFI: $e');
     }
 
-    await ref
-        .read(sharedPreferencesProvider)
-        .setString(_cacheKey, response.body);
-
-    state = AsyncData(
-      List<Pfi>.from(
-        (json.decode(response.body) as List)
-            .map((item) => Pfi.fromJson(item as Map<String, dynamic>)),
-      ),
-    );
+    final newPfi = Pfi(did: did);
+    state = [...state, newPfi];
+    await _save();
   }
 
-  Future<List<Pfi>> _loadFromCache() async {
-    final cachedData = ref.read(sharedPreferencesProvider).getString(_cacheKey);
-    if (cachedData == null) {
+  Future<void> remove(Pfi pfi) async {
+    state = state.where((elem) => elem.did != pfi.did).toList();
+    await _save();
+  }
+
+  Future<void> _save() async {
+    final toSave = state.map((e) => e.did).toList();
+    await prefs.setStringList('pfis', toSave);
+  }
+
+  static List<Pfi> loadSavedPfiDids(SharedPreferences prefs) {
+    final saved = prefs.getStringList(prefsKey);
+
+    if (saved == null) {
       return [];
     }
 
-    return List<Pfi>.from(
-      (json.decode(cachedData) as List).map(
-        (item) => Pfi.fromJson(item as Map<String, dynamic>),
-      ),
+    final pfis = <Pfi>[];
+    for (final pfi in saved) {
+      try {
+        pfis.add(Pfi.fromJson(pfi));
+      } on Exception catch (e) {
+        throw Exception('Failed to load saved PFI: $e');
+      }
+    }
+
+    return pfis;
+  }
+
+  Future<void> validatePfi(String input) async {
+    Did did;
+    try {
+      did = Did.parse(input);
+    } on Exception catch (e) {
+      throw Exception('Invalid DID: $e');
+    }
+
+    DidResolutionResult resp;
+    try {
+      resp = await DidResolver.resolve(did.uri);
+      if (resp.hasError()) {
+        throw Exception(
+          'Failed to resolve DID: ${resp.didResolutionMetadata.error}',
+        );
+      }
+    } on Exception catch (e) {
+      throw Exception('Failed to resolve PFI DID: $e');
+    }
+
+    late DidDocument didDocument;
+    if (resp.didDocument == null) {
+      throw Exception('Malformed Resolution result: missing DID Document');
+    } else {
+      didDocument = resp.didDocument!;
+    }
+
+    _getServiceEndpoint(didDocument, 'PFI');
+    _getServiceEndpoint(didDocument, 'IDV');
+  }
+
+  static Uri _getServiceEndpoint(DidDocument didDocument, String serviceType) {
+    final service = didDocument.service!.firstWhere(
+      (svc) => svc.type == serviceType,
+      orElse: () => throw Exception('DID does not have a $serviceType service'),
     );
+
+    if (service.serviceEndpoint.isEmpty) {
+      throw Exception(
+        'Malformed $serviceType service: missing service endpoint',
+      );
+    }
+
+    try {
+      return Uri.parse(service.serviceEndpoint[0]);
+    } on Exception catch (e) {
+      throw Exception('PFI has malformed IDV service: $e');
+    }
   }
 }

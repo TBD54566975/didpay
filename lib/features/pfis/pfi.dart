@@ -1,27 +1,27 @@
+import 'dart:convert';
+
 class Pfi {
-  final String id;
-  final String name;
-  final String didUri;
+  final String did;
 
   const Pfi({
-    required this.id,
-    required this.name,
-    required this.didUri,
+    required this.did,
   });
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'didUri': didUri,
-    };
+  factory Pfi.fromJson(String json) {
+    return Pfi.fromMap(jsonDecode(json));
   }
 
-  factory Pfi.fromJson(Map<String, dynamic> json) {
+  factory Pfi.fromMap(Map<String, dynamic> map) {
     return Pfi(
-      id: json['id'],
-      name: json['name'],
-      didUri: json['didUri'],
+      did: map['did'],
     );
+  }
+
+  String toJson() {
+    return jsonEncode(toMap());
+  }
+
+  Map<String, dynamic> toMap() {
+    return {'did': did};
   }
 }

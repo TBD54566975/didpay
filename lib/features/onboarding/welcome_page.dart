@@ -1,4 +1,4 @@
-import 'package:didpay/features/onboarding/onboarding_country_page.dart';
+import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -63,7 +63,7 @@ class WelcomePage extends HookWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const OnboardingCountryPage(),
+                builder: (context) => const AppTabs(),
               ),
             );
           },
