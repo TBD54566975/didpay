@@ -1,27 +1,27 @@
-import 'dart:convert';
-
 class Pfi {
   final String did;
+  final Uri tbdexServiceEndpoint;
+  final Uri idvServiceEndpoint;
 
   const Pfi({
     required this.did,
+    required this.tbdexServiceEndpoint,
+    required this.idvServiceEndpoint,
   });
 
-  factory Pfi.fromJson(String json) {
-    return Pfi.fromMap(jsonDecode(json));
-  }
-
-  factory Pfi.fromMap(Map<String, dynamic> map) {
+  factory Pfi.fromJson(Map<String, dynamic> json) {
     return Pfi(
-      did: map['did'],
+      did: json['did'],
+      tbdexServiceEndpoint: Uri.parse(json['tbdexServiceEndpoint']),
+      idvServiceEndpoint: Uri.parse(json['idvServiceEndpoint']),
     );
   }
 
-  String toJson() {
-    return jsonEncode(toMap());
-  }
-
-  Map<String, dynamic> toMap() {
-    return {'did': did};
+  Map<String, dynamic> toJson() {
+    return {
+      'did': did,
+      'tbdexServiceEndpoint': tbdexServiceEndpoint.toString(),
+      'idvServiceEndpoint': idvServiceEndpoint.toString(),
+    };
   }
 }
