@@ -105,10 +105,12 @@ class SendDetailsPage extends HookConsumerWidget {
                   onTap: () => errorText.value = null,
                   onTapOutside: (_) async {
                     if (recipientDidController.text.isNotEmpty) {
-                      errorText.value =
-                          await _isValidDid(recipientDidController.text)
-                              ? null
-                              : errorMessage;
+                      errorText.value = !(await DidResolver.resolve(
+                        recipientDidController.text,
+                      ))
+                              .hasError()
+                          ? null
+                          : errorMessage;
                     }
                     focusNode.unfocus();
                   },
@@ -154,10 +156,5 @@ class SendDetailsPage extends HookConsumerWidget {
         child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
       ),
     );
-  }
-
-  Future<bool> _isValidDid(String did) async {
-    final result = await DidResolver.resolve(did);
-    return !result.hasError();
   }
 }

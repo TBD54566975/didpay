@@ -36,11 +36,6 @@ class DidQr {
         ),
       );
 
-  static Future<bool> _isValidDid(String did) async {
-    final result = await DidResolver.resolve(did);
-    return !result.hasError();
-  }
-
   static Future<void> _scanQrCode(
     BuildContext context,
     TextEditingController didTextController,
@@ -51,7 +46,8 @@ class DidQr {
       MaterialPageRoute(builder: (context) => const DidQrScanPage()),
     );
 
-    final isValid = qrValue != null && await _isValidDid(qrValue);
+    final isValid =
+        qrValue != null && !(await DidResolver.resolve(qrValue)).hasError();
     didTextController.text = isValid ? qrValue : '';
     errorText.value = isValid ? null : errorMessage;
   }
