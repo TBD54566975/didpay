@@ -9,7 +9,7 @@ import 'package:tbdex/tbdex.dart';
 
 final offeringsProvider =
     FutureProvider.autoDispose<List<Offering>>((ref) async {
-  final pfis = ref.read(pfisNotifierProvider);
+  final pfis = ref.read(pfisProvider);
   final offerings = <Offering>[];
 
   for (final pfi in pfis) {
@@ -38,7 +38,7 @@ final rfqProvider =
 final exchangeProvider = FutureProvider.family
     .autoDispose<Exchange, String>((ref, exchangeId) async {
   final did = ref.read(didProvider);
-  final pfis = ref.read(pfisNotifierProvider);
+  final pfis = ref.read(pfisProvider);
 
   final response = await TbdexHttpClient.getExchange(
     did,
@@ -56,7 +56,11 @@ final exchangeProvider = FutureProvider.family
 
 final exchangesProvider = FutureProvider.autoDispose<List<String>>((ref) async {
   final did = ref.read(didProvider);
-  final pfis = ref.read(pfisNotifierProvider);
+  final pfis = ref.read(pfisProvider);
+
+  if (pfis.isEmpty) {
+    return [];
+  }
 
   final response = await TbdexHttpClient.listExchanges(
     did,

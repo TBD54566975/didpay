@@ -7,7 +7,7 @@ import 'package:tbdex/tbdex.dart';
 class Tbdex {
   static Rfq createRfq(WidgetRef ref, RfqState rfqState) {
     final did = ref.read(didProvider);
-    final pfis = ref.read(pfisNotifierProvider);
+    final pfis = ref.read(pfisProvider);
 
     return Rfq.create(
       pfis[0].did,
