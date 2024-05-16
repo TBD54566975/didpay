@@ -120,42 +120,47 @@ class HomePage extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: Grid.xs),
-              if (pfis.isNotEmpty)
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const DepositPage(rfqState: RfqState()),
-                            ),
-                          );
-                        },
-                        child: Text(Loc.of(context).deposit),
-                      ),
-                    ),
-                    const SizedBox(width: Grid.xs),
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  const WithdrawPage(rfqState: RfqState()),
-                            ),
-                          );
-                        },
-                        child: Text(Loc.of(context).withdraw),
-                      ),
-                    ),
-                  ],
-                ),
+              if (pfis.isNotEmpty) _buildDepositWithdrawButtons(context, pfis),
             ],
           ),
         ),
+      );
+
+  Widget _buildDepositWithdrawButtons(
+    BuildContext context,
+    List<Pfi> pfis,
+  ) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const DepositPage(rfqState: RfqState()),
+                  ),
+                );
+              },
+              child: Text(Loc.of(context).deposit),
+            ),
+          ),
+          const SizedBox(width: Grid.xs),
+          Expanded(
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const WithdrawPage(rfqState: RfqState()),
+                  ),
+                );
+              },
+              child: Text(Loc.of(context).withdraw),
+            ),
+          ),
+        ],
       );
 
   Widget _buildActivity(
