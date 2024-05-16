@@ -35,6 +35,9 @@ class LocEn extends Loc {
   String get scanRecipientQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
+  String get scanPfiQrCode => 'Don\'t know the PFI\'s DID? Scan their QR code';
+
+  @override
   String get withdraw => 'Withdraw';
 
   @override
@@ -275,4 +278,19 @@ class LocEn extends Loc {
 
   @override
   String get unableToRetrieveTxns => 'Unable to retrieve transactions';
+
+  @override
+  String get addAPfi => 'Add a PFI';
+
+  @override
+  String get noPfisFound => 'No PFIs found';
+
+  @override
+  String get startByAddingAPfi => 'Start by adding a PFI';
+
+  @override
+  String get pfiAdded => 'PFI added!';
+
+  @override
+  String get addingPfi => 'Adding PFI...';
 }

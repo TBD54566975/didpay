@@ -3,6 +3,9 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
 import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/pfis/add_pfi_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/features/tbdex/transactions_notifier.dart';
@@ -20,6 +23,8 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final txns = ref.watch(transactionsProvider);
+    final pfis = ref.watch(pfisProvider);
+
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
     final accountBalance = CurrencyUtil.formatFromDouble(0);
 
@@ -39,9 +44,16 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAccountBalance(context, accountBalance),
+            _buildAccountBalance(context, accountBalance, pfis),
             Expanded(
-              child: _buildActivity(context, getTransactionsNotifier(), txns),
+              child: pfis.isEmpty
+                  ? _buildEmptyState(
+                      context,
+                      Loc.of(context).noPfisFound,
+                      Loc.of(context).startByAddingAPfi,
+                      false,
+                    )
+                  : _buildActivity(context, getTransactionsNotifier(), txns),
             ),
           ],
         ),
@@ -49,7 +61,11 @@ class HomePage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildAccountBalance(BuildContext context, String accountBalance) =>
+  Widget _buildAccountBalance(
+    BuildContext context,
+    String accountBalance,
+    List<Pfi> pfis,
+  ) =>
       Padding(
         padding: const EdgeInsets.symmetric(
           vertical: Grid.xs,
@@ -104,41 +120,47 @@ class HomePage extends HookConsumerWidget {
                 ),
               ),
               const SizedBox(height: Grid.xs),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const DepositPage(rfqState: RfqState()),
-                          ),
-                        );
-                      },
-                      child: Text(Loc.of(context).deposit),
-                    ),
-                  ),
-                  const SizedBox(width: Grid.xs),
-                  Expanded(
-                    child: FilledButton(
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                const WithdrawPage(rfqState: RfqState()),
-                          ),
-                        );
-                      },
-                      child: Text(Loc.of(context).withdraw),
-                    ),
-                  ),
-                ],
-              ),
+              if (pfis.isNotEmpty) _buildDepositWithdrawButtons(context, pfis),
             ],
           ),
         ),
+      );
+
+  Widget _buildDepositWithdrawButtons(
+    BuildContext context,
+    List<Pfi> pfis,
+  ) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Expanded(
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const DepositPage(rfqState: RfqState()),
+                  ),
+                );
+              },
+              child: Text(Loc.of(context).deposit),
+            ),
+          ),
+          const SizedBox(width: Grid.xs),
+          Expanded(
+            child: FilledButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const WithdrawPage(rfqState: RfqState()),
+                  ),
+                );
+              },
+              child: Text(Loc.of(context).withdraw),
+            ),
+          ),
+        ],
       );
 
   Widget _buildActivity(
@@ -162,7 +184,12 @@ class HomePage extends HookConsumerWidget {
           Expanded(
             child: exchangesStatus.when(
               data: (exchange) => exchange == null || exchange.isEmpty
-                  ? _buildEmptyState(context)
+                  ? _buildEmptyState(
+                      context,
+                      Loc.of(context).noTransactionsYet,
+                      Loc.of(context).startByAdding,
+                      true,
+                    )
                   : RefreshIndicator(
                       onRefresh: () async => notifier.fetch(),
                       child: _buildTransactionsList(context, exchange),
@@ -172,50 +199,6 @@ class HomePage extends HookConsumerWidget {
             ),
           ),
         ],
-      );
-
-  // TODO(ethan-tbd): update empty state, https://github.com/TBD54566975/didpay/issues/125
-  Widget _buildEmptyState(BuildContext context) => Center(
-        child: Column(
-          children: [
-            const SizedBox(height: Grid.xs),
-            Text(
-              Loc.of(context).noTransactionsYet,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            Text(Loc.of(context).startByAdding),
-            const SizedBox(height: Grid.xxs),
-            FilledButton(
-              child: Text(Loc.of(context).getStarted),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        const DepositPage(rfqState: RfqState()),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      );
-
-  // TODO(ethan-tbd): update error state, https://github.com/TBD54566975/didpay/issues/125
-  Widget _buildErrorState(BuildContext context) => Center(
-        child: Column(
-          children: [
-            const SizedBox(height: Grid.xs),
-            Text(
-              Loc.of(context).unableToRetrieveTxns,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: Grid.xxs),
-          ],
-        ),
       );
 
   Widget _buildTransactionsList(
@@ -272,6 +255,70 @@ class HomePage extends HookConsumerWidget {
             ),
           );
         }).toList(),
+      );
+
+  // TODO(ethan-tbd): update empty state, https://github.com/TBD54566975/didpay/issues/125
+  Widget _buildEmptyState(
+    BuildContext context,
+    String title,
+    String subtitle,
+    bool hasPfis,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.xxl),
+        child: Column(
+          children: [
+            const Spacer(flex: 3),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: Grid.xxl),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                Text(subtitle),
+                const SizedBox(height: Grid.xxs),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    FilledButton(
+                      child: Text(Loc.of(context).getStarted),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => hasPfis
+                                ? const DepositPage(rfqState: RfqState())
+                                : AddPfiPage(),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const Spacer(flex: 6),
+          ],
+        ),
+      );
+
+  // TODO(ethan-tbd): update error state, https://github.com/TBD54566975/didpay/issues/125
+  Widget _buildErrorState(BuildContext context) => Center(
+        child: Column(
+          children: [
+            const SizedBox(height: Grid.xs),
+            Text(
+              Loc.of(context).unableToRetrieveTxns,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            const SizedBox(height: Grid.xxs),
+          ],
+        ),
       );
 
   String _getSubtitle(Transaction transaction) =>

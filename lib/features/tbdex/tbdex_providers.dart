@@ -1,5 +1,5 @@
-import 'package:didpay/config/config.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_exceptions.dart';
 import 'package:didpay/features/tbdex/transactions_notifier.dart';
@@ -9,17 +9,17 @@ import 'package:tbdex/tbdex.dart';
 
 final offeringsProvider =
     FutureProvider.autoDispose<List<Offering>>((ref) async {
-  final country = ref.read(countryProvider);
-  final pfi = Config.getPfi(country);
+  final pfis = ref.read(pfisProvider);
+  final offerings = <Offering>[];
 
-  final response = await TbdexHttpClient.listOfferings(pfi?.didUri ?? '');
+  for (final pfi in pfis) {
+    final response = await TbdexHttpClient.listOfferings(pfi.did);
+    if (response.statusCode.category == HttpStatus.success) {
+      offerings.addAll(response.data!);
+    }
+  }
 
-  return response.statusCode.category == HttpStatus.success
-      ? response.data!
-      : throw OfferingException(
-          'failed to fetch offerings',
-          response.statusCode,
-        );
+  return offerings;
 });
 
 final rfqProvider =
@@ -38,12 +38,11 @@ final rfqProvider =
 final exchangeProvider = FutureProvider.family
     .autoDispose<Exchange, String>((ref, exchangeId) async {
   final did = ref.read(didProvider);
-  final country = ref.read(countryProvider);
-  final pfi = Config.getPfi(country);
+  final pfis = ref.read(pfisProvider);
 
   final response = await TbdexHttpClient.getExchange(
     did,
-    pfi?.didUri ?? '',
+    pfis[0].did,
     exchangeId,
   );
 
@@ -57,12 +56,15 @@ final exchangeProvider = FutureProvider.family
 
 final exchangesProvider = FutureProvider.autoDispose<List<String>>((ref) async {
   final did = ref.read(didProvider);
-  final country = ref.read(countryProvider);
-  final pfi = Config.getPfi(country);
+  final pfis = ref.read(pfisProvider);
+
+  if (pfis.isEmpty) {
+    return [];
+  }
 
   final response = await TbdexHttpClient.listExchanges(
     did,
-    pfi?.didUri ?? '',
+    pfis[0].did,
   );
 
   return response.statusCode.category == HttpStatus.success

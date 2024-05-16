@@ -1,5 +1,5 @@
-import 'package:didpay/config/config.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
@@ -7,11 +7,10 @@ import 'package:tbdex/tbdex.dart';
 class Tbdex {
   static Rfq createRfq(WidgetRef ref, RfqState rfqState) {
     final did = ref.read(didProvider);
-    final country = ref.read(countryProvider);
-    final pfi = Config.getPfi(country);
+    final pfis = ref.read(pfisProvider);
 
     return Rfq.create(
-      pfi?.didUri ?? '',
+      pfis[0].did,
       did.uri,
       CreateRfqData(
         offeringId: rfqState.offering?.metadata.id ?? '',

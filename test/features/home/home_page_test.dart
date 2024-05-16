@@ -1,6 +1,7 @@
 import 'package:didpay/features/home/home_page.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
 import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +17,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -30,6 +32,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -46,6 +49,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -61,6 +65,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -78,6 +83,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -93,6 +99,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -110,6 +117,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -130,6 +138,7 @@ void main() {
           child: const HomePage(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );

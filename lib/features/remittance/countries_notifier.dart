@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:didpay/config/config.dart';
-import 'package:didpay/features/countries/country.dart';
+import 'package:didpay/features/remittance/countries.dart';
 import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -25,11 +25,6 @@ class CountriesAsyncNotifier extends AsyncNotifier<List<Country>> {
   }
 
   Future<void> reload() async {
-    if (Config.devPfis.isNotEmpty) {
-      state = AsyncData(Config.devCountries);
-      return;
-    }
-
     final countries = await _loadFromCache();
     // Show loading indicator if cache is empty
     state = countries.isEmpty ? const AsyncLoading() : AsyncData(countries);

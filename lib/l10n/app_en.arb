@@ -9,6 +9,7 @@
     "send": "Send",
     "to": "To:",
     "scanRecipientQrCode": "Don't know the recipient's DID? Scan their QR code",
+    "scanPfiQrCode": "Don't know the PFI's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
     "accountBalance": "Account balance",
@@ -117,5 +118,10 @@
     "pay": "Pay",
     "errorFound": "Error found",
     "tapToRetry": "Tap to retry",
-    "unableToRetrieveTxns": "Unable to retrieve transactions"
+    "unableToRetrieveTxns": "Unable to retrieve transactions",
+    "addAPfi": "Add a PFI",
+    "noPfisFound": "No PFIs found",
+    "startByAddingAPfi": "Start by adding a PFI",
+    "pfiAdded": "PFI added!",
+    "addingPfi": "Adding PFI..."
 }

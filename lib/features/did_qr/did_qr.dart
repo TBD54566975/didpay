@@ -31,6 +31,7 @@ class DidQr {
               : _simulateScanQrCode(
                   context,
                   didTextController,
+                  errorText,
                 ),
         ),
       );
@@ -58,6 +59,7 @@ class DidQr {
   static Future<void> _simulateScanQrCode(
     BuildContext context,
     TextEditingController didTextController,
+    ValueNotifier<String?> errorText,
   ) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -66,5 +68,6 @@ class DidQr {
     );
     final did = await DidDht.create(publish: true);
     didTextController.text = did.uri;
+    errorText.value = null;
   }
 }

@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/remittance/remittance_country_page.dart';
-import 'package:didpay/features/send/send_did_page.dart';
+import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +92,7 @@ void main() async {
       expect(find.widgetWithText(AutoSizeText, '0.00'), findsOneWidget);
     });
 
-    testWidgets('should navigate to SendDidPage on tap of send button',
+    testWidgets('should navigate to SendDetailsPage on tap of send button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -110,25 +109,7 @@ void main() async {
       await tester.tap(find.text('Send'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(SendDidPage), findsOneWidget);
-    });
-
-    testWidgets(
-        'should navigate to RemittanceCountryPage on tap of remittance icon',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const SendPage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-          ],
-        ),
-      );
-
-      await tester.tap(find.widgetWithIcon(IconButton, Icons.language));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(RemittanceCountryPage), findsOneWidget);
+      expect(find.byType(SendDetailsPage), findsOneWidget);
     });
   });
 }
