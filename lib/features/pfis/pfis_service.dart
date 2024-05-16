@@ -6,43 +6,28 @@ final pfisServiceProvider = Provider((_) => PfisService());
 
 class PfisService {
   Future<Pfi> createPfi(String input) async {
-    final did = _parseDid(input);
-    final res = await _resolveDid(did);
-    final didDocument = _getDidDocument(res);
-
-    final pfiEndpoint = _getServiceEndpoint(didDocument, 'PFI');
-    final idvEndpoint = _getServiceEndpoint(didDocument, 'IDV');
-
-    return Pfi(
-      did: did.uri,
-      tbdexServiceEndpoint: pfiEndpoint,
-      idvServiceEndpoint: idvEndpoint,
-    );
-  }
-
-  static Did _parseDid(String input) {
+    final Did did;
     try {
-      return Did.parse(input);
+      did = Did.parse(input);
     } on Exception catch (e) {
       throw Exception('Invalid DID: $e');
     }
-  }
 
-  static Future<DidResolutionResult> _resolveDid(Did did) async {
-    final resp = await DidResolver.resolve(did.uri);
-    if (resp.hasError()) {
+    final res = await DidResolver.resolve(did.uri);
+    if (res.hasError()) {
       throw Exception(
-        'Failed to resolve DID: ${resp.didResolutionMetadata.error}',
+        'Failed to resolve DID: ${res.didResolutionMetadata.error}',
       );
     }
-    return resp;
-  }
 
-  static DidDocument _getDidDocument(DidResolutionResult resp) {
-    if (resp.didDocument == null) {
+    if (res.didDocument == null) {
       throw Exception('Malformed Resolution result: missing DID Document');
     }
-    return resp.didDocument!;
+
+    _getServiceEndpoint(res.didDocument!, 'PFI');
+    _getServiceEndpoint(res.didDocument!, 'IDV');
+
+    return Pfi(did: did.uri);
   }
 
   static Uri _getServiceEndpoint(DidDocument didDocument, String serviceType) {

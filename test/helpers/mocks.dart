@@ -32,11 +32,9 @@ class MockTransactionsNotifier extends TransactionsAsyncNotifier {
 
 class MockPfisNotifier extends PfisNotifier {
   MockPfisNotifier()
-      : super(MockSharedPreferences(), MockPfisService(), [
-          Pfi(
-            did: 'did:web:x%3A8892:ingress',
-            tbdexServiceEndpoint: Uri.parse('http://x:8892/ingress/idv'),
-            idvServiceEndpoint: Uri.parse('http://x:8892/ingress/pfi'),
-          )
-        ]);
+      : super(
+          MockSharedPreferences(),
+          MockPfisService(),
+          [const Pfi(did: 'did:web:x%3A8892:ingress')],
+        );
 }
