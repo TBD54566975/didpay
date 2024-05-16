@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:didpay/features/kcc/lib/idv_request.dart';
 import 'package:didpay/features/kcc/providers.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -5,6 +7,7 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:web5/web5.dart';
 
 class KccConfirmationPage extends StatelessWidget {
   final NuPfi pfi;
@@ -43,6 +46,7 @@ class KccConfirmationPage extends StatelessWidget {
                 );
               },
               data: (data) {
+                final decoded = Jwt.decode(data.credential!);
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -53,7 +57,7 @@ class KccConfirmationPage extends StatelessWidget {
                         children: [
                           const SizedBox(height: Grid.xl),
                           Text(
-                            'Gateeeem! 🎉 ${data.credential}',
+                            'Your KCC has been issued and stored on your device! ${jsonEncode(decoded.claims.misc!['vc'])}',
                             style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(height: Grid.xs),
