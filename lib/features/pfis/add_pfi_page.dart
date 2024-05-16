@@ -1,7 +1,10 @@
 import 'package:didpay/features/device/device_info_service.dart';
 import 'package:didpay/features/did_qr/did_qr.dart';
-import 'package:didpay/features/pfis/add_pfi_confirmation_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/pending_page.dart';
+import 'package:didpay/shared/success_page.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -14,10 +17,13 @@ class AddPfiPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final focusNode = useFocusNode();
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
+    final addPfiState = useState<AsyncValue<Pfi>?>(null);
+
     final pfiDidController = useTextEditingController();
+
+    final focusNode = useFocusNode();
 
     useEffect(
       () {
@@ -31,53 +37,64 @@ class AddPfiPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: addPfiState.value != null ? null : AppBar(),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _buildHeader(
-                      context,
-                      Loc.of(context).addAPfi,
-                      Loc.of(context).makeSureInfoIsCorrect,
+        child: addPfiState.value != null
+            ? addPfiState.value!.when(
+                data: (pfi) => SuccessPage(text: Loc.of(context).pfiAdded),
+                loading: () => PendingPage(text: Loc.of(context).addingPfi),
+                error: (error, _) => Text('Error: $error'),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _buildHeader(
+                            context,
+                            Loc.of(context).addAPfi,
+                            Loc.of(context).makeSureInfoIsCorrect,
+                          ),
+                          _buildDidForm(
+                            context,
+                            pfiDidController,
+                            focusNode,
+                            errorText,
+                            Loc.of(context).invalidDid,
+                          ),
+                        ],
+                      ),
                     ),
-                    _buildDidForm(
-                      context,
-                      pfiDidController,
-                      focusNode,
-                      errorText,
-                      Loc.of(context).invalidDid,
-                    ),
-                  ],
-                ),
+                  ),
+                  DidQr.buildScanTile(
+                    context,
+                    Loc.of(context).scanPfiQrCode,
+                    pfiDidController,
+                    errorText,
+                    isPhysicalDevice: isPhysicalDevice.value,
+                  ),
+                  _buildAddButton(
+                    context,
+                    ref,
+                    pfiDidController,
+                    addPfiState,
+                    errorText.value,
+                  ),
+                ],
               ),
-            ),
-            DidQr.buildScanTile(
-              context,
-              Loc.of(context).scanPfiQrCode,
-              pfiDidController,
-              errorText,
-              isPhysicalDevice: isPhysicalDevice.value,
-            ),
-            _buildAddButton(
-              context,
-              ref,
-              pfiDidController,
-              errorText.value,
-            ),
-          ],
-        ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
+  Widget _buildHeader(
+    BuildContext context,
+    String title,
+    String subtitle,
+  ) =>
       Padding(
         padding: const EdgeInsets.symmetric(
           vertical: Grid.xs,
@@ -138,9 +155,11 @@ class AddPfiPage extends HookConsumerWidget {
                   onTap: () => errorText.value = null,
                   onTapOutside: (_) async {
                     if (pfiDidController.text.isNotEmpty) {
-                      errorText.value = await _isValidDid(pfiDidController.text)
-                          ? null
-                          : errorMessage;
+                      errorText.value =
+                          !(await DidResolver.resolve(pfiDidController.text))
+                                  .hasError()
+                              ? null
+                              : errorMessage;
                     }
                     focusNode.unfocus();
                   },
@@ -165,34 +184,39 @@ class AddPfiPage extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     TextEditingController pfiDidController,
+    ValueNotifier<AsyncValue<Pfi>?> state,
     String? errorText,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: FilledButton(
-        onPressed: () {
-          if ((_formKey.currentState?.validate() ?? false) &&
-              errorText == null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => AddPfiConfirmationPage(
-                  did: pfiDidController.text,
-                ),
-              ),
-            );
-          }
-        },
-        child: const Text('Add'),
-      ),
-    );
-  }
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            if ((_formKey.currentState?.validate() ?? false) &&
+                errorText == null) {
+              _addPfi(context, ref, pfiDidController.text, state);
+            }
+          },
+          child: const Text('Add'),
+        ),
+      );
 
-  static Future<bool> _isValidDid(String did) async {
-    try {
-      final result = await DidResolver.resolve(did);
-      return !result.hasError();
-    } on Exception catch (_) {
-      return false;
-    }
+  void _addPfi(
+    BuildContext context,
+    WidgetRef ref,
+    String did,
+    ValueNotifier<AsyncValue<Pfi>?> state,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(pfisProvider.notifier)
+        .add(did)
+        .then((pfi) => state.value = AsyncData(pfi))
+        .onError((error, stackTrace) {
+      state.value = AsyncError(
+        error ?? Exception('Unable to resolve add PFI'),
+        stackTrace,
+      );
+      throw Exception();
+    });
   }
 }
