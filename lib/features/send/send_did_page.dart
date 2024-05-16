@@ -51,7 +51,7 @@ class SendDidPage extends HookConsumerWidget {
                       errorText,
                       isPhysicalDevice: isPhysicalDevice.value,
                     ),
-                    _buildForm(
+                    _buildDidForm(
                       context,
                       recipientDidController,
                       focusNode,
@@ -64,7 +64,7 @@ class SendDidPage extends HookConsumerWidget {
             ),
             _buildSendButton(
               context,
-              recipientDidController.text,
+              recipientDidController,
               errorText.value,
             ),
           ],
@@ -73,7 +73,7 @@ class SendDidPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildForm(
+  Widget _buildDidForm(
     BuildContext context,
     TextEditingController recipientDidController,
     FocusNode focusNode,
@@ -119,7 +119,7 @@ class SendDidPage extends HookConsumerWidget {
                     labelText: Loc.of(context).didPrefix,
                     errorText: errorText.value,
                   ),
-                  validator: (value) => value == null
+                  validator: (value) => value == null || value.isEmpty
                       ? Loc.of(context).thisFieldCannotBeEmpty
                       : null,
                 ),
@@ -131,7 +131,7 @@ class SendDidPage extends HookConsumerWidget {
 
   Widget _buildSendButton(
     BuildContext context,
-    String recipientDid,
+    TextEditingController recipientDidController,
     String? errorText,
   ) {
     return Padding(
@@ -144,7 +144,7 @@ class SendDidPage extends HookConsumerWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => SendConfirmationPage(
-                  did: recipientDid,
+                  did: recipientDidController.text,
                   amount: sendAmount,
                 ),
               ),
