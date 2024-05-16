@@ -654,6 +654,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Adding PFI...'**
   String get addingPfi;
+
+  /// No description provided for @mustAddPfiBeforeSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Must add a PFI before sending funds!'**
+  String get mustAddPfiBeforeSending;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
