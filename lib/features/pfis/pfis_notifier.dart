@@ -18,6 +18,7 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
 
   Future<Pfi> add(String input) async {
     final pfi = await pfiService.createPfi(input);
+    await Future.delayed(const Duration(seconds: 1));
 
     state = [...state, pfi];
     await _save();
