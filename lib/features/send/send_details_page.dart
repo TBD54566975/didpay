@@ -8,11 +8,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 
-class SendDidPage extends HookConsumerWidget {
+class SendDetailsPage extends HookConsumerWidget {
   final _formKey = GlobalKey<FormState>();
   final String sendAmount;
 
-  SendDidPage({required this.sendAmount, super.key});
+  SendDetailsPage({required this.sendAmount, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

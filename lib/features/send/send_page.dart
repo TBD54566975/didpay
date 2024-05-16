@@ -1,7 +1,7 @@
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/remittance/remittance_country_page.dart';
 import 'package:didpay/features/send/send.dart';
-import 'package:didpay/features/send/send_did_page.dart';
+import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -63,7 +63,7 @@ class SendPage extends HookWidget {
 
     void onPressed() => Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => SendDidPage(sendAmount: amount),
+            builder: (context) => SendDetailsPage(sendAmount: amount),
           ),
         );
 
