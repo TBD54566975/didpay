@@ -151,6 +151,12 @@ abstract class Loc {
   /// **'Don\'t know the recipient\'s DID? Scan their QR code'**
   String get scanRecipientQrCode;
 
+  /// No description provided for @scanPfiQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t know the PFI\'s DID? Scan their QR code'**
+  String get scanPfiQrCode;
+
   /// No description provided for @withdraw.
   ///
   /// In en, this message translates to:
@@ -618,6 +624,36 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Unable to retrieve transactions'**
   String get unableToRetrieveTxns;
+
+  /// No description provided for @addAPfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a PFI'**
+  String get addAPfi;
+
+  /// No description provided for @noPfisFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No PFIs found'**
+  String get noPfisFound;
+
+  /// No description provided for @startByAddingAPfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Start by adding a PFI'**
+  String get startByAddingAPfi;
+
+  /// No description provided for @pfiAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'PFI added!'**
+  String get pfiAdded;
+
+  /// No description provided for @addingPfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding PFI...'**
+  String get addingPfi;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
