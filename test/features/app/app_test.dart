@@ -1,4 +1,3 @@
-import 'package:didpay/features/app/app.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
