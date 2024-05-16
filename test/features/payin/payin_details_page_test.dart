@@ -6,6 +6,7 @@ import 'package:didpay/features/payin/payin_details_page.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -13,6 +14,7 @@ import 'package:json_schema/json_schema.dart';
 import 'package:tbdex/tbdex.dart';
 import 'package:web5/web5.dart';
 
+import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() async {
@@ -71,12 +73,15 @@ void main() async {
           ),
           overrides: [
             didProvider.overrideWithValue(did),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         );
 
     testWidgets('should show header', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: paymentDetailsPageTestWidget()),
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+        ),
       );
 
       expect(find.text('Enter your payment details'), findsOneWidget);

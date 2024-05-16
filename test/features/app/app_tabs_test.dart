@@ -1,6 +1,7 @@
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/home/home_page.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -16,6 +17,7 @@ void main() {
           child: const AppTabs(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -30,6 +32,7 @@ void main() {
           child: const AppTabs(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -45,6 +48,7 @@ void main() {
           child: const AppTabs(),
           overrides: [
             transactionsProvider.overrideWith(MockTransactionsNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
