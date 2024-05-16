@@ -123,5 +123,6 @@
     "noPfisFound": "No PFIs found",
     "startByAddingAPfi": "Start by adding a PFI",
     "pfiAdded": "PFI added!",
-    "addingPfi": "Adding PFI..."
+    "addingPfi": "Adding PFI...",
+    "mustAddPfiBeforeSending": "Must add a PFI before sending funds!"
 }

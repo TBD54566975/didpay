@@ -61,11 +61,14 @@ class DidQr {
     TextEditingController didTextController,
     ValueNotifier<String?> errorText,
   ) async {
+    ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(Loc.of(context).simulatedQrCodeScan),
       ),
     );
+
     final did = await DidDht.create(publish: true);
     didTextController.text = did.uri;
     errorText.value = null;

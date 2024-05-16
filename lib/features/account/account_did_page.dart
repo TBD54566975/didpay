@@ -53,6 +53,8 @@ class AccountDidPage extends HookConsumerWidget {
           title: Text(did),
           trailing: const Icon(Icons.content_copy),
           onTap: () {
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+
             Clipboard.setData(ClipboardData(text: did));
             final snackBar = SnackBar(
               content: Text(

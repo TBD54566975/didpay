@@ -13,18 +13,8 @@ class RemittanceCountryPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final countries = ref.read(countriesProvider);
     final country = useState<Country?>(null);
-
-    useEffect(
-      () {
-        Future.delayed(
-          Duration.zero,
-          () => ref.read(countriesProvider.notifier).reload(),
-        );
-        return null;
-      },
-      [],
-    );
 
     return Scaffold(
       appBar: AppBar(),
@@ -38,7 +28,7 @@ class RemittanceCountryPage extends HookConsumerWidget {
               Loc.of(context).selectCountryToGetStarted,
             ),
             Expanded(
-              child: _buildCountryList(context, ref, country),
+              child: _buildCountryList(context, ref, countries, country),
             ),
             _buildNextButton(context, country.value),
           ],
@@ -79,26 +69,23 @@ class RemittanceCountryPage extends HookConsumerWidget {
   Widget _buildCountryList(
     BuildContext context,
     WidgetRef ref,
+    List<Country> countries,
     ValueNotifier<Country?> selectedCountry,
   ) =>
-      ref.watch(countriesProvider).when(
-            data: (countries) => ListView.builder(
-              itemCount: countries.length,
-              itemBuilder: (context, index) {
-                final country = countries[index];
-                final isSelected = selectedCountry.value?.code == country.code;
+      ListView.builder(
+        itemCount: countries.length,
+        itemBuilder: (context, index) {
+          final country = countries[index];
+          final isSelected = selectedCountry.value?.code == country.code;
 
-                return Country.buildCountryTile(
-                  context,
-                  country,
-                  isSelected: isSelected,
-                  onTap: () => selectedCountry.value = country,
-                );
-              },
-            ),
-            loading: () => const Center(child: CircularProgressIndicator()),
-            error: (error, _) => Center(child: Text(error.toString())),
+          return Country.buildCountryTile(
+            context,
+            country,
+            isSelected: isSelected,
+            onTap: () => selectedCountry.value = country,
           );
+        },
+      );
 
   Widget _buildNextButton(
     BuildContext context,
