@@ -4,7 +4,7 @@ import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/error_state.dart';
+import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -76,7 +76,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
               : AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
           loading: () =>
               AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
-          error: (error, _) => ErrorState(
+          error: (error, _) => AsyncErrorWidget(
             text: error.toString(),
             onRetry: () => ref.read(quoteProvider.notifier).startPolling(
                   exchangeId,

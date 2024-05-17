@@ -9,7 +9,7 @@ import 'package:didpay/features/remittance/countries.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/error_state.dart';
+import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/number_pad.dart';
@@ -118,7 +118,7 @@ class RemittancePage extends HookConsumerWidget {
             );
           },
           loading: () => const AsyncLoadingWidget(text: 'Fetching offerings'),
-          error: (error, stackTrace) => ErrorState(
+          error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
             onRetry: () => _getOfferings(ref, offeringsState),
           ),

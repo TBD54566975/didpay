@@ -9,7 +9,7 @@ import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/error_state.dart';
+import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class PayinDetailsPage extends HookConsumerWidget {
                     AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
                 loading: () => AsyncLoadingWidget(
                     text: Loc.of(context).sendingYourRequest),
-                error: (error, _) => ErrorState(
+                error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
                   onRetry: () =>
                       // TODO(ethan-tbd): may not have updated paymentState here..

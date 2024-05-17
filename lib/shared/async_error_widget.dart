@@ -3,11 +3,11 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class ErrorState extends HookConsumerWidget {
+class AsyncErrorWidget extends HookConsumerWidget {
   final String text;
   final VoidCallback onRetry;
 
-  const ErrorState({
+  const AsyncErrorWidget({
     required this.text,
     required this.onRetry,
     super.key,
