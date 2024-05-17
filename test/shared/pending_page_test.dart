@@ -1,4 +1,4 @@
-import 'package:didpay/shared/pending_page.dart';
+import 'package:didpay/shared/loading_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,7 +9,7 @@ void main() {
     testWidgets('should show request is pending', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const PendingPage(text: 'Your request is pending...'),
+          child: const LoadingState(text: 'Your request is pending...'),
         ),
       );
 

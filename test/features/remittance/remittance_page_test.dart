@@ -2,15 +2,19 @@ import 'dart:convert';
 
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payout/payout.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/remittance/countries.dart';
 import 'package:didpay/features/remittance/remittance_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tbdex/tbdex.dart';
 
+import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
@@ -20,8 +24,18 @@ void main() {
   final jsonList = jsonDecode(jsonString) as List<dynamic>;
   final offerings = [Offering.fromJson(jsonList[0])];
   const country = Country(name: 'United States', code: 'US');
+  late MockTbdexService mockTbdexService;
 
   group('RemittancePage', () {
+    setUp(() {
+      mockTbdexService = MockTbdexService();
+
+      when(
+        () => mockTbdexService
+            .getOfferings([const Pfi(did: 'did:web:x%3A8892:ingress')]),
+      ).thenAnswer((_) async => offerings);
+    });
+
     testWidgets('should show payin and payout', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -30,7 +44,8 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref) async => offerings),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -48,7 +63,8 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref) async => offerings),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -65,7 +81,8 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref) async => offerings),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );
@@ -83,7 +100,8 @@ void main() {
             rfqState: RfqState(),
           ),
           overrides: [
-            offeringsProvider.overrideWith((ref) async => offerings),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
       );

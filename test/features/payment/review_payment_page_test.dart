@@ -6,8 +6,8 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -22,6 +22,7 @@ void main() {
         child: const ReviewPaymentPage(
           exchangeId: '',
           paymentState: PaymentState(
+            pfi: Pfi(did: ''),
             payoutAmount: '17.00',
             payinCurrency: 'USD',
             payoutCurrency: 'MXN',
@@ -95,5 +96,5 @@ class _MockQuoteNotifier extends QuoteAsyncNotifier {
   }
 
   @override
-  void startPolling(String exchangeId) {}
+  void startPolling(String exchangeId, Pfi pfi) {}
 }
