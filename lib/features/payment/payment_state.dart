@@ -1,7 +1,9 @@
 import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentState {
+  final Pfi pfi;
   final String payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
@@ -14,6 +16,7 @@ class PaymentState {
   final Map<String, String>? formData;
 
   const PaymentState({
+    required this.pfi,
     required this.payoutAmount,
     required this.payinCurrency,
     required this.payoutCurrency,
@@ -27,6 +30,7 @@ class PaymentState {
   });
 
   PaymentState copyWith({
+    Pfi? pfi,
     String? payoutAmount,
     String? payinCurrency,
     String? payoutCurrency,
@@ -39,6 +43,7 @@ class PaymentState {
     Map<String, String>? formData,
   }) {
     return PaymentState(
+      pfi: pfi ?? this.pfi,
       payoutAmount: payoutAmount ?? this.payoutAmount,
       payinCurrency: payinCurrency ?? this.payinCurrency,
       payoutCurrency: payoutCurrency ?? this.payoutCurrency,
