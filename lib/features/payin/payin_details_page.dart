@@ -1,11 +1,16 @@
 import 'package:collection/collection.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
 import 'package:didpay/features/payment/payment_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
+import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/error_state.dart';
+import 'package:didpay/shared/loading_state.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -24,6 +29,8 @@ class PayinDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final sendRfqState = useState<AsyncValue<Rfq>?>(null);
+
     final payinTypes = paymentState.payinMethods
         ?.map((method) => method.group)
         .whereType<String>()
@@ -60,33 +67,47 @@ class PayinDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _buildHeader(
-              context,
-              headerTitle,
-            ),
-            if (shouldShowPayinTypeSelector)
-              _buildPayinTypeSelector(
-                context,
-                selectedPayinType,
-                payinTypes,
+        child: sendRfqState.value != null
+            ? sendRfqState.value!.when(
+                data: (rfq) =>
+                    LoadingState(text: Loc.of(context).gettingYourQuote),
+                loading: () =>
+                    LoadingState(text: Loc.of(context).sendingYourRequest),
+                error: (error, _) => ErrorState(
+                  text: error.toString(),
+                  onRetry: () =>
+                      // TODO(ethan-tbd): may not have updated paymentState here..
+                      _sendRfq(context, ref, sendRfqState, paymentState),
+                ),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _buildHeader(
+                    context,
+                    headerTitle,
+                  ),
+                  if (shouldShowPayinTypeSelector)
+                    _buildPayinTypeSelector(
+                      context,
+                      selectedPayinType,
+                      payinTypes,
+                    ),
+                  if (shouldShowPayinMethodSelector)
+                    _buildPayinMethodSelector(
+                      context,
+                      selectedPayinMethod,
+                      filteredPayinMethods,
+                    ),
+                  PaymentDetails.buildForm(
+                    context,
+                    rfqState.copyWith(payinMethod: selectedPayinMethod.value),
+                    paymentState,
+                    onPaymentSubmit: (paymentState) =>
+                        _sendRfq(context, ref, sendRfqState, paymentState),
+                  ),
+                ],
               ),
-            if (shouldShowPayinMethodSelector)
-              _buildPayinMethodSelector(
-                context,
-                selectedPayinMethod,
-                filteredPayinMethods,
-              ),
-            PaymentDetails.buildForm(
-              context,
-              ref,
-              rfqState.copyWith(payinMethod: selectedPayinMethod.value),
-              paymentState,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -205,5 +226,33 @@ class PayinDetailsPage extends HookConsumerWidget {
         ),
       ],
     );
+  }
+
+  void _sendRfq(
+    BuildContext context,
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<Rfq>?> state,
+    PaymentState paymentState,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(tbdexServiceProvider)
+        .sendRfq(ref.read(didProvider), paymentState.pfi, rfqState)
+        .then((rfq) async {
+      state.value = AsyncData(rfq);
+      await Navigator.of(context)
+          .push(
+            MaterialPageRoute(
+              builder: (context) => ReviewPaymentPage(
+                exchangeId: '',
+                paymentState: paymentState,
+              ),
+            ),
+          )
+          .then((_) => state.value = null);
+    }).catchError((error, stackTrace) {
+      state.value = AsyncError(error.toString(), stackTrace);
+      throw error;
+    });
   }
 }
