@@ -244,7 +244,7 @@ class PayoutDetailsPage extends HookConsumerWidget {
           .push(
             MaterialPageRoute(
               builder: (context) => ReviewPaymentPage(
-                exchangeId: '',
+                exchangeId: rfq.metadata.id,
                 paymentState: paymentState,
               ),
             ),
