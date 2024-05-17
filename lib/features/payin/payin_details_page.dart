@@ -69,10 +69,12 @@ class PayinDetailsPage extends HookConsumerWidget {
       body: SafeArea(
         child: sendRfqState.value != null
             ? sendRfqState.value!.when(
-                data: (rfq) =>
-                    AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
+                data: (rfq) => AsyncLoadingWidget(
+                  text: Loc.of(context).gettingYourQuote,
+                ),
                 loading: () => AsyncLoadingWidget(
-                    text: Loc.of(context).sendingYourRequest),
+                  text: Loc.of(context).sendingYourRequest,
+                ),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
                   onRetry: () =>
