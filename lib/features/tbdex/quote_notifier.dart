@@ -1,9 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
+
+final quoteProvider =
+    AsyncNotifierProvider.autoDispose<QuoteAsyncNotifier, Quote?>(
+  QuoteAsyncNotifier.new,
+);
 
 class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
   static const _maxCallsPerInterval = 10;
@@ -24,7 +31,7 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
   @override
   FutureOr<Quote?> build() => null;
 
-  void startPolling(String exchangeId) {
+  void startPolling(String exchangeId, Pfi pfi) {
     _timer?.cancel();
     _pollingStart ??= DateTime.now();
 
@@ -40,12 +47,20 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
 
     _timer = Timer.periodic(_currentInterval, (_) async {
       try {
-        final exchange = await ref.read(exchangeProvider(exchangeId).future);
+        final exchange = await ref
+            .read(tbdexServiceProvider)
+            .getExchange(ref.read(didProvider), pfi, exchangeId);
+
         if (_containsQuote(exchange)) {
           state = AsyncValue.data(_getQuote(exchange));
           stopPolling();
         } else {
-          _increaseBackoff(exchangeId);
+          _currentInterval = _backoffIntervals[min(
+            _numCalls ~/ _maxCallsPerInterval,
+            _backoffIntervals.length - 1,
+          )];
+          _numCalls++;
+          startPolling(exchangeId, pfi);
         }
       } on Exception catch (e) {
         state = AsyncValue.error(
@@ -55,14 +70,6 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
         stopPolling();
       }
     });
-  }
-
-  void _increaseBackoff(String exchangeId) {
-    _currentInterval = _backoffIntervals[
-        min(_numCalls ~/ _maxCallsPerInterval, _backoffIntervals.length - 1)];
-    _numCalls++;
-
-    startPolling(exchangeId);
   }
 
   void stopPolling() {
