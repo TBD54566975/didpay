@@ -2,21 +2,33 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mocktail/mocktail.dart';
 import 'package:tbdex/tbdex.dart';
+import 'package:web5/web5.dart';
 
+import '../../helpers/mocks.dart';
 import '../../helpers/widget_helpers.dart';
 
-void main() {
+void main() async {
+  const jsonString =
+      '''{"metadata":{"kind":"order","to":"did:jwk:eyJrdHkiOiJPS1AiLCJhbGciOiJFZERTQSIsImtpZCI6ImpCU21VNF94OGZYSkZ4QkNyUWN3QlJ1VTZ4WG9sSG1STjF0bkFLSWFzWDgiLCJjcnYiOiJFZDI1NTE5IiwieCI6ImJBdHk5dWwyU1ZvUlRQUm51aVlVdHVtN2x0WHE4c2VCWFJBQ3o4SjRoZGMifQ","from":"did:jwk:eyJrdHkiOiJPS1AiLCJhbGciOiJFZERTQSIsImtpZCI6InFCY1o3blNCZnIxdjRObnd1bjJGbEFuQm9RdjdQeDJPODE4NTNwMU9EdG8iLCJjcnYiOiJFZDI1NTE5IiwieCI6ImtGWnkzUE9hRmhCRjFTbERubUlYSjFCYUxtVGpOeXJQWDB0bXRXMVppNUEifQ","id":"order_01hy4b39mcewxvzckyf6x96ykp","exchangeId":"rfq_01hy4b39m8f21s1q8y1kwa7ec6","createdAt":"2024-05-17T22:34:54.988029Z","protocol":"1.0"},"data":{},"signature":"eyJhbGciOiJFZERTQSIsImtpZCI6ImRpZDpqd2s6ZXlKcmRIa2lPaUpQUzFBaUxDSmhiR2NpT2lKRlpFUlRRU0lzSW10cFpDSTZJbkZDWTFvM2JsTkNabkl4ZGpST2JuZDFiakpHYkVGdVFtOVJkamRRZURKUE9ERTROVE53TVU5RWRHOGlMQ0pqY25ZaU9pSkZaREkxTlRFNUlpd2llQ0k2SW10R1dua3pVRTloUm1oQ1JqRlRiRVJ1YlVsWVNqRkNZVXh0VkdwT2VYSlFXREIwYlhSWE1WcHBOVUVpZlEjMCJ9..nbp76ytzYAvvG9bizY5ez2TGv7SazA6vZFV_9vPGq1M-_vi2Bs7FP4DumWJOtgJBZ_vMJGxZWwW8oXVYN31ECA"}''';
+  final json = jsonDecode(jsonString);
+  final order = Order.fromJson(json);
+  final did = await DidDht.create();
+
+  late MockTbdexService mockTbdexService;
+
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const ReviewPaymentPage(
@@ -33,10 +45,25 @@ void main() {
           ),
         ),
         overrides: [
+          didProvider.overrideWithValue(did),
           quoteProvider.overrideWith(_MockQuoteNotifier.new),
+          tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
         ],
       );
   group('ReviewPaymentPage', () {
+    setUp(() {
+      mockTbdexService = MockTbdexService();
+
+      when(
+        () => mockTbdexService.submitOrder(any(), any(), any()),
+      ).thenAnswer((_) async => order);
+    });
+
+    setUpAll(() {
+      registerFallbackValue(did);
+      registerFallbackValue(const Pfi(did: 'did:web:x%3A8892:ingress'));
+    });
+
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
@@ -68,17 +95,17 @@ void main() {
       expect(find.text('ABC Bank'), findsOneWidget);
     });
 
-    testWidgets('should show payment confirmation page on tap of submit button',
+    testWidgets('should show order confirmation on tap of submit button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Pay 10.11 USD'));
+      await tester.tap(find.text('Pay 10 USD'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(PaymentConfirmationPage), findsOneWidget);
+      expect(find.text('Order confirmed!'), findsOneWidget);
     });
   });
 }
