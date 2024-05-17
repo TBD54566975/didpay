@@ -82,13 +82,27 @@ class TbdexService {
     final response =
         await TbdexHttpClient.createExchange(rfq, replyTo: rfq.metadata.from);
 
+    // TODO(ethan-tbd): uncomment exception handling after empty response body is fixed
     if (response.statusCode.category != HttpStatus.success) {
-      throw Exception(
-        'failed to send rfq with status code ${response.statusCode}',
-      );
+      // throw Exception(
+      //   'failed to send rfq with status code ${response.statusCode}',
+      // );
     }
     return rfq;
   }
 
-  // TODO(ethan-tbd): create order, https://github.com/TBD54566975/didpay/issues/115
+  Future<Order> submitOrder(BearerDid did, Pfi pfi, String exchangeId) async {
+    final order = Order.create(pfi.did, did.uri, exchangeId);
+    await order.sign(did);
+
+    final response = await TbdexHttpClient.submitOrder(order);
+
+    // TODO(ethan-tbd): uncomment exception handling after empty response body is fixed
+    if (response.statusCode.category != HttpStatus.success) {
+      // throw Exception(
+      //   'failed to send order with status code ${response.statusCode}',
+      // );
+    }
+    return order;
+  }
 }
