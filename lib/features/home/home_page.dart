@@ -49,7 +49,7 @@ class HomePage extends HookConsumerWidget {
             _buildAccountBalance(context, accountBalance, pfis),
             Expanded(
               child: pfis.isEmpty
-                  ? _buildEmptyState(
+                  ? _buildGetStarted(
                       context,
                       Loc.of(context).noPfisFound,
                       Loc.of(context).startByAddingAPfi,
@@ -192,7 +192,7 @@ class HomePage extends HookConsumerWidget {
           Expanded(
             child: exchangesStatus.when(
               data: (exchange) => exchange == null || exchange.isEmpty
-                  ? _buildEmptyState(
+                  ? _buildGetStarted(
                       context,
                       Loc.of(context).noTransactionsYet,
                       Loc.of(context).startByAdding,
@@ -202,7 +202,11 @@ class HomePage extends HookConsumerWidget {
                       onRefresh: () async => notifier.fetch(pfis),
                       child: _buildTransactionsList(context, exchange),
                     ),
-              error: (error, stackTrace) => _buildErrorState(context),
+              error: (error, stackTrace) => _buildTransactionsError(
+                context,
+                notifier,
+                pfis,
+              ),
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
           ),
@@ -214,16 +218,9 @@ class HomePage extends HookConsumerWidget {
     List<Exchange> exchanges,
   ) =>
       ListView(
+        reverse: true,
         children: exchanges.map((exchange) {
           final transaction = Transaction.fromExchange(exchange);
-          final payoutAmount = CurrencyUtil.formatFromDouble(
-            transaction.payoutAmount,
-            currency: transaction.payoutCurrency.toUpperCase(),
-          );
-          final payinAmount = CurrencyUtil.formatFromDouble(
-            transaction.payinAmount,
-            currency: transaction.payinCurrency.toUpperCase(),
-          );
 
           return ListTile(
             title: Text(
@@ -232,15 +229,8 @@ class HomePage extends HookConsumerWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
-            subtitle: Text(
-              _getSubtitle(transaction),
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w300,
-                  ),
-            ),
-            trailing: Text(
-              '${transaction.type == TransactionType.deposit ? payoutAmount : payinAmount} USDC',
-            ),
+            subtitle: _getTxnSubtitle(context, transaction),
+            trailing: _getTxnTrailing(transaction),
             leading: Container(
               width: Grid.md,
               height: Grid.md,
@@ -266,55 +256,49 @@ class HomePage extends HookConsumerWidget {
       );
 
   // TODO(ethan-tbd): update empty state, https://github.com/TBD54566975/didpay/issues/125
-  Widget _buildEmptyState(
+  Widget _buildGetStarted(
     BuildContext context,
     String title,
     String subtitle,
     bool hasPfis,
   ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.xxl),
+      Center(
         child: Column(
           children: [
-            const Spacer(flex: 3),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: Grid.xxl),
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                Text(subtitle),
-                const SizedBox(height: Grid.xxs),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    FilledButton(
-                      child: Text(Loc.of(context).getStarted),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => hasPfis
-                                ? const DepositPage(rfqState: RfqState())
-                                : AddPfiPage(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ],
+            const SizedBox(height: Grid.xs),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            const Spacer(flex: 6),
+            const SizedBox(height: Grid.xxs),
+            FilledButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  Theme.of(context).colorScheme.secondaryContainer,
+                ),
+              ),
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => hasPfis
+                      ? const DepositPage(rfqState: RfqState())
+                      : AddPfiPage(),
+                ),
+              ),
+              child: Text(Loc.of(context).getStarted),
+            ),
           ],
         ),
       );
 
   // TODO(ethan-tbd): update error state, https://github.com/TBD54566975/didpay/issues/125
-  Widget _buildErrorState(BuildContext context) => Center(
+  Widget _buildTransactionsError(
+    BuildContext context,
+    TransactionsAsyncNotifier notifier,
+    List<Pfi> pfis,
+  ) =>
+      Center(
         child: Column(
           children: [
             const SizedBox(height: Grid.xs),
@@ -325,12 +309,37 @@ class HomePage extends HookConsumerWidget {
                   ),
             ),
             const SizedBox(height: Grid.xxs),
+            FilledButton(
+              style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+                  Theme.of(context).colorScheme.secondaryContainer,
+                ),
+              ),
+              onPressed: () async => notifier.fetch(pfis),
+              child: Text(Loc.of(context).tapToRetry),
+            ),
           ],
         ),
       );
 
-  String _getSubtitle(Transaction transaction) =>
-      transaction.type == TransactionType.deposit
-          ? '${transaction.payinCurrency} → account balance'
-          : 'Account balance → ${transaction.payoutCurrency}';
+  Widget _getTxnSubtitle(BuildContext context, Transaction transaction) => Text(
+        transaction.type == TransactionType.deposit
+            ? '${transaction.payinCurrency} → account balance'
+            : 'Account balance → ${transaction.payoutCurrency}',
+        style: Theme.of(context).textTheme.labelMedium?.copyWith(
+              fontWeight: FontWeight.w300,
+            ),
+      );
+
+  Widget _getTxnTrailing(Transaction transaction) => Text(
+        transaction.type == TransactionType.deposit
+            ? '${CurrencyUtil.formatFromDouble(
+                transaction.payoutAmount,
+                currency: transaction.payoutCurrency.toUpperCase(),
+              )} ${transaction.payoutCurrency}'
+            : '${CurrencyUtil.formatFromDouble(
+                transaction.payinAmount,
+                currency: transaction.payinCurrency.toUpperCase(),
+              )} ${transaction.payinCurrency}',
+      );
 }
