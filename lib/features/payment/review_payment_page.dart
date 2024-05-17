@@ -3,9 +3,10 @@ import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/error_state.dart';
 import 'package:didpay/shared/fee_details.dart';
+import 'package:didpay/shared/loading_state.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +33,7 @@ class ReviewPaymentPage extends HookConsumerWidget {
       () {
         Future.delayed(
           Duration.zero,
-          () => getQuoteNotifier().startPolling(exchangeId),
+          () => getQuoteNotifier().startPolling(exchangeId, paymentState.pfi),
         );
         return getQuoteNotifier().stopPolling;
       },
@@ -42,11 +43,11 @@ class ReviewPaymentPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-          child: quoteStatus.when(
-            data: (quote) => quote != null
-                ? Column(
+        child: quoteStatus.when(
+          data: (quote) => quote != null
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+                  child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       _buildHeader(
@@ -70,36 +71,18 @@ class ReviewPaymentPage extends HookConsumerWidget {
                       ),
                       _buildSubmitButton(context, ref, quote),
                     ],
-                  )
-                : _loading(),
-            loading: _loading,
-            error: (error, stackTrace) =>
-                _buildErrorWidget(context, ref, quoteStatus.error.toString()),
+                  ),
+                )
+              : LoadingState(text: Loc.of(context).gettingYourQuote),
+          loading: () => LoadingState(text: Loc.of(context).gettingYourQuote),
+          error: (error, _) => ErrorState(
+            text: error.toString(),
+            onRetry: () => ref.read(quoteProvider.notifier).startPolling(
+                  exchangeId,
+                  paymentState.pfi,
+                ),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _loading() => const Center(child: CircularProgressIndicator());
-
-  Widget _buildErrorWidget(
-    BuildContext context,
-    WidgetRef ref,
-    String errorMessage,
-  ) {
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeader(context, Loc.of(context).errorFound, errorMessage),
-          Expanded(child: Container()),
-          FilledButton(
-            onPressed: () =>
-                ref.read(quoteProvider.notifier).startPolling(exchangeId),
-            child: Text(Loc.of(context).tapToRetry),
-          ),
-        ],
       ),
     );
   }
