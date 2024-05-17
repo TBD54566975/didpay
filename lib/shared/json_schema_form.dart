@@ -9,7 +9,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class JsonSchemaForm extends HookWidget {
   final String? schema;
   final bool isDisabled;
-  final bool isLoading;
   final void Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
@@ -19,7 +18,6 @@ class JsonSchemaForm extends HookWidget {
     required this.schema,
     required this.onSubmit,
     this.isDisabled = false,
-    this.isLoading = false,
     super.key,
   });
 
@@ -154,24 +152,15 @@ class JsonSchemaForm extends HookWidget {
   ) =>
       Expanded(
         child: Column(
-          crossAxisAlignment: isLoading
-              ? CrossAxisAlignment.center
-              : CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Expanded(child: Container()),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: isDisabled
-                  ? FilledButton(
-                      onPressed: null,
-                      child: Text(Loc.of(context).next),
-                    )
-                  : isLoading
-                      ? const CircularProgressIndicator()
-                      : FilledButton(
-                          onPressed: () => onPressed(formData),
-                          child: Text(Loc.of(context).next),
-                        ),
+              child: FilledButton(
+                onPressed: isDisabled ? null : () => onPressed(formData),
+                child: Text(Loc.of(context).next),
+              ),
             ),
           ],
         ),
