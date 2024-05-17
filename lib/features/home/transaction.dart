@@ -24,8 +24,8 @@ class Transaction {
   factory Transaction.fromExchange(Exchange exchange) {
     var payinAmount = '0';
     var payoutAmount = '0';
-    var payinCurrency = 'USD';
-    var payoutCurrency = 'MXN';
+    var payinCurrency = '';
+    var payoutCurrency = '';
     var latestCreatedAt = DateTime.fromMillisecondsSinceEpoch(0);
     var status = TransactionStatus.pending;
     var type = TransactionType.send;
