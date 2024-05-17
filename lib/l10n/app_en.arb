@@ -124,5 +124,7 @@
     "startByAddingAPfi": "Start by adding a PFI",
     "pfiAdded": "PFI added!",
     "addingPfi": "Adding PFI...",
-    "mustAddPfiBeforeSending": "Must add a PFI before sending funds!"
+    "mustAddPfiBeforeSending": "Must add a PFI before sending funds!",
+    "gettingYourQuote": "Getting your quote...",
+    "sendingYourRequest": "Sending your request..."
 }
