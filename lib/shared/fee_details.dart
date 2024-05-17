@@ -70,13 +70,9 @@ class FeeDetails extends HookWidget {
       double.parse(quote?.payout.amount ?? '0') /
       double.parse(quote?.payin.amount ?? '0');
 
-  static double calculateTotalFees(QuoteData? quote) =>
-      double.parse(quote?.payin.fee ?? '0') +
-      double.parse(quote?.payout.fee ?? '0') / calculateExchangeRate(quote);
-
   static String calculateTotalAmount(QuoteData? quote) =>
       CurrencyUtil.formatFromDouble(
-        double.parse(quote?.payin.amount ?? '0') + calculateTotalFees(quote),
+        double.parse(quote?.payin.amount ?? '0'),
         currency: quote?.payin.currencyCode ?? '',
       );
 
