@@ -672,6 +672,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Sending your request...'**
   String get sendingYourRequest;
+
+  /// No description provided for @confirmingYourOrder.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirming your order...'**
+  String get confirmingYourOrder;
+
+  /// No description provided for @orderConfirmed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order confirmed!'**
+  String get orderConfirmed;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

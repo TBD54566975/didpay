@@ -126,5 +126,7 @@
     "addingPfi": "Adding PFI...",
     "mustAddPfiBeforeSending": "Must add a PFI before sending funds!",
     "gettingYourQuote": "Getting your quote...",
-    "sendingYourRequest": "Sending your request..."
+    "sendingYourRequest": "Sending your request...",
+    "confirmingYourOrder": "Confirming your order...",
+    "orderConfirmed": "Order confirmed!"
 }

@@ -302,4 +302,10 @@ class LocEn extends Loc {
 
   @override
   String get sendingYourRequest => 'Sending your request...';
+
+  @override
+  String get confirmingYourOrder => 'Confirming your order...';
+
+  @override
+  String get orderConfirmed => 'Order confirmed!';
 }
