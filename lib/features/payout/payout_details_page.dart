@@ -10,7 +10,7 @@ import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_state.dart';
-import 'package:didpay/shared/loading_state.dart';
+import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -70,9 +70,9 @@ class PayoutDetailsPage extends HookConsumerWidget {
         child: sendRfqState.value != null
             ? sendRfqState.value!.when(
                 data: (rfq) =>
-                    LoadingState(text: Loc.of(context).gettingYourQuote),
-                loading: () =>
-                    LoadingState(text: Loc.of(context).sendingYourRequest),
+                    AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
+                loading: () => AsyncLoadingWidget(
+                    text: Loc.of(context).sendingYourRequest),
                 error: (error, _) => ErrorState(
                   text: error.toString(),
                   onRetry: () =>

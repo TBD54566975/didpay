@@ -2,10 +2,10 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class LoadingState extends HookWidget {
+class AsyncLoadingWidget extends HookWidget {
   final String text;
 
-  const LoadingState({required this.text, super.key});
+  const AsyncLoadingWidget({required this.text, super.key});
 
   @override
   Widget build(BuildContext context) => Column(
