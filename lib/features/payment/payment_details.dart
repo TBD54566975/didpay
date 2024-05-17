@@ -1,22 +1,17 @@
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/tbdex.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentDetails {
   static Widget buildForm(
     BuildContext context,
-    WidgetRef ref,
     RfqState rfqState,
-    PaymentState paymentState,
-  ) {
+    PaymentState paymentState, {
+    required void Function(PaymentState) onPaymentSubmit,
+  }) {
     final paymentMethod =
         paymentState.transactionType == TransactionType.deposit
             ? rfqState.payinMethod
@@ -27,34 +22,18 @@ class PaymentDetails {
     final fee = paymentMethod.serviceFee;
     final paymentName = paymentMethod.paymentName;
 
-    final rfq = Tbdex.createRfq(ref, rfqState);
-    final isLoading = useState(false);
-
     return Expanded(
       child: JsonSchemaForm(
         schema: schema,
         isDisabled: isDisabled,
-        isLoading: isLoading.value,
         onSubmit: (formData) {
           // TODO(mistermoe): check requiredClaims and navigate to kcc flow if needed, https://github.com/TBD54566975/didpay/issues/122
-          isLoading.value = true;
-          ref.read(rfqProvider(rfq).future).then(
-            (_) async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => ReviewPaymentPage(
-                    exchangeId: rfq.metadata.id,
-                    paymentState: paymentState.copyWith(
-                      serviceFee: fee,
-                      paymentName: paymentName,
-                      formData: formData,
-                    ),
-                  ),
-                ),
-              );
-              isLoading.value = false;
-            },
-            onError: (_) => isLoading.value = false,
+          onPaymentSubmit(
+            paymentState.copyWith(
+              serviceFee: fee,
+              paymentName: paymentName,
+              formData: formData,
+            ),
           );
         },
       ),

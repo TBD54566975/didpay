@@ -7,7 +7,6 @@ import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
 import 'package:didpay/features/tbdex/transactions_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -33,7 +32,10 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(Duration.zero, () => getTransactionsNotifier().fetch());
+        Future.delayed(
+          Duration.zero,
+          () => getTransactionsNotifier().fetch(pfis),
+        );
         return null;
       },
       [],
@@ -53,7 +55,12 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).startByAddingAPfi,
                       false,
                     )
-                  : _buildActivity(context, getTransactionsNotifier(), txns),
+                  : _buildActivity(
+                      context,
+                      getTransactionsNotifier(),
+                      pfis,
+                      txns,
+                    ),
             ),
           ],
         ),
@@ -166,6 +173,7 @@ class HomePage extends HookConsumerWidget {
   Widget _buildActivity(
     BuildContext context,
     TransactionsAsyncNotifier notifier,
+    List<Pfi> pfis,
     AsyncValue<List<Exchange>?> exchangesStatus,
   ) =>
       Column(
@@ -191,7 +199,7 @@ class HomePage extends HookConsumerWidget {
                       true,
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => notifier.fetch(),
+                      onRefresh: () async => notifier.fetch(pfis),
                       child: _buildTransactionsList(context, exchange),
                     ),
               error: (error, stackTrace) => _buildErrorState(context),

@@ -1,4 +1,4 @@
-import 'package:didpay/shared/success_page.dart';
+import 'package:didpay/shared/success_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -9,7 +9,7 @@ void main() {
     testWidgets('should show request was submitted', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const SuccessPage(text: 'Your request was submitted!'),
+          child: const SuccessState(text: 'Your request was submitted!'),
         ),
       );
 
@@ -20,7 +20,7 @@ void main() {
     testWidgets('should show done button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const SuccessPage(
+          child: const SuccessState(
             text: '',
           ),
         ),

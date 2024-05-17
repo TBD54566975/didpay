@@ -6,6 +6,7 @@ import 'package:didpay/features/payin/payin_details_page.dart';
 import 'package:didpay/features/payin/search_payin_methods_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:flutter/material.dart';
@@ -63,6 +64,7 @@ void main() async {
           child: PayinDetailsPage(
             rfqState: const RfqState(),
             paymentState: PaymentState(
+              pfi: const Pfi(did: ''),
               payoutAmount: '17.00',
               payinCurrency: 'USD',
               payoutCurrency: 'MXN',

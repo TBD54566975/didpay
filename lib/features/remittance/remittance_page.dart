@@ -3,11 +3,15 @@ import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/payout/payout_details_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/remittance/countries.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/fee_details.dart';
+import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
@@ -29,17 +33,25 @@ class RemittancePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO(ethan-tbd): use country to filter offerings, https://github.com/TBD54566975/didpay/issues/134
-    final offerings = ref.watch(offeringsProvider);
-
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedOffering = useState<Offering?>(null);
+    final offeringsState =
+        useState<AsyncValue<List<Offering>>>(const AsyncLoading());
+
+    useEffect(
+      () {
+        _getOfferings(ref, offeringsState);
+        return null;
+      },
+      [],
+    );
 
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: offerings.when(
+        child: offeringsState.value.when(
           data: (offerings) {
             selectedOffering.value ??= offerings.first;
 
@@ -99,16 +111,16 @@ class RemittancePage extends HookConsumerWidget {
                         selectedOffering.value?.data.payout.currencyCode ?? '',
                   ),
                   selectedOffering.value,
+                  // TODO(ethan-tbd): get pfi from selectedOffering
+                  ref.read(pfisProvider)[0],
                 ),
               ],
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Center(
-            child: Text(
-              'failed to retrieve offerings: $error',
-              style: Theme.of(context).textTheme.displaySmall,
-            ),
+          loading: () => const AsyncLoadingWidget(text: 'Fetching offerings'),
+          error: (error, stackTrace) => AsyncErrorWidget(
+            text: error.toString(),
+            onRetry: () => _getOfferings(ref, offeringsState),
           ),
         ),
       ),
@@ -120,6 +132,7 @@ class RemittancePage extends HookConsumerWidget {
     String payinAmount,
     String payoutAmount,
     Offering? selectedOffering,
+    Pfi pfi,
   ) {
     final disabled = double.tryParse(payinAmount) == 0;
 
@@ -133,6 +146,7 @@ class RemittancePage extends HookConsumerWidget {
                 payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
               ),
               paymentState: PaymentState(
+                pfi: pfi,
                 payoutAmount: payoutAmount,
                 payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
                 payoutCurrency:
@@ -153,5 +167,20 @@ class RemittancePage extends HookConsumerWidget {
         child: Text(Loc.of(context).next),
       ),
     );
+  }
+
+  void _getOfferings(
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<List<Offering>>> state,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(tbdexServiceProvider)
+        .getOfferings(ref.read(pfisProvider))
+        .then((offerings) => state.value = AsyncData(offerings))
+        .catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
   }
 }

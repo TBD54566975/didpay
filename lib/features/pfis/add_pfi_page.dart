@@ -3,8 +3,8 @@ import 'package:didpay/features/did_qr/did_qr.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/pending_page.dart';
-import 'package:didpay/shared/success_page.dart';
+import 'package:didpay/shared/async_loading_widget.dart';
+import 'package:didpay/shared/success_state.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -41,8 +41,9 @@ class AddPfiPage extends HookConsumerWidget {
       body: SafeArea(
         child: addPfiState.value != null
             ? addPfiState.value!.when(
-                data: (pfi) => SuccessPage(text: Loc.of(context).pfiAdded),
-                loading: () => PendingPage(text: Loc.of(context).addingPfi),
+                data: (pfi) => SuccessState(text: Loc.of(context).pfiAdded),
+                loading: () =>
+                    AsyncLoadingWidget(text: Loc.of(context).addingPfi),
                 error: (error, _) => Text('Error: $error'),
               )
             : Column(
@@ -78,7 +79,6 @@ class AddPfiPage extends HookConsumerWidget {
                     isPhysicalDevice: isPhysicalDevice.value,
                   ),
                   _buildAddButton(
-                    context,
                     ref,
                     pfiDidController,
                     addPfiState,
@@ -181,7 +181,6 @@ class AddPfiPage extends HookConsumerWidget {
       );
 
   Widget _buildAddButton(
-    BuildContext context,
     WidgetRef ref,
     TextEditingController pfiDidController,
     ValueNotifier<AsyncValue<Pfi>?> state,
@@ -193,7 +192,7 @@ class AddPfiPage extends HookConsumerWidget {
           onPressed: () {
             if ((_formKey.currentState?.validate() ?? false) &&
                 errorText == null) {
-              _addPfi(context, ref, pfiDidController.text, state);
+              _addPfi(ref, pfiDidController.text, state);
             }
           },
           child: const Text('Add'),
@@ -201,7 +200,6 @@ class AddPfiPage extends HookConsumerWidget {
       );
 
   void _addPfi(
-    BuildContext context,
     WidgetRef ref,
     String did,
     ValueNotifier<AsyncValue<Pfi>?> state,

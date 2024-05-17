@@ -1,6 +1,6 @@
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/tbdex/tbdex_providers.dart';
+import 'package:didpay/features/tbdex/transactions_notifier.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/mocks.dart';

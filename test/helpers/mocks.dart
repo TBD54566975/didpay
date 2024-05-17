@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/tbdex/transactions_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
@@ -18,6 +19,8 @@ class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class MockPfisService extends Mock implements PfisService {}
 
+class MockTbdexService extends Mock implements TbdexService {}
+
 class MockTransactionsNotifier extends TransactionsAsyncNotifier {
   MockTransactionsNotifier() : super();
 
@@ -27,7 +30,9 @@ class MockTransactionsNotifier extends TransactionsAsyncNotifier {
   }
 
   @override
-  Future<void> fetch() async {}
+  Future<void> fetch(List<Pfi> pfis) {
+    return Future.value();
+  }
 }
 
 class MockPfisNotifier extends PfisNotifier {

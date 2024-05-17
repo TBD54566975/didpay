@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -43,9 +41,9 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
     }
 
     final pfis = <Pfi>[];
-    for (final pfi in saved) {
+    for (final pfiDid in saved) {
       try {
-        pfis.add(Pfi.fromJson(jsonDecode(pfi)));
+        pfis.add(Pfi(did: pfiDid));
       } on Exception catch (e) {
         throw Exception('Failed to load saved PFI: $e');
       }
