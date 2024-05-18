@@ -3,8 +3,12 @@ import 'dart:convert';
 import 'package:didpay/features/kcc/lib.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
+import 'package:retry/retry.dart';
 import 'package:web5/web5.dart';
+
+final kccIssuanceProvider = Provider((_) => KccIssuanceService());
 
 class KccIssuanceService {
   final http.Client httpClient;
@@ -280,6 +284,24 @@ class KccIssuanceService {
         body: response.body,
       );
     }
+  }
+
+  Future<CredentialResponse> pollForCredential(
+    Pfi pfi,
+    IdvRequest idvRequest,
+    BearerDid bearerDid,
+  ) async {
+    final tokenResponse = await retry(
+      () => getAccessToken(pfi, idvRequest, bearerDid),
+      retryIf: (e) {
+        if (e is TokenResponseException) {
+          return e.errorCode == TokenResponseErrorCode.authorizationPending;
+        }
+        return false;
+      },
+    );
+
+    return getVerifiableCredential(pfi, idvRequest, tokenResponse, bearerDid);
   }
 
   Future<Uri> getIdvServiceEndpoint(Pfi pfi) async {
