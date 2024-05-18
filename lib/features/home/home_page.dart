@@ -259,7 +259,7 @@ class HomePage extends HookConsumerWidget {
   Widget _buildGetStarted(
     BuildContext context,
     String title,
-    String subtitle,
+    String? subtitle,
     bool hasPfis,
   ) =>
       Center(
@@ -272,6 +272,13 @@ class HomePage extends HookConsumerWidget {
                     fontWeight: FontWeight.bold,
                   ),
             ),
+            if (subtitle != null) ...[
+              const SizedBox(height: Grid.xxs),
+              Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ],
             const SizedBox(height: Grid.xxs),
             FilledButton(
               style: ButtonStyle(
