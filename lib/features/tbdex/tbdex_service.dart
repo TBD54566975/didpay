@@ -90,5 +90,17 @@ class TbdexService {
     return rfq;
   }
 
-  // TODO(ethan-tbd): create order, https://github.com/TBD54566975/didpay/issues/115
+  Future<Order> submitOrder(BearerDid did, Pfi pfi, String exchangeId) async {
+    final order = Order.create(pfi.did, did.uri, exchangeId);
+    await order.sign(did);
+
+    final response = await TbdexHttpClient.submitOrder(order);
+
+    if (response.statusCode.category != HttpStatus.success) {
+      throw Exception(
+        'failed to send order with status code ${response.statusCode}',
+      );
+    }
+    return order;
+  }
 }

@@ -1,12 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async_error_widget.dart';
-import 'package:didpay/shared/fee_details.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
+import 'package:didpay/shared/fee_details.dart';
+import 'package:didpay/shared/success_state.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +28,9 @@ class ReviewPaymentPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quoteStatus = ref.watch(quoteProvider);
+    final sendOrderState = useState<AsyncValue<Order>?>(null);
+
+    final getQuoteState = ref.watch(quoteProvider);
     QuoteAsyncNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
 
     useEffect(
@@ -43,47 +47,69 @@ class ReviewPaymentPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: quoteStatus.when(
-          data: (quote) => quote != null
-              ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _buildHeader(
-                        context,
-                        Loc.of(context).reviewYourPayment,
-                        Loc.of(context).makeSureInfoIsCorrect,
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: Grid.sm),
-                              _buildAmounts(context, quote.data),
-                              _buildFeeDetails(context, quote.data),
-                              _buildPaymentDetails(context),
-                            ],
-                          ),
-                        ),
-                      ),
-                      _buildSubmitButton(context, ref, quote),
-                    ],
-                  ),
-                )
-              : AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
-          loading: () =>
-              AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
-          error: (error, _) => AsyncErrorWidget(
-            text: error.toString(),
-            onRetry: () => ref.read(quoteProvider.notifier).startPolling(
-                  exchangeId,
-                  paymentState.pfi,
+        child: sendOrderState.value != null
+            ? sendOrderState.value!.when(
+                data: (_) => SuccessState(text: Loc.of(context).orderConfirmed),
+                loading: () => AsyncLoadingWidget(
+                  text: Loc.of(context).confirmingYourOrder,
                 ),
-          ),
-        ),
+                error: (error, _) => AsyncErrorWidget(
+                  text: error.toString(),
+                  onRetry: () => ref.read(quoteProvider.notifier).startPolling(
+                        exchangeId,
+                        paymentState.pfi,
+                      ),
+                ),
+              )
+            : getQuoteState.when(
+                data: (quote) => quote != null
+                    ? Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Grid.side),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            _buildHeader(
+                              context,
+                              Loc.of(context).reviewYourPayment,
+                              Loc.of(context).makeSureInfoIsCorrect,
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: Grid.sm),
+                                    _buildAmounts(context, quote.data),
+                                    _buildFeeDetails(context, quote.data),
+                                    _buildPaymentDetails(context),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            _buildSubmitButton(
+                              context,
+                              ref,
+                              quote,
+                              sendOrderState,
+                            ),
+                          ],
+                        ),
+                      )
+                    : AsyncLoadingWidget(
+                        text: Loc.of(context).gettingYourQuote,
+                      ),
+                loading: () =>
+                    AsyncLoadingWidget(text: Loc.of(context).gettingYourQuote),
+                error: (error, _) => AsyncErrorWidget(
+                  text: error.toString(),
+                  onRetry: () => ref.read(quoteProvider.notifier).startPolling(
+                        exchangeId,
+                        paymentState.pfi,
+                      ),
+                ),
+              ),
       ),
     );
   }
@@ -217,17 +243,41 @@ class ReviewPaymentPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildSubmitButton(BuildContext context, WidgetRef ref, Quote quote) =>
+  Widget _buildSubmitButton(
+    BuildContext context,
+    WidgetRef ref,
+    Quote quote,
+    sendOrderState,
+  ) =>
       FilledButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => const PaymentConfirmationPage(),
-            ),
-          );
-        },
+        onPressed: () => submitOrder(
+          context,
+          ref,
+          paymentState,
+          exchangeId,
+          sendOrderState,
+        ),
         child: Text(
           '${Loc.of(context).pay} ${FeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
         ),
       );
+
+  void submitOrder(
+    BuildContext context,
+    WidgetRef ref,
+    PaymentState paymentState,
+    String exchangeId,
+    ValueNotifier<AsyncValue<Order>?> state,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(tbdexServiceProvider)
+        .submitOrder(ref.read(didProvider), paymentState.pfi, exchangeId)
+        .then((order) async {
+      state.value = AsyncData(order);
+    }).catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
+  }
 }

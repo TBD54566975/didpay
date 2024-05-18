@@ -3,6 +3,7 @@ import 'package:didpay/features/did_qr/did_qr.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
 import 'package:didpay/shared/success_state.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -44,7 +45,11 @@ class AddPfiPage extends HookConsumerWidget {
                 data: (pfi) => SuccessState(text: Loc.of(context).pfiAdded),
                 loading: () =>
                     AsyncLoadingWidget(text: Loc.of(context).addingPfi),
-                error: (error, _) => Text('Error: $error'),
+                error: (error, _) => AsyncErrorWidget(
+                  text: error.toString(),
+                  onRetry: () =>
+                      _addPfi(ref, pfiDidController.text, addPfiState),
+                ),
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
