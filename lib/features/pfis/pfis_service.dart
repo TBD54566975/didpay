@@ -24,13 +24,13 @@ class PfisService {
       throw Exception('Malformed Resolution result: missing DID Document');
     }
 
-    _getServiceEndpoint(res.didDocument!, 'PFI');
-    _getServiceEndpoint(res.didDocument!, 'IDV');
+    getServiceEndpoint(res.didDocument!, 'PFI');
+    getServiceEndpoint(res.didDocument!, 'IDV');
 
     return Pfi(did: did.uri);
   }
 
-  static Uri _getServiceEndpoint(DidDocument didDocument, String serviceType) {
+  static Uri getServiceEndpoint(DidDocument didDocument, String serviceType) {
     final service = didDocument.service?.firstWhere(
       (svc) => svc.type == serviceType,
       orElse: () => throw Exception('DID does not have a $serviceType service'),
