@@ -43,9 +43,7 @@ class Payout extends HookWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (selectedOffering.value == null) return;
 
-          payoutAmount.value = transactionType == TransactionType.deposit
-              ? payinAmount / exchangeRate
-              : payinAmount * exchangeRate;
+          payoutAmount.value = payinAmount * exchangeRate;
         });
 
         return;
