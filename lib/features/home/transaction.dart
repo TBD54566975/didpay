@@ -7,8 +7,8 @@ class Transaction {
   final double payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
+  final String status;
   final DateTime createdAt;
-  final TransactionStatus status;
   final TransactionType type;
 
   Transaction({
@@ -16,8 +16,8 @@ class Transaction {
     required this.payoutAmount,
     required this.payinCurrency,
     required this.payoutCurrency,
-    required this.createdAt,
     required this.status,
+    required this.createdAt,
     required this.type,
   });
 
@@ -26,31 +26,38 @@ class Transaction {
     var payoutAmount = '0';
     var payinCurrency = '';
     var payoutCurrency = '';
+    var status = '';
     var latestCreatedAt = DateTime.fromMillisecondsSinceEpoch(0);
-    var status = TransactionStatus.pending;
     var type = TransactionType.send;
 
     for (final msg in exchange) {
       switch (msg.metadata.kind) {
         case MessageKind.rfq:
+          status = 'Request submitted';
           payinAmount = (msg as Rfq).data.payin.amount;
           break;
         case MessageKind.quote:
+          status = 'Quote received';
           payinAmount = (msg as Quote).data.payin.amount;
           payoutAmount = msg.data.payout.amount;
           payinCurrency = msg.data.payin.currencyCode;
           payoutCurrency = msg.data.payout.currencyCode;
           break;
         case MessageKind.order:
-          status = TransactionStatus.completed;
+          status = 'Order submitted';
           break;
         // TODO(ethan-tbd): add additional order statuses
         case MessageKind.orderstatus:
-          status = TransactionStatus.completed;
+          status = (msg as OrderStatus).data.orderStatus;
           break;
         case MessageKind.close:
-          status = TransactionStatus.failed;
+          status = 'Canceled';
           break;
+      }
+
+      final createdAt = DateTime.parse(msg.metadata.createdAt);
+      if (createdAt.isAfter(latestCreatedAt)) {
+        latestCreatedAt = createdAt;
       }
     }
 
@@ -81,15 +88,6 @@ class Transaction {
         return Icon(Icons.attach_money, size: size);
     }
   }
-}
-
-enum TransactionStatus {
-  failed,
-  pending,
-  completed;
-
-  @override
-  String toString() => name.substring(0, 1).toUpperCase() + name.substring(1);
 }
 
 enum TransactionType {

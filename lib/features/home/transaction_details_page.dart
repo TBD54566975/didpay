@@ -1,10 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:intl/intl.dart';
 
 class TransactionDetailsPage extends HookWidget {
   final Transaction txn;
@@ -132,7 +132,7 @@ class TransactionDetailsPage extends HookWidget {
           ),
           const SizedBox(height: Grid.xxs),
           Text(
-            'Mar 1 at 10:00 am',
+            DateFormat("MMM dd 'at' hh:mm a").format(txn.createdAt.toLocal()),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -151,33 +151,23 @@ class TransactionDetailsPage extends HookWidget {
             ),
             splashFactory: NoSplash.splashFactory,
           ),
-          child: _getStatusText(context, txn.status),
+          child: _formatTransactionStatus(context, txn.status),
         ),
       );
 
-  Text _getStatusText(BuildContext context, TransactionStatus status) {
-    switch (status) {
-      case TransactionStatus.pending:
-        return Text(
-          Loc.of(context).pending,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-        );
-      case TransactionStatus.failed:
-        return Text(
-          Loc.of(context).failed,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.error,
-              ),
-        );
-      case TransactionStatus.completed:
-        return Text(
-          Loc.of(context).completed,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: Theme.of(context).colorScheme.tertiary,
-              ),
-        );
+  Text _formatTransactionStatus(BuildContext context, String status) {
+    var formattedStatus = status.replaceAll('_', ' ').toLowerCase();
+
+    if (formattedStatus.isNotEmpty) {
+      formattedStatus =
+          formattedStatus[0].toUpperCase() + formattedStatus.substring(1);
     }
+
+    return Text(
+      formattedStatus,
+      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            color: Theme.of(context).colorScheme.tertiary,
+          ),
+    );
   }
 }

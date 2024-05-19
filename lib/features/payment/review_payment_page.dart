@@ -55,10 +55,13 @@ class ReviewPaymentPage extends HookConsumerWidget {
                 ),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
-                  onRetry: () => ref.read(quoteProvider.notifier).startPolling(
-                        exchangeId,
-                        paymentState.pfi,
-                      ),
+                  onRetry: () => submitOrder(
+                    context,
+                    ref,
+                    paymentState,
+                    exchangeId,
+                    sendOrderState,
+                  ),
                 ),
               )
             : getQuoteState.when(

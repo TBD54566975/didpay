@@ -218,8 +218,7 @@ class HomePage extends HookConsumerWidget {
     List<Exchange> exchanges,
   ) =>
       ListView(
-        reverse: true,
-        children: exchanges.map((exchange) {
+        children: exchanges.reversed.map((exchange) {
           final transaction = Transaction.fromExchange(exchange);
 
           return ListTile(
