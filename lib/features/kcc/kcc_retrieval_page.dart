@@ -20,6 +20,7 @@ class KccRetrievalPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print("HI I AM A RETRIEVER");
     final bearerDid = ref.watch(didProvider);
     final kccIssuanceService = ref.watch(kccIssuanceProvider);
     final credentialResponse =
@@ -34,6 +35,8 @@ class KccRetrievalPage extends HookConsumerWidget {
               idvRequest,
               bearerDid,
             );
+
+            // TODO: save credential to shared preferences
             credentialResponse.value = AsyncData(value);
           } on Exception catch (e, stackTrace) {
             credentialResponse.value = AsyncError(e, stackTrace);

@@ -80,6 +80,8 @@ class TbdexService {
     await rfq.sign(did);
     await Future.delayed(const Duration(seconds: 1));
 
+    await Future.delayed(const Duration(seconds: 1));
+
     final response =
         await TbdexHttpClient.createExchange(rfq, replyTo: rfq.metadata.from);
 
@@ -92,6 +94,7 @@ class TbdexService {
   }
 
   Future<Order> submitOrder(BearerDid did, Pfi pfi, String exchangeId) async {
+    await Future.delayed(const Duration(seconds: 1));
     final order = Order.create(pfi.did, did.uri, exchangeId);
     await order.sign(did);
     await Future.delayed(const Duration(seconds: 1));

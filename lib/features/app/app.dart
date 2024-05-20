@@ -1,5 +1,8 @@
 import 'package:didpay/features/app/app_tabs.dart';
+import 'package:didpay/features/kcc/kcc_consent_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/modal_flow.dart';
 import 'package:didpay/shared/theme/theme.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +16,11 @@ class App extends StatelessWidget {
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
       home: const AppTabs(),
+      // home: const ModalFlow(
+      //   initialWidget: KccAgreementPage(
+      //     pfi: Pfi(did: 'did:web:192.168.50.27%3A8892:ingress'),
+      //   ),
+      // ),
       localizationsDelegates: Loc.localizationsDelegates,
       supportedLocales: const [
         Locale('en', ''),
