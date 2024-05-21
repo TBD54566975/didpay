@@ -174,5 +174,26 @@ void main() async {
       );
       expect(find.text('Get started'), findsOneWidget);
     });
+
+    testWidgets('should navigate to DepositPage on tap of get started button',
+        (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(
+          child: const HomePage(),
+          overrides: [
+            didProvider.overrideWithValue(did),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            exchangeProvider.overrideWith(MockExchangeNotifier.new),
+            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+          ],
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      await tester.tap(find.text('Get started'));
+      await tester.pumpAndSettle();
+
+      expect(find.byType(DepositPage), findsOneWidget);
+    });
   });
 }

@@ -249,8 +249,8 @@ class HomePage extends HookConsumerWidget {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => ref.read(pfisProvider).isEmpty
-                      ? const DepositPage(rfqState: RfqState())
-                      : AddPfiPage(),
+                      ? AddPfiPage()
+                      : const DepositPage(rfqState: RfqState()),
                 ),
               ),
               child: Text(Loc.of(context).getStarted),
