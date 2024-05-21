@@ -317,4 +317,7 @@ class LocEn extends Loc {
 
   @override
   String get myPfis => 'My PFIs';
+
+  @override
+  String get noTransactionsFound => 'No transactions found';
 }

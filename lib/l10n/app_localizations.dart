@@ -702,6 +702,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'My PFIs'**
   String get myPfis;
+
+  /// No description provided for @noTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found'**
+  String get noTransactionsFound;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
