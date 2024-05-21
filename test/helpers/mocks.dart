@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/features/tbdex/exchange_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
-import 'package:didpay/features/tbdex/transactions_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,16 +21,16 @@ class MockPfisService extends Mock implements PfisService {}
 
 class MockTbdexService extends Mock implements TbdexService {}
 
-class MockTransactionsNotifier extends TransactionsAsyncNotifier {
-  MockTransactionsNotifier() : super();
+class MockExchangeNotifier extends ExchangeAsyncNotifier {
+  MockExchangeNotifier() : super();
 
   @override
-  FutureOr<List<Exchange>?> build() {
+  FutureOr<Exchange?> build(ExchangeProviderParameters arg) {
     return [];
   }
 
   @override
-  Future<void> fetch(List<Pfi> pfis) {
+  Future<void> startPolling() {
     return Future.value();
   }
 }
