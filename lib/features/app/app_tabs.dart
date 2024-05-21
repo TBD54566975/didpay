@@ -27,7 +27,7 @@ class AppTabs extends HookWidget {
       ),
       _TabItem(
         'Send',
-        const Icon(Icons.attach_money),
+        const Icon(Icons.send),
         const SendPage(),
       ),
       _TabItem(
