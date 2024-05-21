@@ -7,18 +7,18 @@ class Transaction {
   final double payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
-  final String status;
   final DateTime createdAt;
   final TransactionType type;
+  final TransactionStatus status;
 
   Transaction({
     required this.payinAmount,
     required this.payoutAmount,
     required this.payinCurrency,
     required this.payoutCurrency,
-    required this.status,
     required this.createdAt,
     required this.type,
+    required this.status,
   });
 
   factory Transaction.fromExchange(Exchange exchange) {
@@ -26,36 +26,35 @@ class Transaction {
     var payoutAmount = '0';
     var payinCurrency = '';
     var payoutCurrency = '';
-    var status = '';
+    var status = TransactionStatus.paymentReceived;
     var latestCreatedAt = DateTime.fromMillisecondsSinceEpoch(0);
     var type = TransactionType.send;
 
     for (final msg in exchange) {
+      final createdAt = DateTime.parse(msg.metadata.createdAt);
+
       switch (msg.metadata.kind) {
         case MessageKind.rfq:
-          status = 'Request submitted';
           payinAmount = (msg as Rfq).data.payin.amount;
           break;
         case MessageKind.quote:
-          status = 'Quote received';
           payinAmount = (msg as Quote).data.payin.amount;
           payoutAmount = msg.data.payout.amount;
           payinCurrency = msg.data.payin.currencyCode;
           payoutCurrency = msg.data.payout.currencyCode;
           break;
         case MessageKind.order:
-          status = 'Order submitted';
           break;
-        // TODO(ethan-tbd): add additional order statuses
         case MessageKind.orderstatus:
-          status = (msg as OrderStatus).data.orderStatus;
+          if (createdAt.isAfter(latestCreatedAt)) {
+            status = _getStatus((msg as OrderStatus).data.orderStatus);
+          }
           break;
         case MessageKind.close:
-          status = 'Canceled';
+          status = TransactionStatus.paymentCanceled;
           break;
       }
 
-      final createdAt = DateTime.parse(msg.metadata.createdAt);
       if (createdAt.isAfter(latestCreatedAt)) {
         latestCreatedAt = createdAt;
       }
@@ -78,14 +77,27 @@ class Transaction {
     );
   }
 
-  static Icon getIcon(TransactionType type, {double size = Grid.sm}) {
+  static Icon getIcon(TransactionType type, {double size = Grid.xs}) {
     switch (type) {
       case TransactionType.deposit:
         return Icon(Icons.south_west, size: size);
       case TransactionType.withdraw:
         return Icon(Icons.north_east, size: size);
       case TransactionType.send:
-        return Icon(Icons.attach_money, size: size);
+        return Icon(Icons.send, size: size);
+    }
+  }
+
+  static TransactionStatus _getStatus(String status) {
+    switch (status) {
+      case 'PAYOUT_PENDING':
+        return TransactionStatus.paymentPending;
+      case 'PAYOUT_INITIATED':
+        return TransactionStatus.paymentInitiated;
+      case 'PAYOUT_COMPLETED':
+        return TransactionStatus.paymentComplete;
+      default:
+        return TransactionStatus.paymentReceived;
     }
   }
 }
@@ -97,4 +109,19 @@ enum TransactionType {
 
   @override
   String toString() => name.substring(0, 1).toUpperCase() + name.substring(1);
+}
+
+enum TransactionStatus {
+  paymentReceived,
+  paymentPending,
+  paymentInitiated,
+  paymentComplete,
+  paymentCanceled;
+
+  @override
+  String toString() => name
+      .replaceAllMapped(RegExp('([A-Z])'), (match) => ' ${match.group(0)}')
+      .trim()
+      .toLowerCase()
+      .replaceFirst(name[0], name[0].toUpperCase());
 }
