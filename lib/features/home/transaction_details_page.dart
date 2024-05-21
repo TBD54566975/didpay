@@ -151,23 +151,12 @@ class TransactionDetailsPage extends HookWidget {
             ),
             splashFactory: NoSplash.splashFactory,
           ),
-          child: _formatTransactionStatus(context, txn.status),
+          child: Text(
+            txn.status.toString(),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+          ),
         ),
       );
-
-  Text _formatTransactionStatus(BuildContext context, String status) {
-    var formattedStatus = status.replaceAll('_', ' ').toLowerCase();
-
-    if (formattedStatus.isNotEmpty) {
-      formattedStatus =
-          formattedStatus[0].toUpperCase() + formattedStatus.substring(1);
-    }
-
-    return Text(
-      formattedStatus,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            color: Theme.of(context).colorScheme.tertiary,
-          ),
-    );
-  }
 }
