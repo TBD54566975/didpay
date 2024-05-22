@@ -1,14 +1,14 @@
 import 'dart:async';
 
+import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
-import 'package:didpay/features/tbdex/exchange_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tbdex/tbdex.dart';
 import 'package:web5/web5.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
@@ -21,12 +21,12 @@ class MockPfisService extends Mock implements PfisService {}
 
 class MockTbdexService extends Mock implements TbdexService {}
 
-class MockExchangeNotifier extends ExchangeAsyncNotifier {
-  MockExchangeNotifier() : super();
+class MockTransactionNotifier extends TransactionAsyncNotifier {
+  MockTransactionNotifier() : super();
 
   @override
-  FutureOr<Exchange?> build(ExchangeProviderParameters arg) {
-    return [];
+  FutureOr<Transaction?> build(TransactionProviderParameters arg) {
+    return null;
   }
 
   @override

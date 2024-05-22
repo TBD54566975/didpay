@@ -16,7 +16,7 @@ void main() {
               payoutAmount: 0,
               payinCurrency: 'USD',
               payoutCurrency: 'USD',
-              status: TransactionStatus.paymentReceived,
+              status: TransactionStatus.orderSubmitted,
               createdAt: DateTime.now(),
               type: TransactionType.deposit,
             ),
@@ -36,7 +36,7 @@ void main() {
               payoutAmount: 0,
               payinCurrency: 'USD',
               payoutCurrency: 'USD',
-              status: TransactionStatus.paymentReceived,
+              status: TransactionStatus.orderSubmitted,
               createdAt: DateTime.now(),
               type: TransactionType.withdraw,
             ),
@@ -56,7 +56,7 @@ void main() {
               payoutAmount: 123,
               payinCurrency: 'USD',
               payoutCurrency: 'MXN',
-              status: TransactionStatus.paymentReceived,
+              status: TransactionStatus.orderSubmitted,
               createdAt: DateTime.now(),
               type: TransactionType.deposit,
             ),
@@ -70,7 +70,7 @@ void main() {
       expect(find.text('USD'), findsOneWidget);
     });
 
-    testWidgets('should show payment received transaction status',
+    testWidgets('should show order submitted transaction status',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -80,7 +80,7 @@ void main() {
               payoutAmount: 123,
               payinCurrency: 'USD',
               payoutCurrency: 'USD',
-              status: TransactionStatus.paymentReceived,
+              status: TransactionStatus.orderSubmitted,
               createdAt: DateTime.now(),
               type: TransactionType.deposit,
             ),
@@ -89,12 +89,12 @@ void main() {
       );
 
       expect(
-        find.widgetWithText(OutlinedButton, 'Payment received'),
+        find.widgetWithText(OutlinedButton, 'Order submitted'),
         findsOneWidget,
       );
     });
 
-    testWidgets('should show payment complete transaction status',
+    testWidgets('should show payout complete transaction status',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -104,7 +104,7 @@ void main() {
               payoutAmount: 123,
               payinCurrency: 'USD',
               payoutCurrency: 'USD',
-              status: TransactionStatus.paymentComplete,
+              status: TransactionStatus.payoutComplete,
               createdAt: DateTime.now(),
               type: TransactionType.deposit,
             ),
@@ -112,11 +112,13 @@ void main() {
         ),
       );
 
-      expect(find.widgetWithText(OutlinedButton, 'Payment complete'),
-          findsOneWidget,);
+      expect(
+        find.widgetWithText(OutlinedButton, 'Payout complete'),
+        findsOneWidget,
+      );
     });
 
-    testWidgets('should show payment canceled transaction status',
+    testWidgets('should show payout canceled transaction status',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -126,7 +128,7 @@ void main() {
               payoutAmount: 123,
               payinCurrency: 'USD',
               payoutCurrency: 'USD',
-              status: TransactionStatus.paymentCanceled,
+              status: TransactionStatus.payoutCanceled,
               createdAt: DateTime.now(),
               type: TransactionType.deposit,
             ),
@@ -134,8 +136,10 @@ void main() {
         ),
       );
 
-      expect(find.widgetWithText(OutlinedButton, 'Payment canceled'),
-          findsOneWidget,);
+      expect(
+        find.widgetWithText(OutlinedButton, 'Payout canceled'),
+        findsOneWidget,
+      );
     });
   });
 }
