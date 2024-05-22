@@ -1,7 +1,7 @@
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/home/transaction_details_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/tbdex/exchange_notifier.dart';
+import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
@@ -21,11 +21,14 @@ class TransactionTile extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final parameters = ExchangeProviderParameters(pfi, exchangeId);
-    final exchangeState = ref.watch(exchangeProvider(parameters));
+    final parameters = TransactionProviderParameters(pfi, exchangeId);
+    final transactionState = ref.watch(transactionAsyncProvider(parameters));
+
+    final transaction = useState<Transaction?>(null);
+    final lastStatus = useState<TransactionStatus?>(null);
 
     ExchangeAsyncNotifier getTransactionsNotifier() =>
-        ref.read(exchangeProvider(parameters).notifier);
+        ref.read(transactionAsyncProvider(parameters).notifier);
 
     useEffect(
       () {
@@ -38,32 +41,51 @@ class TransactionTile extends HookConsumerWidget {
       [],
     );
 
-    return exchangeState.when(
-      data: (exchange) {
-        if (exchange == null) {
+    useEffect(
+      () {
+        Future.delayed(Duration.zero, () {
+          if (transaction.value != null &&
+              (lastStatus.value == null ||
+                  lastStatus.value != transaction.value?.status)) {
+            lastStatus.value = transaction.value?.status;
+            ScaffoldMessenger.of(context).removeCurrentSnackBar();
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(
+                  transaction.value?.status.toString() ?? '',
+                ),
+                duration: const Duration(seconds: 1),
+                backgroundColor: Theme.of(context).colorScheme.tertiary,
+              ),
+            );
+          }
+        });
+        return null;
+      },
+      [transaction.value],
+    );
+
+    return transactionState.when(
+      data: (txn) {
+        if (txn == null) {
           return _buildErrorTile(context, Loc.of(context).noTransactionsFound);
         }
-
-        final transaction = Transaction.fromExchange(exchange);
-
-        if (transaction.status == TransactionStatus.paymentCanceled) {
-          getTransactionsNotifier().stopPolling();
-        }
+        transaction.value = txn;
 
         return ListTile(
           title: Text(
-            '${transaction.payinCurrency} → ${transaction.payoutCurrency}',
+            '${txn.payinCurrency} → ${txn.payoutCurrency}',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
           ),
           subtitle: Text(
-            transaction.status.toString(),
+            txn.status.toString(),
             style: Theme.of(context).textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w300,
                 ),
           ),
-          trailing: _buildTransactionAmount(context, transaction),
+          trailing: _buildTransactionAmount(context, txn),
           leading: Container(
             width: Grid.md,
             height: Grid.md,
@@ -72,15 +94,13 @@ class TransactionTile extends HookConsumerWidget {
               borderRadius: BorderRadius.circular(Grid.xxs),
             ),
             child: Center(
-              child: Transaction.getIcon(transaction.type),
+              child: Transaction.getIcon(txn.type),
             ),
           ),
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) {
-                return TransactionDetailsPage(
-                  txn: transaction,
-                );
+                return TransactionDetailsPage(txn: txn);
               },
             ),
           ),
