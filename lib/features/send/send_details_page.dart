@@ -44,12 +44,10 @@ class SendDetailsPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    DidQr.buildScanTile(
+                    _buildHeader(
                       context,
-                      Loc.of(context).scanRecipientQrCode,
-                      recipientDidController,
-                      errorText,
-                      isPhysicalDevice: isPhysicalDevice.value,
+                      Loc.of(context).enterRecipientDid,
+                      Loc.of(context).makeSureInfoIsCorrect,
                     ),
                     _buildDidForm(
                       context,
@@ -62,6 +60,13 @@ class SendDetailsPage extends HookConsumerWidget {
                 ),
               ),
             ),
+            DidQr.buildScanTile(
+              context,
+              Loc.of(context).scanRecipientQrCode,
+              recipientDidController,
+              errorText,
+              isPhysicalDevice: isPhysicalDevice.value,
+            ),
             _buildSendButton(
               context,
               recipientDidController,
@@ -72,6 +77,39 @@ class SendDetailsPage extends HookConsumerWidget {
       ),
     );
   }
+
+  Widget _buildHeader(
+    BuildContext context,
+    String title,
+    String subtitle,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(
+          vertical: Grid.xs,
+          horizontal: Grid.side,
+        ),
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+            ),
+            const SizedBox(height: Grid.xs),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+          ],
+        ),
+      );
 
   Widget _buildDidForm(
     BuildContext context,
