@@ -1,26 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/storage/storage_service.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-final transactionAsyncProvider = AsyncNotifierProvider.family.autoDispose<
+final transactionProvider = AsyncNotifierProvider.family.autoDispose<
     TransactionAsyncNotifier, Transaction?, TransactionProviderParameters>(
   TransactionAsyncNotifier.new,
-);
-
-final transactionStateProvider =
-    StateNotifierProvider.family<TransactionNotifier, Transaction?, String>(
-  (ref, id) {
-    final sharedPreferences = ref.read(sharedPreferencesProvider);
-    return TransactionNotifier(id, sharedPreferences);
-  },
 );
 
 class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
@@ -47,13 +36,7 @@ class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
 
       final transaction = Transaction.fromExchange(exchange);
 
-      await TransactionNotifier(
-        arg.exchangeId,
-        ref.read(sharedPreferencesProvider),
-      ).add(transaction);
-
-      if (transaction.status == TransactionStatus.payoutCanceled ||
-          transaction.status == TransactionStatus.payoutSuccess) {
+      if (Transaction.isFinal(transaction.status)) {
         stopPolling();
       }
 
@@ -79,36 +62,6 @@ class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
   void stopPolling() {
     _timer?.cancel();
     _timer = null;
-  }
-}
-
-class TransactionNotifier extends StateNotifier<Transaction?> {
-  static const String prefsKey = 'txn_';
-
-  final String exchangeId;
-  final SharedPreferences prefs;
-
-  TransactionNotifier(this.exchangeId, this.prefs) : super(null) {
-    _loadTransaction();
-  }
-
-  Future<void> _loadTransaction() async {
-    final jsonString = prefs.getString(prefsKey + exchangeId);
-    if (jsonString != null) {
-      final txn = Transaction.fromJson(jsonDecode(jsonString));
-      state = txn;
-    } else {
-      state = null;
-    }
-  }
-
-  Future<Transaction> add(Transaction transaction) async {
-    if (state == null || state!.status != transaction.status) {
-      state = transaction;
-      final jsonString = jsonEncode(transaction.toJson());
-      await prefs.setString(prefsKey + exchangeId, jsonString);
-    }
-    return transaction;
   }
 }
 
