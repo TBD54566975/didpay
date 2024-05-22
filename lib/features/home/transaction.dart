@@ -118,6 +118,25 @@ class Transaction {
     }
   }
 
+  static bool isFinal(TransactionStatus status) {
+    return status == TransactionStatus.payoutSuccess ||
+        status == TransactionStatus.payoutCanceled;
+  }
+
+  static Color getStatusColor(BuildContext context, TransactionStatus status) {
+    switch (status) {
+      case TransactionStatus.payoutSuccess:
+        return Theme.of(context).colorScheme.tertiary;
+      case TransactionStatus.payoutCanceled:
+        return Theme.of(context).colorScheme.error;
+      case TransactionStatus.payoutPending:
+      case TransactionStatus.payoutInitiated:
+      case TransactionStatus.payoutComplete:
+      case TransactionStatus.orderSubmitted:
+        return Theme.of(context).colorScheme.outline;
+    }
+  }
+
   static TransactionStatus _getStatus(String status) {
     switch (status) {
       case 'PAYOUT_PENDING':
