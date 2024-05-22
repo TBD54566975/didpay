@@ -70,7 +70,7 @@ class TransactionDetailsPage extends HookConsumerWidget {
       );
 
   Widget _buildTransactionDetails(
-      BuildContext context, Transaction transaction) {
+      BuildContext context, Transaction transaction,) {
     final payoutAmount = CurrencyUtil.formatFromDouble(
       transaction.payoutAmount,
       currency: transaction.payoutCurrency.toUpperCase(),
