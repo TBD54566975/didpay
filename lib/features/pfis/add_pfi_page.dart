@@ -216,7 +216,7 @@ class AddPfiPage extends HookConsumerWidget {
         .then((pfi) => state.value = AsyncData(pfi))
         .onError((error, stackTrace) {
       state.value = AsyncError(
-        error ?? Exception('Unable to resolve add PFI'),
+        error ?? Exception('Unable to add PFI'),
         stackTrace,
       );
       throw Exception();

@@ -1,10 +1,15 @@
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final pfisProvider = StateNotifierProvider<PfisNotifier, List<Pfi>>(
-  (ref) => throw UnimplementedError(),
+  (ref) {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    final pfis = PfisNotifier.loadSavedPfiDids(prefs);
+    return PfisNotifier(prefs, PfisService(), pfis);
+  },
 );
 
 class PfisNotifier extends StateNotifier<List<Pfi>> {

@@ -2,9 +2,6 @@ import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/app/app.dart';
-import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/pfis/pfis_service.dart';
-import 'package:didpay/features/remittance/countries_notifier.dart';
 import 'package:didpay/features/storage/storage_service.dart';
 import 'package:didpay/shared/constants.dart';
 import 'package:flutter/material.dart';
@@ -25,18 +22,10 @@ void main() async {
 
   final did = await getOrCreateDid(storage);
   // final vc = await storage.read(key: Constants.verifiableCredentialKey);
-  final pfisNotifier = PfisNotifier(sharedPreferences, PfisService(), []);
-  final countriesNotifier = CountriesNotifier(sharedPreferences, []);
-
-  // TODO(ethan-tbd): remove later
-  await countriesNotifier.add('US', 'United States');
-  await countriesNotifier.add('MX', 'Mexico');
 
   runApp(
     ProviderScope(
       overrides: [
-        pfisProvider.overrideWith((ref) => pfisNotifier),
-        countriesProvider.overrideWith((ref) => countriesNotifier),
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
         secureStorageProvider.overrideWithValue(storage),
         didProvider.overrideWithValue(did),
