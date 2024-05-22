@@ -11,7 +11,7 @@ class Transaction {
   final TransactionType type;
   final TransactionStatus status;
 
-  Transaction({
+  const Transaction({
     required this.payinAmount,
     required this.payoutAmount,
     required this.payinCurrency,
@@ -21,42 +21,46 @@ class Transaction {
     required this.status,
   });
 
-  factory Transaction.fromExchange(Exchange exchange) {
+  factory Transaction.fromExchange(Exchange? exchange) {
     var payinAmount = '0';
     var payoutAmount = '0';
     var payinCurrency = '';
     var payoutCurrency = '';
-    var status = TransactionStatus.paymentReceived;
+    var status = TransactionStatus.orderSubmitted;
     var latestCreatedAt = DateTime.fromMillisecondsSinceEpoch(0);
     var type = TransactionType.send;
 
-    for (final msg in exchange) {
-      final createdAt = DateTime.parse(msg.metadata.createdAt);
+    if (exchange != null) {
+      for (final msg in exchange) {
+        final createdAt = DateTime.parse(msg.metadata.createdAt);
 
-      switch (msg.metadata.kind) {
-        case MessageKind.rfq:
-          payinAmount = (msg as Rfq).data.payin.amount;
-          break;
-        case MessageKind.quote:
-          payinAmount = (msg as Quote).data.payin.amount;
-          payoutAmount = msg.data.payout.amount;
-          payinCurrency = msg.data.payin.currencyCode;
-          payoutCurrency = msg.data.payout.currencyCode;
-          break;
-        case MessageKind.order:
-          break;
-        case MessageKind.orderstatus:
-          if (createdAt.isAfter(latestCreatedAt)) {
-            status = _getStatus((msg as OrderStatus).data.orderStatus);
-          }
-          break;
-        case MessageKind.close:
-          status = TransactionStatus.paymentCanceled;
-          break;
-      }
+        switch (msg.metadata.kind) {
+          case MessageKind.rfq:
+            payinAmount = (msg as Rfq).data.payin.amount;
+            break;
+          case MessageKind.quote:
+            payinAmount = (msg as Quote).data.payin.amount;
+            payoutAmount = msg.data.payout.amount;
+            payinCurrency = msg.data.payin.currencyCode;
+            payoutCurrency = msg.data.payout.currencyCode;
+            break;
+          case MessageKind.order:
+            break;
+          case MessageKind.orderstatus:
+            if (createdAt.isAfter(latestCreatedAt)) {
+              status = _getStatus((msg as OrderStatus).data.orderStatus);
+            }
+            break;
+          case MessageKind.close:
+            ((msg as Close).data.success ?? true)
+                ? status = TransactionStatus.payoutSuccess
+                : status = TransactionStatus.payoutCanceled;
+            break;
+        }
 
-      if (createdAt.isAfter(latestCreatedAt)) {
-        latestCreatedAt = createdAt;
+        if (createdAt.isAfter(latestCreatedAt)) {
+          latestCreatedAt = createdAt;
+        }
       }
     }
 
@@ -77,6 +81,32 @@ class Transaction {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'payinAmount': payinAmount,
+      'payoutAmount': payoutAmount,
+      'payinCurrency': payinCurrency,
+      'payoutCurrency': payoutCurrency,
+      'createdAt': createdAt.toIso8601String(),
+      'type': type.name,
+      'status': status.name,
+    };
+  }
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(
+      payinAmount: json['payinAmount'],
+      payoutAmount: json['payoutAmount'],
+      payinCurrency: json['payinCurrency'],
+      payoutCurrency: json['payoutCurrency'],
+      createdAt: DateTime.parse(json['createdAt']),
+      type: TransactionType.values.firstWhere((e) => e.name == json['type']),
+      status: TransactionStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+      ),
+    );
+  }
+
   static Icon getIcon(TransactionType type, {double size = Grid.xs}) {
     switch (type) {
       case TransactionType.deposit:
@@ -91,13 +121,13 @@ class Transaction {
   static TransactionStatus _getStatus(String status) {
     switch (status) {
       case 'PAYOUT_PENDING':
-        return TransactionStatus.paymentPending;
+        return TransactionStatus.payoutPending;
       case 'PAYOUT_INITIATED':
-        return TransactionStatus.paymentInitiated;
+        return TransactionStatus.payoutInitiated;
       case 'PAYOUT_COMPLETED':
-        return TransactionStatus.paymentComplete;
+        return TransactionStatus.payoutComplete;
       default:
-        return TransactionStatus.paymentReceived;
+        return TransactionStatus.orderSubmitted;
     }
   }
 }
@@ -112,11 +142,12 @@ enum TransactionType {
 }
 
 enum TransactionStatus {
-  paymentReceived,
-  paymentPending,
-  paymentInitiated,
-  paymentComplete,
-  paymentCanceled;
+  orderSubmitted,
+  payoutPending,
+  payoutInitiated,
+  payoutComplete,
+  payoutSuccess,
+  payoutCanceled;
 
   @override
   String toString() => name
