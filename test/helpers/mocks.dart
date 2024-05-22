@@ -1,11 +1,11 @@
 import 'dart:async';
 
-import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';

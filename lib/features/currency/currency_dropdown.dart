@@ -1,5 +1,5 @@
 import 'package:didpay/features/currency/currency_modal.dart';
-import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';

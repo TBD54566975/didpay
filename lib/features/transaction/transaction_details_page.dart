@@ -1,7 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +70,9 @@ class TransactionDetailsPage extends HookConsumerWidget {
       );
 
   Widget _buildTransactionDetails(
-      BuildContext context, Transaction transaction,) {
+    BuildContext context,
+    Transaction transaction,
+  ) {
     final payoutAmount = CurrencyUtil.formatFromDouble(
       transaction.payoutAmount,
       currency: transaction.payoutCurrency.toUpperCase(),
