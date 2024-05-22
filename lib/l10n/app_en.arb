@@ -131,5 +131,6 @@
     "orderConfirmed": "Order confirmed!",
     "removePfi": "Remove PFI",
     "cancel": "Cancel",
-    "myPfis": "My PFIs"
+    "myPfis": "My PFIs",
+    "noTransactionsFound": "No transactions found"
 }

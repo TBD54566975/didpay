@@ -1,41 +1,36 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/home/transaction_details_page.dart';
+import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/home/transaction_tile.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
 import 'package:didpay/features/payout/withdraw_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
-import 'package:didpay/features/tbdex/transactions_notifier.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tbdex/tbdex.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final txns = ref.watch(transactionsProvider);
-    final pfis = ref.watch(pfisProvider);
+    final pfis = ref.read(pfisProvider);
+
+    final pfiToExchangeIdsState =
+        useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
 
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
     final accountBalance = CurrencyUtil.formatFromDouble(0);
 
-    TransactionsAsyncNotifier getTransactionsNotifier() =>
-        ref.read(transactionsProvider.notifier);
-
     useEffect(
       () {
-        Future.delayed(
-          Duration.zero,
-          () => getTransactionsNotifier().fetch(pfis),
-        );
+        _getExchangeIds(ref, pfiToExchangeIdsState);
         return null;
       },
       [],
@@ -51,16 +46,11 @@ class HomePage extends HookConsumerWidget {
               child: pfis.isEmpty
                   ? _buildGetStarted(
                       context,
+                      ref,
                       Loc.of(context).noPfisFound,
                       Loc.of(context).startByAddingAPfi,
-                      false,
                     )
-                  : _buildActivity(
-                      context,
-                      getTransactionsNotifier(),
-                      pfis,
-                      txns,
-                    ),
+                  : _buildActivity(context, ref, pfiToExchangeIdsState),
             ),
           ],
         ),
@@ -172,9 +162,8 @@ class HomePage extends HookConsumerWidget {
 
   Widget _buildActivity(
     BuildContext context,
-    TransactionsAsyncNotifier notifier,
-    List<Pfi> pfis,
-    AsyncValue<List<Exchange>?> exchangesStatus,
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
   ) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -190,22 +179,35 @@ class HomePage extends HookConsumerWidget {
             ),
           ),
           Expanded(
-            child: exchangesStatus.when(
-              data: (exchange) => exchange == null || exchange.isEmpty
+            child: pfiToExchangeIdsState.value.when(
+              data: (exchangeMap) => exchangeMap.isEmpty
                   ? _buildGetStarted(
                       context,
+                      ref,
                       Loc.of(context).noTransactionsYet,
                       Loc.of(context).startByAdding,
-                      true,
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => notifier.fetch(pfis),
-                      child: _buildTransactionsList(context, exchange),
+                      onRefresh: () async =>
+                          _getExchangeIds(ref, pfiToExchangeIdsState),
+                      child: ListView(
+                        children: exchangeMap.entries
+                            .expand(
+                              (pfiToExchangeIds) =>
+                                  pfiToExchangeIds.value.reversed.map(
+                                (exchangeId) => TransactionTile(
+                                  pfi: pfiToExchangeIds.key,
+                                  exchangeId: exchangeId,
+                                ),
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
               error: (error, stackTrace) => _buildTransactionsError(
                 context,
-                notifier,
-                pfis,
+                ref,
+                pfiToExchangeIdsState,
               ),
               loading: () => const Center(child: CircularProgressIndicator()),
             ),
@@ -213,53 +215,12 @@ class HomePage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildTransactionsList(
-    BuildContext context,
-    List<Exchange> exchanges,
-  ) =>
-      ListView(
-        children: exchanges.reversed.map((exchange) {
-          final transaction = Transaction.fromExchange(exchange);
-
-          return ListTile(
-            title: Text(
-              '${transaction.type}',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            subtitle: _getTxnSubtitle(context, transaction),
-            trailing: _getTxnTrailing(transaction),
-            leading: Container(
-              width: Grid.md,
-              height: Grid.md,
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface,
-                borderRadius: BorderRadius.circular(Grid.xxs),
-              ),
-              child: Center(
-                child: Transaction.getIcon(transaction.type),
-              ),
-            ),
-            onTap: () => Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) {
-                  return TransactionDetailsPage(
-                    txn: transaction,
-                  );
-                },
-              ),
-            ),
-          );
-        }).toList(),
-      );
-
   // TODO(ethan-tbd): update empty state, https://github.com/TBD54566975/didpay/issues/125
   Widget _buildGetStarted(
     BuildContext context,
+    WidgetRef ref,
     String title,
     String? subtitle,
-    bool hasPfis,
   ) =>
       Center(
         child: Column(
@@ -287,9 +248,9 @@ class HomePage extends HookConsumerWidget {
               ),
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => hasPfis
-                      ? const DepositPage(rfqState: RfqState())
-                      : AddPfiPage(),
+                  builder: (context) => ref.read(pfisProvider).isEmpty
+                      ? AddPfiPage()
+                      : const DepositPage(rfqState: RfqState()),
                 ),
               ),
               child: Text(Loc.of(context).getStarted),
@@ -301,8 +262,8 @@ class HomePage extends HookConsumerWidget {
   // TODO(ethan-tbd): update error state, https://github.com/TBD54566975/didpay/issues/125
   Widget _buildTransactionsError(
     BuildContext context,
-    TransactionsAsyncNotifier notifier,
-    List<Pfi> pfis,
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
   ) =>
       Center(
         child: Column(
@@ -321,31 +282,26 @@ class HomePage extends HookConsumerWidget {
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: () async => notifier.fetch(pfis),
+              onPressed: () async =>
+                  _getExchangeIds(ref, pfiToExchangeIdsState),
               child: Text(Loc.of(context).tapToRetry),
             ),
           ],
         ),
       );
 
-  Widget _getTxnSubtitle(BuildContext context, Transaction transaction) => Text(
-        transaction.type == TransactionType.deposit
-            ? '${transaction.payinCurrency} → account balance'
-            : 'Account balance → ${transaction.payoutCurrency}',
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              fontWeight: FontWeight.w300,
-            ),
-      );
-
-  Widget _getTxnTrailing(Transaction transaction) => Text(
-        transaction.type == TransactionType.deposit
-            ? '${CurrencyUtil.formatFromDouble(
-                transaction.payoutAmount,
-                currency: transaction.payoutCurrency.toUpperCase(),
-              )} ${transaction.payoutCurrency}'
-            : '${CurrencyUtil.formatFromDouble(
-                transaction.payinAmount,
-                currency: transaction.payinCurrency.toUpperCase(),
-              )} ${transaction.payinCurrency}',
-      );
+  void _getExchangeIds(
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(tbdexServiceProvider)
+        .getExchanges(ref.read(didProvider), ref.read(pfisProvider))
+        .then((exchangeIds) => state.value = AsyncData(exchangeIds))
+        .catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
+  }
 }

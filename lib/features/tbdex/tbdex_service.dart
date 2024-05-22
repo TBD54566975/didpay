@@ -8,6 +8,7 @@ import 'package:web5/web5.dart';
 final tbdexServiceProvider = Provider((_) => TbdexService());
 
 class TbdexService {
+  // TODO(ethan-tbd): return Map<Pfi, List<Offering>>
   Future<List<Offering>> getOfferings(List<Pfi> pfis) async {
     final offerings = <Offering>[];
 
@@ -29,20 +30,24 @@ class TbdexService {
     BearerDid did,
     List<Pfi> pfis,
   ) async {
-    final exchangesMap = <Pfi, List<String>>{};
+    final exchangeMap = <Pfi, List<String>>{};
 
     for (final pfi in pfis) {
-      final response = await TbdexHttpClient.listExchanges(did, pfi.did);
-      if (response.statusCode.category == HttpStatus.success) {
-        exchangesMap[pfi] = response.data!;
+      try {
+        final response = await TbdexHttpClient.listExchanges(did, pfi.did);
+        if (response.statusCode.category == HttpStatus.success) {
+          exchangeMap[pfi] = response.data!;
+        } else {
+          throw Exception(
+            'failed to fetch exchanges with status code ${response.statusCode}',
+          );
+        }
+      } on Exception {
+        return exchangeMap;
       }
     }
 
-    if (exchangesMap.isEmpty) {
-      throw Exception('no exchanges found');
-    }
-
-    return exchangesMap;
+    return exchangeMap;
   }
 
   Future<List<Message>> getExchange(
