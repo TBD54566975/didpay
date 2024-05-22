@@ -48,7 +48,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -65,7 +65,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -84,7 +84,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -102,7 +102,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -122,7 +122,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -140,7 +140,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -160,7 +160,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
@@ -183,7 +183,7 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionAsyncProvider.overrideWith(MockTransactionNotifier.new),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
             pfisProvider.overrideWith((ref) => MockPfisNotifier()),
           ],
         ),
