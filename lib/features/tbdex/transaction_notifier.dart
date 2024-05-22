@@ -11,8 +11,8 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final transactionAsyncProvider = AsyncNotifierProvider.family.autoDispose<
-    ExchangeAsyncNotifier, Transaction?, TransactionProviderParameters>(
-  ExchangeAsyncNotifier.new,
+    TransactionAsyncNotifier, Transaction?, TransactionProviderParameters>(
+  TransactionAsyncNotifier.new,
 );
 
 final transactionStateProvider =
@@ -23,8 +23,8 @@ final transactionStateProvider =
   },
 );
 
-class ExchangeAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<Transaction?,
-    TransactionProviderParameters> {
+class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
+    Transaction?, TransactionProviderParameters> {
   late String? _exchangeId;
   late Pfi? _pfi;
   Timer? _timer;
