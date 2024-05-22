@@ -2,12 +2,17 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:didpay/features/remittance/countries.dart';
+import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final countriesProvider =
     StateNotifierProvider<CountriesNotifier, List<Country>>(
-  (ref) => throw UnimplementedError(),
+  (ref) {
+    final prefs = ref.watch(sharedPreferencesProvider);
+    const mx = Country(code: 'MX', name: 'Mexico');
+    return CountriesNotifier(prefs, [mx]);
+  },
 );
 
 class CountriesNotifier extends StateNotifier<List<Country>> {
