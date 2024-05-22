@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction_tile.dart';
 import 'package:didpay/features/payin/deposit_page.dart';
 import 'package:didpay/features/payout/withdraw_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
@@ -8,6 +7,7 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';

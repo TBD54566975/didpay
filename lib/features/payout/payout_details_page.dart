@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/review_payment_page.dart';
@@ -8,6 +7,7 @@ import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/payout/search_payout_methods_page.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/async_loading_widget.dart';

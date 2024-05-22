@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/search_payment_types_page.dart';
 import 'package:didpay/features/payout/payout_details_page.dart';
@@ -9,6 +8,7 @@ import 'package:didpay/features/payout/search_payout_methods_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';

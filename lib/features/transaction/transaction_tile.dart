@@ -1,7 +1,7 @@
-import 'package:didpay/features/home/transaction.dart';
-import 'package:didpay/features/home/transaction_details_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
+import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/transaction/transaction_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
