@@ -16,28 +16,30 @@ class PfisPage extends HookConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: Grid.side,
-              vertical: Grid.xs,
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Grid.side,
+                vertical: Grid.xs,
+              ),
+              child: Text(
+                Loc.of(context).myPfis,
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
             ),
-            child: Text(
-              Loc.of(context).myPfis,
-              style: Theme.of(context).textTheme.bodyLarge,
+            Expanded(
+              child: ListView.builder(
+                itemCount: pfis.length + 1,
+                itemBuilder: (context, index) => index != pfis.length
+                    ? _buildPfiTile(context, ref, pfis[index])
+                    : _buildAddPfiTile(context),
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-              itemCount: pfis.length + 1,
-              itemBuilder: (context, index) => index != pfis.length
-                  ? _buildPfiTile(context, ref, pfis[index])
-                  : _buildAddPfiTile(context),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
