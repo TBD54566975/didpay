@@ -320,4 +320,7 @@ class LocEn extends Loc {
 
   @override
   String get noTransactionsFound => 'No transactions found';
+
+  @override
+  String get enterRecipientDid => 'Enter the recipient\'s DID';
 }

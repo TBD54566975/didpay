@@ -708,6 +708,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'No transactions found'**
   String get noTransactionsFound;
+
+  /// No description provided for @enterRecipientDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the recipient\'s DID'**
+  String get enterRecipientDid;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
