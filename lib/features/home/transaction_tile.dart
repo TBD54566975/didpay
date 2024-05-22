@@ -22,13 +22,12 @@ class TransactionTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parameters = TransactionProviderParameters(pfi, exchangeId);
-    final transactionState = ref.watch(transactionAsyncProvider(parameters));
+    final transactionState = ref.watch(transactionProvider(parameters));
 
-    final transaction = useState<Transaction?>(null);
     final lastStatus = useState<TransactionStatus?>(null);
 
     TransactionAsyncNotifier getTransactionsNotifier() =>
-        ref.read(transactionAsyncProvider(parameters).notifier);
+        ref.read(transactionProvider(parameters).notifier);
 
     useEffect(
       () {
@@ -43,26 +42,36 @@ class TransactionTile extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(Duration.zero, () {
-          if (transaction.value != null &&
-              (lastStatus.value == null ||
-                  lastStatus.value != transaction.value?.status)) {
-            lastStatus.value = transaction.value?.status;
-            ScaffoldMessenger.of(context).removeCurrentSnackBar();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  transaction.value?.status.toString() ?? '',
-                ),
-                duration: const Duration(seconds: 1),
-                backgroundColor: Theme.of(context).colorScheme.tertiary,
-              ),
+        if (transactionState is AsyncData<Transaction?>) {
+          final transaction = transactionState.value;
+          if (transaction == null) return;
+
+          if (lastStatus.value != transaction.status) {
+            if (lastStatus.value == null &&
+                Transaction.isFinal(transaction.status)) return;
+
+            Future.delayed(
+              Duration.zero,
+              () {
+                ScaffoldMessenger.of(context).removeCurrentSnackBar();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(transaction.status.toString()),
+                    duration: const Duration(seconds: 1),
+                    backgroundColor: Transaction.getStatusColor(
+                      context,
+                      transaction.status,
+                    ),
+                  ),
+                );
+              },
             );
+            lastStatus.value = transaction.status;
           }
-        });
+        }
         return null;
       },
-      [transaction.value],
+      [transactionState],
     );
 
     return transactionState.when(
@@ -70,7 +79,6 @@ class TransactionTile extends HookConsumerWidget {
         if (txn == null) {
           return _buildErrorTile(context, Loc.of(context).noTransactionsFound);
         }
-        transaction.value = txn;
 
         return ListTile(
           title: Text(
@@ -100,7 +108,10 @@ class TransactionTile extends HookConsumerWidget {
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute<void>(
               builder: (_) {
-                return TransactionDetailsPage(txn: txn);
+                return TransactionDetailsPage(
+                  pfi: pfi,
+                  exchangeId: exchangeId,
+                );
               },
             ),
           ),
