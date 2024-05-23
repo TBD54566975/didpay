@@ -16,11 +16,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class ReviewPaymentPage extends HookConsumerWidget {
+class PaymentReviewPage extends HookConsumerWidget {
   final String exchangeId;
   final PaymentState paymentState;
 
-  const ReviewPaymentPage({
+  const PaymentReviewPage({
     required this.exchangeId,
     required this.paymentState,
     super.key,
