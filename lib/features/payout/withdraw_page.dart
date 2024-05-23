@@ -112,7 +112,8 @@ class WithdrawPage extends HookConsumerWidget {
               ],
             );
           },
-          loading: () => const AsyncLoadingWidget(text: 'Fetching offerings'),
+          loading: () =>
+              AsyncLoadingWidget(text: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
             onRetry: () => _getOfferings(ref, getOfferingsState),
