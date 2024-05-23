@@ -22,7 +22,7 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.read(pfisProvider);
 
-    final pfiToExchangeIdsState =
+    final getExchangesState =
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
 
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
@@ -30,7 +30,7 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        _getExchangeIds(ref, pfiToExchangeIdsState);
+        _getExchanges(ref, getExchangesState);
         return null;
       },
       [],
@@ -50,7 +50,11 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).noPfisFound,
                       Loc.of(context).startByAddingAPfi,
                     )
-                  : _buildActivity(context, ref, pfiToExchangeIdsState),
+                  : _buildTransactionsActivity(
+                      context,
+                      ref,
+                      getExchangesState,
+                    ),
             ),
           ],
         ),
@@ -160,7 +164,7 @@ class HomePage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildActivity(
+  Widget _buildTransactionsActivity(
     BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
@@ -189,7 +193,7 @@ class HomePage extends HookConsumerWidget {
                     )
                   : RefreshIndicator(
                       onRefresh: () async =>
-                          _getExchangeIds(ref, pfiToExchangeIdsState),
+                          _getExchanges(ref, pfiToExchangeIdsState),
                       child: ListView(
                         children: exchangeMap.entries
                             .expand(
@@ -282,15 +286,14 @@ class HomePage extends HookConsumerWidget {
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: () async =>
-                  _getExchangeIds(ref, pfiToExchangeIdsState),
+              onPressed: () async => _getExchanges(ref, pfiToExchangeIdsState),
               child: Text(Loc.of(context).tapToRetry),
             ),
           ],
         ),
       );
 
-  void _getExchangeIds(
+  void _getExchanges(
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
   ) {

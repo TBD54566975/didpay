@@ -37,12 +37,12 @@ class RemittancePage extends HookConsumerWidget {
     final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedOffering = useState<Offering?>(null);
-    final offeringsState =
+    final getOfferingsState =
         useState<AsyncValue<List<Offering>>>(const AsyncLoading());
 
     useEffect(
       () {
-        _getOfferings(ref, offeringsState);
+        _getOfferings(ref, getOfferingsState);
         return null;
       },
       [],
@@ -51,7 +51,7 @@ class RemittancePage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: offeringsState.value.when(
+        child: getOfferingsState.value.when(
           data: (offerings) {
             selectedOffering.value ??= offerings.first;
 
@@ -120,7 +120,7 @@ class RemittancePage extends HookConsumerWidget {
           loading: () => const AsyncLoadingWidget(text: 'Fetching offerings'),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => _getOfferings(ref, offeringsState),
+            onRetry: () => _getOfferings(ref, getOfferingsState),
           ),
         ),
       ),
