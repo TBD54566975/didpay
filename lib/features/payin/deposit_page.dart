@@ -130,41 +130,43 @@ class DepositPage extends HookConsumerWidget {
     String payoutAmount,
     Offering? selectedOffering,
     Pfi pfi,
-  ) {
-    final disabled = double.tryParse(payinAmount) == 0;
-
-    void onPressed() => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PayinDetailsPage(
-              rfqState: rfqState.copyWith(
-                payinAmount: payinAmount,
-                offering: selectedOffering,
-                payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
-                payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
-              ),
-              paymentState: PaymentState(
-                pfi: pfi,
-                payoutAmount: payoutAmount,
-                payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-                payoutCurrency:
-                    selectedOffering?.data.payout.currencyCode ?? '',
-                exchangeRate:
-                    selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-                transactionType: TransactionType.deposit,
-                payinMethods: selectedOffering?.data.payin.methods ?? [],
-              ),
-            ),
-          ),
-        );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: FilledButton(
-        onPressed: disabled ? null : onPressed,
-        child: Text(Loc.of(context).next),
-      ),
-    );
-  }
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: double.tryParse(payinAmount) == 0
+              ? null
+              : () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PayinDetailsPage(
+                        rfqState: rfqState.copyWith(
+                          payinAmount: payinAmount,
+                          offering: selectedOffering,
+                          payinMethod:
+                              selectedOffering?.data.payin.methods.firstOrNull,
+                          payoutMethod:
+                              selectedOffering?.data.payout.methods.firstOrNull,
+                        ),
+                        paymentState: PaymentState(
+                          pfi: pfi,
+                          payoutAmount: payoutAmount,
+                          payinCurrency:
+                              selectedOffering?.data.payin.currencyCode ?? '',
+                          payoutCurrency:
+                              selectedOffering?.data.payout.currencyCode ?? '',
+                          exchangeRate:
+                              selectedOffering?.data.payoutUnitsPerPayinUnit ??
+                                  '',
+                          transactionType: TransactionType.deposit,
+                          payinMethods:
+                              selectedOffering?.data.payin.methods ?? [],
+                        ),
+                      ),
+                    ),
+                  ),
+          child: Text(Loc.of(context).next),
+        ),
+      );
 
   void _getOfferings(
     WidgetRef ref,
