@@ -133,5 +133,6 @@
     "cancel": "Cancel",
     "myPfis": "My PFIs",
     "noTransactionsFound": "No transactions found",
-    "enterRecipientDid": "Enter the recipient's DID"
+    "enterRecipientDid": "Enter the recipient's DID",
+    "fetchingOfferings": "Fetching offerings..."
 }

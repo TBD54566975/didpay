@@ -323,4 +323,7 @@ class LocEn extends Loc {
 
   @override
   String get enterRecipientDid => 'Enter the recipient\'s DID';
+
+  @override
+  String get fetchingOfferings => 'Fetching offerings...';
 }
