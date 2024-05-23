@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/payin/deposit_page.dart';
-import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -139,8 +138,9 @@ class HomePage extends HookConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const DepositPage(rfqState: RfqState()),
+                    builder: (context) => const PaymentAmountPage(
+                      transactionType: TransactionType.deposit,
+                    ),
                   ),
                 );
               },
@@ -153,8 +153,9 @@ class HomePage extends HookConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const WithdrawPage(rfqState: RfqState()),
+                    builder: (context) => const PaymentAmountPage(
+                      transactionType: TransactionType.withdraw,
+                    ),
                   ),
                 );
               },
@@ -254,7 +255,9 @@ class HomePage extends HookConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => ref.read(pfisProvider).isEmpty
                       ? AddPfiPage()
-                      : const DepositPage(rfqState: RfqState()),
+                      : const PaymentAmountPage(
+                          transactionType: TransactionType.deposit,
+                        ),
                 ),
               ),
               child: Text(Loc.of(context).getStarted),

@@ -1,5 +1,6 @@
+import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/payin/payin.dart';
-import 'package:didpay/features/payin/payin_details_page.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -19,14 +20,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class DepositPage extends HookConsumerWidget {
-  final RfqState rfqState;
+class PaymentAmountPage extends HookConsumerWidget {
+  final TransactionType transactionType;
+  final Country? country;
 
-  const DepositPage({required this.rfqState, super.key});
+  const PaymentAmountPage({
+    required this.transactionType,
+    this.country,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO(ethan-tbd): filter offerings with STORED_BALANCE as payout, https://github.com/TBD54566975/didpay/issues/132
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
@@ -64,7 +69,7 @@ class DepositPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            transactionType: TransactionType.deposit,
+                            transactionType: transactionType,
                             amount: payinAmount,
                             keyPress: keyPress,
                             selectedOffering: selectedOffering,
@@ -74,14 +79,14 @@ class DepositPage extends HookConsumerWidget {
                           Payout(
                             payinAmount:
                                 double.tryParse(payinAmount.value) ?? 0.0,
-                            transactionType: TransactionType.deposit,
+                            transactionType: transactionType,
                             payoutAmount: payoutAmount,
                             selectedOffering: selectedOffering,
                             offerings: offerings,
                           ),
                           const SizedBox(height: Grid.xl),
                           FeeDetails(
-                            transactionType: TransactionType.deposit,
+                            transactionType: transactionType,
                             offering: selectedOffering.value?.data,
                           ),
                         ],
@@ -98,7 +103,6 @@ class DepositPage extends HookConsumerWidget {
                 const SizedBox(height: Grid.sm),
                 _buildNextButton(
                   context,
-                  rfqState,
                   payinAmount.value,
                   CurrencyUtil.formatFromDouble(
                     payoutAmount.value,
@@ -125,7 +129,6 @@ class DepositPage extends HookConsumerWidget {
 
   Widget _buildNextButton(
     BuildContext context,
-    RfqState rfqState,
     String payinAmount,
     String payoutAmount,
     Offering? selectedOffering,
@@ -138,8 +141,8 @@ class DepositPage extends HookConsumerWidget {
               ? null
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PayinDetailsPage(
-                        rfqState: rfqState.copyWith(
+                      builder: (context) => PaymentDetailsPage(
+                        rfqState: RfqState(
                           payinAmount: payinAmount,
                           offering: selectedOffering,
                           payinMethod:
@@ -157,9 +160,11 @@ class DepositPage extends HookConsumerWidget {
                           exchangeRate:
                               selectedOffering?.data.payoutUnitsPerPayinUnit ??
                                   '',
-                          transactionType: TransactionType.deposit,
+                          transactionType: transactionType,
                           payinMethods:
                               selectedOffering?.data.payin.methods ?? [],
+                          payoutMethods:
+                              selectedOffering?.data.payout.methods ?? [],
                         ),
                       ),
                     ),
