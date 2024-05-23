@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:didpay/features/payin/search_payin_methods_page.dart';
+import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
@@ -58,15 +58,15 @@ final _paymentMethods = [
 ];
 
 void main() {
-  group('SearchPayinMethodsPage', () {
+  group('PaymentMethodsPage', () {
     testWidgets('should show search field', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPayinMethodsPage(
-            payinCurrency: '',
-            selectedPayinMethod:
+          child: PaymentMethodsPage(
+            paymentCurrency: '',
+            selectedPaymentMethod:
                 ValueNotifier<PayinMethod>(_paymentMethods.first),
-            payinMethods: _paymentMethods,
+            paymentMethods: _paymentMethods,
           ),
         ),
       );
@@ -79,11 +79,11 @@ void main() {
     testWidgets('should show payment method list', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPayinMethodsPage(
-            payinCurrency: '',
-            selectedPayinMethod:
+          child: PaymentMethodsPage(
+            paymentCurrency: '',
+            selectedPaymentMethod:
                 ValueNotifier<PayinMethod>(_paymentMethods.first),
-            payinMethods: _paymentMethods,
+            paymentMethods: _paymentMethods,
           ),
         ),
       );
@@ -101,10 +101,10 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPayinMethodsPage(
-            payinCurrency: '',
-            selectedPayinMethod: selectedPaymentMethod,
-            payinMethods: _paymentMethods,
+          child: PaymentMethodsPage(
+            paymentCurrency: '',
+            selectedPaymentMethod: selectedPaymentMethod,
+            paymentMethods: _paymentMethods,
           ),
         ),
       );
@@ -124,10 +124,10 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPayinMethodsPage(
-            payinCurrency: '',
-            selectedPayinMethod: selectedPaymentMethod,
-            payinMethods: _paymentMethods,
+          child: PaymentMethodsPage(
+            paymentCurrency: '',
+            selectedPaymentMethod: selectedPaymentMethod,
+            paymentMethods: _paymentMethods,
           ),
         ),
       );

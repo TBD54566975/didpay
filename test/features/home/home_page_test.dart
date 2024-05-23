@@ -2,8 +2,7 @@ import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/home/home_page.dart';
-import 'package:didpay/features/payin/deposit_page.dart';
-import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
@@ -94,7 +93,7 @@ void main() async {
       expect(find.widgetWithText(FilledButton, 'Deposit'), findsOneWidget);
     });
 
-    testWidgets('should navigate to DepositPage on tap of deposit button',
+    testWidgets('should navigate to PaymentAmountPage on tap of deposit button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -112,7 +111,7 @@ void main() async {
       await tester.tap(find.widgetWithText(FilledButton, 'Deposit'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(DepositPage), findsOneWidget);
+      expect(find.byType(PaymentAmountPage), findsOneWidget);
     });
 
     testWidgets('should show withdraw button', (tester) async {
@@ -132,7 +131,8 @@ void main() async {
       expect(find.widgetWithText(FilledButton, 'Withdraw'), findsOneWidget);
     });
 
-    testWidgets('should navigate to WithdrawPage on tap of withdraw button',
+    testWidgets(
+        'should navigate to PaymentAmountPage on tap of withdraw button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -150,7 +150,7 @@ void main() async {
       await tester.tap(find.widgetWithText(FilledButton, 'Withdraw'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(WithdrawPage), findsOneWidget);
+      expect(find.byType(PaymentAmountPage), findsOneWidget);
     });
 
     testWidgets('should show empty state when no transactions', (tester) async {
@@ -175,7 +175,8 @@ void main() async {
       expect(find.text('Get started'), findsOneWidget);
     });
 
-    testWidgets('should navigate to DepositPage on tap of get started button',
+    testWidgets(
+        'should navigate to PaymentAmountPage on tap of get started button',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -193,7 +194,7 @@ void main() async {
       await tester.tap(find.text('Get started'));
       await tester.pumpAndSettle();
 
-      expect(find.byType(DepositPage), findsOneWidget);
+      expect(find.byType(PaymentAmountPage), findsOneWidget);
     });
   });
 }
