@@ -1,4 +1,4 @@
-import 'package:didpay/features/payment/search_payment_types_page.dart';
+import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -11,11 +11,11 @@ final _paymentTypes = {
 };
 
 void main() {
-  group('SearchPaymentTypesPage', () {
+  group('PaymentTypesPage', () {
     testWidgets('should show search field', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentTypesPage(
+          child: PaymentTypesPage(
             selectedPaymentType: ValueNotifier<String>(_paymentTypes.first),
             paymentTypes: _paymentTypes,
             payinCurrency: '',
@@ -31,7 +31,7 @@ void main() {
     testWidgets('should show payment type list', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentTypesPage(
+          child: PaymentTypesPage(
             selectedPaymentType: ValueNotifier(_paymentTypes.first),
             paymentTypes: _paymentTypes,
             payinCurrency: '',
@@ -53,7 +53,7 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentTypesPage(
+          child: PaymentTypesPage(
             selectedPaymentType: selectedPaymentMethod,
             paymentTypes: _paymentTypes,
             payinCurrency: '',
@@ -76,7 +76,7 @@ void main() {
 
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: SearchPaymentTypesPage(
+          child: PaymentTypesPage(
             selectedPaymentType: selectedPaymentMethod,
             paymentTypes: _paymentTypes,
             payinCurrency: '',

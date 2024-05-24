@@ -1,12 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/payin/deposit_page.dart';
-import 'package:didpay/features/payout/withdraw_page.dart';
+import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -22,7 +21,7 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.read(pfisProvider);
 
-    final pfiToExchangeIdsState =
+    final getExchangesState =
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
 
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
@@ -30,7 +29,7 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        _getExchangeIds(ref, pfiToExchangeIdsState);
+        _getExchanges(ref, getExchangesState);
         return null;
       },
       [],
@@ -50,7 +49,11 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).noPfisFound,
                       Loc.of(context).startByAddingAPfi,
                     )
-                  : _buildActivity(context, ref, pfiToExchangeIdsState),
+                  : _buildTransactionsActivity(
+                      context,
+                      ref,
+                      getExchangesState,
+                    ),
             ),
           ],
         ),
@@ -135,8 +138,9 @@ class HomePage extends HookConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const DepositPage(rfqState: RfqState()),
+                    builder: (context) => const PaymentAmountPage(
+                      transactionType: TransactionType.deposit,
+                    ),
                   ),
                 );
               },
@@ -149,8 +153,9 @@ class HomePage extends HookConsumerWidget {
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) =>
-                        const WithdrawPage(rfqState: RfqState()),
+                    builder: (context) => const PaymentAmountPage(
+                      transactionType: TransactionType.withdraw,
+                    ),
                   ),
                 );
               },
@@ -160,7 +165,7 @@ class HomePage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildActivity(
+  Widget _buildTransactionsActivity(
     BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
@@ -189,7 +194,7 @@ class HomePage extends HookConsumerWidget {
                     )
                   : RefreshIndicator(
                       onRefresh: () async =>
-                          _getExchangeIds(ref, pfiToExchangeIdsState),
+                          _getExchanges(ref, pfiToExchangeIdsState),
                       child: ListView(
                         children: exchangeMap.entries
                             .expand(
@@ -250,7 +255,9 @@ class HomePage extends HookConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => ref.read(pfisProvider).isEmpty
                       ? AddPfiPage()
-                      : const DepositPage(rfqState: RfqState()),
+                      : const PaymentAmountPage(
+                          transactionType: TransactionType.deposit,
+                        ),
                 ),
               ),
               child: Text(Loc.of(context).getStarted),
@@ -282,15 +289,14 @@ class HomePage extends HookConsumerWidget {
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: () async =>
-                  _getExchangeIds(ref, pfiToExchangeIdsState),
+              onPressed: () async => _getExchanges(ref, pfiToExchangeIdsState),
               child: Text(Loc.of(context).tapToRetry),
             ),
           ],
         ),
       );
 
-  void _getExchangeIds(
+  void _getExchanges(
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
   ) {

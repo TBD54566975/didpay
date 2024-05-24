@@ -2,13 +2,13 @@ import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class SearchPaymentTypesPage extends HookWidget {
+class PaymentTypesPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
   final ValueNotifier<String?> selectedPaymentType;
   final Set<String?>? paymentTypes;
   final String payinCurrency;
 
-  SearchPaymentTypesPage({
+  PaymentTypesPage({
     required this.selectedPaymentType,
     required this.paymentTypes,
     required this.payinCurrency,

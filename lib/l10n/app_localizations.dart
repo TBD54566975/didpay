@@ -714,6 +714,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Enter the recipient\'s DID'**
   String get enterRecipientDid;
+
+  /// No description provided for @fetchingOfferings.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching offerings...'**
+  String get fetchingOfferings;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

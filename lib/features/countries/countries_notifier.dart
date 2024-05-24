@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:didpay/features/remittance/countries.dart';
+import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/storage/storage_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
