@@ -16,6 +16,82 @@ class KccIssuanceService {
   KccIssuanceService({http.Client? httpClient})
       : httpClient = httpClient ?? http.Client();
 
+  Future<Uri> getTokenEndpoint(CredentialOffer credentialOffer) async {
+    final issuerUrl = credentialOffer.credentialIssuerUrl;
+    final authorizationMetadataEndpoint = issuerUrl.replace(
+      path: '${issuerUrl.path}/.well-known/oauth-authorization-server',
+    );
+
+    http.Response response;
+    try {
+      response = await httpClient.get(authorizationMetadataEndpoint);
+    } on Exception catch (e) {
+      throw AuthorizationMetadataRequestException(
+        message: 'failed to send authorization metadata request to $issuerUrl',
+        cause: e,
+      );
+    }
+
+    if (response.statusCode == 200) {
+      try {
+        final authzMetadata = AuthorizationMetadata.fromJson(response.body);
+
+        return authzMetadata.tokenEndpoint;
+      } on Exception catch (e) {
+        throw AuthorizationMetadataResponseException(
+          message: 'failed to parse response body',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+    } else {
+      throw AuthorizationMetadataResponseException(
+        message: 'unexpected response status',
+        status: response.statusCode,
+        body: response.body,
+      );
+    }
+  }
+
+  Future<IssuerMetadata> getIssuerMetadata(
+    CredentialOffer credentialOffer,
+  ) async {
+    final issuerUrl = credentialOffer.credentialIssuerUrl;
+    final issuerMetadataEndpoint = issuerUrl.replace(
+      path: '${issuerUrl.path}/.well-known/openid-credential-issuer',
+    );
+
+    http.Response response;
+    try {
+      response = await httpClient.get(issuerMetadataEndpoint);
+    } on Exception catch (e) {
+      throw IssuerMetadataRequestException(
+        message: 'failed to send authorization metadata request to $issuerUrl',
+        cause: e,
+      );
+    }
+
+    if (response.statusCode == 200) {
+      try {
+        return IssuerMetadata.fromJson(response.body);
+      } on Exception catch (e) {
+        throw IssuerMetadataResponseException(
+          message: 'failed to parse response body',
+          status: response.statusCode,
+          cause: e,
+          body: response.body,
+        );
+      }
+    } else {
+      throw IssuerMetadataResponseException(
+        message: 'unexpected response status',
+        status: response.statusCode,
+        body: response.body,
+      );
+    }
+  }
+
   Future<IdvRequest> getIdvRequest(
     Pfi pfi,
     BearerDid bearerDid,
@@ -55,11 +131,7 @@ class KccIssuanceService {
     IdvRequest idvRequest,
     BearerDid bearerDid,
   ) async {
-    //! TODO: replace this hardcoded endpoint with a request to well-known
-    //! metadata endpoint to get actual endpoint
-    final idvServiceEndpoint = await getIdvServiceEndpoint(pfi);
-    final tokenEndpoint =
-        idvServiceEndpoint.replace(path: '/ingress/oidc/token');
+    final tokenEndpoint = await getTokenEndpoint(idvRequest.credentialOffer);
 
     final tokenRequest = TokenRequest(
       preAuthCode: idvRequest.credentialOffer.preAuthorizedCode,
@@ -153,14 +225,11 @@ class KccIssuanceService {
 
     late http.Response response;
 
-    // TODO: replace with actual endpoint from issuer metadata endpoint
-    final idvServiceEndpoint = await getIdvServiceEndpoint(pfi);
-    final credentialIssuerUrl = idvServiceEndpoint.replace(
-      path: '/ingress/credentials',
-    );
+    final issuerMetadata = await getIssuerMetadata(idvRequest.credentialOffer);
+
     try {
       response = await httpClient.post(
-        credentialIssuerUrl,
+        issuerMetadata.credentialEndpoint,
         headers: {
           'Authorization': 'Bearer ${tokenResponse.accessToken}',
           'Content-Type': 'application/json',

@@ -15,12 +15,12 @@ class App extends StatelessWidget {
       title: 'DIDPay',
       theme: lightTheme(context),
       darkTheme: darkTheme(context),
-      home: const AppTabs(),
-      // home: const ModalFlow(
-      //   initialWidget: KccAgreementPage(
-      //     pfi: Pfi(did: 'did:web:192.168.50.27%3A8892:ingress'),
-      //   ),
-      // ),
+      // home: const AppTabs(),
+      home: const ModalFlow(
+        initialWidget: KccAgreementPage(
+          pfi: Pfi(did: 'did:web:192.168.50.27%3A8892:ingress'),
+        ),
+      ),
       localizationsDelegates: Loc.localizationsDelegates,
       supportedLocales: const [
         Locale('en', ''),
