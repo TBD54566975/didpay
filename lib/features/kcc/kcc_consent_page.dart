@@ -7,10 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class KccAgreementPage extends HookConsumerWidget {
+class KccConsentPage extends HookConsumerWidget {
   final Pfi pfi;
 
-  const KccAgreementPage({required this.pfi, super.key});
+  const KccConsentPage({required this.pfi, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
