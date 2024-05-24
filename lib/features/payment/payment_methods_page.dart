@@ -1,20 +1,20 @@
+import 'package:didpay/features/payment/payment_method_operations.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:tbdex/tbdex.dart';
 
-class SearchPayinMethodsPage extends HookWidget {
+class PaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
 
-  final String payinCurrency;
-  final ValueNotifier<PayinMethod?> selectedPayinMethod;
-  final List<PayinMethod>? payinMethods;
+  final String paymentCurrency;
+  final ValueNotifier<Object?> selectedPaymentMethod;
+  final List<Object?>? paymentMethods;
 
-  SearchPayinMethodsPage({
-    required this.payinCurrency,
-    required this.selectedPayinMethod,
-    required this.payinMethods,
+  PaymentMethodsPage({
+    required this.paymentCurrency,
+    required this.selectedPaymentMethod,
+    required this.paymentMethods,
     super.key,
   });
 
@@ -37,9 +37,9 @@ class SearchPayinMethodsPage extends HookWidget {
             Expanded(
               child: _buildMethodsList(
                 context,
-                selectedPayinMethod,
                 searchText,
-                payinMethods,
+                selectedPaymentMethod,
+                paymentMethods,
               ),
             ),
           ],
@@ -50,13 +50,13 @@ class SearchPayinMethodsPage extends HookWidget {
 
   Widget _buildMethodsList(
     BuildContext context,
-    ValueNotifier<PayinMethod?> selectedPayinMethod,
     ValueNotifier<String> searchText,
-    List<PayinMethod>? payinMethods,
+    ValueNotifier<Object?> selectedPaymentMethod,
+    List<Object?>? paymentMethods,
   ) {
-    final filteredPaymentMethods = payinMethods
+    final filteredPaymentMethods = paymentMethods
         ?.where(
-          (entry) => (entry.name ?? entry.kind)
+          (method) => (method.paymentName ?? '')
               .toLowerCase()
               .contains(searchText.value.toLowerCase()),
         )
@@ -66,26 +66,26 @@ class SearchPayinMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final fee = double.tryParse(currentPaymentMethod?.fee ?? '0.00')
+        final fee = double.tryParse(currentPaymentMethod.serviceFee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00';
 
         return ListTile(
           visualDensity: VisualDensity.compact,
-          selected: selectedPayinMethod.value == currentPaymentMethod,
+          selected: selectedPaymentMethod.value == currentPaymentMethod,
           title: Text(
-            currentPaymentMethod?.name ?? currentPaymentMethod?.kind ?? '',
+            currentPaymentMethod?.paymentName ?? '',
           ),
           subtitle: Text(
-            Loc.of(context).serviceFeeAmount(fee, payinCurrency),
+            Loc.of(context).serviceFeeAmount(fee, paymentCurrency),
             style: Theme.of(context).textTheme.bodySmall,
           ),
-          trailing: selectedPayinMethod.value == currentPaymentMethod
+          trailing: selectedPaymentMethod.value == currentPaymentMethod
               ? const Icon(Icons.check)
               : null,
           onTap: () {
-            selectedPayinMethod.value =
-                currentPaymentMethod ?? selectedPayinMethod.value;
+            selectedPaymentMethod.value =
+                currentPaymentMethod ?? selectedPaymentMethod.value;
             Navigator.of(context).pop();
           },
         );

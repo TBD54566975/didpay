@@ -1,5 +1,5 @@
+import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/payin/payin.dart';
-import 'package:didpay/features/remittance/remittance_country_page.dart';
 import 'package:didpay/features/send/send.dart';
 import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -23,7 +23,7 @@ class SendPage extends HookWidget {
           onPressed: () {
             Navigator.of(context).push(
               MaterialPageRoute(
-                builder: (context) => const RemittanceCountryPage(),
+                builder: (context) => const CountriesPage(),
               ),
             );
           },

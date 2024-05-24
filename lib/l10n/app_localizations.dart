@@ -684,6 +684,42 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Order confirmed!'**
   String get orderConfirmed;
+
+  /// No description provided for @removePfi.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove PFI'**
+  String get removePfi;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @myPfis.
+  ///
+  /// In en, this message translates to:
+  /// **'My PFIs'**
+  String get myPfis;
+
+  /// No description provided for @noTransactionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions found'**
+  String get noTransactionsFound;
+
+  /// No description provided for @enterRecipientDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter the recipient\'s DID'**
+  String get enterRecipientDid;
+
+  /// No description provided for @fetchingOfferings.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching offerings...'**
+  String get fetchingOfferings;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -24,7 +24,7 @@ const darkColorScheme = ColorScheme(
   onSecondary: Color(0xFF161616),
   tertiary: Color(0xFF81C784),
   onTertiary: Color(0xFF161616),
-  error: Color(0xFFF83A3A),
+  error: Color(0xFFE57373),
   onError: Color(0xFF161616),
   background: Color(0xFF161616),
   onBackground: Color(0xFFBDBDBD),

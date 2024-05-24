@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/search_payment_types_page.dart';
-import 'package:didpay/features/payout/payout_details_page.dart';
-import 'package:didpay/features/payout/search_payout_methods_page.dart';
+import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:json_schema/json_schema.dart';
@@ -21,7 +21,7 @@ import '../../helpers/widget_helpers.dart';
 void main() async {
   final did = await DidDht.create();
 
-  group('PayoutDetailsPage', () {
+  group('PaymentDetailsPage', () {
     final schema = JsonSchema.create(
       jsonDecode(r'''
         {
@@ -58,10 +58,11 @@ void main() async {
     );
 
     Widget paymentDetailsPageTestWidget({
+      List<PayinMethod> payinMethods = const [],
       List<PayoutMethod> payoutMethods = const [],
     }) =>
         WidgetHelpers.testableWidget(
-          child: PayoutDetailsPage(
+          child: PaymentDetailsPage(
             rfqState: const RfqState(),
             paymentState: PaymentState(
               pfi: const Pfi(did: ''),
@@ -69,7 +70,8 @@ void main() async {
               payinCurrency: 'USD',
               payoutCurrency: 'MXN',
               exchangeRate: '17',
-              transactionType: TransactionType.withdraw,
+              transactionType: TransactionType.deposit,
+              payinMethods: payinMethods,
               payoutMethods: payoutMethods,
             ),
           ),
@@ -81,7 +83,9 @@ void main() async {
 
     testWidgets('should show header', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: paymentDetailsPageTestWidget()),
+        WidgetHelpers.testableWidget(
+          child: paymentDetailsPageTestWidget(),
+        ),
       );
 
       expect(find.text('Enter your payment details'), findsOneWidget);
@@ -96,15 +100,13 @@ void main() async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
@@ -121,15 +123,13 @@ void main() async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'MOMO_MTN',
                 name: 'MTN',
               ),
@@ -141,19 +141,17 @@ void main() async {
       expect(find.text('Select a payment type'), findsNothing);
     });
 
-    testWidgets('should show payout method selection zero state',
+    testWidgets('should show payment method selection zero state',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'MOMO_MTN',
                 name: 'MTN',
               ),
@@ -166,13 +164,12 @@ void main() async {
       expect(find.text('Service fees may apply'), findsOneWidget);
     });
 
-    testWidgets('should show payout method without selector', (tester) async {
+    testWidgets('should show payment method without selector', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
               ),
@@ -185,21 +182,18 @@ void main() async {
       expect(find.widgetWithIcon(Icon, Icons.chevron_right), findsNothing);
     });
 
-    testWidgets(
-        'should show SearchPaymentTypesPage on tap of select a payment type',
+    testWidgets('should show PaymentTypesPage on tap of select a payment type',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
@@ -211,23 +205,21 @@ void main() async {
 
       await tester.tap(find.text('Select a payment type'));
       await tester.pumpAndSettle();
-      expect(find.byType(SearchPaymentTypesPage), findsOneWidget);
+      expect(find.byType(PaymentTypesPage), findsOneWidget);
     });
 
     testWidgets(
-        'should show SearchPayoutMethodsPage on tap of select a payment method',
+        'should show PaymentMethodsPage on tap of select a payment method',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'MOMO_MTN',
                 name: 'MTN',
               ),
@@ -238,24 +230,21 @@ void main() async {
 
       await tester.tap(find.text('Select a payment method'));
       await tester.pumpAndSettle();
-      expect(find.byType(SearchPayoutMethodsPage), findsOneWidget);
+      expect(find.byType(PaymentMethodsPage), findsOneWidget);
     });
 
-    testWidgets(
-        'should show payment type after SearchPaymentTypesPage selection',
+    testWidgets('should show payment type after PaymentTypesPage selection',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 group: 'Mobile money',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
                 group: 'Bank',
@@ -274,20 +263,17 @@ void main() async {
       expect(find.widgetWithText(ListTile, 'Bank'), findsOneWidget);
     });
 
-    testWidgets(
-        'should show payment name after SearchPayoutMethodsPage selection',
+    testWidgets('should show payment name after PaymentMethodsPage selection',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
               ),
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+              PayinMethod(
                 kind: 'BANK_GT BANK',
                 name: 'GT Bank',
               ),
@@ -309,9 +295,8 @@ void main() async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: paymentDetailsPageTestWidget(
-            payoutMethods: [
-              PayoutMethod(
-                estimatedSettlementTime: 1,
+            payinMethods: [
+              PayinMethod(
                 kind: 'MOMO_MPESA',
                 name: 'M-Pesa',
                 requiredPaymentDetails: schema,

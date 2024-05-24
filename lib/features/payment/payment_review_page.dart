@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
@@ -16,11 +16,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class ReviewPaymentPage extends HookConsumerWidget {
+class PaymentReviewPage extends HookConsumerWidget {
   final String exchangeId;
   final PaymentState paymentState;
 
-  const ReviewPaymentPage({
+  const PaymentReviewPage({
     required this.exchangeId,
     required this.paymentState,
     super.key,

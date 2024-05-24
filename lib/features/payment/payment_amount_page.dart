@@ -1,12 +1,13 @@
-import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
-import 'package:didpay/features/payout/payout_details_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async_error_widget.dart';
 import 'package:didpay/shared/async_loading_widget.dart';
@@ -19,25 +20,28 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class WithdrawPage extends HookConsumerWidget {
-  final RfqState rfqState;
+class PaymentAmountPage extends HookConsumerWidget {
+  final TransactionType transactionType;
+  final Country? country;
 
-  const WithdrawPage({required this.rfqState, super.key});
+  const PaymentAmountPage({
+    required this.transactionType,
+    this.country,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO(ethan-tbd): filter offerings with STORED_BALANCE as payin, https://github.com/TBD54566975/didpay/issues/132
-
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedOffering = useState<Offering?>(null);
-    final offeringsState =
+    final getOfferingsState =
         useState<AsyncValue<List<Offering>>>(const AsyncLoading());
 
     useEffect(
       () {
-        _getOfferings(ref, offeringsState);
+        _getOfferings(ref, getOfferingsState);
         return null;
       },
       [],
@@ -46,7 +50,7 @@ class WithdrawPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: offeringsState.value.when(
+        child: getOfferingsState.value.when(
           data: (offerings) {
             selectedOffering.value ??= offerings.first;
 
@@ -59,13 +63,13 @@ class WithdrawPage extends HookConsumerWidget {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: Grid.side,
-                        vertical: Grid.sm,
+                        vertical: Grid.xs,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            transactionType: TransactionType.withdraw,
+                            transactionType: transactionType,
                             amount: payinAmount,
                             keyPress: keyPress,
                             selectedOffering: selectedOffering,
@@ -75,14 +79,14 @@ class WithdrawPage extends HookConsumerWidget {
                           Payout(
                             payinAmount:
                                 double.tryParse(payinAmount.value) ?? 0.0,
-                            transactionType: TransactionType.withdraw,
+                            transactionType: transactionType,
                             payoutAmount: payoutAmount,
                             selectedOffering: selectedOffering,
                             offerings: offerings,
                           ),
                           const SizedBox(height: Grid.xl),
                           FeeDetails(
-                            transactionType: TransactionType.withdraw,
+                            transactionType: transactionType,
                             offering: selectedOffering.value?.data,
                           ),
                         ],
@@ -112,10 +116,11 @@ class WithdrawPage extends HookConsumerWidget {
               ],
             );
           },
-          loading: () => const AsyncLoadingWidget(text: 'Fetching offerings'),
+          loading: () =>
+              AsyncLoadingWidget(text: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => _getOfferings(ref, offeringsState),
+            onRetry: () => _getOfferings(ref, getOfferingsState),
           ),
         ),
       ),
@@ -128,41 +133,45 @@ class WithdrawPage extends HookConsumerWidget {
     String payoutAmount,
     Offering? selectedOffering,
     Pfi pfi,
-  ) {
-    final disabled = double.tryParse(payinAmount) == 0;
-
-    void onPressed() => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PayoutDetailsPage(
-              rfqState: rfqState.copyWith(
-                payinAmount: payinAmount,
-                offering: selectedOffering,
-                payinMethod: selectedOffering?.data.payin.methods.firstOrNull,
-                payoutMethod: selectedOffering?.data.payout.methods.firstOrNull,
-              ),
-              paymentState: PaymentState(
-                pfi: pfi,
-                payoutAmount: payoutAmount,
-                payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-                payoutCurrency:
-                    selectedOffering?.data.payout.currencyCode ?? '',
-                exchangeRate:
-                    selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-                transactionType: TransactionType.withdraw,
-                payoutMethods: selectedOffering?.data.payout.methods ?? [],
-              ),
-            ),
-          ),
-        );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: FilledButton(
-        onPressed: disabled ? null : onPressed,
-        child: Text(Loc.of(context).next),
-      ),
-    );
-  }
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: double.tryParse(payinAmount) == 0
+              ? null
+              : () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PaymentDetailsPage(
+                        rfqState: RfqState(
+                          payinAmount: payinAmount,
+                          offering: selectedOffering,
+                          payinMethod:
+                              selectedOffering?.data.payin.methods.firstOrNull,
+                          payoutMethod:
+                              selectedOffering?.data.payout.methods.firstOrNull,
+                        ),
+                        paymentState: PaymentState(
+                          pfi: pfi,
+                          payoutAmount: payoutAmount,
+                          payinCurrency:
+                              selectedOffering?.data.payin.currencyCode ?? '',
+                          payoutCurrency:
+                              selectedOffering?.data.payout.currencyCode ?? '',
+                          exchangeRate:
+                              selectedOffering?.data.payoutUnitsPerPayinUnit ??
+                                  '',
+                          transactionType: transactionType,
+                          payinMethods:
+                              selectedOffering?.data.payin.methods ?? [],
+                          payoutMethods:
+                              selectedOffering?.data.payout.methods ?? [],
+                        ),
+                      ),
+                    ),
+                  ),
+          child: Text(Loc.of(context).next),
+        ),
+      );
 
   void _getOfferings(
     WidgetRef ref,

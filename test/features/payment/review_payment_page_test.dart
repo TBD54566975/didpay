@@ -3,12 +3,12 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/home/transaction.dart';
+import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/review_payment_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -31,7 +31,7 @@ void main() async {
 
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
-        child: const ReviewPaymentPage(
+        child: const PaymentReviewPage(
           exchangeId: '',
           paymentState: PaymentState(
             pfi: Pfi(did: ''),

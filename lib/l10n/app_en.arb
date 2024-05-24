@@ -128,5 +128,11 @@
     "gettingYourQuote": "Getting your quote...",
     "sendingYourRequest": "Sending your request...",
     "confirmingYourOrder": "Confirming your order...",
-    "orderConfirmed": "Order confirmed!"
+    "orderConfirmed": "Order confirmed!",
+    "removePfi": "Remove PFI",
+    "cancel": "Cancel",
+    "myPfis": "My PFIs",
+    "noTransactionsFound": "No transactions found",
+    "enterRecipientDid": "Enter the recipient's DID",
+    "fetchingOfferings": "Fetching offerings..."
 }

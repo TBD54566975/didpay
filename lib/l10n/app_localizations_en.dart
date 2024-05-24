@@ -308,4 +308,22 @@ class LocEn extends Loc {
 
   @override
   String get orderConfirmed => 'Order confirmed!';
+
+  @override
+  String get removePfi => 'Remove PFI';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get myPfis => 'My PFIs';
+
+  @override
+  String get noTransactionsFound => 'No transactions found';
+
+  @override
+  String get enterRecipientDid => 'Enter the recipient\'s DID';
+
+  @override
+  String get fetchingOfferings => 'Fetching offerings...';
 }
