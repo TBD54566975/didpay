@@ -14,7 +14,7 @@ class LocEn extends Loc {
   String get getStarted => 'Get started';
 
   @override
-  String get interactWithPfis => 'Interact with PFIs (Participating Financial Institutions) and send money to others around the world';
+  String get interactWithPfis => 'Interact with Financial Institutions and send money to others around the world';
 
   @override
   String get whereAreYouLocated => 'Where are you located?';
@@ -35,7 +35,7 @@ class LocEn extends Loc {
   String get scanRecipientQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
 
   @override
-  String get scanPfiQrCode => 'Don\'t know the PFI\'s DID? Scan their QR code';
+  String get scanPfiQrCode => 'Don\'t know the Financial Instutions\'s DID? Scan their QR code';
 
   @override
   String get withdraw => 'Withdraw';
@@ -177,13 +177,13 @@ class LocEn extends Loc {
   String get submit => 'Submit';
 
   @override
-  String get selectYourCountry => 'Select your country to see what PFIs are available to you';
+  String get selectYourCountry => 'Select your country to see what transfer services are available to you';
 
   @override
-  String get getStartedWithAPfi => 'Get started with a PFI';
+  String get getStartedWithAPfi => 'Get started with a transfer service';
 
   @override
-  String get selectAPfi => 'Select a PFI to verify your identity and provide you liquidity';
+  String get selectAPfi => 'Select a transfer service to verify your identity and provide you liquidity';
 
   @override
   String get termsOfService => 'Terms of service';
@@ -280,22 +280,22 @@ class LocEn extends Loc {
   String get unableToRetrieveTxns => 'Unable to retrieve transactions';
 
   @override
-  String get addAPfi => 'Add a PFI';
+  String get addAPfi => 'Add a transfer service';
 
   @override
-  String get noPfisFound => 'No PFIs found';
+  String get noPfisFound => 'No transfer services found';
 
   @override
-  String get startByAddingAPfi => 'Start by adding a PFI';
+  String get startByAddingAPfi => 'Start by adding a transfer service';
 
   @override
-  String get pfiAdded => 'PFI added!';
+  String get pfiAdded => 'Transfer service added!';
 
   @override
-  String get addingPfi => 'Adding PFI...';
+  String get addingPfi => 'Adding transfer service...';
 
   @override
-  String get mustAddPfiBeforeSending => 'Must add a PFI before sending funds!';
+  String get mustAddPfiBeforeSending => 'Must add a transfer service before sending funds!';
 
   @override
   String get gettingYourQuote => 'Getting your quote...';
@@ -310,13 +310,13 @@ class LocEn extends Loc {
   String get orderConfirmed => 'Order confirmed!';
 
   @override
-  String get removePfi => 'Remove PFI';
+  String get removePfi => 'Remove tranfer service';
 
   @override
   String get cancel => 'Cancel';
 
   @override
-  String get myPfis => 'My PFIs';
+  String get myPfis => 'My transfer services';
 
   @override
   String get noTransactionsFound => 'No transactions found';
