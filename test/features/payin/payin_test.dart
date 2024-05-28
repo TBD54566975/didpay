@@ -1,4 +1,5 @@
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   group('Payin', () {
     final amount = ValueNotifier<String>('70');
+    final pfi = ValueNotifier<Pfi?>(null);
     final offering = ValueNotifier<Offering?>(
       Offering.create(
         'pfiDid',
@@ -45,9 +47,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -61,9 +64,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -77,9 +81,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -93,9 +98,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.withdraw,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -109,9 +115,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -126,9 +133,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.deposit,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
@@ -143,9 +151,10 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payin(
             transactionType: TransactionType.withdraw,
-            offerings: const [],
+            offeringsMap: const {},
             amount: amount,
             keyPress: keyPress,
+            selectedPfi: pfi,
             selectedOffering: offering,
           ),
         ),
