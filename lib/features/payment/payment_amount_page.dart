@@ -157,10 +157,6 @@ class PaymentAmountPage extends HookConsumerWidget {
                                   '',
                           selectedPfi: selectedPfi ?? const Pfi(did: ''),
                           selectedOffering: selectedOffering,
-                          selectedPayinMethod:
-                              selectedOffering?.data.payin.methods.firstOrNull,
-                          selectedPayoutMethod:
-                              selectedOffering?.data.payout.methods.firstOrNull,
                           payinMethods:
                               selectedOffering?.data.payin.methods ?? [],
                           payoutMethods:
