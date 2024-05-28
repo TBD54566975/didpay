@@ -5,7 +5,6 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -145,16 +144,9 @@ class PaymentAmountPage extends HookConsumerWidget {
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentDetailsPage(
-                        rfqState: RfqState(
-                          payinAmount: payinAmount,
-                          offering: selectedOffering,
-                          payinMethod:
-                              selectedOffering?.data.payin.methods.firstOrNull,
-                          payoutMethod:
-                              selectedOffering?.data.payout.methods.firstOrNull,
-                        ),
                         paymentState: PaymentState(
-                          pfi: selectedPfi ?? const Pfi(did: ''),
+                          transactionType: transactionType,
+                          payinAmount: payinAmount,
                           payoutAmount: payoutAmount,
                           payinCurrency:
                               selectedOffering?.data.payin.currencyCode ?? '',
@@ -163,7 +155,12 @@ class PaymentAmountPage extends HookConsumerWidget {
                           exchangeRate:
                               selectedOffering?.data.payoutUnitsPerPayinUnit ??
                                   '',
-                          transactionType: transactionType,
+                          selectedPfi: selectedPfi ?? const Pfi(did: ''),
+                          selectedOffering: selectedOffering,
+                          selectedPayinMethod:
+                              selectedOffering?.data.payin.methods.firstOrNull,
+                          selectedPayoutMethod:
+                              selectedOffering?.data.payout.methods.firstOrNull,
                           payinMethods:
                               selectedOffering?.data.payin.methods ?? [],
                           payoutMethods:

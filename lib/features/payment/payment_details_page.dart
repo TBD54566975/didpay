@@ -5,7 +5,6 @@ import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -19,11 +18,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
-  final RfqState rfqState;
   final PaymentState paymentState;
 
   const PaymentDetailsPage({
-    required this.rfqState,
     required this.paymentState,
     super.key,
   });
@@ -108,17 +105,16 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     ),
                   _buildPaymentForm(
                     context,
-                    rfqState.copyWith(
-                      payinMethod: paymentState.transactionType ==
+                    paymentState.copyWith(
+                      selectedPayinMethod: paymentState.transactionType ==
                               TransactionType.deposit
                           ? selectedPaymentMethod.value as PayinMethod?
                           : null,
-                      payoutMethod: paymentState.transactionType ==
+                      selectedPayoutMethod: paymentState.transactionType ==
                               TransactionType.withdraw
                           ? selectedPaymentMethod.value as PayoutMethod?
                           : null,
                     ),
-                    paymentState,
                     onPaymentFormSubmit: (paymentState) =>
                         _sendRfq(context, ref, sendRfqState, paymentState),
                   ),
@@ -158,14 +154,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildPaymentForm(
     BuildContext context,
-    RfqState rfqState,
     PaymentState paymentState, {
     required void Function(PaymentState) onPaymentFormSubmit,
   }) {
     final paymentMethod =
         paymentState.transactionType == TransactionType.deposit
-            ? rfqState.payinMethod
-            : rfqState.payoutMethod;
+            ? paymentState.selectedPayinMethod
+            : paymentState.selectedPayoutMethod;
 
     final isDisabled = paymentMethod.isDisabled;
     final schema = paymentMethod.schema;
@@ -212,9 +207,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => PaymentTypesPage(
-                    selectedPaymentType: selectedPaymentType,
-                    paymentTypes: paymentTypes,
                     payinCurrency: paymentState.payinCurrency,
+                    paymentTypes: paymentTypes,
+                    selectedPaymentType: selectedPaymentType,
                   ),
                 ),
               );
@@ -253,7 +248,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             selectedPaymentMethod.value.paymentName == null
                 ? Loc.of(context).serviceFeesMayApply
                 : Loc.of(context)
-                    .serviceFeeAmount(fee, paymentState.payinCurrency),
+                    .serviceFeeAmount(fee, paymentState.payinCurrency ?? ''),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing:
@@ -288,15 +283,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
     ref
         .read(tbdexServiceProvider)
-        .sendRfq(ref.read(didProvider), paymentState.pfi, rfqState)
+        .sendRfq(ref.read(didProvider), paymentState)
         .then((rfq) async {
       state.value = AsyncData(rfq);
       await Navigator.of(context)
           .push(
             MaterialPageRoute(
               builder: (context) => PaymentReviewPage(
-                exchangeId: rfq.metadata.id,
-                paymentState: paymentState,
+                paymentState:
+                    paymentState.copyWith(exchangeId: rfq.metadata.id),
               ),
             ),
           )

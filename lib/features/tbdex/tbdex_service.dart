@@ -1,5 +1,5 @@
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/shared/http_status.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
@@ -69,18 +69,18 @@ class TbdexService {
     );
   }
 
-  Future<Rfq> sendRfq(BearerDid did, Pfi pfi, RfqState rfqState) async {
+  Future<Rfq> sendRfq(BearerDid did, PaymentState paymentState) async {
     final rfq = Rfq.create(
-      pfi.did,
+      paymentState.selectedPfi?.did ?? '',
       did.uri,
       CreateRfqData(
-        offeringId: rfqState.offering?.metadata.id ?? '',
+        offeringId: paymentState.selectedOffering?.metadata.id ?? '',
         payin: CreateSelectedPayinMethod(
-          amount: rfqState.payinAmount ?? '',
-          kind: rfqState.payinMethod?.kind ?? '',
+          amount: paymentState.payinAmount ?? '',
+          kind: paymentState.selectedPayinMethod?.kind ?? '',
         ),
         payout: CreateSelectedPayoutMethod(
-          kind: rfqState.payoutMethod?.kind ?? '',
+          kind: paymentState.selectedPayoutMethod?.kind ?? '',
         ),
         claims: [],
       ),
@@ -101,9 +101,9 @@ class TbdexService {
     return rfq;
   }
 
-  Future<Order> submitOrder(BearerDid did, Pfi pfi, String exchangeId) async {
+  Future<Order> submitOrder(BearerDid did, Pfi? pfi, String? exchangeId) async {
     await Future.delayed(const Duration(seconds: 1));
-    final order = Order.create(pfi.did, did.uri, exchangeId);
+    final order = Order.create(pfi?.did ?? '', did.uri, exchangeId ?? '');
     await order.sign(did);
     await Future.delayed(const Duration(seconds: 1));
 

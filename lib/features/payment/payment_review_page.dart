@@ -17,14 +17,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentReviewPage extends HookConsumerWidget {
-  final String exchangeId;
   final PaymentState paymentState;
 
-  const PaymentReviewPage({
-    required this.exchangeId,
-    required this.paymentState,
-    super.key,
-  });
+  const PaymentReviewPage({required this.paymentState, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -37,7 +32,8 @@ class PaymentReviewPage extends HookConsumerWidget {
       () {
         Future.delayed(
           Duration.zero,
-          () => getQuoteNotifier().startPolling(exchangeId, paymentState.pfi),
+          () => getQuoteNotifier()
+              .startPolling(paymentState.exchangeId, paymentState.selectedPfi),
         );
         return getQuoteNotifier().stopPolling;
       },
@@ -59,7 +55,6 @@ class PaymentReviewPage extends HookConsumerWidget {
                     context,
                     ref,
                     paymentState,
-                    exchangeId,
                     sendOrderState,
                   ),
                 ),
@@ -108,8 +103,8 @@ class PaymentReviewPage extends HookConsumerWidget {
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
                   onRetry: () => ref.read(quoteProvider.notifier).startPolling(
-                        exchangeId,
-                        paymentState.pfi,
+                        paymentState.exchangeId,
+                        paymentState.selectedPfi,
                       ),
                 ),
               ),
@@ -257,7 +252,6 @@ class PaymentReviewPage extends HookConsumerWidget {
           context,
           ref,
           paymentState,
-          exchangeId,
           sendOrderState,
         ),
         child: Text(
@@ -269,13 +263,16 @@ class PaymentReviewPage extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
-    String exchangeId,
     ValueNotifier<AsyncValue<Order>?> state,
   ) {
     state.value = const AsyncLoading();
     ref
         .read(tbdexServiceProvider)
-        .submitOrder(ref.read(didProvider), paymentState.pfi, exchangeId)
+        .submitOrder(
+          ref.read(didProvider),
+          paymentState.selectedPfi,
+          paymentState.exchangeId,
+        )
         .then((order) async {
       state.value = AsyncData(order);
     }).catchError((error, stackTrace) {

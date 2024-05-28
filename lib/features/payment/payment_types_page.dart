@@ -4,14 +4,14 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 class PaymentTypesPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final ValueNotifier<String?> selectedPaymentType;
+  final String? payinCurrency;
   final Set<String?>? paymentTypes;
-  final String payinCurrency;
+  final ValueNotifier<String?> selectedPaymentType;
 
   PaymentTypesPage({
-    required this.selectedPaymentType,
-    required this.paymentTypes,
     required this.payinCurrency,
+    required this.paymentTypes,
+    required this.selectedPaymentType,
     super.key,
   });
 
