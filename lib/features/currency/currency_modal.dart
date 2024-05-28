@@ -1,3 +1,4 @@
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -7,53 +8,77 @@ class CurrencyModal {
   static Future<dynamic> show(
     BuildContext context,
     TransactionType transactionType,
+    ValueNotifier<Pfi?> selectedPfi,
     ValueNotifier<Offering?> selectedOffering,
-    List<Offering> offerings,
+    Map<Pfi, List<Offering>> offeringsMap,
   ) =>
       showModalBottomSheet(
         useSafeArea: true,
         isScrollControlled: true,
         context: context,
         builder: (context) => SafeArea(
-          child: SizedBox(
-            height: 100 + (offerings.length * 30),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: Grid.xs),
-                  child: Text(
-                    'Select currency',
-                    style: Theme.of(context).textTheme.titleMedium,
-                    textAlign: TextAlign.center,
-                  ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final totalOfferings = offeringsMap.values
+                  .fold(0, (total, list) => total + list.length);
+              final height = totalOfferings * Grid.tileHeight;
+              final maxHeight = MediaQuery.of(context).size.height * 0.4;
+
+              return ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: maxHeight,
+                  minHeight: height < maxHeight ? height : maxHeight,
                 ),
-                Expanded(
-                  child: ListView(
-                    children: offerings.map((offering) {
-                      return ListTile(
-                        onTap: () {
-                          selectedOffering.value = offering;
-                          Navigator.pop(context);
-                        },
-                        title: _buildCurrencyTitle(
-                          context,
-                          offering,
-                          transactionType,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: Grid.xs),
+                      child: Text(
+                        'Select currency',
+                        style: Theme.of(context).textTheme.titleMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    Flexible(
+                      child: Scrollbar(
+                        thumbVisibility: true,
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: offeringsMap.entries
+                              .expand(
+                                (entry) => entry.value.map(
+                                  (offering) => ListTile(
+                                    onTap: () {
+                                      selectedPfi.value = entry.key;
+                                      selectedOffering.value = offering;
+                                      Navigator.pop(context);
+                                    },
+                                    title: _buildCurrencyTitle(
+                                      context,
+                                      offering,
+                                      transactionType,
+                                    ),
+                                    subtitle: _buildCurrencySubtitle(
+                                      context,
+                                      offering,
+                                      transactionType,
+                                    ),
+                                    trailing:
+                                        (selectedOffering.value == offering)
+                                            ? const Icon(Icons.check)
+                                            : null,
+                                  ),
+                                ),
+                              )
+                              .toList(),
                         ),
-                        subtitle: _buildCurrencySubtitle(
-                          context,
-                          offering,
-                          transactionType,
-                        ),
-                        trailing: (selectedOffering.value == offering)
-                            ? const Icon(Icons.check)
-                            : null,
-                      );
-                    }).toList(),
-                  ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              );
+            },
           ),
         ),
       );
@@ -64,9 +89,7 @@ class CurrencyModal {
     TransactionType transactionType,
   ) =>
       Text(
-        transactionType == TransactionType.deposit
-            ? offering.data.payin.currencyCode
-            : offering.data.payout.currencyCode,
+        '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
         style: Theme.of(context).textTheme.titleMedium,
       );
 

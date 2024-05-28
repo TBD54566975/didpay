@@ -1,4 +1,5 @@
 import 'package:didpay/features/payout/payout.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,6 +10,7 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   group('Payout', () {
     final amount = ValueNotifier<double>(2);
+    final pfi = ValueNotifier<Pfi?>(null);
     final offering = ValueNotifier<Offering?>(
       Offering.create(
         'pfiDid',
@@ -43,10 +45,11 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
+            selectedPfi: pfi,
             selectedOffering: offering,
             transactionType: TransactionType.deposit,
             payinAmount: 34,
-            offerings: const [],
+            offeringsMap: const {},
           ),
         ),
       );
@@ -59,10 +62,11 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
+            selectedPfi: pfi,
             selectedOffering: offering,
             transactionType: TransactionType.deposit,
-            payinAmount: 0,
-            offerings: const [],
+            payinAmount: 34,
+            offeringsMap: const {},
           ),
         ),
       );
@@ -75,10 +79,11 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
+            selectedPfi: pfi,
             selectedOffering: offering,
             transactionType: TransactionType.withdraw,
-            payinAmount: 0,
-            offerings: const [],
+            payinAmount: 34,
+            offeringsMap: const {},
           ),
         ),
       );
@@ -92,10 +97,11 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
+            selectedPfi: pfi,
             selectedOffering: offering,
             transactionType: TransactionType.withdraw,
-            payinAmount: 0,
-            offerings: const [],
+            payinAmount: 34,
+            offeringsMap: const {},
           ),
         ),
       );
@@ -109,10 +115,11 @@ void main() {
         WidgetHelpers.testableWidget(
           child: Payout(
             payoutAmount: amount,
+            selectedPfi: pfi,
             selectedOffering: offering,
             transactionType: TransactionType.deposit,
-            payinAmount: 0,
-            offerings: const [],
+            payinAmount: 34,
+            offeringsMap: const {},
           ),
         ),
       );

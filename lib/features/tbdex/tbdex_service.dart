@@ -8,46 +8,49 @@ import 'package:web5/web5.dart';
 final tbdexServiceProvider = Provider((_) => TbdexService());
 
 class TbdexService {
-  // TODO(ethan-tbd): return Map<Pfi, List<Offering>>
-  Future<List<Offering>> getOfferings(List<Pfi> pfis) async {
-    final offerings = <Offering>[];
+  Future<Map<Pfi, List<Offering>>> getOfferings(List<Pfi> pfis) async {
+    final offeringsMap = <Pfi, List<Offering>>{};
 
     for (final pfi in pfis) {
-      final response = await TbdexHttpClient.listOfferings(pfi.did);
-      if (response.statusCode.category == HttpStatus.success) {
-        offerings.addAll(response.data!);
+      try {
+        final response = await TbdexHttpClient.listOfferings(pfi.did);
+        if (response.statusCode.category == HttpStatus.success) {
+          offeringsMap[pfi] = response.data!;
+        }
+      } on Exception catch (_) {
+        rethrow;
       }
     }
 
-    if (offerings.isEmpty) {
+    if (offeringsMap.isEmpty) {
       throw Exception('no offerings found');
     }
 
-    return offerings;
+    return offeringsMap;
   }
 
   Future<Map<Pfi, List<String>>> getExchanges(
     BearerDid did,
     List<Pfi> pfis,
   ) async {
-    final exchangeMap = <Pfi, List<String>>{};
+    final exchangesMap = <Pfi, List<String>>{};
 
     for (final pfi in pfis) {
       try {
         final response = await TbdexHttpClient.listExchanges(did, pfi.did);
         if (response.statusCode.category == HttpStatus.success) {
-          exchangeMap[pfi] = response.data!;
+          exchangesMap[pfi] = response.data!;
         } else {
           throw Exception(
             'failed to fetch exchanges with status code ${response.statusCode}',
           );
         }
       } on Exception {
-        return exchangeMap;
+        return exchangesMap;
       }
     }
 
-    return exchangeMap;
+    return exchangesMap;
   }
 
   Future<List<Message>> getExchange(

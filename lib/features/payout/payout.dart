@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -12,15 +13,17 @@ class Payout extends HookWidget {
   final double payinAmount;
   final TransactionType transactionType;
   final ValueNotifier<double> payoutAmount;
+  final ValueNotifier<Pfi?> selectedPfi;
   final ValueNotifier<Offering?> selectedOffering;
-  final List<Offering> offerings;
+  final Map<Pfi, List<Offering>> offeringsMap;
 
   const Payout({
     required this.payinAmount,
     required this.transactionType,
     required this.payoutAmount,
+    required this.selectedPfi,
     required this.selectedOffering,
-    required this.offerings,
+    required this.offeringsMap,
     super.key,
   });
 
@@ -80,8 +83,9 @@ class Payout extends HookWidget {
       case TransactionType.withdraw:
         return CurrencyDropdown(
           transactionType: transactionType,
+          selectedPfi: selectedPfi,
           selectedOffering: selectedOffering,
-          offerings: offerings,
+          offeringsMap: offeringsMap,
         );
       case TransactionType.deposit:
       case TransactionType.send:

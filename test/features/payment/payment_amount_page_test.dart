@@ -22,7 +22,9 @@ void main() {
   const pfi = Pfi(did: 'did:web:x%3A8892:ingress');
 
   final jsonList = jsonDecode(jsonString) as List<dynamic>;
-  final offerings = [Offering.fromJson(jsonList[0])];
+  final offerings = {
+    pfi: [Offering.fromJson(jsonList[0])],
+  };
   late MockTbdexService mockTbdexService;
 
   group('PaymentAmountPage', () {

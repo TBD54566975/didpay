@@ -35,9 +35,10 @@ class PaymentAmountPage extends HookConsumerWidget {
     final payinAmount = useState('0');
     final payoutAmount = useState<double>(0);
     final keyPress = useState(PayinKeyPress(0, ''));
+    final selectedPfi = useState<Pfi?>(null);
     final selectedOffering = useState<Offering?>(null);
     final getOfferingsState =
-        useState<AsyncValue<List<Offering>>>(const AsyncLoading());
+        useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
 
     useEffect(
       () {
@@ -51,8 +52,9 @@ class PaymentAmountPage extends HookConsumerWidget {
       appBar: AppBar(),
       body: SafeArea(
         child: getOfferingsState.value.when(
-          data: (offerings) {
-            selectedOffering.value ??= offerings.first;
+          data: (offeringsMap) {
+            selectedPfi.value ??= offeringsMap.keys.first;
+            selectedOffering.value ??= offeringsMap[selectedPfi.value]!.first;
 
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -72,8 +74,9 @@ class PaymentAmountPage extends HookConsumerWidget {
                             transactionType: transactionType,
                             amount: payinAmount,
                             keyPress: keyPress,
+                            selectedPfi: selectedPfi,
                             selectedOffering: selectedOffering,
-                            offerings: offerings,
+                            offeringsMap: offeringsMap,
                           ),
                           const SizedBox(height: Grid.sm),
                           Payout(
@@ -81,8 +84,9 @@ class PaymentAmountPage extends HookConsumerWidget {
                                 double.tryParse(payinAmount.value) ?? 0.0,
                             transactionType: transactionType,
                             payoutAmount: payoutAmount,
+                            selectedPfi: selectedPfi,
                             selectedOffering: selectedOffering,
-                            offerings: offerings,
+                            offeringsMap: offeringsMap,
                           ),
                           const SizedBox(height: Grid.xl),
                           FeeDetails(
@@ -109,9 +113,8 @@ class PaymentAmountPage extends HookConsumerWidget {
                     currency:
                         selectedOffering.value?.data.payout.currencyCode ?? '',
                   ),
+                  selectedPfi.value,
                   selectedOffering.value,
-                  // TODO(ethan-tbd): get pfi from selectedOffering
-                  ref.read(pfisProvider)[0],
                 ),
               ],
             );
@@ -131,8 +134,8 @@ class PaymentAmountPage extends HookConsumerWidget {
     BuildContext context,
     String payinAmount,
     String payoutAmount,
+    Pfi? selectedPfi,
     Offering? selectedOffering,
-    Pfi pfi,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
@@ -151,7 +154,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                               selectedOffering?.data.payout.methods.firstOrNull,
                         ),
                         paymentState: PaymentState(
-                          pfi: pfi,
+                          pfi: selectedPfi ?? const Pfi(did: ''),
                           payoutAmount: payoutAmount,
                           payinCurrency:
                               selectedOffering?.data.payin.currencyCode ?? '',
@@ -175,13 +178,13 @@ class PaymentAmountPage extends HookConsumerWidget {
 
   void _getOfferings(
     WidgetRef ref,
-    ValueNotifier<AsyncValue<List<Offering>>> state,
+    ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) {
     state.value = const AsyncLoading();
     ref
         .read(tbdexServiceProvider)
         .getOfferings(ref.read(pfisProvider))
-        .then((offerings) => state.value = AsyncData(offerings))
+        .then((offeringsMap) => state.value = AsyncData(offeringsMap))
         .catchError((error, stackTrace) {
       state.value = AsyncError(error, stackTrace);
       throw error;

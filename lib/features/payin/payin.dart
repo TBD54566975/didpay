@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
@@ -14,15 +15,17 @@ class Payin extends HookWidget {
   final TransactionType transactionType;
   final ValueNotifier<String> amount;
   final ValueNotifier<PayinKeyPress> keyPress;
+  final ValueNotifier<Pfi?> selectedPfi;
   final ValueNotifier<Offering?> selectedOffering;
-  final List<Offering> offerings;
+  final Map<Pfi, List<Offering>> offeringsMap;
 
   const Payin({
     required this.transactionType,
     required this.amount,
     required this.keyPress,
+    required this.selectedPfi,
     required this.selectedOffering,
-    required this.offerings,
+    required this.offeringsMap,
     super.key,
   });
 
@@ -143,8 +146,9 @@ class Payin extends HookWidget {
       case TransactionType.deposit:
         return CurrencyDropdown(
           transactionType: transactionType,
+          selectedPfi: selectedPfi,
           selectedOffering: selectedOffering,
-          offerings: offerings,
+          offeringsMap: offeringsMap,
         );
       case TransactionType.withdraw:
       case TransactionType.send:

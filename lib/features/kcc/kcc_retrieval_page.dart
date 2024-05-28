@@ -20,7 +20,6 @@ class KccRetrievalPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print("HI I AM A RETRIEVER");
     final bearerDid = ref.watch(didProvider);
     final kccIssuanceService = ref.watch(kccIssuanceProvider);
     final credentialResponse =
