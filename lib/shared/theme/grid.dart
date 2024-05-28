@@ -14,4 +14,5 @@ class Grid {
 
   static const double side = 20;
   static const double radius = 25;
+  static const double tileHeight = 80;
 }
