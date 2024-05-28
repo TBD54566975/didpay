@@ -66,7 +66,7 @@ class PaymentMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final fee = double.tryParse(currentPaymentMethod.serviceFee ?? '0.00')
+        final fee = double.tryParse(currentPaymentMethod.paymentFee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00';
 
