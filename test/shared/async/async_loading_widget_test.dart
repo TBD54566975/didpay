@@ -1,11 +1,11 @@
-import 'package:didpay/shared/async_loading_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/widget_helpers.dart';
+import '../../helpers/widget_helpers.dart';
 
 void main() {
-  group('PendingPage', () {
+  group('AsyncLoadingWidget', () {
     testWidgets('should show request is pending', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
