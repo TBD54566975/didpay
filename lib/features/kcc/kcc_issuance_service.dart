@@ -217,7 +217,7 @@ class KccIssuanceService {
       );
     }
 
-    // TODO: check for tokenResponse.credential_identifiers before setting format
+    // TODO(mistermoe): check for tokenResponse.credential_identifiers before setting format
     final credentialRequest = CredentialRequest(
       format: 'jwt_vc_json',
       proof: ProofJwt(jwt: proofJwt),
@@ -295,7 +295,7 @@ class KccIssuanceService {
       );
     }
 
-    // TODO: Get Issuer metadata to get deferred credential endpoint
+    // TODO(mistermoe): Get Issuer metadata to get deferred credential endpoint
     final deferredCredentialEndpoint = Uri.parse(
       'https://example.com/deferred-credential-endpoint',
     );

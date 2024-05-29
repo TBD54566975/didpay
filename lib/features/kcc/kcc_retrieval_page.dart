@@ -35,7 +35,7 @@ class KccRetrievalPage extends HookConsumerWidget {
               bearerDid,
             );
 
-            // TODO: save credential to shared preferences
+            // TODO(mistermoe): save credential to shared preferences
             credentialResponse.value = AsyncData(value);
           } on Exception catch (e, stackTrace) {
             credentialResponse.value = AsyncError(e, stackTrace);

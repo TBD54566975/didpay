@@ -1,8 +1,5 @@
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/wallets/wallet.dart';
-import 'package:didpay/features/wallets/wallets_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class WalletSelectionPage extends HookConsumerWidget {
@@ -12,9 +9,9 @@ class WalletSelectionPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final wallets = ref.watch(walletsProvider);
-    final selectedWallet =
-        useState<Wallet?>(Wallet(name: 'DidPay', url: 'didpay://'));
+    // final wallets = ref.watch(walletsProvider);
+    // final selectedWallet =
+    //     useState<Wallet?>(Wallet(name: 'DidPay', url: 'didpay://'));
     return const Scaffold();
     //   return Scaffold(
     //     appBar: AppBar(),

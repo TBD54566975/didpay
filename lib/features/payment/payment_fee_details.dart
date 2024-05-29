@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tbdex/tbdex.dart';
 
-class FeeDetails extends HookWidget {
+class PaymentFeeDetails extends HookWidget {
   final TransactionType transactionType;
   final OfferingData? offering;
   final QuoteData? quote;
 
-  const FeeDetails({
+  const PaymentFeeDetails({
     required this.transactionType,
     this.offering,
     this.quote,
@@ -130,7 +130,7 @@ extension _PaymentDetailsOperations on Object? {
 
   String? get exchangeRate => this is QuoteData
       ? CurrencyUtil.formatFromDouble(
-          FeeDetails.calculateExchangeRate(this as QuoteData?),
+          PaymentFeeDetails.calculateExchangeRate(this as QuoteData?),
         )
       : this is OfferingData
           ? (this as OfferingData?)?.payoutUnitsPerPayinUnit

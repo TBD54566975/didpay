@@ -2,12 +2,12 @@ import 'dart:convert';
 
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -68,7 +68,7 @@ void main() {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(FeeDetails), findsOneWidget);
+      expect(find.byType(PaymentFeeDetails), findsOneWidget);
     });
 
     testWidgets('should show next button', (tester) async {

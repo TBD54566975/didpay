@@ -4,9 +4,9 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class SuccessState extends HookWidget {
+class AsyncDataWidget extends HookWidget {
   final String text;
-  const SuccessState({required this.text, super.key});
+  const AsyncDataWidget({required this.text, super.key});
 
   @override
   Widget build(BuildContext context) => Column(

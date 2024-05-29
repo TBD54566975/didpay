@@ -1,14 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async_error_widget.dart';
-import 'package:didpay/shared/async_loading_widget.dart';
-import 'package:didpay/shared/fee_details.dart';
-import 'package:didpay/shared/success_state.dart';
+import 'package:didpay/shared/async/async_data_widget.dart';
+import 'package:didpay/shared/async/async_error_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +45,8 @@ class PaymentReviewPage extends HookConsumerWidget {
       body: SafeArea(
         child: sendOrderState.value != null
             ? sendOrderState.value!.when(
-                data: (_) => SuccessState(text: Loc.of(context).orderConfirmed),
+                data: (_) =>
+                    AsyncDataWidget(text: Loc.of(context).orderConfirmed),
                 loading: () => AsyncLoadingWidget(
                   text: Loc.of(context).confirmingYourOrder,
                 ),
@@ -210,7 +211,7 @@ class PaymentReviewPage extends HookConsumerWidget {
 
   Widget _buildFeeDetails(BuildContext context, QuoteData quote) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
-        child: FeeDetails(
+        child: PaymentFeeDetails(
           transactionType: paymentState.transactionType,
           quote: quote,
         ),
@@ -255,7 +256,7 @@ class PaymentReviewPage extends HookConsumerWidget {
           sendOrderState,
         ),
         child: Text(
-          '${Loc.of(context).pay} ${FeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
+          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
         ),
       );
 

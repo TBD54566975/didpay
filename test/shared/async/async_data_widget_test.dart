@@ -1,15 +1,15 @@
-import 'package:didpay/shared/success_state.dart';
+import 'package:didpay/shared/async/async_data_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/widget_helpers.dart';
+import '../../helpers/widget_helpers.dart';
 
 void main() {
-  group('SuccessPage', () {
+  group('AsyncDataWidget', () {
     testWidgets('should show request was submitted', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const SuccessState(text: 'Your request was submitted!'),
+          child: const AsyncDataWidget(text: 'Your request was submitted!'),
         ),
       );
 
@@ -20,7 +20,7 @@ void main() {
     testWidgets('should show done button', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const SuccessState(
+          child: const AsyncDataWidget(
             text: '',
           ),
         ),

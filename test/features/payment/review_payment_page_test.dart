@@ -3,13 +3,13 @@ import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -82,7 +82,7 @@ void main() async {
       );
       await tester.pumpAndSettle();
 
-      expect(find.byType(FeeDetails), findsOneWidget);
+      expect(find.byType(PaymentFeeDetails), findsOneWidget);
       expect(find.text('0.5 MXN'), findsOneWidget);
     });
 
