@@ -26,7 +26,8 @@ class KccWebviewPage extends HookConsumerWidget {
     final idvRequest = useState<AsyncValue<IdvRequest>>(const AsyncLoading());
 
     final settings = InAppWebViewSettings(
-      isInspectable: kDebugMode, // TODO: only enable for debug builds
+      isInspectable:
+          kDebugMode, // TODO(mistermoe): only enable for debug builds
       mediaPlaybackRequiresUserGesture: false,
       allowsInlineMediaPlayback: true,
       iframeAllow: 'camera; microphone',
@@ -60,7 +61,7 @@ class KccWebviewPage extends HookConsumerWidget {
             return InAppWebView(
               initialSettings: settings,
               onWebViewCreated: (c) {
-                // TODO: this url needs to be fixed on our PFI side
+                // TODO(mistermoe): this url needs to be fixed on our PFI side
                 final fullPath = Uri.parse(data.url)
                     .replace(port: 5173, scheme: 'https')
                     .toString();
