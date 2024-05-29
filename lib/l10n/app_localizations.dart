@@ -112,7 +112,7 @@ abstract class Loc {
   /// No description provided for @interactWithPfis.
   ///
   /// In en, this message translates to:
-  /// **'Interact with PFIs (Participating Financial Institutions) and send money to others around the world'**
+  /// **'Interact with Financial Institutions and send money to others around the world'**
   String get interactWithPfis;
 
   /// No description provided for @whereAreYouLocated.
@@ -154,7 +154,7 @@ abstract class Loc {
   /// No description provided for @scanPfiQrCode.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t know the PFI\'s DID? Scan their QR code'**
+  /// **'Don\'t know the Financial Instutions\'s DID? Scan their QR code'**
   String get scanPfiQrCode;
 
   /// No description provided for @withdraw.
@@ -430,19 +430,19 @@ abstract class Loc {
   /// No description provided for @selectYourCountry.
   ///
   /// In en, this message translates to:
-  /// **'Select your country to see what PFIs are available to you'**
+  /// **'Select your country to see what transfer services are available to you'**
   String get selectYourCountry;
 
   /// No description provided for @getStartedWithAPfi.
   ///
   /// In en, this message translates to:
-  /// **'Get started with a PFI'**
+  /// **'Get started with a transfer service'**
   String get getStartedWithAPfi;
 
   /// No description provided for @selectAPfi.
   ///
   /// In en, this message translates to:
-  /// **'Select a PFI to verify your identity and provide you liquidity'**
+  /// **'Select a transfer service to verify your identity and provide you liquidity'**
   String get selectAPfi;
 
   /// No description provided for @termsOfService.
@@ -628,37 +628,37 @@ abstract class Loc {
   /// No description provided for @addAPfi.
   ///
   /// In en, this message translates to:
-  /// **'Add a PFI'**
+  /// **'Add a transfer service'**
   String get addAPfi;
 
   /// No description provided for @noPfisFound.
   ///
   /// In en, this message translates to:
-  /// **'No PFIs found'**
+  /// **'No transfer services found'**
   String get noPfisFound;
 
   /// No description provided for @startByAddingAPfi.
   ///
   /// In en, this message translates to:
-  /// **'Start by adding a PFI'**
+  /// **'Start by adding a transfer service'**
   String get startByAddingAPfi;
 
   /// No description provided for @pfiAdded.
   ///
   /// In en, this message translates to:
-  /// **'PFI added!'**
+  /// **'Transfer service added!'**
   String get pfiAdded;
 
   /// No description provided for @addingPfi.
   ///
   /// In en, this message translates to:
-  /// **'Adding PFI...'**
+  /// **'Adding transfer service...'**
   String get addingPfi;
 
   /// No description provided for @mustAddPfiBeforeSending.
   ///
   /// In en, this message translates to:
-  /// **'Must add a PFI before sending funds!'**
+  /// **'Must add a transfer service before sending funds!'**
   String get mustAddPfiBeforeSending;
 
   /// No description provided for @gettingYourQuote.
@@ -688,7 +688,7 @@ abstract class Loc {
   /// No description provided for @removePfi.
   ///
   /// In en, this message translates to:
-  /// **'Remove PFI'**
+  /// **'Remove tranfer service'**
   String get removePfi;
 
   /// No description provided for @cancel.
@@ -700,7 +700,7 @@ abstract class Loc {
   /// No description provided for @myPfis.
   ///
   /// In en, this message translates to:
-  /// **'My PFIs'**
+  /// **'My transfer services'**
   String get myPfis;
 
   /// No description provided for @noTransactionsFound.
