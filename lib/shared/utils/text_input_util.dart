@@ -2,19 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class TextInputUtil {
-  static const Map<String, String> _countryCodeToMask = {
-    '+1': '+1 (XXX) XXX-XXXX',
-    '+52': '+52 XX XXXX-XXXX',
-    '+233': '+233 2XX XXXXXX',
-    '+254': '+254 7XX XXXXXX',
-  };
-
   static MaskTextInputFormatter getMaskFormatter(String? pattern) {
     return MaskTextInputFormatter(
-      mask: _createMask(pattern),
-      filter: {
-        'X': RegExp('[0-9]'),
-      },
+      mask: _regexToMask(pattern),
+      filter: {'X': RegExp('[0-9]')},
     );
   }
 
@@ -28,22 +19,29 @@ class TextInputUtil {
     return text.contains(RegExp('[a-zA-Z]')) ? text : text.replaceAll(' ', '');
   }
 
-  static String? _createMask(String? pattern) {
-    if (pattern == null) return null;
+  static String? _regexToMask(String? regex) {
+    if (regex == null) return null;
 
-    final countryCode = _getCountryCode(pattern);
-    if (countryCode != null && _countryCodeToMask.containsKey(countryCode)) {
-      return _countryCodeToMask[countryCode];
+    final mask = StringBuffer();
+
+    for (var i = 0; i < regex.length; i++) {
+      if (RegExp(r'\d').hasMatch(regex[i])) {
+        mask.write(regex[i]);
+      } else if (regex[i] == '[') {
+        i = regex.indexOf(']', i);
+      } else if (regex[i] == '{') {
+        final numEnd = regex.indexOf('}', i);
+        final num = int.parse(regex.substring(i + 1, numEnd));
+        mask.write('X' * num);
+        i = numEnd;
+      }
     }
 
-    final match = RegExp(r'\[0-9]\{(\d+)\}').firstMatch(pattern);
-    return match != null
-        ? List.filled(int.parse(match.group(1) ?? '0'), 'X').join()
-        : null;
-  }
-
-  static String? _getCountryCode(String? pattern) {
-    if (pattern == null) return null;
-    return RegExp(r'\+(\d{1,3})').firstMatch(pattern)?.group(0);
+    final maskString = mask.toString();
+    return maskString.contains(RegExp(r'\d'))
+        ? '+$maskString'
+        : maskString.isNotEmpty
+            ? maskString
+            : null;
   }
 }
