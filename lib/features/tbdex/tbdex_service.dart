@@ -1,5 +1,6 @@
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/http_status.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
@@ -78,11 +79,19 @@ class TbdexService {
         payin: CreateSelectedPayinMethod(
           amount: paymentState.payinAmount ?? '',
           kind: paymentState.selectedPayinMethod?.kind ?? '',
+          paymentDetails:
+              paymentState.transactionType == TransactionType.deposit
+                  ? paymentState.formData ?? {}
+                  : null,
         ),
         payout: CreateSelectedPayoutMethod(
           kind: paymentState.selectedPayoutMethod?.kind ?? '',
+          paymentDetails:
+              paymentState.transactionType != TransactionType.deposit
+                  ? paymentState.formData ?? {}
+                  : null,
         ),
-        claims: [],
+        // TODO(ethan-tbd): add claims, https://github.com/TBD54566975/didpay/issues/174
       ),
     );
     await rfq.sign(did);

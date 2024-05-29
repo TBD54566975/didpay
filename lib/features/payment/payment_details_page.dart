@@ -64,7 +64,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
                   onRetry: () =>
-                      _sendRfq(context, ref, sendRfqState, paymentState),
+                      _sendRfq(context, ref, paymentState, sendRfqState),
                 ),
               )
             : Column(
@@ -89,14 +89,14 @@ class PaymentDetailsPage extends HookConsumerWidget {
                       selectedPayinMethod: paymentState.transactionType ==
                               TransactionType.deposit
                           ? selectedPaymentMethod.value as PayinMethod?
-                          : null,
+                          : paymentState.payinMethods?.firstOrNull,
                       selectedPayoutMethod: paymentState.transactionType ==
                               TransactionType.withdraw
                           ? selectedPaymentMethod.value as PayoutMethod?
-                          : null,
+                          : paymentState.payoutMethods?.firstOrNull,
                     ),
                     onPaymentFormSubmit: (paymentState) =>
-                        _sendRfq(context, ref, sendRfqState, paymentState),
+                        _sendRfq(context, ref, paymentState, sendRfqState),
                   ),
                 ],
               ),
@@ -283,8 +283,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
   void _sendRfq(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<AsyncValue<Rfq>?> state,
     PaymentState paymentState,
+    ValueNotifier<AsyncValue<Rfq>?> state,
   ) {
     state.value = const AsyncLoading();
     ref
