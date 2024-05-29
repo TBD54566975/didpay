@@ -3,9 +3,9 @@ import 'package:didpay/features/did_qr/did_qr.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async_error_widget.dart';
-import 'package:didpay/shared/async_loading_widget.dart';
-import 'package:didpay/shared/success_state.dart';
+import 'package:didpay/shared/async/async_data_widget.dart';
+import 'package:didpay/shared/async/async_error_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -42,7 +42,7 @@ class AddPfiPage extends HookConsumerWidget {
       body: SafeArea(
         child: addPfiState.value != null
             ? addPfiState.value!.when(
-                data: (pfi) => SuccessState(text: Loc.of(context).pfiAdded),
+                data: (pfi) => AsyncDataWidget(text: Loc.of(context).pfiAdded),
                 loading: () =>
                     AsyncLoadingWidget(text: Loc.of(context).addingPfi),
                 error: (error, _) => AsyncErrorWidget(

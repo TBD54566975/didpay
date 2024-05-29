@@ -1,6 +1,7 @@
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -8,9 +9,8 @@ import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async_error_widget.dart';
-import 'package:didpay/shared/async_loading_widget.dart';
-import 'package:didpay/shared/fee_details.dart';
+import 'package:didpay/shared/async/async_error_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/currency_util.dart';
@@ -88,7 +88,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                             offeringsMap: offeringsMap,
                           ),
                           const SizedBox(height: Grid.xl),
-                          FeeDetails(
+                          PaymentFeeDetails(
                             transactionType: transactionType,
                             offering: selectedOffering.value?.data,
                           ),

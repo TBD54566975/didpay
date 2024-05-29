@@ -1,7 +1,7 @@
 import 'dart:convert';
 
+import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-import 'package:didpay/shared/fee_details.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tbdex/tbdex.dart';
 
@@ -14,11 +14,11 @@ void main() {
   final json = jsonDecode(jsonString);
   final offering = Offering.fromJson(json);
 
-  group('FeeDetails', () {
+  group('PaymentFeeDetails', () {
     testWidgets('should show est rate label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: FeeDetails(
+          child: PaymentFeeDetails(
             transactionType: TransactionType.deposit,
             offering: offering.data,
           ),
@@ -31,7 +31,7 @@ void main() {
     testWidgets('should show deposit fee label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: FeeDetails(
+          child: PaymentFeeDetails(
             transactionType: TransactionType.deposit,
             offering: offering.data,
           ),
@@ -44,7 +44,7 @@ void main() {
     testWidgets('should show withdraw fee label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: FeeDetails(
+          child: PaymentFeeDetails(
             transactionType: TransactionType.withdraw,
             offering: offering.data,
           ),
@@ -57,7 +57,7 @@ void main() {
     testWidgets('should show send fee label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: FeeDetails(
+          child: PaymentFeeDetails(
             transactionType: TransactionType.send,
             offering: offering.data,
           ),
@@ -70,7 +70,7 @@ void main() {
     testWidgets('should show est rate', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: FeeDetails(
+          child: PaymentFeeDetails(
             transactionType: TransactionType.deposit,
             offering: offering.data,
           ),

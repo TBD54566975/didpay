@@ -1,6 +1,6 @@
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async_loading_widget.dart';
-import 'package:didpay/shared/success_state.dart';
+import 'package:didpay/shared/async/async_data_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
@@ -31,7 +31,7 @@ class SendConfirmationPage extends HookWidget {
       body: SafeArea(
         child: response.value == null
             ? AsyncLoadingWidget(text: Loc.of(context).sendingPayment)
-            : SuccessState(text: Loc.of(context).yourPaymentWasSent),
+            : AsyncDataWidget(text: Loc.of(context).yourPaymentWasSent),
       ),
     );
   }
