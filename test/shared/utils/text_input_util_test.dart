@@ -21,28 +21,28 @@ void main() {
       const pattern = r'^\+1[0-9]{10}$';
       final formatter = TextInputUtil.getMaskFormatter(pattern);
 
-      expect(formatter.getMask(), '+1 (XXX) XXX-XXXX');
+      expect(formatter.getMask(), '+1XXXXXXXXXX');
     });
 
     test('should give Mexico phone number mask', () {
       const pattern = r'^\+52[0-9]{10}$';
       final formatter = TextInputUtil.getMaskFormatter(pattern);
 
-      expect(formatter.getMask(), '+52 XX XXXX-XXXX');
+      expect(formatter.getMask(), '+52XXXXXXXXXX');
     });
 
     test('should give Ghana phone number mask', () {
       const pattern = r'^\+233[0-9]{9}$';
       final formatter = TextInputUtil.getMaskFormatter(pattern);
 
-      expect(formatter.getMask(), '+233 2XX XXXXXX');
+      expect(formatter.getMask(), '+233XXXXXXXXX');
     });
 
     test('should give Kenya phone number mask', () {
       const pattern = r'^\+2547[0-9]{8}$';
       final formatter = TextInputUtil.getMaskFormatter(pattern);
 
-      expect(formatter.getMask(), '+254 7XX XXXXXX');
+      expect(formatter.getMask(), '+2547XXXXXXXX');
     });
 
     test('should give 10 digit mask', () {
