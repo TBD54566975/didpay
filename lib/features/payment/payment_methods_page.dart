@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class PaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
 
-  final String paymentCurrency;
+  final String? paymentCurrency;
   final ValueNotifier<Object?> selectedPaymentMethod;
   final List<Object?>? paymentMethods;
 
@@ -66,7 +66,7 @@ class PaymentMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final fee = double.tryParse(currentPaymentMethod.serviceFee ?? '0.00')
+        final fee = double.tryParse(currentPaymentMethod.paymentFee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00';
 
@@ -77,7 +77,7 @@ class PaymentMethodsPage extends HookWidget {
             currentPaymentMethod?.paymentName ?? '',
           ),
           subtitle: Text(
-            Loc.of(context).serviceFeeAmount(fee, paymentCurrency),
+            Loc.of(context).serviceFeeAmount(fee, paymentCurrency ?? ''),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing: selectedPaymentMethod.value == currentPaymentMethod

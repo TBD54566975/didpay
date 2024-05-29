@@ -3,13 +3,13 @@ import 'package:tbdex/tbdex.dart';
 extension PaymentMethodOperations on Object? {
   bool get isDisabled => this == null;
 
-  String? get schema => this is PayinMethod
+  String? get paymentSchema => this is PayinMethod
       ? (this as PayinMethod?)?.requiredPaymentDetails?.toJson()
       : this is PayoutMethod
           ? (this as PayoutMethod?)?.requiredPaymentDetails?.toJson()
           : null;
 
-  String? get serviceFee => this is PayinMethod
+  String? get paymentFee => this is PayinMethod
       ? (this as PayinMethod?)?.fee
       : this is PayoutMethod
           ? (this as PayoutMethod?)?.fee

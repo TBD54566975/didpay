@@ -5,7 +5,6 @@ import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
-import 'package:didpay/features/tbdex/rfq_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -19,11 +18,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
-  final RfqState rfqState;
   final PaymentState paymentState;
 
   const PaymentDetailsPage({
-    required this.rfqState,
     required this.paymentState,
     super.key,
   });
@@ -31,29 +28,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPaymentMethod = useState<Object?>(null);
-    // final selectedPayinMethod = useState<PayinMethod?>(null);
-    // final selectedPayoutMethod = useState<PayoutMethod?>(null);
-
     final selectedPaymentType = useState<String?>(null);
     final sendRfqState = useState<AsyncValue<Rfq>?>(null);
 
-    final paymentMethods =
-        paymentState.transactionType == TransactionType.deposit
-            ? paymentState.payinMethods
-            : paymentState.payoutMethods;
-
-    final paymentTypes = paymentMethods
-        ?.map((method) => method.paymentGroup)
-        .whereType<String>()
-        .toSet();
-
-    final filteredPaymentMethods = paymentMethods
-        ?.where(
-          (method) =>
-              method.paymentGroup?.contains(selectedPaymentType.value ?? '') ??
-              true,
-        )
-        .toList();
+    final paymentMethods = _getPaymentMethods(paymentState);
+    final paymentTypes = _getPaymentTypes(paymentMethods);
+    final filteredPaymentMethods =
+        _getFilteredPaymentMethods(paymentMethods, selectedPaymentType.value);
 
     useEffect(
       () {
@@ -65,13 +46,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
       [selectedPaymentType.value],
     );
 
-    final shouldShowPaymentTypeSelector = (paymentTypes?.length ?? 0) > 1;
+    final shouldShowPaymentTypeSelector = (paymentTypes.length) > 1;
     final shouldShowPaymentMethodSelector =
         !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
-
-    final headerTitle = paymentState.transactionType == TransactionType.send
-        ? Loc.of(context).enterTheirPaymentDetails
-        : Loc.of(context).enterYourPaymentDetails;
 
     return Scaffold(
       appBar: AppBar(),
@@ -87,13 +64,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
                   onRetry: () =>
-                      _sendRfq(context, ref, sendRfqState, paymentState),
+                      _sendRfq(context, ref, paymentState, sendRfqState),
                 ),
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(context, headerTitle),
+                  _buildHeader(context),
                   if (shouldShowPaymentTypeSelector)
                     _buildPaymentTypeSelector(
                       context,
@@ -108,19 +85,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     ),
                   _buildPaymentForm(
                     context,
-                    rfqState.copyWith(
-                      payinMethod: paymentState.transactionType ==
+                    paymentState.copyWith(
+                      selectedPayinMethod: paymentState.transactionType ==
                               TransactionType.deposit
                           ? selectedPaymentMethod.value as PayinMethod?
-                          : null,
-                      payoutMethod: paymentState.transactionType ==
+                          : paymentState.payinMethods?.firstOrNull,
+                      selectedPayoutMethod: paymentState.transactionType ==
                               TransactionType.withdraw
                           ? selectedPaymentMethod.value as PayoutMethod?
-                          : null,
+                          : paymentState.payoutMethods?.firstOrNull,
                     ),
-                    paymentState,
                     onPaymentFormSubmit: (paymentState) =>
-                        _sendRfq(context, ref, sendRfqState, paymentState),
+                        _sendRfq(context, ref, paymentState, sendRfqState),
                   ),
                 ],
               ),
@@ -128,7 +104,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, String title) => Padding(
+  Widget _buildHeader(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: Grid.side,
           vertical: Grid.xs,
@@ -138,7 +114,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
             Align(
               alignment: Alignment.topLeft,
               child: Text(
-                title,
+                paymentState.transactionType == TransactionType.send
+                    ? Loc.of(context).enterTheirPaymentDetails
+                    : Loc.of(context).enterYourPaymentDetails,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -158,18 +136,17 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildPaymentForm(
     BuildContext context,
-    RfqState rfqState,
     PaymentState paymentState, {
     required void Function(PaymentState) onPaymentFormSubmit,
   }) {
     final paymentMethod =
         paymentState.transactionType == TransactionType.deposit
-            ? rfqState.payinMethod
-            : rfqState.payoutMethod;
+            ? paymentState.selectedPayinMethod
+            : paymentState.selectedPayoutMethod;
 
     final isDisabled = paymentMethod.isDisabled;
-    final schema = paymentMethod.schema;
-    final fee = paymentMethod.serviceFee;
+    final schema = paymentMethod.paymentSchema;
+    final fee = paymentMethod.paymentFee;
     final paymentName = paymentMethod.paymentName;
 
     return Expanded(
@@ -193,7 +170,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget _buildPaymentTypeSelector(
     BuildContext context,
     ValueNotifier<String?> selectedPaymentType,
-    Set<String?>? paymentTypes,
+    Set<String> paymentTypes,
   ) =>
       Column(
         children: [
@@ -212,9 +189,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => PaymentTypesPage(
-                    selectedPaymentType: selectedPaymentType,
-                    paymentTypes: paymentTypes,
                     payinCurrency: paymentState.payinCurrency,
+                    paymentTypes: paymentTypes,
+                    selectedPaymentType: selectedPaymentType,
                   ),
                 ),
               );
@@ -230,7 +207,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
   ) {
     final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) <= 1;
     final fee = double.tryParse(
-          selectedPaymentMethod.value.serviceFee ?? '0.00',
+          selectedPaymentMethod.value?.paymentFee ?? '0.00',
         )?.toStringAsFixed(2) ??
         '0.00';
 
@@ -253,7 +230,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             selectedPaymentMethod.value.paymentName == null
                 ? Loc.of(context).serviceFeesMayApply
                 : Loc.of(context)
-                    .serviceFeeAmount(fee, paymentState.payinCurrency),
+                    .serviceFeeAmount(fee, paymentState.payinCurrency ?? ''),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing:
@@ -279,24 +256,48 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
+  List<Object?>? _getPaymentMethods(PaymentState paymentState) =>
+      paymentState.transactionType == TransactionType.deposit
+          ? paymentState.payinMethods
+          : paymentState.payoutMethods;
+
+  Set<String> _getPaymentTypes(List<Object?>? paymentMethods) =>
+      paymentMethods
+          ?.map((method) => method.paymentGroup)
+          .whereType<String>()
+          .toSet() ??
+      {};
+
+  List<Object?>? _getFilteredPaymentMethods(
+    List<Object?>? paymentMethods,
+    String? selectedPaymentType,
+  ) =>
+      paymentMethods
+          ?.where(
+            (method) =>
+                method.paymentGroup?.contains(selectedPaymentType ?? '') ??
+                true,
+          )
+          .toList();
+
   void _sendRfq(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<AsyncValue<Rfq>?> state,
     PaymentState paymentState,
+    ValueNotifier<AsyncValue<Rfq>?> state,
   ) {
     state.value = const AsyncLoading();
     ref
         .read(tbdexServiceProvider)
-        .sendRfq(ref.read(didProvider), paymentState.pfi, rfqState)
+        .sendRfq(ref.read(didProvider), paymentState)
         .then((rfq) async {
       state.value = AsyncData(rfq);
       await Navigator.of(context)
           .push(
             MaterialPageRoute(
               builder: (context) => PaymentReviewPage(
-                exchangeId: rfq.metadata.id,
-                paymentState: paymentState,
+                paymentState:
+                    paymentState.copyWith(exchangeId: rfq.metadata.id),
               ),
             ),
           )

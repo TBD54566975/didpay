@@ -31,7 +31,9 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
   @override
   FutureOr<Quote?> build() => null;
 
-  void startPolling(String exchangeId, Pfi pfi) {
+  void startPolling(String? exchangeId, Pfi? pfi) {
+    if (pfi == null || exchangeId == null) return;
+
     _timer?.cancel();
     _pollingStart ??= DateTime.now();
 
@@ -47,9 +49,11 @@ class QuoteAsyncNotifier extends AutoDisposeAsyncNotifier<Quote?> {
 
     _timer = Timer.periodic(_currentInterval, (_) async {
       try {
-        final exchange = await ref
-            .read(tbdexServiceProvider)
-            .getExchange(ref.read(didProvider), pfi, exchangeId);
+        final exchange = await ref.read(tbdexServiceProvider).getExchange(
+              ref.read(didProvider),
+              pfi,
+              exchangeId,
+            );
 
         if (_containsQuote(exchange)) {
           state = AsyncValue.data(_getQuote(exchange));

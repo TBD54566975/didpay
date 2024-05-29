@@ -32,13 +32,13 @@ void main() async {
   Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
       WidgetHelpers.testableWidget(
         child: const PaymentReviewPage(
-          exchangeId: '',
           paymentState: PaymentState(
-            pfi: Pfi(did: ''),
+            selectedPfi: Pfi(did: ''),
             payoutAmount: '17.00',
             payinCurrency: 'USD',
             payoutCurrency: 'MXN',
             exchangeRate: '17',
+            exchangeId: '',
             transactionType: TransactionType.deposit,
             paymentName: 'ABC Bank',
             formData: {'accountNumber': '1234567890'},
@@ -123,5 +123,5 @@ class _MockQuoteNotifier extends QuoteAsyncNotifier {
   }
 
   @override
-  void startPolling(String exchangeId, Pfi pfi) {}
+  void startPolling(String? exchangeId, Pfi? pfi) {}
 }
