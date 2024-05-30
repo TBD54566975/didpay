@@ -18,6 +18,7 @@ class PaymentState {
   final PayoutMethod? selectedPayoutMethod;
   final List<PayinMethod>? payinMethods;
   final List<PayoutMethod>? payoutMethods;
+  final List<String>? claims;
   final Map<String, String>? formData;
 
   const PaymentState({
@@ -36,6 +37,7 @@ class PaymentState {
     this.selectedPayoutMethod,
     this.payinMethods,
     this.payoutMethods,
+    this.claims,
     this.formData,
   });
 
@@ -55,6 +57,7 @@ class PaymentState {
     PayoutMethod? selectedPayoutMethod,
     List<PayinMethod>? payinMethods,
     List<PayoutMethod>? payoutMethods,
+    List<String>? claims,
     Map<String, String>? formData,
   }) {
     return PaymentState(
@@ -73,6 +76,7 @@ class PaymentState {
       selectedPayoutMethod: selectedPayoutMethod ?? this.selectedPayoutMethod,
       payinMethods: payinMethods ?? this.payinMethods,
       payoutMethods: payoutMethods ?? this.payoutMethods,
+      claims: claims ?? this.claims,
       formData: formData ?? this.formData,
     );
   }
