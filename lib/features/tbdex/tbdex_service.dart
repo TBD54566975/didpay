@@ -70,7 +70,10 @@ class TbdexService {
     );
   }
 
-  Future<Rfq> sendRfq(BearerDid did, PaymentState paymentState) async {
+  Future<Rfq> sendRfq(
+    BearerDid did,
+    PaymentState paymentState,
+  ) async {
     final rfq = Rfq.create(
       paymentState.selectedPfi?.did ?? '',
       did.uri,
@@ -91,7 +94,7 @@ class TbdexService {
                   ? paymentState.formData ?? {}
                   : null,
         ),
-        // TODO(ethan-tbd): add claims, https://github.com/TBD54566975/didpay/issues/174
+        claims: paymentState.claims,
       ),
     );
     await rfq.sign(did);
