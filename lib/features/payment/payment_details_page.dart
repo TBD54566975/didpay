@@ -106,18 +106,22 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     ),
                     onPaymentFormSubmit: (paymentState) async {
                       await _getVc(
-                          context, ref, paymentState, offeringCredentials);
-                      if (offeringCredentials.value != null &&
-                          offeringCredentials.value!.isNotEmpty) {
-                        _sendRfq(
-                          // ignore: use_build_context_synchronously
-                          context,
-                          ref,
-                          paymentState,
-                          sendRfqState,
-                          claims: offeringCredentials.value,
-                        );
-                      }
+                        context,
+                        ref,
+                        paymentState,
+                        offeringCredentials,
+                      ).then((value) {
+                        if (offeringCredentials.value != null &&
+                            offeringCredentials.value!.isNotEmpty) {
+                          _sendRfq(
+                            context,
+                            ref,
+                            paymentState,
+                            sendRfqState,
+                            claims: offeringCredentials.value,
+                          );
+                        }
+                      });
                     },
                   ),
                 ],
