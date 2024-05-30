@@ -23,22 +23,23 @@ dependencies:
       url: https://github.com/TBD54566975/tbdex-dart.git
       ref: main
 
+  auto_size_text: ^3.0.0
   collection: ^1.18.0
+  device_info_plus: ^9.1.2
   flutter_hooks: ^0.20.3
+  flutter_inappwebview: ^6.0.0
   flutter_secure_storage: ^9.0.0
   hooks_riverpod: ^2.4.9
   http: ^1.1.2
   intl: ^0.18.1
-  webview_flutter: ^4.4.2
-  shared_preferences: ^2.2.2
+  logger: ^2.3.0
+  mask_text_input_formatter: ^2.9.0
   mobile_scanner: ^4.0.0
   qr_flutter: ^4.1.0
-  device_info_plus: ^9.1.2
-  auto_size_text: ^3.0.0
-  url_launcher: ^6.2.5
-  mask_text_input_formatter: ^2.9.0
-  flutter_inappwebview: ^6.0.0
   retry: ^3.1.2
+  shared_preferences: ^2.2.2
+  url_launcher: ^6.2.5
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   flutter_test:
