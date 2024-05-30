@@ -86,8 +86,10 @@ class KccRetrievalPage extends HookConsumerWidget {
                 padding: const EdgeInsets.symmetric(horizontal: Grid.side),
                 child: FilledButton(
                   onPressed: () {
-                    Navigator.of(context, rootNavigator: true)
-                        .pop(credentialResponse.value.asData?.value);
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context, rootNavigator: true)
+                          .pop(credentialResponse.value.asData?.value);
+                    }
                   },
                   child: Text(Loc.of(context).next),
                 ),
