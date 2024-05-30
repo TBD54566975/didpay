@@ -1,25 +1,24 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:didpay/features/countries/countries.dart';
-import 'package:didpay/features/storage/storage_service.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final countriesProvider =
     StateNotifierProvider<CountriesNotifier, List<Country>>(
-  (ref) {
-    final prefs = ref.watch(sharedPreferencesProvider);
-    const mx = Country(code: 'MX', name: 'Mexico');
-    return CountriesNotifier(prefs, [mx]);
-  },
+  (ref) => throw UnimplementedError(),
 );
 
 class CountriesNotifier extends StateNotifier<List<Country>> {
-  static const String prefsKey = 'countries';
-  final SharedPreferences prefs;
+  static const String storageKey = 'countries';
+  final Box box;
 
-  CountriesNotifier(this.prefs, super.state);
+  CountriesNotifier._(this.box, List<Country> state) : super(state);
+
+  static Future<CountriesNotifier> create(Box box) async {
+    final countries = await box.get(storageKey);
+    return CountriesNotifier._(box, countries ?? []);
+  }
 
   Future<Country> add(String code, String name) async {
     final country = Country(code: code, name: name);
@@ -35,25 +34,6 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   }
 
   Future<void> _save() async {
-    final toSave = state.map((e) => e.code).toList();
-    await prefs.setStringList('countries', toSave);
-  }
-
-  Future<List<Country>> loadSavedCountryCodes() async {
-    final saved = prefs.getStringList(prefsKey);
-
-    if (saved == null) {
-      return [];
-    }
-    final countries = <Country>[];
-    for (final country in saved) {
-      try {
-        countries.add(Country.fromJson(jsonDecode(country)));
-      } on Exception catch (e) {
-        throw Exception('Failed to load saved country: $e');
-      }
-    }
-
-    return countries;
+    await box.put(storageKey, state);
   }
 }

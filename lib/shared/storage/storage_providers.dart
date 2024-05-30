@@ -7,6 +7,3 @@ final secureStorageProvider =
 
 final sharedPreferencesProvider =
     Provider<SharedPreferences>((ref) => throw UnimplementedError());
-
-// TODO(ethan-tbd): implement this, https://github.com/TBD54566975/didpay/issues/137
-class StorageService {}
