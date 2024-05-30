@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_method_operations.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
@@ -7,10 +8,12 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/json_schema_form.dart';
+import 'package:didpay/shared/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -29,6 +32,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedPaymentMethod = useState<Object?>(null);
     final selectedPaymentType = useState<String?>(null);
+    final offeringCredentials = useState<List<String>?>(null);
     final sendRfqState = useState<AsyncValue<Rfq>?>(null);
 
     final paymentMethods = _getPaymentMethods(paymentState);
@@ -63,8 +67,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 ),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
-                  onRetry: () =>
-                      _sendRfq(context, ref, paymentState, sendRfqState),
+                  onRetry: () => _sendRfq(
+                    context,
+                    ref,
+                    paymentState,
+                    sendRfqState,
+                    claims: offeringCredentials.value,
+                  ),
                 ),
               )
             : Column(
@@ -95,8 +104,21 @@ class PaymentDetailsPage extends HookConsumerWidget {
                           ? selectedPaymentMethod.value as PayoutMethod?
                           : paymentState.payoutMethods?.firstOrNull,
                     ),
-                    onPaymentFormSubmit: (paymentState) =>
-                        _sendRfq(context, ref, paymentState, sendRfqState),
+                    onPaymentFormSubmit: (paymentState) async {
+                      await _getVc(
+                          context, ref, paymentState, offeringCredentials);
+                      if (offeringCredentials.value != null &&
+                          offeringCredentials.value!.isNotEmpty) {
+                        _sendRfq(
+                          // ignore: use_build_context_synchronously
+                          context,
+                          ref,
+                          paymentState,
+                          sendRfqState,
+                          claims: offeringCredentials.value,
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
@@ -284,20 +306,26 @@ class PaymentDetailsPage extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
-    ValueNotifier<AsyncValue<Rfq>?> state,
-  ) {
+    ValueNotifier<AsyncValue<Rfq>?> state, {
+    List<String>? claims,
+  }) {
     state.value = const AsyncLoading();
     ref
         .read(tbdexServiceProvider)
-        .sendRfq(ref.read(didProvider), paymentState)
+        .sendRfq(
+          ref.read(didProvider),
+          paymentState.copyWith(claims: claims),
+        )
         .then((rfq) async {
       state.value = AsyncData(rfq);
       await Navigator.of(context)
           .push(
             MaterialPageRoute(
               builder: (context) => PaymentReviewPage(
-                paymentState:
-                    paymentState.copyWith(exchangeId: rfq.metadata.id),
+                paymentState: paymentState.copyWith(
+                  exchangeId: rfq.metadata.id,
+                  claims: claims,
+                ),
               ),
             ),
           )
@@ -306,5 +334,37 @@ class PaymentDetailsPage extends HookConsumerWidget {
       state.value = AsyncError(error.toString(), stackTrace);
       throw error;
     });
+  }
+
+  Future<void> _getVc(
+    BuildContext context,
+    WidgetRef ref,
+    PaymentState paymentState,
+    ValueNotifier<List<String>?> offeringCredentials,
+  ) async {
+    final presentationDefinition =
+        paymentState.selectedOffering?.data.requiredClaims;
+    final credentials =
+        presentationDefinition?.selectCredentials(ref.read(vcsProvider));
+
+    if (credentials != null && credentials.isNotEmpty) {
+      offeringCredentials.value = credentials;
+    } else if (presentationDefinition != null) {
+      final issuedCredential = await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => ModalFlow(
+            initialWidget: KccConsentPage(
+              pfi: paymentState.selectedPfi!,
+            ),
+          ),
+        ),
+      );
+
+      issuedCredential == null
+          ? offeringCredentials.value = null
+          : offeringCredentials.value = [issuedCredential as String];
+    } else {
+      offeringCredentials.value = null;
+    }
   }
 }
