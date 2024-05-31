@@ -1,6 +1,6 @@
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/kcc/kcc_issuance_service.dart';
-import 'package:didpay/features/kcc/lib.dart';
+import 'package:didpay/features/kcc/lib/idv_request.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -55,7 +55,8 @@ class KccRetrievalPage extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: credentialResponse.value.when(
-          loading: () => const AsyncLoadingWidget(text: 'Loading...'),
+          loading: () =>
+              AsyncLoadingWidget(text: Loc.of(context).verifyingYourIdentity),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
             onRetry: () => Navigator.of(context).pop(),
@@ -70,7 +71,7 @@ class KccRetrievalPage extends HookConsumerWidget {
                   children: [
                     const SizedBox(height: Grid.xl),
                     Text(
-                      'Your VC has been created',
+                      Loc.of(context).identityVerificationComplete,
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                     const SizedBox(height: Grid.xs),
@@ -85,12 +86,8 @@ class KccRetrievalPage extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Grid.side),
                 child: FilledButton(
-                  onPressed: () {
-                    if (Navigator.canPop(context)) {
-                      Navigator.of(context, rootNavigator: true)
-                          .pop(credentialResponse.value.asData?.value);
-                    }
-                  },
+                  onPressed: () => Navigator.of(context, rootNavigator: true)
+                      .pop(credentialResponse.value.asData?.value),
                   child: Text(Loc.of(context).next),
                 ),
               ),
