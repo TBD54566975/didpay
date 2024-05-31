@@ -4,6 +4,7 @@ import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -66,21 +67,12 @@ class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
 }
 
 @immutable
-class TransactionProviderParameters {
+class TransactionProviderParameters extends Equatable {
   final Pfi pfi;
   final String exchangeId;
 
   const TransactionProviderParameters(this.pfi, this.exchangeId);
 
   @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is TransactionProviderParameters &&
-        other.pfi == pfi &&
-        other.exchangeId == exchangeId;
-  }
-
-  @override
-  int get hashCode => pfi.hashCode ^ exchangeId.hashCode;
+  List<Object?> get props => [pfi, exchangeId];
 }

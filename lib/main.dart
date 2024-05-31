@@ -2,10 +2,14 @@ import 'dart:convert';
 
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/app/app.dart';
-import 'package:didpay/features/storage/storage_service.dart';
+import 'package:didpay/features/countries/countries_notifier.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
+import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/shared/constants.dart';
+import 'package:didpay/shared/storage/storage_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:web5/web5.dart';
@@ -14,21 +18,25 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final sharedPreferences = await SharedPreferences.getInstance();
-
-  var storage = const FlutterSecureStorage(
+  var secureStorage = const FlutterSecureStorage(
     iOptions: IOSOptions(accessibility: KeychainAccessibility.first_unlock),
     aOptions: AndroidOptions(encryptedSharedPreferences: true),
   );
 
-  final did = await getOrCreateDid(storage);
+  await Hive.initFlutter();
+
+  final did = await getOrCreateDid(secureStorage);
   // final vc = await storage.read(key: Constants.verifiableCredentialKey);
+
+  final overrides = await notifierOverrides();
 
   runApp(
     ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-        secureStorageProvider.overrideWithValue(storage),
+        secureStorageProvider.overrideWithValue(secureStorage),
         didProvider.overrideWithValue(did),
+        ...overrides,
       ],
       child: const App(),
     ),
@@ -53,4 +61,17 @@ Future<BearerDid> getOrCreateDid(FlutterSecureStorage storage) async {
     value: portableDidJson,
   );
   return did;
+}
+
+Future<List<Override>> notifierOverrides() async {
+  final pfisBox = await Hive.openBox(PfisNotifier.storageKey);
+  final pfisNofitier = await PfisNotifier.create(pfisBox, PfisService());
+
+  final countriesBox = await Hive.openBox(CountriesNotifier.storageKey);
+  final countriesNotifier = await CountriesNotifier.create(countriesBox);
+
+  return [
+    pfisProvider.overrideWith((ref) => pfisNofitier),
+    countriesProvider.overrideWith((ref) => countriesNotifier),
+  ];
 }
