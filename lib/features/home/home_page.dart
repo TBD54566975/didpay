@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
@@ -9,7 +10,6 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,7 +25,7 @@ class HomePage extends HookConsumerWidget {
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
 
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
-    final accountBalance = CurrencyUtil.formatFromDouble(0);
+    final accountBalance = Decimal.parse('0');
 
     useEffect(
       () {
@@ -63,7 +63,7 @@ class HomePage extends HookConsumerWidget {
 
   Widget _buildAccountBalance(
     BuildContext context,
-    String accountBalance,
+    Decimal accountBalance,
     List<Pfi> pfis,
   ) =>
       Padding(
@@ -95,7 +95,7 @@ class HomePage extends HookConsumerWidget {
                   children: [
                     Flexible(
                       child: AutoSizeText(
-                        accountBalance,
+                        accountBalance.toString(),
                         style:
                             Theme.of(context).textTheme.displayMedium?.copyWith(
                                   fontWeight: FontWeight.bold,

@@ -1,10 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tbdex/tbdex.dart';
@@ -29,12 +30,9 @@ class Payout extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formattedAmount = transactionType == TransactionType.withdraw
-        ? CurrencyUtil.formatFromDouble(
-            payoutAmount.value,
-            currency: selectedOffering.value?.data.payout.currencyCode,
-          )
-        : CurrencyUtil.formatFromDouble(payoutAmount.value);
+    final currencyCode = selectedOffering.value?.data.payout.currencyCode ?? '';
+    final formattedAmount = Decimal.parse(payoutAmount.value.toString())
+        .formatCurrency(currencyCode);
 
     useEffect(
       () {

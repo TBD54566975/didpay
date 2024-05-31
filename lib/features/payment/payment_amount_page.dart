@@ -1,3 +1,4 @@
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
@@ -11,9 +12,9 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -107,10 +108,8 @@ class PaymentAmountPage extends HookConsumerWidget {
                 _buildNextButton(
                   context,
                   payinAmount.value,
-                  CurrencyUtil.formatFromDouble(
-                    payoutAmount.value,
-                    currency:
-                        selectedOffering.value?.data.payout.currencyCode ?? '',
+                  Decimal.parse(payoutAmount.value.toString()).formatCurrency(
+                    selectedOffering.value?.data.payout.currencyCode ?? '',
                   ),
                   selectedPfi.value,
                   selectedOffering.value,
