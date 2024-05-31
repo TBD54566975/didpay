@@ -43,6 +43,7 @@ dependencies:
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.5
   webview_flutter: ^4.4.2
+  decimal: ^2.3.3
 
 dev_dependencies:
   flutter_test:
