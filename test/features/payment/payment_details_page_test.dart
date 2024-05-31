@@ -19,8 +19,13 @@ import '../../helpers/widget_helpers.dart';
 
 void main() async {
   final did = await DidDht.create();
+  late MockPfisNotifier mockPfisNotifier;
 
   group('PaymentDetailsPage', () {
+    setUp(() {
+      mockPfisNotifier = MockPfisNotifier([]);
+    });
+
     final schema = JsonSchema.create(
       jsonDecode(r'''
         {
@@ -75,7 +80,7 @@ void main() async {
           ),
           overrides: [
             didProvider.overrideWithValue(did),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         );
 

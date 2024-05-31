@@ -160,11 +160,14 @@ class AddPfiPage extends HookConsumerWidget {
                   onTap: () => errorText.value = null,
                   onTapOutside: (_) async {
                     if (pfiDidController.text.isNotEmpty) {
-                      errorText.value =
-                          !(await DidResolver.resolve(pfiDidController.text))
-                                  .hasError()
-                              ? null
-                              : errorMessage;
+                      try {
+                        final result =
+                            await DidResolver.resolve(pfiDidController.text);
+                        errorText.value =
+                            result.hasError() ? errorMessage : null;
+                      } on Exception catch (_) {
+                        errorText.value = errorMessage;
+                      }
                     }
                     focusNode.unfocus();
                   },

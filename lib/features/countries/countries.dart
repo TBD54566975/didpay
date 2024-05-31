@@ -1,7 +1,8 @@
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
-class Country {
+class Country extends Equatable {
   final String name;
   final String code;
 
@@ -68,4 +69,7 @@ class Country {
       code: json['code'],
     );
   }
+
+  @override
+  List<Object?> get props => [name, code];
 }

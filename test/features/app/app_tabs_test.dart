@@ -19,9 +19,11 @@ void main() async {
   const pfi = Pfi(did: 'did:web:x%3A8892:ingress');
 
   late MockTbdexService mockTbdexService;
+  late MockPfisNotifier mockPfisNotifier;
 
   setUp(() {
     mockTbdexService = MockTbdexService();
+    mockPfisNotifier = MockPfisNotifier([pfi]);
 
     when(
       () => mockTbdexService.getExchanges(did, [pfi]),
@@ -37,7 +39,7 @@ void main() async {
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -54,7 +56,7 @@ void main() async {
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -72,7 +74,7 @@ void main() async {
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );

@@ -112,7 +112,7 @@ class AccountPage extends HookWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => const AccountVCPage(),
+              builder: (context) => const AccountVcPage(),
             ),
           );
         },

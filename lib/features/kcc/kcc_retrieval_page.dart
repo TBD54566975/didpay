@@ -2,7 +2,10 @@ import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/kcc/kcc_issuance_service.dart';
 import 'package:didpay/features/kcc/lib.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/async/async_error_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -23,26 +26,28 @@ class KccRetrievalPage extends HookConsumerWidget {
     final bearerDid = ref.watch(didProvider);
     final kccIssuanceService = ref.watch(kccIssuanceProvider);
     final credentialResponse =
-        useState<AsyncValue<CredentialResponse>>(const AsyncLoading());
+        useState<AsyncValue<String>>(const AsyncLoading());
 
     useEffect(
       () {
         Future.microtask(() async {
           try {
-            final value = await kccIssuanceService.pollForCredential(
+            final response = await kccIssuanceService.pollForCredential(
               pfi,
               idvRequest,
               bearerDid,
             );
 
-            // TODO(mistermoe): save credential to shared preferences
-            credentialResponse.value = AsyncData(value);
+            await ref.read(vcsProvider.notifier).add(response).then(
+                  (credential) =>
+                      credentialResponse.value = AsyncData(credential),
+                );
           } on Exception catch (e, stackTrace) {
             credentialResponse.value = AsyncError(e, stackTrace);
           }
         });
 
-        return;
+        return null;
       },
       [],
     );
@@ -50,43 +55,47 @@ class KccRetrievalPage extends HookConsumerWidget {
     return Scaffold(
       body: SafeArea(
         child: credentialResponse.value.when(
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Center(child: Text('Error - $error')),
-          data: (data) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const SizedBox(height: Grid.xl),
-                      Text(
-                        'Your KCC has been issued and stored on your device!',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: Grid.xs),
-                      Icon(
-                        Icons.check_circle,
-                        size: Grid.xl,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                    ],
-                  ),
+          loading: () => const AsyncLoadingWidget(text: 'Loading...'),
+          error: (error, stackTrace) => AsyncErrorWidget(
+            text: error.toString(),
+            onRetry: () => Navigator.of(context).pop(),
+          ),
+          data: (data) => Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: Grid.xl),
+                    Text(
+                      'Your VC has been created',
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    const SizedBox(height: Grid.xs),
+                    Icon(
+                      Icons.check_circle,
+                      size: Grid.xl,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context, rootNavigator: true).pop();
-                    },
-                    child: Text(Loc.of(context).done),
-                  ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+                child: FilledButton(
+                  onPressed: () {
+                    if (Navigator.canPop(context)) {
+                      Navigator.of(context, rootNavigator: true)
+                          .pop(credentialResponse.value.asData?.value);
+                    }
+                  },
+                  child: Text(Loc.of(context).next),
                 ),
-              ],
-            );
-          },
+              ),
+            ],
+          ),
         ),
       ),
     );
