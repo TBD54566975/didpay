@@ -17,7 +17,12 @@ class KccConsentPage extends HookConsumerWidget {
     final hasAgreed = useState(false);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          icon: const Icon(Icons.close),
+        ),
+      ),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
