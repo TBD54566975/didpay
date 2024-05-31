@@ -1,5 +1,6 @@
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/shared/serializer.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,11 +17,12 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
 
   static Future<PfisNotifier> create(Box box, PfisService pfiService) async {
     final List<dynamic> pfisJson = await box.get(storageKey) ?? [];
-    final pfis = pfisJson
-        .map((json) => Pfi.fromJson(Map<String, dynamic>.from(json)))
-        .toList();
 
-    return PfisNotifier._(box, pfiService, pfis);
+    return PfisNotifier._(
+      box,
+      pfiService,
+      Serializer.deserializeList(pfisJson, Pfi.fromJson),
+    );
   }
 
   Future<Pfi> add(String input) async {
@@ -38,7 +40,7 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
   }
 
   Future<void> _save() async {
-    final pfis = state.map((pfi) => pfi.toJson()).toList();
+    final pfis = Serializer.serializeList(state, (pfi) => pfi.toJson());
     await box.put(storageKey, pfis);
   }
 }

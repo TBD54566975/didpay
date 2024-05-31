@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:didpay/features/countries/countries.dart';
+import 'package:didpay/shared/serializer.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -16,11 +17,14 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   CountriesNotifier._(this.box, List<Country> state) : super(state);
 
   static Future<CountriesNotifier> create(Box box) async {
-    final List<dynamic> countriesJson = await box.get(storageKey) ?? [];
-    final countries = countriesJson
-        .map((json) => Country.fromJson(Map<String, dynamic>.from(json)))
-        .toList();
-    return CountriesNotifier._(box, countries);
+    const defaultCountry = Country(name: 'Mexico', code: 'MX');
+    final List<dynamic> countriesJson =
+        await box.get(storageKey) ?? [defaultCountry.toJson()];
+
+    return CountriesNotifier._(
+      box,
+      Serializer.deserializeList(countriesJson, Country.fromJson),
+    );
   }
 
   Future<Country> add(String code, String name) async {
@@ -37,7 +41,8 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   }
 
   Future<void> _save() async {
-    final countries = state.map((country) => country.toJson()).toList();
+    final countries =
+        Serializer.serializeList(state, (country) => country.toJson());
     await box.put(storageKey, countries);
   }
 }
