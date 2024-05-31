@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:tbdex/tbdex.dart';
 
 class Transaction {
-  final double payinAmount;
-  final double payoutAmount;
+  final String payinAmount;
+  final String payoutAmount;
   final String payinCurrency;
   final String payoutCurrency;
   final DateTime createdAt;
@@ -71,8 +71,8 @@ class Transaction {
             : type;
 
     return Transaction(
-      payinAmount: double.parse(payinAmount),
-      payoutAmount: double.parse(payoutAmount),
+      payinAmount: payinAmount,
+      payoutAmount: payoutAmount,
       payinCurrency: payinCurrency,
       payoutCurrency: payoutCurrency,
       createdAt: latestCreatedAt,

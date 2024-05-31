@@ -1,9 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -73,14 +74,12 @@ class TransactionDetailsPage extends HookConsumerWidget {
     BuildContext context,
     Transaction transaction,
   ) {
-    final payoutAmount = CurrencyUtil.formatFromDouble(
+    final payoutAmount = Decimal.parse(
       transaction.payoutAmount,
-      currency: transaction.payoutCurrency.toUpperCase(),
-    );
-    final payinAmount = CurrencyUtil.formatFromDouble(
+    ).formatCurrency(transaction.payoutCurrency);
+    final payinAmount = Decimal.parse(
       transaction.payinAmount,
-      currency: transaction.payinCurrency.toUpperCase(),
-    );
+    ).formatCurrency(transaction.payinCurrency);
 
     return Column(
       children: [
