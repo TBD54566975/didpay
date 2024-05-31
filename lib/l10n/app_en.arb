@@ -134,5 +134,8 @@
     "myPfis": "My PFIs",
     "noTransactionsFound": "No transactions found",
     "enterRecipientDid": "Enter the recipient's DID",
-    "fetchingOfferings": "Fetching offerings..."
+    "fetchingOfferings": "Fetching offerings...",
+    "startingIdv": "Starting identity verification...",
+    "verifyingYourIdentity": "Verifying your identity...",
+    "identityVerificationComplete": "Identity verification complete!"
 }

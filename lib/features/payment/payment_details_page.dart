@@ -110,7 +110,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         ref,
                         paymentState,
                         offeringCredentials,
-                      ).then((value) {
+                      ).then((_) {
                         if (offeringCredentials.value != null &&
                             offeringCredentials.value!.isNotEmpty) {
                           _sendRfq(
@@ -357,10 +357,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
       final issuedCredential = await Navigator.of(context).push(
         MaterialPageRoute(
           builder: (context) => ModalFlow(
-            initialWidget: KccConsentPage(
-              pfi: paymentState.selectedPfi!,
-            ),
+            initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
           ),
+          fullscreenDialog: true,
         ),
       );
 
