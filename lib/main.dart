@@ -7,6 +7,7 @@ import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/shared/constants.dart';
+import 'package:didpay/shared/logger.dart';
 import 'package:didpay/shared/storage/storage_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -17,6 +18,8 @@ import 'package:web5/web5.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  logger.d('Initializing app');
 
   final sharedPreferences = await SharedPreferences.getInstance();
   var secureStorage = const FlutterSecureStorage(

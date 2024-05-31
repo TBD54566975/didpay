@@ -35,6 +35,7 @@ dependencies:
   hooks_riverpod: ^2.4.9
   http: ^1.1.2
   intl: ^0.18.1
+  logger: ^2.3.0
   mask_text_input_formatter: ^2.9.0
   mobile_scanner: ^4.0.0
   qr_flutter: ^4.1.0
