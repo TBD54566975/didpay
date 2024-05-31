@@ -15,8 +15,12 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
   PfisNotifier._(this.box, this.pfiService, List<Pfi> state) : super(state);
 
   static Future<PfisNotifier> create(Box box, PfisService pfiService) async {
-    final pfis = await box.get(storageKey);
-    return PfisNotifier._(box, pfiService, pfis ?? []);
+    final List<dynamic> pfisJson = await box.get(storageKey) ?? [];
+    final pfis = pfisJson
+        .map((json) => Pfi.fromJson(Map<String, dynamic>.from(json)))
+        .toList();
+
+    return PfisNotifier._(box, pfiService, pfis);
   }
 
   Future<Pfi> add(String input) async {
@@ -34,6 +38,7 @@ class PfisNotifier extends StateNotifier<List<Pfi>> {
   }
 
   Future<void> _save() async {
-    await box.put(storageKey, state);
+    final pfis = state.map((pfi) => pfi.toJson()).toList();
+    await box.put(storageKey, pfis);
   }
 }
