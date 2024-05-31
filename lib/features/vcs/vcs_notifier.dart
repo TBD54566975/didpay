@@ -1,21 +1,22 @@
 import 'package:didpay/features/kcc/lib.dart';
-import 'package:didpay/features/storage/storage_service.dart';
+import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 final vcsProvider = StateNotifierProvider<VcsNotifier, List<String>>(
-  (ref) {
-    final prefs = ref.watch(sharedPreferencesProvider);
-    final vcs = VcsNotifier.loadSavedVcJwts(prefs);
-    return VcsNotifier(prefs, vcs);
-  },
+  (ref) => throw UnimplementedError(),
 );
 
 class VcsNotifier extends StateNotifier<List<String>> {
-  static const String prefsKey = 'vcs';
-  final SharedPreferences prefs;
+  static const String storageKey = 'vcs';
+  final Box box;
 
-  VcsNotifier(this.prefs, super.state);
+  VcsNotifier._(this.box, List<String> state) : super(state);
+
+  static Future<VcsNotifier> create(Box box) async {
+    final List<String> vcs = await box.get(storageKey) ?? [];
+
+    return VcsNotifier._(box, vcs);
+  }
 
   Future<String> add(CredentialResponse response) async {
     final credential = response.credential ?? response.transactionId!;
@@ -31,26 +32,6 @@ class VcsNotifier extends StateNotifier<List<String>> {
   }
 
   Future<void> _save() async {
-    final toSave = state.map((e) => e).toList();
-    await prefs.setStringList('vcs', toSave);
-  }
-
-  static List<String> loadSavedVcJwts(SharedPreferences prefs) {
-    final saved = prefs.getStringList(prefsKey);
-
-    if (saved == null) {
-      return [];
-    }
-
-    final vcs = <String>[];
-    for (final vcJwt in saved) {
-      try {
-        vcs.add(vcJwt);
-      } on Exception catch (e) {
-        throw Exception('Failed to load saved VCs: $e');
-      }
-    }
-
-    return vcs;
+    await box.put('vcs', state);
   }
 }
