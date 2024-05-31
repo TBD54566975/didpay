@@ -26,16 +26,18 @@ void main() {
     pfi: [Offering.fromJson(jsonList[0])],
   };
   late MockTbdexService mockTbdexService;
+  late MockPfisNotifier mockPfisNotifier;
+
+  setUp(() {
+    mockTbdexService = MockTbdexService();
+    mockPfisNotifier = MockPfisNotifier([pfi]);
+
+    when(
+      () => mockTbdexService.getOfferings([pfi]),
+    ).thenAnswer((_) async => offerings);
+  });
 
   group('PaymentAmountPage', () {
-    setUp(() {
-      mockTbdexService = MockTbdexService();
-
-      when(
-        () => mockTbdexService.getOfferings([pfi]),
-      ).thenAnswer((_) async => offerings);
-    });
-
     testWidgets('should show payin and payout', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -44,7 +46,7 @@ void main() {
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -62,7 +64,7 @@ void main() {
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -79,7 +81,7 @@ void main() {
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -97,7 +99,7 @@ void main() {
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
@@ -124,7 +126,7 @@ void main() {
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => MockPfisNotifier()),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         ),
       );
