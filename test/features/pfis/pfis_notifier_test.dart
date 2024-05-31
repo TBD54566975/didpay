@@ -18,7 +18,8 @@ void main() {
     test('should create and load initial list', () async {
       final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
 
-      when(() => mockBox.get(PfisNotifier.storageKey)).thenReturn(initialPfis);
+      when(() => mockBox.get(PfisNotifier.storageKey))
+          .thenReturn(initialPfis.map((pfi) => pfi.toJson()).toList());
       final notifier = await PfisNotifier.create(mockBox, mockPfisService);
 
       expect(notifier.state, initialPfis);
@@ -30,9 +31,14 @@ void main() {
       final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
       const newPfi = Pfi(did: 'did:web:x%3A8892:egress');
 
-      when(() => mockBox.get(PfisNotifier.storageKey)).thenReturn(initialPfis);
-      when(() => mockBox.put(PfisNotifier.storageKey, any()))
-          .thenAnswer((_) async {});
+      when(() => mockBox.get(PfisNotifier.storageKey))
+          .thenReturn(initialPfis.map((pfi) => pfi.toJson()).toList());
+      when(
+        () => mockBox.put(
+          PfisNotifier.storageKey,
+          any<List<Map<String, dynamic>>>(),
+        ),
+      ).thenAnswer((_) async {});
       when(() => mockPfisService.createPfi(newPfi.did))
           .thenAnswer((_) async => newPfi);
 
@@ -44,18 +50,27 @@ void main() {
       expect(addedPfi, newPfi);
 
       verify(
-        () => mockBox.put(PfisNotifier.storageKey, [...initialPfis, newPfi]),
+        () => mockBox.put(
+          PfisNotifier.storageKey,
+          [...initialPfis.map((pfi) => pfi.toJson()), newPfi.toJson()],
+        ),
       ).called(1);
-      verify(() => mockPfisService.createPfi(newPfi.did)).called(1);
+      verify(() => mockPfisService.createPfi('did:web:x%3A8892:egress'))
+          .called(1);
     });
 
     test('should remove a Pfi', () async {
       final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
       final pfiToRemove = initialPfis.first;
 
-      when(() => mockBox.get(PfisNotifier.storageKey)).thenReturn(initialPfis);
-      when(() => mockBox.put(PfisNotifier.storageKey, any()))
-          .thenAnswer((_) async {});
+      when(() => mockBox.get(PfisNotifier.storageKey))
+          .thenReturn(initialPfis.map((pfi) => pfi.toJson()).toList());
+      when(
+        () => mockBox.put(
+          PfisNotifier.storageKey,
+          any<List<Map<String, dynamic>>>(),
+        ),
+      ).thenAnswer((_) async {});
 
       final notifier = await PfisNotifier.create(mockBox, mockPfisService);
       await notifier.remove(pfiToRemove);

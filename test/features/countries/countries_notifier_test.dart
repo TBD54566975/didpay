@@ -15,9 +15,9 @@ void main() {
   group('CountriesNotifier', () {
     test('should create and load initial list', () async {
       final initialCountries = [const Country(name: 'Mexico', code: 'MXN')];
-      when(() => mockBox.get(CountriesNotifier.storageKey))
-          .thenReturn(initialCountries);
 
+      when(() => mockBox.get(CountriesNotifier.storageKey))
+          .thenReturn(initialCountries.map((pfi) => pfi.toJson()).toList());
       final notifier = await CountriesNotifier.create(mockBox);
 
       expect(notifier.state, initialCountries);
@@ -29,9 +29,13 @@ void main() {
       const newCountry = Country(name: 'United States', code: 'USD');
 
       when(() => mockBox.get(CountriesNotifier.storageKey))
-          .thenReturn(initialCountries);
-      when(() => mockBox.put(CountriesNotifier.storageKey, any()))
-          .thenAnswer((_) async {});
+          .thenReturn(initialCountries.map((pfi) => pfi.toJson()).toList());
+      when(
+        () => mockBox.put(
+          CountriesNotifier.storageKey,
+          any<List<Map<String, dynamic>>>(),
+        ),
+      ).thenAnswer((_) async {});
 
       final notifier = await CountriesNotifier.create(mockBox);
 
@@ -43,7 +47,10 @@ void main() {
       verify(
         () => mockBox.put(
           CountriesNotifier.storageKey,
-          [...initialCountries, newCountry],
+          [
+            ...initialCountries.map((country) => country.toJson()),
+            newCountry.toJson(),
+          ],
         ),
       ).called(1);
     });
@@ -53,7 +60,7 @@ void main() {
       final countryToRemove = initialCountries.first;
 
       when(() => mockBox.get(CountriesNotifier.storageKey))
-          .thenReturn(initialCountries);
+          .thenReturn(initialCountries.map((pfi) => pfi.toJson()).toList());
       when(() => mockBox.put(CountriesNotifier.storageKey, any()))
           .thenAnswer((_) async {});
 

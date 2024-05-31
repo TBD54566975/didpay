@@ -16,8 +16,11 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   CountriesNotifier._(this.box, List<Country> state) : super(state);
 
   static Future<CountriesNotifier> create(Box box) async {
-    final countries = await box.get(storageKey);
-    return CountriesNotifier._(box, countries ?? []);
+    final List<dynamic> countriesJson = await box.get(storageKey) ?? [];
+    final countries = countriesJson
+        .map((json) => Country.fromJson(Map<String, dynamic>.from(json)))
+        .toList();
+    return CountriesNotifier._(box, countries);
   }
 
   Future<Country> add(String code, String name) async {
@@ -34,6 +37,7 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   }
 
   Future<void> _save() async {
-    await box.put(storageKey, state);
+    final countries = state.map((country) => country.toJson()).toList();
+    await box.put(storageKey, countries);
   }
 }

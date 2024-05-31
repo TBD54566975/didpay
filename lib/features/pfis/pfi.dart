@@ -1,4 +1,6 @@
-class Pfi {
+import 'package:equatable/equatable.dart';
+
+class Pfi extends Equatable {
   final String did;
 
   const Pfi({required this.did});
@@ -6,4 +8,7 @@ class Pfi {
   factory Pfi.fromJson(Map<String, dynamic> json) => Pfi(did: json['did']);
 
   Map<String, dynamic> toJson() => {'did': did};
+
+  @override
+  List<Object?> get props => [did];
 }
