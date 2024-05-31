@@ -5,6 +5,7 @@ import 'package:didpay/features/app/app.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/shared/constants.dart';
 import 'package:didpay/shared/storage/storage_providers.dart';
 import 'package:flutter/material.dart';
@@ -70,8 +71,12 @@ Future<List<Override>> notifierOverrides() async {
   final countriesBox = await Hive.openBox(CountriesNotifier.storageKey);
   final countriesNotifier = await CountriesNotifier.create(countriesBox);
 
+  final vcsBox = await Hive.openBox(VcsNotifier.storageKey);
+  final vcsNotifier = await VcsNotifier.create(vcsBox);
+
   return [
     pfisProvider.overrideWith((ref) => pfisNofitier),
     countriesProvider.overrideWith((ref) => countriesNotifier),
+    vcsProvider.overrideWith((ref) => vcsNotifier),
   ];
 }
