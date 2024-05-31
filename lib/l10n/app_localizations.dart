@@ -720,6 +720,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Fetching offerings...'**
   String get fetchingOfferings;
+
+  /// No description provided for @startingIdv.
+  ///
+  /// In en, this message translates to:
+  /// **'Starting identity verification...'**
+  String get startingIdv;
+
+  /// No description provided for @identityVerificationComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity verification complete!'**
+  String get identityVerificationComplete;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -326,4 +326,10 @@ class LocEn extends Loc {
 
   @override
   String get fetchingOfferings => 'Fetching offerings...';
+
+  @override
+  String get startingIdv => 'Starting identity verification...';
+
+  @override
+  String get identityVerificationComplete => 'Identity verification complete!';
 }
