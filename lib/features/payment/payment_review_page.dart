@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/account/account_providers.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
@@ -9,8 +10,8 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_data_widget.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -148,10 +149,8 @@ class PaymentReviewPage extends HookConsumerWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  CurrencyUtil.formatFromString(
-                    quote.payin.amount,
-                    currency: quote.payin.currencyCode.toUpperCase(),
-                  ),
+                  Decimal.parse(quote.payin.amount)
+                      .formatCurrency(quote.payin.currencyCode),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
                 ),

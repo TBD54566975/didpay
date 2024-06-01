@@ -1,7 +1,8 @@
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tbdex/tbdex.dart';
@@ -66,15 +67,14 @@ class PaymentFeeDetails extends HookWidget {
     );
   }
 
-  static double calculateExchangeRate(QuoteData? quote) =>
-      double.parse(quote?.payout.amount ?? '0') /
-      double.parse(quote?.payin.amount ?? '0');
+  static String calculateExchangeRate(QuoteData? quote) =>
+      (Decimal.parse(quote?.payout.amount ?? '0') /
+              Decimal.parse(quote?.payin.amount ?? '0'))
+          .toString();
 
   static String calculateTotalAmount(QuoteData? quote) =>
-      CurrencyUtil.formatFromDouble(
-        double.parse(quote?.payin.amount ?? '0'),
-        currency: quote?.payin.currencyCode ?? '',
-      );
+      Decimal.parse(quote?.payin.amount ?? '0')
+          .formatCurrency(quote?.payin.currencyCode ?? '');
 
   Widget _buildRow(
     BuildContext context,
@@ -129,9 +129,7 @@ extension _PaymentDetailsOperations on Object? {
           : null;
 
   String? get exchangeRate => this is QuoteData
-      ? CurrencyUtil.formatFromDouble(
-          PaymentFeeDetails.calculateExchangeRate(this as QuoteData?),
-        )
+      ? PaymentFeeDetails.calculateExchangeRate(this as QuoteData?)
       : this is OfferingData
           ? (this as OfferingData?)?.payoutUnitsPerPayinUnit
           : null;

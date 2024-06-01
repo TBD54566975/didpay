@@ -1,11 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:didpay/shared/utils/number_validation_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -32,11 +33,13 @@ class Payin extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final shouldAnimate = useState(false);
+    final hintDigits = useState(0);
     final decimalPaddingHint = useState('');
 
-    final formattedAmount = CurrencyUtil.formatFromString(
-      amount.value,
-      currency: selectedOffering.value?.data.payin.currencyCode,
+    final currencyCode = selectedOffering.value?.data.payin.currencyCode ?? '';
+    final formattedAmount = Decimal.parse(amount.value).formatCurrency(
+      currencyCode,
+      hintDigits: hintDigits.value,
     );
 
     useEffect(
@@ -44,6 +47,7 @@ class Payin extends HookWidget {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           amount.value = '0';
           decimalPaddingHint.value = '';
+          hintDigits.value = 0;
         });
         return;
       },
@@ -80,17 +84,17 @@ class Payin extends HookWidget {
                     : '$current$key';
           }
 
-          final decimalDigits = CurrencyUtil.getDecimalDigits(
-            selectedOffering.value?.data.payin.currencyCode,
-          );
+          final decimalDigits =
+              selectedOffering.value?.data.payin.currencyCode == 'BTC' ? 8 : 2;
 
           final hasDecimal = amount.value.contains('.');
-          final hintDigits = hasDecimal
+          hintDigits.value = hasDecimal
               ? decimalDigits - amount.value.split('.')[1].length
               : decimalDigits;
 
-          decimalPaddingHint.value = hasDecimal && hintDigits > 0
-              ? (hintDigits == decimalDigits ? '.' : '') + '0' * hintDigits
+          decimalPaddingHint.value = hasDecimal && hintDigits.value > 0
+              ? (hintDigits.value == decimalDigits ? '.' : '') +
+                  '0' * hintDigits.value
               : '';
         });
 

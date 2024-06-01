@@ -1,10 +1,11 @@
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
-import 'package:didpay/shared/utils/currency_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -132,14 +133,12 @@ class TransactionTile extends HookConsumerWidget {
         : Theme.of(context).colorScheme.tertiary;
     return Text(
       transaction.type == TransactionType.deposit
-          ? '$modifier${CurrencyUtil.formatFromDouble(
+          ? '$modifier${Decimal.parse(
               transaction.payoutAmount,
-              currency: transaction.payoutCurrency.toUpperCase(),
-            )} ${transaction.payoutCurrency}'
-          : '$modifier${CurrencyUtil.formatFromDouble(
+            ).formatCurrency(transaction.payoutCurrency)} ${transaction.payoutCurrency}'
+          : '$modifier${Decimal.parse(
               transaction.payinAmount,
-              currency: transaction.payinCurrency.toUpperCase(),
-            )} ${transaction.payinCurrency}',
+            ).formatCurrency(transaction.payinCurrency)} ${transaction.payinCurrency}',
       style: TextStyle(
         color: color,
       ),
