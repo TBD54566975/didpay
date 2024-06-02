@@ -118,7 +118,7 @@ class Transaction {
     }
   }
 
-  static bool isFinal(TransactionStatus status) {
+  static bool isClosed(TransactionStatus status) {
     return status == TransactionStatus.payoutSuccess ||
         status == TransactionStatus.payoutCanceled;
   }

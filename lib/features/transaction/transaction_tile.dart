@@ -49,7 +49,7 @@ class TransactionTile extends HookConsumerWidget {
 
           if (lastStatus.value != transaction.status) {
             if (lastStatus.value == null &&
-                Transaction.isFinal(transaction.status)) return;
+                Transaction.isClosed(transaction.status)) return;
 
             Future.delayed(
               Duration.zero,

@@ -37,7 +37,7 @@ class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
 
       final transaction = Transaction.fromExchange(exchange);
 
-      if (Transaction.isFinal(transaction.status)) {
+      if (Transaction.isClosed(transaction.status)) {
         stopPolling();
       }
 
