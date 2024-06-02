@@ -27,7 +27,7 @@ class TransactionTile extends HookConsumerWidget {
 
     final lastStatus = useState<TransactionStatus?>(null);
 
-    TransactionAsyncNotifier getTransactionsNotifier() =>
+    TransactionNotifier getTransactionsNotifier() =>
         ref.read(transactionProvider(parameters).notifier);
 
     useEffect(
