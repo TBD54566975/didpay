@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -41,16 +39,8 @@ class MockCountriesNotifier extends StateNotifier<List<Country>>
   MockCountriesNotifier(super.state);
 }
 
-class MockTransactionNotifier extends TransactionAsyncNotifier {
-  MockTransactionNotifier() : super();
-
-  @override
-  FutureOr<Transaction?> build(TransactionProviderParameters arg) {
-    return null;
-  }
-
-  @override
-  Future<void> startPolling() {
-    return Future.value();
-  }
+class MockTransactionNotifier extends AutoDisposeFamilyAsyncNotifier<
+    Transaction?,
+    TransactionProviderParameters> with Mock implements TransactionNotifier {
+  MockTransactionNotifier();
 }
