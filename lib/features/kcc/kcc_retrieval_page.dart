@@ -23,29 +23,14 @@ class KccRetrievalPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bearerDid = ref.watch(didProvider);
-    final kccIssuanceService = ref.watch(kccIssuanceProvider);
     final credentialResponse =
         useState<AsyncValue<String>>(const AsyncLoading());
 
     useEffect(
       () {
-        Future.microtask(() async {
-          try {
-            final response = await kccIssuanceService.pollForCredential(
-              pfi,
-              idvRequest,
-              bearerDid,
-            );
-
-            await ref.read(vcsProvider.notifier).add(response).then(
-                  (credential) =>
-                      credentialResponse.value = AsyncData(credential),
-                );
-          } on Exception catch (e, stackTrace) {
-            credentialResponse.value = AsyncError(e, stackTrace);
-          }
-        });
+        Future.microtask(
+          () async => _pollForCredential(ref, credentialResponse),
+        );
 
         return null;
       },
@@ -59,7 +44,7 @@ class KccRetrievalPage extends HookConsumerWidget {
               AsyncLoadingWidget(text: Loc.of(context).verifyingYourIdentity),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => Navigator.of(context).pop(),
+            onRetry: () => _pollForCredential(ref, credentialResponse),
           ),
           data: (data) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -96,5 +81,24 @@ class KccRetrievalPage extends HookConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _pollForCredential(
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<String>> state,
+  ) async {
+    try {
+      final credential = await ref.read(kccIssuanceProvider).pollForCredential(
+            pfi,
+            idvRequest,
+            ref.read(didProvider),
+          );
+
+      await ref.read(vcsProvider.notifier).add(credential).then(
+            (credential) => state.value = AsyncData(credential),
+          );
+    } on Exception catch (e, stackTrace) {
+      state.value = AsyncError(e, stackTrace);
+    }
   }
 }

@@ -9,12 +9,12 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 final transactionProvider = AsyncNotifierProvider.family.autoDispose<
-    TransactionAsyncNotifier, Transaction?, TransactionProviderParameters>(
-  TransactionAsyncNotifier.new,
+    TransactionNotifier, Transaction?, TransactionProviderParameters>(
+  TransactionNotifier.new,
 );
 
-class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
-    Transaction?, TransactionProviderParameters> {
+class TransactionNotifier extends AutoDisposeFamilyAsyncNotifier<Transaction?,
+    TransactionProviderParameters> {
   late String? _exchangeId;
   late Pfi? _pfi;
   Timer? _timer;
@@ -37,7 +37,7 @@ class TransactionAsyncNotifier extends AutoDisposeFamilyAsyncNotifier<
 
       final transaction = Transaction.fromExchange(exchange);
 
-      if (Transaction.isFinal(transaction.status)) {
+      if (Transaction.isClosed(transaction.status)) {
         stopPolling();
       }
 

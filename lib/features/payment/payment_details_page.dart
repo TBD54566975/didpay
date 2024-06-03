@@ -33,7 +33,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     final selectedPaymentMethod = useState<Object?>(null);
     final selectedPaymentType = useState<String?>(null);
     final offeringCredentials = useState<List<String>?>(null);
-    final sendRfqState = useState<AsyncValue<Rfq>?>(null);
+    final rfqResponse = useState<AsyncValue<Rfq>?>(null);
 
     final paymentMethods = _getPaymentMethods(paymentState);
     final paymentTypes = _getPaymentTypes(paymentMethods);
@@ -57,8 +57,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: sendRfqState.value != null
-            ? sendRfqState.value!.when(
+        child: rfqResponse.value != null
+            ? rfqResponse.value!.when(
                 data: (rfq) => AsyncLoadingWidget(
                   text: Loc.of(context).gettingYourQuote,
                 ),
@@ -71,7 +71,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     context,
                     ref,
                     paymentState,
-                    sendRfqState,
+                    rfqResponse,
                     claims: offeringCredentials.value,
                   ),
                 ),
@@ -111,16 +111,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         paymentState,
                         offeringCredentials,
                       ).then((_) {
-                        if (offeringCredentials.value != null &&
-                            offeringCredentials.value!.isNotEmpty) {
-                          _sendRfq(
-                            context,
-                            ref,
-                            paymentState,
-                            sendRfqState,
-                            claims: offeringCredentials.value,
-                          );
-                        }
+                        _sendRfq(
+                          context,
+                          ref,
+                          paymentState,
+                          rfqResponse,
+                          claims: offeringCredentials.value,
+                        );
                       });
                     },
                   ),

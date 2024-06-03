@@ -37,12 +37,12 @@ class PaymentAmountPage extends HookConsumerWidget {
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedPfi = useState<Pfi?>(null);
     final selectedOffering = useState<Offering?>(null);
-    final getOfferingsState =
+    final offeringsResponse =
         useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
 
     useEffect(
       () {
-        _getOfferings(ref, getOfferingsState);
+        _getOfferings(ref, offeringsResponse);
         return null;
       },
       [],
@@ -51,7 +51,7 @@ class PaymentAmountPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: getOfferingsState.value.when(
+        child: offeringsResponse.value.when(
           data: (offeringsMap) {
             selectedPfi.value ??= offeringsMap.keys.first;
             selectedOffering.value ??= offeringsMap[selectedPfi.value]!.first;
@@ -121,7 +121,7 @@ class PaymentAmountPage extends HookConsumerWidget {
               AsyncLoadingWidget(text: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => _getOfferings(ref, getOfferingsState),
+            onRetry: () => _getOfferings(ref, offeringsResponse),
           ),
         ),
       ),
