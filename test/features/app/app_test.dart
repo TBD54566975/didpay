@@ -4,6 +4,7 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:web5/web5.dart';
@@ -17,10 +18,12 @@ void main() async {
 
   late MockTbdexService mockTbdexService;
   late MockPfisNotifier mockPfisNotifier;
+  late MockVcsNotifier mockVcsNotifier;
 
   setUp(() {
     mockTbdexService = MockTbdexService();
     mockPfisNotifier = MockPfisNotifier([pfi]);
+    mockVcsNotifier = MockVcsNotifier([]);
 
     when(
       () => mockTbdexService.getExchanges(did, [pfi]),
@@ -34,8 +37,9 @@ void main() async {
         overrides: [
           didProvider.overrideWithValue(did),
           tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-          transactionProvider.overrideWith(MockTransactionNotifier.new),
           pfisProvider.overrideWith((ref) => mockPfisNotifier),
+          vcsProvider.overrideWith((ref) => mockVcsNotifier),
+          transactionProvider.overrideWith(MockTransactionNotifier.new),
         ],
       ),
     );
