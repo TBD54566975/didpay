@@ -38,19 +38,16 @@ class DidQr {
       );
 
   static Widget buildQrCode(BuildContext context, String data, double size) =>
-      Padding(
-        padding: const EdgeInsets.only(top: Grid.xs),
-        child: QrImageView(
-          data: data,
-          size: size,
-          eyeStyle: QrEyeStyle(
-            eyeShape: QrEyeShape.square,
-            color: Theme.of(context).colorScheme.onBackground,
-          ),
-          dataModuleStyle: QrDataModuleStyle(
-            color: Theme.of(context).colorScheme.onBackground,
-            dataModuleShape: QrDataModuleShape.square,
-          ),
+      QrImageView(
+        data: data,
+        size: size,
+        eyeStyle: QrEyeStyle(
+          eyeShape: QrEyeShape.square,
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
+        dataModuleStyle: QrDataModuleStyle(
+          color: Theme.of(context).colorScheme.onBackground,
+          dataModuleShape: QrDataModuleShape.square,
         ),
       );
 
