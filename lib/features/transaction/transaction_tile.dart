@@ -6,6 +6,7 @@ import 'package:didpay/features/transaction/transaction_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/tile_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -81,7 +82,8 @@ class TransactionTile extends HookConsumerWidget {
           return _buildErrorTile(context, Loc.of(context).noTransactionsFound);
         }
 
-        return ListTile(
+        return TileContainer(
+            child: ListTile(
           title: Text(
             '${txn.payinCurrency} → ${txn.payoutCurrency}',
             style: Theme.of(context).textTheme.titleSmall?.copyWith(
@@ -116,7 +118,7 @@ class TransactionTile extends HookConsumerWidget {
               },
             ),
           ),
-        );
+        ),);
       },
       loading: Container.new,
       error: (error, stackTrace) => _buildErrorTile(context, error.toString()),
