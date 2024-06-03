@@ -17,13 +17,31 @@ class AccountDidPage extends HookConsumerWidget {
 
     const maxSize = 250.0;
     final screenSize = MediaQuery.of(context).size;
-    final qrSize = min(screenSize.width * 0.5, maxSize);
+    final qrSize = min(screenSize.width * 0.7, maxSize);
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          icon: const Icon(Icons.close),
+        ),
+      ),
       body: Column(
         children: [
-          DidQr.buildQrCode(context, did.uri, qrSize),
+          const SizedBox(height: Grid.xxl),
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(
+                color:
+                    Theme.of(context).colorScheme.onBackground.withOpacity(0.2),
+              ),
+              borderRadius: BorderRadius.circular(Grid.radius),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(Grid.sm),
+              child: DidQr.buildQrCode(context, did.uri, qrSize),
+            ),
+          ),
           _buildDid(context, did.uri),
         ],
       ),
