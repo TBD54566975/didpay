@@ -1,7 +1,7 @@
 import 'dart:math';
 
-import 'package:didpay/features/account/account_providers.dart';
-import 'package:didpay/features/did_qr/did_qr.dart';
+import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/did/did_qr.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +22,7 @@ class AccountDidPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          onPressed: () => Navigator.of(context).pop(),
           icon: const Icon(Icons.close),
         ),
       ),

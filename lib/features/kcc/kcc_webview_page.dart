@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_issuance_service.dart';
 import 'package:didpay/features/kcc/kcc_retrieval_page.dart';
 import 'package:didpay/features/kcc/lib/idv_request.dart';
