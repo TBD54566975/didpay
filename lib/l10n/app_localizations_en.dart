@@ -341,4 +341,7 @@ class LocEn extends Loc {
 
   @override
   String get noCredentialsIssuedYet => 'No credentials issued yet';
+
+  @override
+  String get selectCurrency => 'Select currency';
 }

@@ -750,6 +750,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'No credentials issued yet'**
   String get noCredentialsIssuedYet;
+
+  /// No description provided for @selectCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Select currency'**
+  String get selectCurrency;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

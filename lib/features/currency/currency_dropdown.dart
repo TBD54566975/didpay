@@ -1,4 +1,4 @@
-import 'package:didpay/features/currency/currency_modal.dart';
+import 'package:didpay/features/modals/modal_select_currency.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -31,7 +31,7 @@ class CurrencyDropdown extends HookConsumerWidget {
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
-          onPressed: () => CurrencyModal.show(
+          onPressed: () => ModalSelectCurrency.show(
             context,
             transactionType,
             selectedPfi,

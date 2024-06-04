@@ -1,10 +1,11 @@
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:tbdex/tbdex.dart';
 
-class CurrencyModal {
+class ModalSelectCurrency {
   static Future<dynamic> show(
     BuildContext context,
     TransactionType transactionType,
@@ -35,7 +36,7 @@ class CurrencyModal {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: Grid.xs),
                       child: Text(
-                        'Select currency',
+                        Loc.of(context).selectCurrency,
                         style: Theme.of(context).textTheme.titleMedium,
                         textAlign: TextAlign.center,
                       ),
