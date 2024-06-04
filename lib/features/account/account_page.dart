@@ -1,6 +1,6 @@
 import 'package:didpay/features/account/account_did_page.dart';
-import 'package:didpay/features/account/account_management_modal.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/modals/modal_remove_item.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -149,7 +149,12 @@ class AccountPage extends HookConsumerWidget {
           ),
           child: const Center(child: Icon(Icons.attach_money)),
         ),
-        onTap: () => AccountManagementModal.show(context, ref, pfi: pfi),
+        onTap: () => ModalRemoveItem.show(
+          context,
+          pfi.did,
+          Loc.of(context).removePfi,
+          () async => ref.read(pfisProvider.notifier).remove(pfi),
+        ),
       );
 
   Widget _buildAddPfiTile(BuildContext context) => ListTile(
@@ -226,8 +231,12 @@ class AccountPage extends HookConsumerWidget {
           ),
           child: const Center(child: Icon(Icons.gpp_good)),
         ),
-        onTap: () =>
-            AccountManagementModal.show(context, ref, credential: credential),
+        onTap: () => ModalRemoveItem.show(
+          context,
+          credential,
+          Loc.of(context).removeCredential,
+          () async => ref.read(vcsProvider.notifier).remove(credential),
+        ),
       );
 
   Widget _buildNoCredentialsTile(BuildContext context) => ListTile(
