@@ -1,19 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AccountManagementModal {
+class ModalRemoveItem {
   static Future<dynamic> show(
     BuildContext context,
-    WidgetRef ref, {
-    Pfi? pfi,
-    String? credential,
-  }) =>
+    String title,
+    String removeText,
+    Future<void> Function() onRemove,
+  ) =>
       showModalBottomSheet(
         useSafeArea: true,
         isScrollControlled: true,
@@ -34,7 +30,7 @@ class AccountManagementModal {
                   children: [
                     Flexible(
                       child: AutoSizeText(
-                        pfi != null ? pfi.did : credential!,
+                        title,
                         style: Theme.of(context).textTheme.titleMedium,
                         maxLines: 2,
                       ),
@@ -51,26 +47,15 @@ class AccountManagementModal {
               ListTile(
                 title: Center(
                   child: Text(
-                    pfi != null
-                        ? Loc.of(context).removePfi
-                        : Loc.of(context).removeCredential,
+                    removeText,
                     style: TextStyle(color: Theme.of(context).colorScheme.error)
                         .copyWith(
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
-                onTap: () async {
-                  pfi != null
-                      ? await ref
-                          .read(pfisProvider.notifier)
-                          .remove(pfi)
-                          .then((_) => Navigator.pop(context))
-                      : await ref
-                          .read(vcsProvider.notifier)
-                          .remove(credential!)
-                          .then((_) => Navigator.pop(context));
-                },
+                onTap: () async =>
+                    onRemove().then((_) => Navigator.pop(context)),
               ),
               Divider(
                 color: Theme.of(context)
