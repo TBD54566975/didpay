@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';

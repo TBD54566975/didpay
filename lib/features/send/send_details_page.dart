@@ -1,5 +1,5 @@
 import 'package:didpay/features/device/device_info_service.dart';
-import 'package:didpay/features/did_qr/did_qr.dart';
+import 'package:didpay/features/did/did_qr.dart';
 import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/header.dart';

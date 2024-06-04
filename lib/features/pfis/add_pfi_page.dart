@@ -1,5 +1,5 @@
 import 'package:didpay/features/device/device_info_service.dart';
-import 'package:didpay/features/did_qr/did_qr.dart';
+import 'package:didpay/features/did/did_qr.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';

@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
-import 'package:didpay/features/account/account_providers.dart';
+import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
