@@ -140,5 +140,6 @@
     "identityVerificationComplete": "Identity verification complete!",
     "issuedCredentials": "Issued credentials",
     "removeCredential": "Remove credential",
-    "noCredentialsIssuedYet": "No credentials issued yet"
+    "noCredentialsIssuedYet": "No credentials issued yet",
+    "selectCurrency": "Select currency"
 }
