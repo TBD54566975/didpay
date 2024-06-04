@@ -21,29 +21,25 @@ class CurrencyDropdown extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.keyboard_arrow_down),
-        label: _buildCurrencyLabel(context),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.only(left: Grid.xxs),
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-        ),
-        onPressed: () {
-          CurrencyModal.show(
+  Widget build(BuildContext context, WidgetRef ref) => Directionality(
+        textDirection: TextDirection.rtl,
+        child: ElevatedButton.icon(
+          icon: const Icon(Icons.keyboard_arrow_down),
+          label: _buildCurrencyLabel(context),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.only(left: Grid.xxs),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          onPressed: () => CurrencyModal.show(
             context,
             transactionType,
             selectedPfi,
             selectedOffering,
             offeringsMap,
-          );
-        },
-      ),
-    );
-  }
+          ),
+        ),
+      );
 
   Widget _buildCurrencyLabel(BuildContext context) => Text(
         transactionType == TransactionType.deposit

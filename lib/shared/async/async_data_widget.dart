@@ -31,12 +31,10 @@ class AsyncDataWidget extends HookWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: Grid.side),
             child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const App()),
-                  (route) => false,
-                );
-              },
+              onPressed: () => Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const App()),
+                (route) => false,
+              ),
               child: Text(Loc.of(context).done),
             ),
           ),

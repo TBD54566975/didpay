@@ -71,7 +71,5 @@ class _SineCurve extends Curve {
   const _SineCurve({required this.count});
 
   @override
-  double transformInternal(double t) {
-    return sin(count * 2 * pi * t);
-  }
+  double transformInternal(double t) => sin(count * 2 * pi * t);
 }

@@ -140,26 +140,25 @@ class SendDetailsPage extends HookConsumerWidget {
     BuildContext context,
     TextEditingController recipientDidController,
     String? errorText,
-  ) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: FilledButton(
-        onPressed: () {
-          if ((_formKey.currentState?.validate() ?? false) &&
-              errorText == null) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SendConfirmationPage(
-                  did: recipientDidController.text,
-                  amount: sendAmount,
+  ) =>
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+        child: FilledButton(
+          onPressed: () {
+            if ((_formKey.currentState?.validate() ?? false) &&
+                errorText == null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SendConfirmationPage(
+                    did: recipientDidController.text,
+                    amount: sendAmount,
+                  ),
                 ),
-              ),
-            );
-          }
-        },
-        child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
-      ),
-    );
-  }
+              );
+            }
+          },
+          child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
+        ),
+      );
 }
