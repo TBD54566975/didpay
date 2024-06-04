@@ -1,4 +1,4 @@
-import 'package:didpay/features/did_qr/did_qr_scan_page.dart';
+import 'package:didpay/features/did/did_qr_scan_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
