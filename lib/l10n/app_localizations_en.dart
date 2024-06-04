@@ -316,7 +316,7 @@ class LocEn extends Loc {
   String get cancel => 'Cancel';
 
   @override
-  String get myPfis => 'My PFIs';
+  String get linkedPfis => 'Linked PFIs';
 
   @override
   String get noTransactionsFound => 'No transactions found';
@@ -332,4 +332,13 @@ class LocEn extends Loc {
 
   @override
   String get identityVerificationComplete => 'Identity verification complete!';
+
+  @override
+  String get issuedCredentials => 'Issued credentials';
+
+  @override
+  String get removeCredential => 'Remove credential';
+
+  @override
+  String get noCredentialsIssuedYet => 'No credentials issued yet';
 }

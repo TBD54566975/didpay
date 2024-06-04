@@ -6,6 +6,7 @@ import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -31,6 +32,12 @@ class MockPfisNotifier extends StateNotifier<List<Pfi>>
     with Mock
     implements PfisNotifier {
   MockPfisNotifier(super.state);
+}
+
+class MockVcsNotifier extends StateNotifier<List<String>>
+    with Mock
+    implements VcsNotifier {
+  MockVcsNotifier(super.state);
 }
 
 class MockCountriesNotifier extends StateNotifier<List<Country>>

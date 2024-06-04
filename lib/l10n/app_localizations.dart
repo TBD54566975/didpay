@@ -697,11 +697,11 @@ abstract class Loc {
   /// **'Cancel'**
   String get cancel;
 
-  /// No description provided for @myPfis.
+  /// No description provided for @linkedPfis.
   ///
   /// In en, this message translates to:
-  /// **'My PFIs'**
-  String get myPfis;
+  /// **'Linked PFIs'**
+  String get linkedPfis;
 
   /// No description provided for @noTransactionsFound.
   ///
@@ -732,6 +732,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Identity verification complete!'**
   String get identityVerificationComplete;
+
+  /// No description provided for @issuedCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Issued credentials'**
+  String get issuedCredentials;
+
+  /// No description provided for @removeCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove credential'**
+  String get removeCredential;
+
+  /// No description provided for @noCredentialsIssuedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No credentials issued yet'**
+  String get noCredentialsIssuedYet;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

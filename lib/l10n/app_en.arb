@@ -131,11 +131,14 @@
     "orderConfirmed": "Order confirmed!",
     "removePfi": "Remove PFI",
     "cancel": "Cancel",
-    "myPfis": "My PFIs",
+    "linkedPfis": "Linked PFIs",
     "noTransactionsFound": "No transactions found",
     "enterRecipientDid": "Enter the recipient's DID",
     "fetchingOfferings": "Fetching offerings...",
     "startingIdv": "Starting identity verification...",
     "verifyingYourIdentity": "Verifying your identity...",
-    "identityVerificationComplete": "Identity verification complete!"
+    "identityVerificationComplete": "Identity verification complete!",
+    "issuedCredentials": "Issued credentials",
+    "removeCredential": "Remove credential",
+    "noCredentialsIssuedYet": "No credentials issued yet"
 }

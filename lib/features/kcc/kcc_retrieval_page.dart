@@ -87,6 +87,7 @@ class KccRetrievalPage extends HookConsumerWidget {
     WidgetRef ref,
     ValueNotifier<AsyncValue<String>> state,
   ) async {
+    state.value = const AsyncLoading();
     try {
       final credential = await ref.read(kccIssuanceProvider).pollForCredential(
             pfi,
