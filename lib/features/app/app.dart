@@ -8,16 +8,14 @@ class App extends HookConsumerWidget {
   const App({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return MaterialApp(
-      title: 'DIDPay',
-      theme: lightTheme(context),
-      darkTheme: darkTheme(context),
-      home: const AppTabs(),
-      localizationsDelegates: Loc.localizationsDelegates,
-      supportedLocales: const [
-        Locale('en', ''),
-      ],
-    );
-  }
+  Widget build(BuildContext context, WidgetRef ref) => MaterialApp(
+        title: 'DIDPay',
+        theme: lightTheme(context),
+        darkTheme: darkTheme(context),
+        home: const AppTabs(),
+        localizationsDelegates: Loc.localizationsDelegates,
+        supportedLocales: const [
+          Locale('en', ''),
+        ],
+      );
 }

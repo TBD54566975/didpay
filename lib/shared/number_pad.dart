@@ -33,18 +33,17 @@ class NumberPad extends HookWidget {
     BuildContext context,
     List<String> keys,
     ValueNotifier<String> pressedKey,
-  ) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: keys.map((key) {
-        return _NumberPadKey(
-          text: key,
-          onKeyPressed: onKeyPressed,
-        );
-      }).toList(),
-    );
-  }
+  ) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: keys.map((key) {
+          return _NumberPadKey(
+            text: key,
+            onKeyPressed: onKeyPressed,
+          );
+        }).toList(),
+      );
 }
 
 class _NumberPadKey extends HookWidget {

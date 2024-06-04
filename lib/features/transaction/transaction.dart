@@ -81,31 +81,27 @@ class Transaction {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'payinAmount': payinAmount,
-      'payoutAmount': payoutAmount,
-      'payinCurrency': payinCurrency,
-      'payoutCurrency': payoutCurrency,
-      'createdAt': createdAt.toIso8601String(),
-      'type': type.name,
-      'status': status.name,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'payinAmount': payinAmount,
+        'payoutAmount': payoutAmount,
+        'payinCurrency': payinCurrency,
+        'payoutCurrency': payoutCurrency,
+        'createdAt': createdAt.toIso8601String(),
+        'type': type.name,
+        'status': status.name,
+      };
 
-  factory Transaction.fromJson(Map<String, dynamic> json) {
-    return Transaction(
-      payinAmount: json['payinAmount'],
-      payoutAmount: json['payoutAmount'],
-      payinCurrency: json['payinCurrency'],
-      payoutCurrency: json['payoutCurrency'],
-      createdAt: DateTime.parse(json['createdAt']),
-      type: TransactionType.values.firstWhere((e) => e.name == json['type']),
-      status: TransactionStatus.values.firstWhere(
-        (e) => e.name == json['status'],
-      ),
-    );
-  }
+  factory Transaction.fromJson(Map<String, dynamic> json) => Transaction(
+        payinAmount: json['payinAmount'],
+        payoutAmount: json['payoutAmount'],
+        payinCurrency: json['payinCurrency'],
+        payoutCurrency: json['payoutCurrency'],
+        createdAt: DateTime.parse(json['createdAt']),
+        type: TransactionType.values.firstWhere((e) => e.name == json['type']),
+        status: TransactionStatus.values.firstWhere(
+          (e) => e.name == json['status'],
+        ),
+      );
 
   static Icon getIcon(TransactionType type, {double size = Grid.xs}) {
     switch (type) {
@@ -118,10 +114,9 @@ class Transaction {
     }
   }
 
-  static bool isClosed(TransactionStatus status) {
-    return status == TransactionStatus.payoutSuccess ||
-        status == TransactionStatus.payoutCanceled;
-  }
+  static bool isClosed(TransactionStatus status) =>
+      status == TransactionStatus.payoutSuccess ||
+      status == TransactionStatus.payoutCanceled;
 
   static Color getStatusColor(BuildContext context, TransactionStatus status) {
     switch (status) {

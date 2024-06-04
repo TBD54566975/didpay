@@ -6,10 +6,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 final deviceInfoServiceProvider = Provider((ref) => DeviceInfoService());
 
 class DeviceInfoService {
-  Future<bool> isPhysicalDevice() async {
-    final deviceInfo = DeviceInfoPlugin();
-    return Platform.isIOS
-        ? (await deviceInfo.iosInfo).isPhysicalDevice
-        : Platform.isAndroid && (await deviceInfo.androidInfo).isPhysicalDevice;
-  }
+  final _deviceInfo = DeviceInfoPlugin();
+
+  Future<bool> isPhysicalDevice() async => Platform.isIOS
+      ? (await _deviceInfo.iosInfo).isPhysicalDevice
+      : Platform.isAndroid && (await _deviceInfo.androidInfo).isPhysicalDevice;
 }

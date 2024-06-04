@@ -56,19 +56,15 @@ class Country extends Equatable {
     );
   }
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'code': code,
-    };
-  }
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'code': code,
+      };
 
-  factory Country.fromJson(Map<String, dynamic> json) {
-    return Country(
-      name: json['name'],
-      code: json['code'],
-    );
-  }
+  factory Country.fromJson(Map<String, dynamic> json) => Country(
+        name: json['name'],
+        code: json['code'],
+      );
 
   @override
   List<Object?> get props => [name, code];
