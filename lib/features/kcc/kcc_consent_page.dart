@@ -1,6 +1,7 @@
 import 'package:didpay/features/kcc/kcc_webview_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -27,10 +28,9 @@ class KccConsentPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            _buildHeader(
-              context,
-              Loc.of(context).termsOfService,
-              Loc.of(context).exampleTerms,
+            Header(
+              title: Loc.of(context).termsOfService,
+              subtitle: Loc.of(context).exampleTerms,
             ),
             const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
@@ -40,35 +40,6 @@ class KccConsentPage extends HookConsumerWidget {
       ),
     );
   }
-
-  Widget _buildHeader(BuildContext context, String title, String subtitle) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Grid.side,
-          vertical: Grid.xs,
-        ),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-            const SizedBox(height: Grid.xs),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-      );
 
   Widget _buildUserAndPrivacyAgreement(
     BuildContext context,

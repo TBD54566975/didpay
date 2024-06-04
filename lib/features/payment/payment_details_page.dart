@@ -12,6 +12,7 @@ import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -79,7 +80,12 @@ class PaymentDetailsPage extends HookConsumerWidget {
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  _buildHeader(context),
+                  Header(
+                    title: paymentState.transactionType == TransactionType.send
+                        ? Loc.of(context).enterTheirPaymentDetails
+                        : Loc.of(context).enterYourPaymentDetails,
+                    subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                  ),
                   if (shouldShowPaymentTypeSelector)
                     _buildPaymentTypeSelector(
                       context,
@@ -127,36 +133,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Grid.side,
-          vertical: Grid.xs,
-        ),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                paymentState.transactionType == TransactionType.send
-                    ? Loc.of(context).enterTheirPaymentDetails
-                    : Loc.of(context).enterYourPaymentDetails,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-            const SizedBox(height: Grid.xs),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                Loc.of(context).makeSureInfoIsCorrect,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-      );
-
   Widget _buildPaymentForm(
     BuildContext context,
     PaymentState paymentState, {
@@ -176,16 +152,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
       child: JsonSchemaForm(
         schema: schema,
         isDisabled: isDisabled,
-        onSubmit: (formData) {
-          // TODO(mistermoe): check requiredClaims and navigate to kcc flow if needed, https://github.com/TBD54566975/didpay/issues/122
-          onPaymentFormSubmit(
-            paymentState.copyWith(
-              serviceFee: fee,
-              paymentName: paymentName,
-              formData: formData,
-            ),
-          );
-        },
+        onSubmit: (formData) => onPaymentFormSubmit(
+          paymentState.copyWith(
+            serviceFee: fee,
+            paymentName: paymentName,
+            formData: formData,
+          ),
+        ),
       ),
     );
   }
