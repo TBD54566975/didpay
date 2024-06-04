@@ -2,6 +2,7 @@ import 'package:didpay/features/device/device_info_service.dart';
 import 'package:didpay/features/did_qr/did_qr.dart';
 import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -44,10 +45,9 @@ class SendDetailsPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    _buildHeader(
-                      context,
-                      Loc.of(context).enterRecipientDid,
-                      Loc.of(context).makeSureInfoIsCorrect,
+                    Header(
+                      title: Loc.of(context).enterRecipientDid,
+                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
                     ),
                     _buildDidForm(
                       context,
@@ -77,39 +77,6 @@ class SendDetailsPage extends HookConsumerWidget {
       ),
     );
   }
-
-  Widget _buildHeader(
-    BuildContext context,
-    String title,
-    String subtitle,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: Grid.xs,
-          horizontal: Grid.side,
-        ),
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-            const SizedBox(height: Grid.xs),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                subtitle,
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          ],
-        ),
-      );
 
   Widget _buildDidForm(
     BuildContext context,
