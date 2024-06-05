@@ -24,10 +24,7 @@ class AccountPage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfile(
-              context,
-              ref.read(didProvider).uri,
-            ),
+            _buildProfile(context, ref.read(didProvider).uri),
             const Center(child: Text('username@didpay.me')),
             const SizedBox(height: Grid.lg),
             Expanded(
@@ -68,9 +65,7 @@ class AccountPage extends HookConsumerWidget {
                   ),
                   color: Theme.of(context).colorScheme.background,
                 ),
-                child: const Center(
-                  child: Icon(Icons.person, size: Grid.xl),
-                ),
+                child: const Center(child: Icon(Icons.person, size: Grid.xl)),
               ),
               Positioned(
                 bottom: -Grid.xxs,
@@ -119,17 +114,9 @@ class AccountPage extends HookConsumerWidget {
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
             itemCount: pfis.length + 1,
-            itemBuilder: (context, index) {
-              if (index < pfis.length) {
-                return TileContainer(
-                  child: _buildPfiTile(context, ref, pfis[index]),
-                );
-              } else {
-                return TileContainer(
-                  child: _buildAddPfiTile(context),
-                );
-              }
-            },
+            itemBuilder: (context, index) => index < pfis.length
+                ? TileContainer(child: _buildPfiTile(context, ref, pfis[index]))
+                : TileContainer(child: _buildAddPfiTile(context)),
           ),
         ],
       );
