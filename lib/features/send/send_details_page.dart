@@ -1,7 +1,9 @@
 import 'package:didpay/features/device/device_info_service.dart';
 import 'package:didpay/features/did/did_qr.dart';
-import 'package:didpay/features/send/send_confirmation_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/async/async_data_widget.dart';
+import 'package:didpay/shared/async/async_error_widget.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +22,8 @@ class SendDetailsPage extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
+    final sendResponse = useState<AsyncValue<void>?>(null);
+
     final recipientDidController = useTextEditingController();
 
     useEffect(
@@ -36,44 +40,56 @@ class SendDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Header(
-                      title: Loc.of(context).enterRecipientDid,
-                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
+        child: sendResponse.value == null
+            ? Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      physics: const BouncingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Header(
+                            title: Loc.of(context).enterRecipientDid,
+                            subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                          ),
+                          _buildDidForm(
+                            context,
+                            recipientDidController,
+                            focusNode,
+                            errorText,
+                            Loc.of(context).invalidDid,
+                          ),
+                        ],
+                      ),
                     ),
-                    _buildDidForm(
-                      context,
-                      recipientDidController,
-                      focusNode,
-                      errorText,
-                      Loc.of(context).invalidDid,
-                    ),
-                  ],
+                  ),
+                  DidQr.buildScanTile(
+                    context,
+                    Loc.of(context).scanRecipientQrCode,
+                    recipientDidController,
+                    errorText,
+                    isPhysicalDevice: isPhysicalDevice.value,
+                  ),
+                  _buildSendButton(
+                    context,
+                    recipientDidController,
+                    sendResponse,
+                    errorText.value,
+                  ),
+                ],
+              )
+            : sendResponse.value!.when(
+                data: (_) =>
+                    AsyncDataWidget(text: Loc.of(context).yourPaymentWasSent),
+                loading: () =>
+                    AsyncLoadingWidget(text: Loc.of(context).sendingPayment),
+                error: (error, _) => AsyncErrorWidget(
+                  text: error.toString(),
+                  onRetry: () => Navigator.pop(context),
                 ),
               ),
-            ),
-            DidQr.buildScanTile(
-              context,
-              Loc.of(context).scanRecipientQrCode,
-              recipientDidController,
-              errorText,
-              isPhysicalDevice: isPhysicalDevice.value,
-            ),
-            _buildSendButton(
-              context,
-              recipientDidController,
-              errorText.value,
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -139,6 +155,7 @@ class SendDetailsPage extends HookConsumerWidget {
   Widget _buildSendButton(
     BuildContext context,
     TextEditingController recipientDidController,
+    ValueNotifier<AsyncValue<void>?> sendResponse,
     String? errorText,
   ) =>
       Padding(
@@ -147,18 +164,16 @@ class SendDetailsPage extends HookConsumerWidget {
           onPressed: () {
             if ((_formKey.currentState?.validate() ?? false) &&
                 errorText == null) {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SendConfirmationPage(
-                    did: recipientDidController.text,
-                    amount: sendAmount,
-                  ),
-                ),
-              );
+              _sendPayment(sendResponse);
             }
           },
           child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
         ),
       );
+
+  Future<void> _sendPayment(ValueNotifier<AsyncValue<void>?> state) async {
+    state.value = const AsyncLoading();
+    await Future.delayed(const Duration(milliseconds: 1000));
+    state.value = const AsyncValue.data(null);
+  }
 }
