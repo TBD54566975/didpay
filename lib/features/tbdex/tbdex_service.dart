@@ -82,7 +82,7 @@ class TbdexService {
       CreateRfqData(
         offeringId: paymentState.selectedOffering?.metadata.id ?? '',
         payin: CreateSelectedPayinMethod(
-          amount: paymentState.payinAmount ?? '',
+          amount: paymentState.payinAmount.toString(),
           kind: paymentState.selectedPayinMethod?.kind ?? '',
           paymentDetails:
               paymentState.transactionType == TransactionType.deposit
