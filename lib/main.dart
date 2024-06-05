@@ -50,6 +50,7 @@ Future<List<Override>> notifierOverrides() async {
 
   final countriesBox = await Hive.openBox(CountriesNotifier.storageKey);
   final countriesNotifier = await CountriesNotifier.create(countriesBox);
+  await countriesNotifier.add('Mexico', 'MX');
 
   final vcsBox = await Hive.openBox(VcsNotifier.storageKey);
   final vcsNotifier = await VcsNotifier.create(vcsBox);
