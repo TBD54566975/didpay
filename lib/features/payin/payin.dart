@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -13,20 +14,16 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tbdex/tbdex.dart';
 
 class Payin extends HookWidget {
-  final TransactionType transactionType;
-  final ValueNotifier<String> amount;
+  final PaymentState paymentState;
+  final ValueNotifier<String> payinAmount;
   final ValueNotifier<PayinKeyPress> keyPress;
-  final ValueNotifier<Pfi?> selectedPfi;
-  final ValueNotifier<Offering?> selectedOffering;
-  final Map<Pfi, List<Offering>> offeringsMap;
+  final void Function(Pfi, Offering) onCurrencySelect;
 
   const Payin({
-    required this.transactionType,
-    required this.amount,
+    required this.paymentState,
+    required this.payinAmount,
     required this.keyPress,
-    required this.selectedPfi,
-    required this.selectedOffering,
-    required this.offeringsMap,
+    required this.onCurrencySelect,
     super.key,
   });
 
@@ -36,8 +33,9 @@ class Payin extends HookWidget {
     final hintDigits = useState(0);
     final decimalPaddingHint = useState('');
 
-    final currencyCode = selectedOffering.value?.data.payin.currencyCode ?? '';
-    final formattedAmount = Decimal.parse(amount.value).formatCurrency(
+    final currencyCode =
+        paymentState.selectedOffering?.data.payin.currencyCode ?? '';
+    final formattedAmount = Decimal.parse(payinAmount.value).formatCurrency(
       currencyCode,
       hintDigits: hintDigits.value,
     );
@@ -45,39 +43,40 @@ class Payin extends HookWidget {
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          amount.value = '0';
+          payinAmount.value = '0';
           decimalPaddingHint.value = '';
           hintDigits.value = 0;
         });
         return;
       },
-      [selectedOffering.value],
+      [paymentState.selectedOffering],
     );
 
     useEffect(
       () {
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          final current = amount.value;
+          final current = payinAmount.value;
           final key = keyPress.value.key;
           if (key == '') return;
 
           shouldAnimate.value = (key == '<')
               ? !NumberValidationUtil.isValidDelete(current)
-              : (transactionType == TransactionType.deposit
+              : (paymentState.transactionType == TransactionType.deposit
                   ? !NumberValidationUtil.isValidInput(
                       current,
                       key,
-                      currency: selectedOffering.value?.data.payin.currencyCode,
+                      currency: paymentState
+                          .selectedOffering?.data.payin.currencyCode,
                     )
                   : !NumberValidationUtil.isValidInput(current, key));
           if (shouldAnimate.value) return;
 
           if (key == '<') {
-            amount.value = (current.length > 1)
+            payinAmount.value = (current.length > 1)
                 ? current.substring(0, current.length - 1)
                 : '0';
           } else {
-            amount.value = (current == '0' && key == '.')
+            payinAmount.value = (current == '0' && key == '.')
                 ? '$current$key'
                 : (current == '0')
                     ? key
@@ -85,17 +84,17 @@ class Payin extends HookWidget {
           }
 
           final decimalDigits =
-              selectedOffering.value?.data.payin.currencyCode == 'BTC' ? 8 : 2;
+              paymentState.selectedOffering?.data.payin.currencyCode == 'BTC'
+                  ? 8
+                  : 2;
 
-          final hasDecimal = amount.value.contains('.');
+          final hasDecimal = payinAmount.value.contains('.');
           hintDigits.value = hasDecimal
-              ? decimalDigits - amount.value.split('.')[1].length
+              ? decimalDigits - payinAmount.value.split('.')[1].length
               : decimalDigits;
 
-          decimalPaddingHint.value = hasDecimal && hintDigits.value > 0
-              ? (hintDigits.value == decimalDigits ? '.' : '') +
-                  '0' * hintDigits.value
-              : '';
+          decimalPaddingHint.value =
+              hasDecimal && hintDigits.value > 0 ? '0' * hintDigits.value : '';
         });
 
         return;
@@ -119,7 +118,7 @@ class Payin extends HookWidget {
                     child: AutoSizeText.rich(
                       TextSpan(
                         children: [
-                          TextSpan(text: formattedAmount),
+                          TextSpan(text: denormalizeDecimal(formattedAmount)),
                           TextSpan(
                             text: decimalPaddingHint.value,
                             style: TextStyle(
@@ -146,20 +145,18 @@ class Payin extends HookWidget {
   }
 
   Widget _buildPayinCurrency(BuildContext context) {
-    switch (transactionType) {
+    switch (paymentState.transactionType) {
       case TransactionType.deposit:
         return CurrencyDropdown(
-          transactionType: transactionType,
-          selectedPfi: selectedPfi,
-          selectedOffering: selectedOffering,
-          offeringsMap: offeringsMap,
+          paymentState: paymentState,
+          onCurrencySelect: onCurrencySelect,
         );
       case TransactionType.withdraw:
       case TransactionType.send:
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(
-            selectedOffering.value?.data.payin.currencyCode ?? '',
+            paymentState.selectedOffering?.data.payin.currencyCode ?? '',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         );
@@ -174,9 +171,22 @@ class Payin extends HookWidget {
       TransactionType.send: Loc.of(context).youSend,
     };
 
-    final label = labels[transactionType] ?? 'unknown transaction type';
+    final label =
+        labels[paymentState.transactionType] ?? 'unknown transaction type';
 
     return Text(label, style: style);
+  }
+
+  String denormalizeDecimal(String amount) {
+    if (!payinAmount.value.contains('.') || payinAmount.value == amount) {
+      return amount;
+    }
+
+    final amountWithDecimal = '$amount.';
+    final missingZeros = payinAmount.value.split('.').last.length -
+        amountWithDecimal.split('.').last.length;
+
+    return '$amountWithDecimal${'0' * missingZeros}';
   }
 }
 
