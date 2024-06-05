@@ -24,8 +24,6 @@ class KccWebviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bearerDid = ref.watch(didProvider);
-    final kccIssuanceService = ref.watch(kccIssuanceProvider);
     final idvRequest = useState<AsyncValue<IdvRequest>>(const AsyncLoading());
 
     final settings = InAppWebViewSettings(
@@ -39,17 +37,11 @@ class KccWebviewPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async {
-          try {
-            final value =
-                await kccIssuanceService.getIdvRequest(pfi, bearerDid);
-            idvRequest.value = AsyncData(value);
-          } on Exception catch (e, stackTrace) {
-            idvRequest.value = AsyncError(e, stackTrace);
-          }
-        });
+        Future.microtask(
+          () async => _getIdvRequest(ref, idvRequest),
+        );
 
-        return;
+        return null;
       },
       [],
     );
@@ -63,9 +55,11 @@ class KccWebviewPage extends HookConsumerWidget {
       ),
       body: idvRequest.value.when(
         loading: () => AsyncLoadingWidget(text: Loc.of(context).startingIdv),
-        error: (error, stackTrace) => AsyncErrorWidget(
-          text: error.toString(),
-          onRetry: () => Navigator.of(context).pop(),
+        error: (error, stackTrace) => SafeArea(
+          child: AsyncErrorWidget(
+            text: error.toString(),
+            onRetry: () => _getIdvRequest(ref, idvRequest),
+          ),
         ),
         data: (data) {
           return InAppWebView(
@@ -102,5 +96,20 @@ class KccWebviewPage extends HookConsumerWidget {
         },
       ),
     );
+  }
+
+  void _getIdvRequest(
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<IdvRequest>> state,
+  ) {
+    state.value = const AsyncLoading();
+    ref
+        .read(kccIssuanceProvider)
+        .getIdvRequest(pfi, ref.read(didProvider))
+        .then((idvRequest) => state.value = AsyncData(idvRequest))
+        .catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
   }
 }

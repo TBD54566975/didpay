@@ -226,19 +226,19 @@ class PaymentReviewPage extends HookConsumerWidget {
     WidgetRef ref,
     ValueNotifier<AsyncValue<Quote>> state,
   ) {
-    try {
-      if (paymentState.exchangeId != null && paymentState.selectedPfi != null) {
-        ref
-            .read(tbdexServiceProvider)
-            .pollForQuote(
-              ref.read(didProvider),
-              paymentState.selectedPfi!,
-              paymentState.exchangeId!,
-            )
-            .then((quote) => state.value = AsyncData(quote));
-      }
-    } on Exception catch (error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
+    if (paymentState.exchangeId != null && paymentState.selectedPfi != null) {
+      ref
+          .read(tbdexServiceProvider)
+          .pollForQuote(
+            ref.read(didProvider),
+            paymentState.selectedPfi!,
+            paymentState.exchangeId!,
+          )
+          .then((quote) => state.value = AsyncData(quote))
+          .catchError((error, stackTrace) {
+        state.value = AsyncError(error, stackTrace);
+        throw error;
+      });
     }
   }
 
