@@ -12,7 +12,6 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
-import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -32,8 +31,8 @@ class PaymentAmountPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final payinAmount = useState('0');
-    final payoutAmount = useState<double>(0);
+    final payinAmount = useState<String>('0');
+    final payoutAmount = useState<Decimal>(Decimal.zero);
     final keyPress = useState(PayinKeyPress(0, ''));
     final selectedPfi = useState<Pfi?>(null);
     final selectedOffering = useState<Offering?>(null);
@@ -56,6 +55,19 @@ class PaymentAmountPage extends HookConsumerWidget {
             selectedPfi.value ??= offeringsMap.keys.first;
             selectedOffering.value ??= offeringsMap[selectedPfi.value]!.first;
 
+            void onCurrencySelect(pfi, offering) {
+              selectedPfi.value = pfi;
+              selectedOffering.value = offering;
+            }
+
+            final paymentState = PaymentState(
+              payinAmount: Decimal.parse(payinAmount.value),
+              transactionType: transactionType,
+              selectedPfi: selectedPfi.value,
+              selectedOffering: selectedOffering.value,
+              offeringsMap: offeringsMap,
+            );
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -71,22 +83,16 @@ class PaymentAmountPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            transactionType: transactionType,
-                            amount: payinAmount,
+                            paymentState: paymentState,
+                            payinAmount: payinAmount,
                             keyPress: keyPress,
-                            selectedPfi: selectedPfi,
-                            selectedOffering: selectedOffering,
-                            offeringsMap: offeringsMap,
+                            onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.sm),
                           Payout(
-                            payinAmount:
-                                double.tryParse(payinAmount.value) ?? 0.0,
-                            transactionType: transactionType,
+                            paymentState: paymentState,
                             payoutAmount: payoutAmount,
-                            selectedPfi: selectedPfi,
-                            selectedOffering: selectedOffering,
-                            offeringsMap: offeringsMap,
+                            onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.xl),
                           PaymentFeeDetails(
@@ -107,12 +113,24 @@ class PaymentAmountPage extends HookConsumerWidget {
                 const SizedBox(height: Grid.sm),
                 _buildNextButton(
                   context,
-                  payinAmount.value,
-                  Decimal.parse(payoutAmount.value.toString()).formatCurrency(
-                    selectedOffering.value?.data.payout.currencyCode ?? '',
+                  paymentState.copyWith(
+                    payinAmount: Decimal.parse(payinAmount.value),
+                    payoutAmount: payoutAmount.value,
+                    selectedPfi: selectedPfi.value,
+                    selectedOffering: selectedOffering.value,
+                    payinCurrency:
+                        selectedOffering.value?.data.payin.currencyCode ?? '',
+                    payoutCurrency:
+                        selectedOffering.value?.data.payout.currencyCode ?? '',
+                    payinMethods:
+                        selectedOffering.value?.data.payin.methods ?? [],
+                    payoutMethods:
+                        selectedOffering.value?.data.payout.methods ?? [],
+                    exchangeRate: Decimal.parse(
+                      selectedOffering.value?.data.payoutUnitsPerPayinUnit ??
+                          '1',
+                    ),
                   ),
-                  selectedPfi.value,
-                  selectedOffering.value,
                 ),
               ],
             );
@@ -130,38 +148,17 @@ class PaymentAmountPage extends HookConsumerWidget {
 
   Widget _buildNextButton(
     BuildContext context,
-    String payinAmount,
-    String payoutAmount,
-    Pfi? selectedPfi,
-    Offering? selectedOffering,
+    PaymentState paymentState,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
         child: FilledButton(
-          onPressed: double.tryParse(payinAmount) == 0
+          onPressed: paymentState.payinAmount == Decimal.zero
               ? null
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PaymentDetailsPage(
-                        paymentState: PaymentState(
-                          transactionType: transactionType,
-                          payinAmount: payinAmount,
-                          payoutAmount: payoutAmount,
-                          payinCurrency:
-                              selectedOffering?.data.payin.currencyCode ?? '',
-                          payoutCurrency:
-                              selectedOffering?.data.payout.currencyCode ?? '',
-                          exchangeRate:
-                              selectedOffering?.data.payoutUnitsPerPayinUnit ??
-                                  '',
-                          selectedPfi: selectedPfi ?? const Pfi(did: ''),
-                          selectedOffering: selectedOffering,
-                          payinMethods:
-                              selectedOffering?.data.payin.methods ?? [],
-                          payoutMethods:
-                              selectedOffering?.data.payout.methods ?? [],
-                        ),
-                      ),
+                      builder: (context) =>
+                          PaymentDetailsPage(paymentState: paymentState),
                     ),
                   ),
           child: Text(Loc.of(context).next),
