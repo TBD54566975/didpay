@@ -12,7 +12,8 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
-import 'package:didpay/shared/number_pad.dart';
+import 'package:didpay/shared/number/number_key_press.dart';
+import 'package:didpay/shared/number/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -33,7 +34,7 @@ class PaymentAmountPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final payinAmount = useState<String>('0');
     final payoutAmount = useState<Decimal>(Decimal.zero);
-    final keyPress = useState(PayinKeyPress(0, ''));
+    final keyPress = useState(NumberKeyPress(0, ''));
     final selectedPfi = useState<Pfi?>(null);
     final selectedOffering = useState<Offering?>(null);
     final offeringsResponse =
@@ -107,7 +108,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                 Center(
                   child: NumberPad(
                     onKeyPressed: (key) => keyPress.value =
-                        PayinKeyPress(keyPress.value.count + 1, key),
+                        NumberKeyPress(keyPress.value.count + 1, key),
                   ),
                 ),
                 const SizedBox(height: Grid.sm),
