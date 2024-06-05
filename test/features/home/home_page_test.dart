@@ -31,6 +31,16 @@ void main() async {
   late MockPfisNotifier mockPfisNotifier;
 
   group('HomePage', () {
+    Widget homePageTestWidget() => WidgetHelpers.testableWidget(
+          child: const HomePage(),
+          overrides: [
+            didProvider.overrideWithValue(did),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+            transactionProvider.overrideWith(MockTransactionNotifier.new),
+            pfisProvider.overrideWith((ref) => mockPfisNotifier),
+          ],
+        );
+
     setUp(() {
       mockTbdexService = MockTbdexService();
       mockPfisNotifier = MockPfisNotifier([pfi]);
@@ -45,35 +55,13 @@ void main() async {
     });
 
     testWidgets('should show account balance', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       expect(find.text('Account balance'), findsOneWidget);
     });
 
     testWidgets('should show valid account balance amount', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       final numberPattern = RegExp(r'[0-9]+(\.[0-9]{2})?$');
 
@@ -81,36 +69,14 @@ void main() async {
     });
 
     testWidgets('should show deposit button', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       expect(find.widgetWithText(FilledButton, 'Deposit'), findsOneWidget);
     });
 
     testWidgets('should navigate to PaymentAmountPage on tap of deposit button',
         (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       await tester.tap(find.widgetWithText(FilledButton, 'Deposit'));
       await tester.pumpAndSettle();
@@ -119,18 +85,7 @@ void main() async {
     });
 
     testWidgets('should show withdraw button', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       expect(find.widgetWithText(FilledButton, 'Withdraw'), findsOneWidget);
     });
@@ -138,18 +93,7 @@ void main() async {
     testWidgets(
         'should navigate to PaymentAmountPage on tap of withdraw button',
         (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
-      await tester.pumpAndSettle();
+      await tester.pumpWidget(homePageTestWidget());
 
       await tester.tap(find.widgetWithText(FilledButton, 'Withdraw'));
       await tester.pumpAndSettle();
@@ -158,17 +102,7 @@ void main() async {
     });
 
     testWidgets('should show empty state when no transactions', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(homePageTestWidget());
       await tester.pumpAndSettle();
 
       expect(find.text('No transactions yet'), findsOneWidget);
@@ -182,17 +116,7 @@ void main() async {
     testWidgets(
         'should navigate to PaymentAmountPage on tap of get started button',
         (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const HomePage(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(homePageTestWidget());
       await tester.pumpAndSettle();
 
       await tester.tap(find.text('Get started'));

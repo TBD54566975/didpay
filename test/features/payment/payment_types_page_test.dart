@@ -12,16 +12,16 @@ final _paymentTypes = {
 
 void main() {
   group('PaymentTypesPage', () {
-    testWidgets('should show search field', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
+    Widget paymentTypesPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentTypesPage(
             selectedPaymentType: ValueNotifier<String>(_paymentTypes.first),
             paymentTypes: _paymentTypes,
             payinCurrency: '',
           ),
-        ),
-      );
+        );
+
+    testWidgets('should show search field', (tester) async {
+      await tester.pumpWidget(paymentTypesPageTestWidget());
 
       expect(find.byType(TextFormField), findsOneWidget);
       expect(find.byIcon(Icons.search), findsOneWidget);
@@ -29,15 +29,7 @@ void main() {
     });
 
     testWidgets('should show payment type list', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentTypesPage(
-            selectedPaymentType: ValueNotifier(_paymentTypes.first),
-            paymentTypes: _paymentTypes,
-            payinCurrency: '',
-          ),
-        ),
-      );
+      await tester.pumpWidget(paymentTypesPageTestWidget());
 
       expect(find.byType(ListTile), findsExactly(3));
       expect(find.widgetWithText(ListTile, 'Bank'), findsOneWidget);
@@ -47,19 +39,7 @@ void main() {
 
     testWidgets('should show a payment type after valid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier(
-        _paymentTypes.first,
-      );
-
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentTypesPage(
-            selectedPaymentType: selectedPaymentMethod,
-            paymentTypes: _paymentTypes,
-            payinCurrency: '',
-          ),
-        ),
-      );
+      await tester.pumpWidget(paymentTypesPageTestWidget());
 
       await tester.enterText(find.byType(TextFormField), 'Bank');
       await tester.pump();
@@ -70,19 +50,7 @@ void main() {
 
     testWidgets('should show no payment types after invalid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier(
-        _paymentTypes.first,
-      );
-
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentTypesPage(
-            selectedPaymentType: selectedPaymentMethod,
-            paymentTypes: _paymentTypes,
-            payinCurrency: '',
-          ),
-        ),
-      );
+      await tester.pumpWidget(paymentTypesPageTestWidget());
 
       await tester.enterText(find.byType(TextFormField), 'invalid');
       await tester.pump();

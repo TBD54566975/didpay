@@ -57,18 +57,20 @@ final _paymentMethods = [
   ),
 ];
 
+Widget paymentMethodsPageTestWidget() => WidgetHelpers.testableWidget(
+      child: PaymentMethodsPage(
+        paymentCurrency: '',
+        selectedPaymentMethod:
+            ValueNotifier<PayinMethod>(_paymentMethods.first),
+        paymentMethods: _paymentMethods,
+      ),
+    );
+
 void main() {
   group('PaymentMethodsPage', () {
     testWidgets('should show search field', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod:
-                ValueNotifier<PayinMethod>(_paymentMethods.first),
-            paymentMethods: _paymentMethods,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: paymentMethodsPageTestWidget()),
       );
 
       expect(find.byType(TextFormField), findsOneWidget);
@@ -95,18 +97,8 @@ void main() {
 
     testWidgets('should show a payment method after valid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier<PayinMethod>(
-        _paymentMethods.first,
-      );
-
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod: selectedPaymentMethod,
-            paymentMethods: _paymentMethods,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: paymentMethodsPageTestWidget()),
       );
 
       await tester.enterText(find.byType(TextFormField), 'MTN');
@@ -118,18 +110,8 @@ void main() {
 
     testWidgets('should show no payment methods after invalid search',
         (tester) async {
-      final selectedPaymentMethod = ValueNotifier<PayinMethod>(
-        _paymentMethods.first,
-      );
-
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod: selectedPaymentMethod,
-            paymentMethods: _paymentMethods,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: paymentMethodsPageTestWidget()),
       );
 
       await tester.enterText(find.byType(TextFormField), 'invalid');

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
@@ -69,10 +70,10 @@ void main() async {
           child: PaymentDetailsPage(
             paymentState: PaymentState(
               selectedPfi: const Pfi(did: ''),
-              payoutAmount: '17.00',
+              payoutAmount: Decimal.parse('17.00'),
               payinCurrency: 'USD',
               payoutCurrency: 'MXN',
-              exchangeRate: '17',
+              exchangeRate: Decimal.parse('17.00'),
               transactionType: TransactionType.deposit,
               payinMethods: payinMethods,
               payoutMethods: payoutMethods,

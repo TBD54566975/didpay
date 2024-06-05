@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
@@ -10,7 +11,6 @@ import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:tbdex/tbdex.dart';
 import 'package:web5/web5.dart';
@@ -34,15 +34,14 @@ void main() async {
 
   late MockTbdexService mockTbdexService;
 
-  Widget reviewPaymentPageTestWidget({List<Override> overrides = const []}) =>
-      WidgetHelpers.testableWidget(
-        child: const PaymentReviewPage(
+  Widget reviewPaymentPageTestWidget() => WidgetHelpers.testableWidget(
+        child: PaymentReviewPage(
           paymentState: PaymentState(
-            selectedPfi: Pfi(did: ''),
-            payoutAmount: '17.00',
+            selectedPfi: const Pfi(did: ''),
+            payoutAmount: Decimal.parse('17.00'),
             payinCurrency: 'USD',
             payoutCurrency: 'MXN',
-            exchangeRate: '17',
+            exchangeRate: Decimal.parse('17.00'),
             exchangeId: '',
             transactionType: TransactionType.deposit,
             paymentName: 'ABC Bank',
@@ -54,6 +53,7 @@ void main() async {
           tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
         ],
       );
+
   group('ReviewPaymentPage', () {
     setUp(() {
       mockTbdexService = MockTbdexService();

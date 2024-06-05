@@ -8,6 +8,7 @@ import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:web5/web5.dart';
@@ -34,9 +35,7 @@ void main() async {
   });
 
   group('AppTabs', () {
-    testWidgets('should start on HomePage', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
+    Widget appTabsTestWidget() => WidgetHelpers.testableWidget(
           child: const AppTabs(),
           overrides: [
             didProvider.overrideWithValue(did),
@@ -45,26 +44,16 @@ void main() async {
             vcsProvider.overrideWith((ref) => mockVcsNotifier),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
           ],
-        ),
-      );
-      await tester.pumpAndSettle();
+        );
+
+    testWidgets('should start on HomePage', (tester) async {
+      await tester.pumpWidget(appTabsTestWidget());
 
       expect(find.byType(HomePage), findsOneWidget);
     });
 
     testWidgets('should show SendPage when tapped', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const AppTabs(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-            vcsProvider.overrideWith((ref) => mockVcsNotifier),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-          ],
-        ),
-      );
+      await tester.pumpWidget(appTabsTestWidget());
 
       await tester.tap(find.text('Send'));
       await tester.pumpAndSettle();
@@ -72,18 +61,7 @@ void main() async {
     });
 
     testWidgets('should show AccountPage when tapped', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const AppTabs(),
-          overrides: [
-            didProvider.overrideWithValue(did),
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-            vcsProvider.overrideWith((ref) => mockVcsNotifier),
-            transactionProvider.overrideWith(MockTransactionNotifier.new),
-          ],
-        ),
-      );
+      await tester.pumpWidget(appTabsTestWidget());
 
       await tester.tap(find.text('Account'));
       await tester.pumpAndSettle();
