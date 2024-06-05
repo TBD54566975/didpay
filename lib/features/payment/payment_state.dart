@@ -1,17 +1,18 @@
+import 'package:decimal/decimal.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentState {
   final TransactionType transactionType;
-  final String? payinAmount;
-  final String? payoutAmount;
   final String? payinCurrency;
   final String? payoutCurrency;
-  final String? exchangeRate;
   final String? serviceFee;
   final String? paymentName;
   final String? exchangeId;
+  final Decimal? payinAmount;
+  final Decimal? payoutAmount;
+  final Decimal? exchangeRate;
   final Pfi? selectedPfi;
   final Offering? selectedOffering;
   final PayinMethod? selectedPayinMethod;
@@ -20,17 +21,18 @@ class PaymentState {
   final List<PayoutMethod>? payoutMethods;
   final List<String>? claims;
   final Map<String, String>? formData;
+  final Map<Pfi, List<Offering>>? offeringsMap;
 
   const PaymentState({
     required this.transactionType,
-    this.payinAmount,
-    this.payoutAmount,
     this.payinCurrency,
     this.payoutCurrency,
-    this.exchangeRate,
     this.serviceFee,
     this.paymentName,
     this.exchangeId,
+    this.payinAmount,
+    this.payoutAmount,
+    this.exchangeRate,
     this.selectedPfi,
     this.selectedOffering,
     this.selectedPayinMethod,
@@ -39,18 +41,19 @@ class PaymentState {
     this.payoutMethods,
     this.claims,
     this.formData,
+    this.offeringsMap,
   });
 
   PaymentState copyWith({
     TransactionType? transactionType,
-    String? payinAmount,
-    String? payoutAmount,
     String? payinCurrency,
     String? payoutCurrency,
-    String? exchangeRate,
     String? serviceFee,
     String? paymentName,
     String? exchangeId,
+    Decimal? payinAmount,
+    Decimal? payoutAmount,
+    Decimal? exchangeRate,
     Pfi? selectedPfi,
     Offering? selectedOffering,
     PayinMethod? selectedPayinMethod,
@@ -59,17 +62,18 @@ class PaymentState {
     List<PayoutMethod>? payoutMethods,
     List<String>? claims,
     Map<String, String>? formData,
+    Map<Pfi, List<Offering>>? offeringsMap,
   }) {
     return PaymentState(
       transactionType: transactionType ?? this.transactionType,
-      payinAmount: payinAmount ?? this.payinAmount,
-      payoutAmount: payoutAmount ?? this.payoutAmount,
       payinCurrency: payinCurrency ?? this.payinCurrency,
       payoutCurrency: payoutCurrency ?? this.payoutCurrency,
-      exchangeRate: exchangeRate ?? this.exchangeRate,
       serviceFee: serviceFee ?? this.serviceFee,
       paymentName: paymentName ?? this.paymentName,
       exchangeId: exchangeId ?? this.exchangeId,
+      payinAmount: payinAmount ?? this.payinAmount,
+      payoutAmount: payoutAmount ?? this.payoutAmount,
+      exchangeRate: exchangeRate ?? this.exchangeRate,
       selectedPfi: selectedPfi ?? this.selectedPfi,
       selectedOffering: selectedOffering ?? this.selectedOffering,
       selectedPayinMethod: selectedPayinMethod ?? this.selectedPayinMethod,
@@ -78,6 +82,7 @@ class PaymentState {
       payoutMethods: payoutMethods ?? this.payoutMethods,
       claims: claims ?? this.claims,
       formData: formData ?? this.formData,
+      offeringsMap: offeringsMap ?? this.offeringsMap,
     );
   }
 }

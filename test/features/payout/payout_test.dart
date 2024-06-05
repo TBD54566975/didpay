@@ -1,3 +1,5 @@
+import 'package:decimal/decimal.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
@@ -9,7 +11,7 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('Payout', () {
-    final amount = ValueNotifier<double>(2);
+    final amount = ValueNotifier<Decimal>(Decimal.one);
     final pfi = ValueNotifier<Pfi?>(null);
     final offering = ValueNotifier<Offering?>(
       Offering.create(
@@ -40,35 +42,33 @@ void main() {
       ),
     );
 
-    testWidgets('should show payout amount', (tester) async {
-      await tester.pumpWidget(
+    final paymentState = PaymentState(
+      transactionType: TransactionType.deposit,
+      selectedOffering: offering.value,
+      selectedPfi: pfi.value,
+      offeringsMap: const {},
+    );
+
+    Widget payoutTestWidget({PaymentState? paymentStateOverride}) =>
         WidgetHelpers.testableWidget(
           child: Payout(
+            paymentState: paymentStateOverride ?? paymentState,
             payoutAmount: amount,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-            transactionType: TransactionType.deposit,
-            payinAmount: 34,
-            offeringsMap: const {},
+            onCurrencySelect: (_, __) {},
           ),
-        ),
+        );
+
+    testWidgets('should show payout amount', (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: payoutTestWidget()),
       );
 
-      expect(find.textContaining('2'), findsOneWidget);
+      expect(find.textContaining('1'), findsOneWidget);
     });
 
     testWidgets('should show you payout currency', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payout(
-            payoutAmount: amount,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-            transactionType: TransactionType.deposit,
-            payinAmount: 34,
-            offeringsMap: const {},
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payoutTestWidget()),
       );
 
       expect(find.textContaining('USDC'), findsOneWidget);
@@ -77,13 +77,10 @@ void main() {
     testWidgets('should show the `You get` label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: Payout(
-            payoutAmount: amount,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-            transactionType: TransactionType.withdraw,
-            payinAmount: 34,
-            offeringsMap: const {},
+          child: payoutTestWidget(
+            paymentStateOverride: paymentState.copyWith(
+              transactionType: TransactionType.withdraw,
+            ),
           ),
         ),
       );
@@ -95,13 +92,10 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: Payout(
-            payoutAmount: amount,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-            transactionType: TransactionType.withdraw,
-            payinAmount: 34,
-            offeringsMap: const {},
+          child: payoutTestWidget(
+            paymentStateOverride: paymentState.copyWith(
+              transactionType: TransactionType.withdraw,
+            ),
           ),
         ),
       );
@@ -112,16 +106,7 @@ void main() {
     testWidgets('should not show toggle icon for deposit transaction type',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payout(
-            payoutAmount: amount,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-            transactionType: TransactionType.deposit,
-            payinAmount: 34,
-            offeringsMap: const {},
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payoutTestWidget()),
       );
 
       expect(find.byIcon(Icons.keyboard_arrow_down), findsNothing);

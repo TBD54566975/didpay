@@ -88,18 +88,19 @@ class KccRetrievalPage extends HookConsumerWidget {
     ValueNotifier<AsyncValue<String>> state,
   ) async {
     state.value = const AsyncLoading();
-    try {
-      final credential = await ref.read(kccIssuanceProvider).pollForCredential(
-            pfi,
-            idvRequest,
-            ref.read(didProvider),
-          );
+    final credential = await ref.read(kccIssuanceProvider).pollForCredential(
+          pfi,
+          idvRequest,
+          ref.read(didProvider),
+        );
 
-      await ref.read(vcsProvider.notifier).add(credential).then(
-            (credential) => state.value = AsyncData(credential),
-          );
-    } on Exception catch (e, stackTrace) {
-      state.value = AsyncError(e, stackTrace);
-    }
+    await ref
+        .read(vcsProvider.notifier)
+        .add(credential)
+        .then((credential) => state.value = AsyncData(credential))
+        .catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
   }
 }

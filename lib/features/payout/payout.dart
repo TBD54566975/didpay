@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/currency/currency_dropdown.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -11,45 +12,41 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:tbdex/tbdex.dart';
 
 class Payout extends HookWidget {
-  final double payinAmount;
-  final TransactionType transactionType;
-  final ValueNotifier<double> payoutAmount;
-  final ValueNotifier<Pfi?> selectedPfi;
-  final ValueNotifier<Offering?> selectedOffering;
-  final Map<Pfi, List<Offering>> offeringsMap;
+  final PaymentState paymentState;
+  final ValueNotifier<Decimal> payoutAmount;
+  final void Function(Pfi, Offering) onCurrencySelect;
 
   const Payout({
-    required this.payinAmount,
-    required this.transactionType,
+    required this.paymentState,
     required this.payoutAmount,
-    required this.selectedPfi,
-    required this.selectedOffering,
-    required this.offeringsMap,
+    required this.onCurrencySelect,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    final currencyCode = selectedOffering.value?.data.payout.currencyCode ?? '';
+    final currencyCode =
+        paymentState.selectedOffering?.data.payout.currencyCode ?? '';
     final formattedAmount = Decimal.parse(payoutAmount.value.toString())
         .formatCurrency(currencyCode);
 
     useEffect(
       () {
-        final exchangeRate = double.tryParse(
-              selectedOffering.value?.data.payoutUnitsPerPayinUnit ?? '',
+        final exchangeRate = Decimal.tryParse(
+              paymentState.selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
             ) ??
-            1;
+            Decimal.one;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (selectedOffering.value == null) return;
+          if (paymentState.selectedOffering == null) return;
 
-          payoutAmount.value = payinAmount * exchangeRate;
+          payoutAmount.value =
+              (paymentState.payinAmount ?? Decimal.zero) * exchangeRate;
         });
 
         return;
       },
-      [payinAmount],
+      [paymentState.payinAmount],
     );
 
     return Column(
@@ -77,20 +74,18 @@ class Payout extends HookWidget {
   }
 
   Widget _buildPayoutCurrency(BuildContext context) {
-    switch (transactionType) {
+    switch (paymentState.transactionType) {
       case TransactionType.withdraw:
         return CurrencyDropdown(
-          transactionType: transactionType,
-          selectedPfi: selectedPfi,
-          selectedOffering: selectedOffering,
-          offeringsMap: offeringsMap,
+          paymentState: paymentState,
+          onCurrencySelect: onCurrencySelect,
         );
       case TransactionType.deposit:
       case TransactionType.send:
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(
-            selectedOffering.value?.data.payout.currencyCode ?? '',
+            paymentState.selectedOffering?.data.payout.currencyCode ?? '',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         );
@@ -105,7 +100,8 @@ class Payout extends HookWidget {
       TransactionType.send: Loc.of(context).theyGet,
     };
 
-    final label = labels[transactionType] ?? 'unknown transaction type';
+    final label =
+        labels[paymentState.transactionType] ?? 'unknown transaction type';
 
     return Text(label, style: style);
   }

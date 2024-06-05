@@ -1,4 +1,5 @@
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
@@ -42,18 +43,26 @@ void main() {
     );
     final keyPress = ValueNotifier<PayinKeyPress>(PayinKeyPress(0, ''));
 
-    testWidgets('should show payin amount', (tester) async {
-      await tester.pumpWidget(
+    final paymentState = PaymentState(
+      transactionType: TransactionType.deposit,
+      selectedOffering: offering.value,
+      selectedPfi: pfi.value,
+      offeringsMap: const {},
+    );
+
+    Widget payinTestWidget({PaymentState? paymentStateOverride}) =>
         WidgetHelpers.testableWidget(
           child: Payin(
-            transactionType: TransactionType.deposit,
-            offeringsMap: const {},
-            amount: amount,
+            paymentState: paymentStateOverride ?? paymentState,
+            payinAmount: amount,
             keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
+            onCurrencySelect: (_, __) {},
           ),
-        ),
+        );
+
+    testWidgets('should show payin amount', (tester) async {
+      await tester.pumpWidget(
+        WidgetHelpers.testableWidget(child: payinTestWidget()),
       );
 
       expect(find.textContaining('70'), findsOneWidget);
@@ -61,16 +70,7 @@ void main() {
 
     testWidgets('should show you payin currency', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.deposit,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payinTestWidget()),
       );
 
       expect(find.textContaining('AUD'), findsOneWidget);
@@ -78,16 +78,7 @@ void main() {
 
     testWidgets('should show pay label', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.deposit,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payinTestWidget()),
       );
 
       expect(find.text('You pay'), findsOneWidget);
@@ -96,13 +87,10 @@ void main() {
     testWidgets('should show withdraw label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.withdraw,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
+          child: payinTestWidget(
+            paymentStateOverride: paymentState.copyWith(
+              transactionType: TransactionType.withdraw,
+            ),
           ),
         ),
       );
@@ -112,16 +100,7 @@ void main() {
 
     testWidgets('should show the animation widget', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.deposit,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payinTestWidget()),
       );
 
       expect(find.byType(ShakeAnimatedWidget), findsOneWidget);
@@ -130,16 +109,7 @@ void main() {
     testWidgets('should show toggle icon for deposit transaction type',
         (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.deposit,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: payinTestWidget()),
       );
 
       expect(find.byIcon(Icons.keyboard_arrow_down), findsOneWidget);
@@ -149,13 +119,10 @@ void main() {
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: Payin(
-            transactionType: TransactionType.withdraw,
-            offeringsMap: const {},
-            amount: amount,
-            keyPress: keyPress,
-            selectedPfi: pfi,
-            selectedOffering: offering,
+          child: payinTestWidget(
+            paymentStateOverride: paymentState.copyWith(
+              transactionType: TransactionType.withdraw,
+            ),
           ),
         ),
       );

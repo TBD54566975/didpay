@@ -1,3 +1,4 @@
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -8,10 +9,8 @@ import 'package:tbdex/tbdex.dart';
 class ModalSelectCurrency {
   static Future<dynamic> show(
     BuildContext context,
-    TransactionType transactionType,
-    ValueNotifier<Pfi?> selectedPfi,
-    ValueNotifier<Offering?> selectedOffering,
-    Map<Pfi, List<Offering>> offeringsMap,
+    PaymentState paymentState,
+    void Function(Pfi, Offering) onSelect,
   ) =>
       showModalBottomSheet(
         useSafeArea: true,
@@ -20,7 +19,9 @@ class ModalSelectCurrency {
         builder: (context) => SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              final totalOfferings = offeringsMap.values
+              if (paymentState.offeringsMap == null) return Container();
+
+              final totalOfferings = paymentState.offeringsMap!.values
                   .fold(0, (total, list) => total + list.length);
               final height = totalOfferings * Grid.tileHeight;
               final maxHeight = MediaQuery.of(context).size.height * 0.4;
@@ -46,29 +47,28 @@ class ModalSelectCurrency {
                         thumbVisibility: true,
                         child: ListView(
                           shrinkWrap: true,
-                          children: offeringsMap.entries
+                          children: paymentState.offeringsMap!.entries
                               .expand(
                                 (entry) => entry.value.map(
                                   (offering) => ListTile(
                                     onTap: () {
-                                      selectedPfi.value = entry.key;
-                                      selectedOffering.value = offering;
+                                      onSelect(entry.key, offering);
                                       Navigator.pop(context);
                                     },
                                     title: _buildCurrencyTitle(
                                       context,
                                       offering,
-                                      transactionType,
+                                      paymentState.transactionType,
                                     ),
                                     subtitle: _buildCurrencySubtitle(
                                       context,
                                       offering,
-                                      transactionType,
+                                      paymentState.transactionType,
                                     ),
-                                    trailing:
-                                        (selectedOffering.value == offering)
-                                            ? const Icon(Icons.check)
-                                            : null,
+                                    trailing: (paymentState.selectedOffering ==
+                                            offering)
+                                        ? const Icon(Icons.check)
+                                        : null,
                                   ),
                                 ),
                               )

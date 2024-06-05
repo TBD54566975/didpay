@@ -38,9 +38,7 @@ void main() {
   });
 
   group('PaymentAmountPage', () {
-    testWidgets('should show payin and payout', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
+    Widget paymentAmountPageTestWidget() => WidgetHelpers.testableWidget(
           child: const PaymentAmountPage(
             transactionType: TransactionType.deposit,
           ),
@@ -48,8 +46,10 @@ void main() {
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
-        ),
-      );
+        );
+
+    testWidgets('should show payin and payout', (tester) async {
+      await tester.pumpWidget(paymentAmountPageTestWidget());
       await tester.pumpAndSettle();
 
       expect(find.byType(Payin), findsOneWidget);
@@ -57,34 +57,14 @@ void main() {
     });
 
     testWidgets('should show Fee Details', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const PaymentAmountPage(
-            transactionType: TransactionType.deposit,
-          ),
-          overrides: [
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(paymentAmountPageTestWidget());
       await tester.pumpAndSettle();
 
       expect(find.byType(PaymentFeeDetails), findsOneWidget);
     });
 
     testWidgets('should show next button', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const PaymentAmountPage(
-            transactionType: TransactionType.deposit,
-          ),
-          overrides: [
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(paymentAmountPageTestWidget());
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
@@ -92,17 +72,7 @@ void main() {
 
     testWidgets('should change deposit input amount after number pad press',
         (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const PaymentAmountPage(
-            transactionType: TransactionType.deposit,
-          ),
-          overrides: [
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(paymentAmountPageTestWidget());
       await tester.pumpAndSettle();
 
       for (var i = 1; i <= 9; i++) {
@@ -119,17 +89,7 @@ void main() {
     testWidgets(
         'should show the currency list on tap of the currency converter dropdown toggle',
         (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: const PaymentAmountPage(
-            transactionType: TransactionType.deposit,
-          ),
-          overrides: [
-            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-            pfisProvider.overrideWith((ref) => mockPfisNotifier),
-          ],
-        ),
-      );
+      await tester.pumpWidget(paymentAmountPageTestWidget());
       await tester.pumpAndSettle();
 
       await tester.tap(find.byIcon(Icons.keyboard_arrow_down));
