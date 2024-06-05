@@ -16,7 +16,15 @@ class NumberValidationUtil {
     return true;
   }
 
+  static bool isInvalidInput(String current, String key, {String? currency}) {
+    return !isValidInput(current, key, currency: currency);
+  }
+
   static bool isValidDelete(String current) {
     return current != '0';
+  }
+
+  static bool isInvalidDelete(String current) {
+    return !isValidDelete(current);
   }
 }
