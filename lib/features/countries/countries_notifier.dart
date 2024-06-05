@@ -17,9 +17,7 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
   CountriesNotifier._(this.box, List<Country> state) : super(state);
 
   static Future<CountriesNotifier> create(Box box) async {
-    const defaultCountry = Country(name: 'Mexico', code: 'MX');
-    final List<dynamic> countriesJson =
-        await box.get(storageKey) ?? [defaultCountry.toJson()];
+    final List<dynamic> countriesJson = await box.get(storageKey) ?? [];
 
     return CountriesNotifier._(
       box,
