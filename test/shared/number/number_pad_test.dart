@@ -2,7 +2,7 @@ import 'package:didpay/shared/number/number_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../helpers/widget_helpers.dart';
+import '../../helpers/widget_helpers.dart';
 
 void main() {
   var numberKeys = <String>[
