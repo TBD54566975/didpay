@@ -756,6 +756,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select currency'**
   String get selectCurrency;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get add;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

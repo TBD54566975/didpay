@@ -1,6 +1,7 @@
 import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/number/number_display.dart';
 import 'package:didpay/shared/number/number_key_press.dart';
 import 'package:didpay/shared/number/number_pad.dart';
@@ -66,7 +67,17 @@ class SendPage extends HookWidget {
                     NumberKeyPress(keyPress.value.count + 1, key),
               ),
             ),
-            _buildSendButton(context, amount.value),
+            NextButton(
+              onPressed: double.tryParse(amount.value) == 0
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              SendDetailsPage(sendAmount: amount.value),
+                        ),
+                      ),
+              title: Loc.of(context).send,
+            ),
           ],
         ),
       ),
@@ -82,22 +93,4 @@ class SendPage extends HookWidget {
               ),
         ),
       );
-
-  Widget _buildSendButton(BuildContext context, String amount) {
-    final disabled = double.tryParse(amount) == 0;
-
-    void onPressed() => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => SendDetailsPage(sendAmount: amount),
-          ),
-        );
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-      child: FilledButton(
-        onPressed: disabled ? null : onPressed,
-        child: Text(Loc.of(context).send),
-      ),
-    );
-  }
 }

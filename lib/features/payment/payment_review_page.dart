@@ -11,6 +11,7 @@ import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/header.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -42,18 +43,19 @@ class PaymentReviewPage extends HookConsumerWidget {
       body: SafeArea(
         child: orderResponse.value == null
             ? quoteResponse.value.when(
-                data: (quote) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Header(
-                        title: Loc.of(context).reviewYourPayment,
-                        subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                      ),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
+                data: (quote) => Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Header(
+                      title: Loc.of(context).reviewYourPayment,
+                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: Grid.side),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -65,14 +67,18 @@ class PaymentReviewPage extends HookConsumerWidget {
                           ),
                         ),
                       ),
-                      _buildSubmitButton(
+                    ),
+                    NextButton(
+                      onPressed: () => _submitOrder(
                         context,
                         ref,
-                        quote,
+                        paymentState,
                         orderResponse,
                       ),
-                    ],
-                  ),
+                      title:
+                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
+                    ),
+                  ],
                 ),
                 loading: () => AsyncLoadingWidget(
                   text: Loc.of(context).gettingYourQuote,
@@ -201,24 +207,6 @@ class PaymentReviewPage extends HookConsumerWidget {
               ),
             ),
           ],
-        ),
-      );
-
-  Widget _buildSubmitButton(
-    BuildContext context,
-    WidgetRef ref,
-    Quote quote,
-    sendOrderState,
-  ) =>
-      FilledButton(
-        onPressed: () => _submitOrder(
-          context,
-          ref,
-          paymentState,
-          sendOrderState,
-        ),
-        child: Text(
-          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
         ),
       );
 

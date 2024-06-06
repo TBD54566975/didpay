@@ -6,6 +6,7 @@ import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -38,6 +39,7 @@ class KccRetrievalPage extends HookConsumerWidget {
     );
 
     return Scaffold(
+      appBar: credentialResponse.value.hasError ? AppBar() : null,
       body: SafeArea(
         child: credentialResponse.value.when(
           loading: () =>
@@ -68,13 +70,9 @@ class KccRetrievalPage extends HookConsumerWidget {
                   ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-                child: FilledButton(
-                  onPressed: () => Navigator.of(context, rootNavigator: true)
-                      .pop(credentialResponse.value.asData?.value),
-                  child: Text(Loc.of(context).next),
-                ),
+              NextButton(
+                onPressed: () => Navigator.of(context, rootNavigator: true)
+                    .pop(credentialResponse.value.asData?.value),
               ),
             ],
           ),
@@ -88,11 +86,17 @@ class KccRetrievalPage extends HookConsumerWidget {
     ValueNotifier<AsyncValue<String>> state,
   ) async {
     state.value = const AsyncLoading();
-    final credential = await ref.read(kccIssuanceProvider).pollForCredential(
+    final credential = await ref
+        .read(kccIssuanceProvider)
+        .pollForCredential(
           pfi,
           idvRequest,
           ref.read(didProvider),
-        );
+        )
+        .catchError((error, stackTrace) {
+      state.value = AsyncError(error, stackTrace);
+      throw error;
+    });
 
     await ref
         .read(vcsProvider.notifier)

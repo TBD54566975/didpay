@@ -12,6 +12,7 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/number/number_key_press.dart';
 import 'package:didpay/shared/number/number_pad.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -62,11 +63,21 @@ class PaymentAmountPage extends HookConsumerWidget {
             }
 
             final paymentState = PaymentState(
-              payinAmount: Decimal.parse(payinAmount.value),
               transactionType: transactionType,
+              payinAmount: Decimal.parse(payinAmount.value),
+              payoutAmount: payoutAmount.value,
               selectedPfi: selectedPfi.value,
               selectedOffering: selectedOffering.value,
               offeringsMap: offeringsMap,
+              payinCurrency:
+                  selectedOffering.value?.data.payin.currencyCode ?? '',
+              payoutCurrency:
+                  selectedOffering.value?.data.payout.currencyCode ?? '',
+              payinMethods: selectedOffering.value?.data.payin.methods ?? [],
+              payoutMethods: selectedOffering.value?.data.payout.methods ?? [],
+              exchangeRate: Decimal.parse(
+                selectedOffering.value?.data.payoutUnitsPerPayinUnit ?? '1',
+              ),
             );
 
             return Column(
@@ -112,26 +123,16 @@ class PaymentAmountPage extends HookConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: Grid.sm),
-                _buildNextButton(
-                  context,
-                  paymentState.copyWith(
-                    payinAmount: Decimal.parse(payinAmount.value),
-                    payoutAmount: payoutAmount.value,
-                    selectedPfi: selectedPfi.value,
-                    selectedOffering: selectedOffering.value,
-                    payinCurrency:
-                        selectedOffering.value?.data.payin.currencyCode ?? '',
-                    payoutCurrency:
-                        selectedOffering.value?.data.payout.currencyCode ?? '',
-                    payinMethods:
-                        selectedOffering.value?.data.payin.methods ?? [],
-                    payoutMethods:
-                        selectedOffering.value?.data.payout.methods ?? [],
-                    exchangeRate: Decimal.parse(
-                      selectedOffering.value?.data.payoutUnitsPerPayinUnit ??
-                          '1',
-                    ),
-                  ),
+                NextButton(
+                  onPressed: paymentState.payinAmount == Decimal.zero
+                      ? null
+                      : () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => PaymentDetailsPage(
+                                paymentState: paymentState,
+                              ),
+                            ),
+                          ),
                 ),
               ],
             );
@@ -146,25 +147,6 @@ class PaymentAmountPage extends HookConsumerWidget {
       ),
     );
   }
-
-  Widget _buildNextButton(
-    BuildContext context,
-    PaymentState paymentState,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: paymentState.payinAmount == Decimal.zero
-              ? null
-              : () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          PaymentDetailsPage(paymentState: paymentState),
-                    ),
-                  ),
-          child: Text(Loc.of(context).next),
-        ),
-      );
 
   void _getOfferings(
     WidgetRef ref,

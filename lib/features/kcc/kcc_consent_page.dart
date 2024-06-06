@@ -2,6 +2,7 @@ import 'package:didpay/features/kcc/kcc_webview_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/header.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +35,15 @@ class KccConsentPage extends HookConsumerWidget {
             ),
             const Spacer(),
             _buildUserAndPrivacyAgreement(context, hasAgreed),
-            _buildNextButton(context, ref, hasAgreed.value),
+            NextButton(
+              onPressed: !hasAgreed.value
+                  ? null
+                  : () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (_) => KccWebviewPage(pfi: pfi),
+                        ),
+                      ),
+            ),
           ],
         ),
       ),
@@ -87,27 +96,6 @@ class KccConsentPage extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      );
-
-  Widget _buildNextButton(
-    BuildContext context,
-    WidgetRef ref,
-    bool hasAgreed,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: !hasAgreed
-              ? null
-              : () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => KccWebviewPage(pfi: pfi),
-                    ),
-                  );
-                },
-          child: Text(Loc.of(context).next),
         ),
       );
 }

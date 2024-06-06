@@ -141,5 +141,6 @@
     "issuedCredentials": "Issued credentials",
     "removeCredential": "Remove credential",
     "noCredentialsIssuedYet": "No credentials issued yet",
-    "selectCurrency": "Select currency"
+    "selectCurrency": "Select currency",
+    "add": "Add"
 }

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/features/send/send_page.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/number/number_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -35,10 +36,10 @@ void main() async {
         WidgetHelpers.testableWidget(child: const SendPage()),
       );
 
-      final nextButton = find.widgetWithText(FilledButton, 'Send');
+      final nextButton = find.widgetWithText(NextButton, 'Send');
 
       expect(
-        tester.widget<FilledButton>(nextButton).onPressed,
+        tester.widget<NextButton>(nextButton).onPressed,
         isNull,
       );
     });

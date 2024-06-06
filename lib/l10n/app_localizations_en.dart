@@ -344,4 +344,7 @@ class LocEn extends Loc {
 
   @override
   String get selectCurrency => 'Select currency';
+
+  @override
+  String get add => 'Add';
 }
