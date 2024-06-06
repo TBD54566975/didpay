@@ -2,7 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/features/send/send_page.dart';
-import 'package:didpay/shared/number_pad.dart';
+import 'package:didpay/shared/number/number_pad.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:web5/web5.dart';

@@ -2,6 +2,7 @@ import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/shared/number/number_key_press.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -41,7 +42,7 @@ void main() {
         ),
       ),
     );
-    final keyPress = ValueNotifier<PayinKeyPress>(PayinKeyPress(0, ''));
+    final keyPress = ValueNotifier<NumberKeyPress>(NumberKeyPress(0, ''));
 
     final paymentState = PaymentState(
       transactionType: TransactionType.deposit,
