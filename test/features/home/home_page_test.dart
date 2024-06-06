@@ -6,7 +6,7 @@ import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
-import 'package:didpay/features/tbdex/transaction_notifier.dart';
+import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
