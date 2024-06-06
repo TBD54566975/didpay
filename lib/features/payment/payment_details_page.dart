@@ -34,7 +34,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     final selectedPaymentMethod = useState<Object?>(null);
     final selectedPaymentType = useState<String?>(null);
     final offeringCredentials = useState<List<String>?>(null);
-    final rfqResponse = useState<AsyncValue<Rfq>?>(null);
+    final rfq = useState<AsyncValue<Rfq>?>(null);
 
     final paymentMethods = _getPaymentMethods(paymentState);
     final paymentTypes = _getPaymentTypes(paymentMethods);
@@ -58,9 +58,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: rfqResponse.value != null
-            ? rfqResponse.value!.when(
-                data: (rfq) => AsyncLoadingWidget(
+        child: rfq.value != null
+            ? rfq.value!.when(
+                data: (_) => AsyncLoadingWidget(
                   text: Loc.of(context).gettingYourQuote,
                 ),
                 loading: () => AsyncLoadingWidget(
@@ -72,7 +72,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     context,
                     ref,
                     paymentState,
-                    rfqResponse,
+                    rfq,
                     claims: offeringCredentials.value,
                   ),
                 ),
@@ -116,15 +116,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         ref,
                         paymentState,
                         offeringCredentials,
-                      ).then((_) {
-                        _sendRfq(
+                      ).then(
+                        (_) => _sendRfq(
                           context,
                           ref,
                           paymentState,
-                          rfqResponse,
+                          rfq,
                           claims: offeringCredentials.value,
-                        );
-                      });
+                        ),
+                      );
                     },
                   ),
                 ],

@@ -24,14 +24,11 @@ class KccRetrievalPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final credentialResponse =
-        useState<AsyncValue<String>>(const AsyncLoading());
+    final credential = useState<AsyncValue<String>>(const AsyncLoading());
 
     useEffect(
       () {
-        Future.microtask(
-          () async => _pollForCredential(ref, credentialResponse),
-        );
+        Future.microtask(() async => _pollForCredential(ref, credential));
 
         return null;
       },
@@ -39,14 +36,14 @@ class KccRetrievalPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: credentialResponse.value.hasError ? AppBar() : null,
+      appBar: credential.value.hasError ? AppBar() : null,
       body: SafeArea(
-        child: credentialResponse.value.when(
+        child: credential.value.when(
           loading: () =>
               AsyncLoadingWidget(text: Loc.of(context).verifyingYourIdentity),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => _pollForCredential(ref, credentialResponse),
+            onRetry: () => _pollForCredential(ref, credential),
           ),
           data: (data) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -72,7 +69,7 @@ class KccRetrievalPage extends HookConsumerWidget {
               ),
               NextButton(
                 onPressed: () => Navigator.of(context, rootNavigator: true)
-                    .pop(credentialResponse.value.asData?.value),
+                    .pop(credential.value.asData?.value),
               ),
             ],
           ),

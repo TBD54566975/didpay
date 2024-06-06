@@ -23,7 +23,7 @@ class SendDetailsPage extends HookConsumerWidget {
     final focusNode = useFocusNode();
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
-    final sendResponse = useState<AsyncValue<void>?>(null);
+    final send = useState<AsyncValue<void>?>(null);
 
     final recipientDidController = useTextEditingController();
 
@@ -41,7 +41,7 @@ class SendDetailsPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: sendResponse.value == null
+        child: send.value == null
             ? Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -77,14 +77,14 @@ class SendDetailsPage extends HookConsumerWidget {
                     onPressed: () {
                       if ((_formKey.currentState?.validate() ?? false) &&
                           errorText.value == null) {
-                        _sendPayment(sendResponse);
+                        _sendPayment(send);
                       }
                     },
                     title: Loc.of(context).sendAmountUsdc(sendAmount),
                   ),
                 ],
               )
-            : sendResponse.value!.when(
+            : send.value!.when(
                 data: (_) =>
                     AsyncDataWidget(text: Loc.of(context).yourPaymentWasSent),
                 loading: () =>
