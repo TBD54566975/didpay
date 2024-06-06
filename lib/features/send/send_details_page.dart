@@ -5,6 +5,7 @@ import 'package:didpay/shared/async/async_data_widget.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/header.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -72,11 +73,14 @@ class SendDetailsPage extends HookConsumerWidget {
                     errorText,
                     isPhysicalDevice: isPhysicalDevice.value,
                   ),
-                  _buildSendButton(
-                    context,
-                    recipientDidController,
-                    sendResponse,
-                    errorText.value,
+                  NextButton(
+                    onPressed: () {
+                      if ((_formKey.currentState?.validate() ?? false) &&
+                          errorText.value == null) {
+                        _sendPayment(sendResponse);
+                      }
+                    },
+                    title: Loc.of(context).sendAmountUsdc(sendAmount),
                   ),
                 ],
               )
@@ -149,25 +153,6 @@ class SendDetailsPage extends HookConsumerWidget {
               ),
             ],
           ),
-        ),
-      );
-
-  Widget _buildSendButton(
-    BuildContext context,
-    TextEditingController recipientDidController,
-    ValueNotifier<AsyncValue<void>?> sendResponse,
-    String? errorText,
-  ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: FilledButton(
-          onPressed: () {
-            if ((_formKey.currentState?.validate() ?? false) &&
-                errorText == null) {
-              _sendPayment(sendResponse);
-            }
-          },
-          child: Text(Loc.of(context).sendAmountUsdc(sendAmount)),
         ),
       );
 

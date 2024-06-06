@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/text_input_util.dart';
 import 'package:flutter/material.dart';
@@ -35,15 +35,7 @@ class JsonSchemaForm extends HookWidget {
       }
     }
 
-    if (schema == null) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          const Spacer(),
-          _buildNextButton(context, onPressed),
-        ],
-      );
-    }
+    if (schema == null) return _buildEmptyForm(onPressed);
 
     final jsonSchema = json.decode(schema ?? '') as Map<String, dynamic>;
     final properties = jsonSchema['properties'] as Map<String, dynamic>?;
@@ -98,11 +90,19 @@ class JsonSchemaForm extends HookWidget {
               ),
             ),
           ),
-          _buildNextButton(context, onPressed),
+          NextButton(onPressed: isDisabled ? null : () => onPressed(formData)),
         ],
       ),
     );
   }
+
+  Widget _buildEmptyForm(Function(Map<String, String>) onPressed) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Spacer(),
+          NextButton(onPressed: isDisabled ? null : () => onPressed(formData)),
+        ],
+      );
 
   String? _validateField(
     String key,
@@ -145,24 +145,4 @@ class JsonSchemaForm extends HookWidget {
 
     return null;
   }
-
-  Widget _buildNextButton(
-    BuildContext context,
-    void Function(Map<String, String>) onPressed,
-  ) =>
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: Container()),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-              child: FilledButton(
-                onPressed: isDisabled ? null : () => onPressed(formData),
-                child: Text(Loc.of(context).next),
-              ),
-            ),
-          ],
-        ),
-      );
 }

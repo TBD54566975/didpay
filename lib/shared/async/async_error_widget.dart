@@ -1,6 +1,6 @@
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/header.dart';
-import 'package:didpay/shared/theme/grid.dart';
+import 'package:didpay/shared/next_button.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -19,20 +19,14 @@ class AsyncErrorWidget extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
   ) =>
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Header(title: Loc.of(context).errorFound, subtitle: text),
-              Expanded(child: Container()),
-              FilledButton(
-                onPressed: onRetry,
-                child: Text(Loc.of(context).tapToRetry),
-              ),
-            ],
-          ),
+      Center(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Header(title: Loc.of(context).errorFound, subtitle: text),
+            const Expanded(child: Spacer()),
+            NextButton(onPressed: onRetry, title: Loc.of(context).tapToRetry),
+          ],
         ),
       );
 }
