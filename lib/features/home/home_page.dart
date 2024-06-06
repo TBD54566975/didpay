@@ -9,6 +9,7 @@ import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/async/async_loading_widget.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -21,7 +22,7 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.read(pfisProvider);
 
-    final getExchangesState =
+    final exchanges =
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
 
     // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
@@ -29,7 +30,7 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        _getExchanges(ref, getExchangesState);
+        _getExchanges(ref, exchanges);
         return null;
       },
       [],
@@ -49,10 +50,10 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).noPfisFound,
                       Loc.of(context).startByAddingAPfi,
                     )
-                  : _buildTransactionsActivity(
+                  : _buildTransactionsList(
                       context,
                       ref,
-                      getExchangesState,
+                      exchanges,
                     ),
             ),
           ],
@@ -165,10 +166,10 @@ class HomePage extends HookConsumerWidget {
         ],
       );
 
-  Widget _buildTransactionsActivity(
+  Widget _buildTransactionsList(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
+    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
   ) =>
       Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -184,7 +185,7 @@ class HomePage extends HookConsumerWidget {
             ),
           ),
           Expanded(
-            child: pfiToExchangeIdsState.value.when(
+            child: state.value.when(
               data: (exchangeMap) => exchangeMap.isEmpty
                   ? _buildGetStarted(
                       context,
@@ -193,8 +194,7 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).startByAdding,
                     )
                   : RefreshIndicator(
-                      onRefresh: () async =>
-                          _getExchanges(ref, pfiToExchangeIdsState),
+                      onRefresh: () async => _getExchanges(ref, state),
                       child: ListView(
                         children: exchangeMap.entries
                             .expand(
@@ -212,9 +212,11 @@ class HomePage extends HookConsumerWidget {
               error: (error, stackTrace) => _buildTransactionsError(
                 context,
                 ref,
-                pfiToExchangeIdsState,
+                state,
               ),
-              loading: () => const Center(child: CircularProgressIndicator()),
+              loading: () => AsyncLoadingWidget(
+                text: Loc.of(context).fetchingTransactions,
+              ),
             ),
           ),
         ],
@@ -270,7 +272,7 @@ class HomePage extends HookConsumerWidget {
   Widget _buildTransactionsError(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> pfiToExchangeIdsState,
+    ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
   ) =>
       Center(
         child: Column(
@@ -289,7 +291,7 @@ class HomePage extends HookConsumerWidget {
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: () async => _getExchanges(ref, pfiToExchangeIdsState),
+              onPressed: () async => _getExchanges(ref, state),
               child: Text(Loc.of(context).tapToRetry),
             ),
           ],
@@ -304,7 +306,7 @@ class HomePage extends HookConsumerWidget {
     ref
         .read(tbdexServiceProvider)
         .getExchanges(ref.read(didProvider), ref.read(pfisProvider))
-        .then((exchangeIds) => state.value = AsyncData(exchangeIds))
+        .then((exchanges) => state.value = AsyncData(exchanges))
         .catchError((error, stackTrace) {
       state.value = AsyncError(error, stackTrace);
       throw error;

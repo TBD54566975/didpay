@@ -25,14 +25,12 @@ class PaymentReviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quoteResponse = useState<AsyncValue<Quote>>(const AsyncLoading());
-    final orderResponse = useState<AsyncValue<Order>?>(null);
+    final quote = useState<AsyncValue<Quote>>(const AsyncLoading());
+    final order = useState<AsyncValue<Order>?>(null);
 
     useEffect(
       () {
-        Future.microtask(
-          () async => _pollForQuote(ref, quoteResponse),
-        );
+        Future.microtask(() async => _pollForQuote(ref, quote));
         return null;
       },
       [],
@@ -41,9 +39,9 @@ class PaymentReviewPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: orderResponse.value == null
-            ? quoteResponse.value.when(
-                data: (quote) => Column(
+        child: order.value == null
+            ? quote.value.when(
+                data: (q) => Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Header(
@@ -60,8 +58,8 @@ class PaymentReviewPage extends HookConsumerWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const SizedBox(height: Grid.sm),
-                              _buildAmounts(context, quote.data),
-                              _buildFeeDetails(context, quote.data),
+                              _buildAmounts(context, q.data),
+                              _buildFeeDetails(context, q.data),
                               _buildPaymentDetails(context),
                             ],
                           ),
@@ -73,10 +71,10 @@ class PaymentReviewPage extends HookConsumerWidget {
                         context,
                         ref,
                         paymentState,
-                        orderResponse,
+                        order,
                       ),
                       title:
-                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(quote.data)} ${quote.data.payin.currencyCode}',
+                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
                     ),
                   ],
                 ),
@@ -85,10 +83,10 @@ class PaymentReviewPage extends HookConsumerWidget {
                 ),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
-                  onRetry: () => _pollForQuote(ref, quoteResponse),
+                  onRetry: () => _pollForQuote(ref, quote),
                 ),
               )
-            : orderResponse.value!.when(
+            : order.value!.when(
                 data: (_) =>
                     AsyncDataWidget(text: Loc.of(context).orderConfirmed),
                 loading: () => AsyncLoadingWidget(
@@ -100,7 +98,7 @@ class PaymentReviewPage extends HookConsumerWidget {
                     context,
                     ref,
                     paymentState,
-                    orderResponse,
+                    order,
                   ),
                 ),
               ),

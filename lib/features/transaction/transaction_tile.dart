@@ -1,8 +1,8 @@
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_details_page.dart';
+import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -83,42 +83,43 @@ class TransactionTile extends HookConsumerWidget {
         }
 
         return TileContainer(
-            child: ListTile(
-          title: Text(
-            '${txn.payinCurrency} → ${txn.payoutCurrency}',
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-          ),
-          subtitle: Text(
-            txn.status.toString(),
-            style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  fontWeight: FontWeight.w300,
-                ),
-          ),
-          trailing: _buildTransactionAmount(context, txn),
-          leading: Container(
-            width: Grid.md,
-            height: Grid.md,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(Grid.xxs),
+          child: ListTile(
+            title: Text(
+              '${txn.payinCurrency} → ${txn.payoutCurrency}',
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            child: Center(
-              child: Transaction.getIcon(txn.type),
+            subtitle: Text(
+              txn.status.toString(),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w300,
+                  ),
+            ),
+            trailing: _buildTransactionAmount(context, txn),
+            leading: Container(
+              width: Grid.md,
+              height: Grid.md,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surface,
+                borderRadius: BorderRadius.circular(Grid.xxs),
+              ),
+              child: Center(
+                child: Transaction.getIcon(txn.type),
+              ),
+            ),
+            onTap: () => Navigator.of(context).push(
+              MaterialPageRoute<void>(
+                builder: (_) {
+                  return TransactionDetailsPage(
+                    pfi: pfi,
+                    exchangeId: exchangeId,
+                  );
+                },
+              ),
             ),
           ),
-          onTap: () => Navigator.of(context).push(
-            MaterialPageRoute<void>(
-              builder: (_) {
-                return TransactionDetailsPage(
-                  pfi: pfi,
-                  exchangeId: exchangeId,
-                );
-              },
-            ),
-          ),
-        ),);
+        );
       },
       loading: Container.new,
       error: (error, stackTrace) => _buildErrorTile(context, error.toString()),

@@ -142,5 +142,6 @@
     "removeCredential": "Remove credential",
     "noCredentialsIssuedYet": "No credentials issued yet",
     "selectCurrency": "Select currency",
-    "add": "Add"
+    "add": "Add",
+    "fetchingTransactions": "Fetching transactions..."
 }

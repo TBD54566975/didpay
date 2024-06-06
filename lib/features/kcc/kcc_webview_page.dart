@@ -37,9 +37,7 @@ class KccWebviewPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
-          () async => _getIdvRequest(ref, idvRequest),
-        );
+        Future.microtask(() async => _getIdvRequest(ref, idvRequest));
 
         return null;
       },

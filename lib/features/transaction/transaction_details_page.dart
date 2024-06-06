@@ -1,8 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/tbdex/transaction_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
