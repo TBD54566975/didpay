@@ -762,6 +762,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Add'**
   String get add;
+
+  /// No description provided for @fetchingTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching transactions...'**
+  String get fetchingTransactions;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

@@ -22,7 +22,7 @@ class AddPfiPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isPhysicalDevice = useState(true);
     final errorText = useState<String?>(null);
-    final addPfiState = useState<AsyncValue<Pfi>?>(null);
+    final pfi = useState<AsyncValue<Pfi>?>(null);
 
     final pfiDidController = useTextEditingController();
 
@@ -42,15 +42,14 @@ class AddPfiPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: addPfiState.value != null
-            ? addPfiState.value!.when(
-                data: (pfi) => AsyncDataWidget(text: Loc.of(context).pfiAdded),
+        child: pfi.value != null
+            ? pfi.value!.when(
+                data: (_) => AsyncDataWidget(text: Loc.of(context).pfiAdded),
                 loading: () =>
                     AsyncLoadingWidget(text: Loc.of(context).addingPfi),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
-                  onRetry: () =>
-                      _addPfi(ref, pfiDidController.text, addPfiState),
+                  onRetry: () => _addPfi(ref, pfiDidController.text, pfi),
                 ),
               )
             : Column(
@@ -88,7 +87,7 @@ class AddPfiPage extends HookConsumerWidget {
                     onPressed: () {
                       if ((_formKey.currentState?.validate() ?? false) &&
                           errorText.value == null) {
-                        _addPfi(ref, pfiDidController.text, addPfiState);
+                        _addPfi(ref, pfiDidController.text, pfi);
                       }
                     },
                     title: Loc.of(context).add,

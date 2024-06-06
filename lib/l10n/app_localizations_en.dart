@@ -347,4 +347,7 @@ class LocEn extends Loc {
 
   @override
   String get add => 'Add';
+
+  @override
+  String get fetchingTransactions => 'Fetching transactions...';
 }
