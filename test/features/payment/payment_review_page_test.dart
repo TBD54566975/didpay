@@ -54,7 +54,7 @@ void main() async {
         ],
       );
 
-  group('ReviewPaymentPage', () {
+  group('PaymentReviewPage', () {
     setUp(() {
       mockTbdexService = MockTbdexService();
 
