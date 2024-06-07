@@ -276,38 +276,40 @@ class PaymentDetailsPage extends HookConsumerWidget {
           )
           .toList();
 
-  void _sendRfq(
+  Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
     ValueNotifier<AsyncValue<Rfq>?> state, {
     List<String>? claims,
-  }) {
+  }) async {
     state.value = const AsyncLoading();
-    ref
-        .read(tbdexServiceProvider)
-        .sendRfq(
-          ref.read(didProvider),
-          paymentState.copyWith(claims: claims),
-        )
-        .then((rfq) async {
-      state.value = AsyncData(rfq);
-      await Navigator.of(context)
-          .push(
-            MaterialPageRoute(
-              builder: (context) => PaymentReviewPage(
-                paymentState: paymentState.copyWith(
-                  exchangeId: rfq.metadata.id,
-                  claims: claims,
+
+    try {
+      await ref
+          .read(tbdexServiceProvider)
+          .sendRfq(
+            ref.read(didProvider),
+            paymentState.copyWith(claims: claims),
+          )
+          .then((rfq) async {
+        state.value = AsyncData(rfq);
+        await Navigator.of(context)
+            .push(
+              MaterialPageRoute(
+                builder: (context) => PaymentReviewPage(
+                  paymentState: paymentState.copyWith(
+                    exchangeId: rfq.metadata.id,
+                    claims: claims,
+                  ),
                 ),
               ),
-            ),
-          )
-          .then((_) => state.value = null);
-    }).catchError((error, stackTrace) {
-      state.value = AsyncError(error.toString(), stackTrace);
-      throw error;
-    });
+            )
+            .then((_) => state.value = null);
+      });
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 
   Future<void> _getVc(

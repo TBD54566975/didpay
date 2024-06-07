@@ -43,7 +43,7 @@ class PaymentAmountPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        _getOfferings(ref, offerings);
+        Future.microtask(() async => _getOfferings(ref, offerings));
         return null;
       },
       [],
@@ -148,18 +148,18 @@ class PaymentAmountPage extends HookConsumerWidget {
     );
   }
 
-  void _getOfferings(
+  Future<void> _getOfferings(
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
-  ) {
+  ) async {
     state.value = const AsyncLoading();
-    ref
-        .read(tbdexServiceProvider)
-        .getOfferings(ref.read(pfisProvider))
-        .then((offerings) => state.value = AsyncData(offerings))
-        .catchError((error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
-      throw error;
-    });
+    try {
+      await ref
+          .read(tbdexServiceProvider)
+          .getOfferings(ref.read(pfisProvider))
+          .then((offerings) => state.value = AsyncData(offerings));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }

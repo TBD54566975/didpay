@@ -2,7 +2,6 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_exceptions.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-import 'package:didpay/shared/http_status.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retry/retry.dart';
 import 'package:tbdex/tbdex.dart';
@@ -16,17 +15,11 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        final response = await TbdexHttpClient.listOfferings(pfi.did);
-        if (response.statusCode.category == HttpStatus.success) {
-          offeringsMap[pfi] = response.data!;
-        }
-      } on Exception catch (_) {
+        await TbdexHttpClient.listOfferings(pfi.did)
+            .then((offerings) => offeringsMap[pfi] = offerings);
+      } on Exception {
         rethrow;
       }
-    }
-
-    if (offeringsMap.isEmpty) {
-      throw Exception('no offerings found');
     }
 
     return offeringsMap;
@@ -40,36 +33,30 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        final response = await TbdexHttpClient.listExchanges(did, pfi.did);
-        if (response.statusCode.category == HttpStatus.success) {
-          exchangesMap[pfi] = response.data!;
-        } else {
-          throw Exception(
-            'failed to fetch exchanges with status code ${response.statusCode}',
-          );
-        }
-      } on Exception {
-        return exchangesMap;
+        await TbdexHttpClient.listExchanges(did, pfi.did)
+            .then((exchanges) => exchangesMap[pfi] = exchanges);
+      } on Exception catch (e) {
+        if (e is ValidationError) continue;
+        rethrow;
       }
     }
 
     return exchangesMap;
   }
 
-  Future<List<Message>> getExchange(
+  Future<Exchange> getExchange(
     BearerDid did,
     Pfi pfi,
     String exchangeId,
   ) async {
-    final response =
-        await TbdexHttpClient.getExchange(did, pfi.did, exchangeId);
-    if (response.statusCode.category == HttpStatus.success) {
-      return response.data!;
+    Exchange exchange;
+    try {
+      exchange = await TbdexHttpClient.getExchange(did, pfi.did, exchangeId);
+    } on Exception {
+      rethrow;
     }
 
-    throw Exception(
-      'failed to fetch exchange with status code ${response.statusCode}',
-    );
+    return exchange;
   }
 
   Future<Rfq> sendRfq(
@@ -100,16 +87,14 @@ class TbdexService {
       ),
     );
     await rfq.sign(did);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
 
-    final response =
-        await TbdexHttpClient.createExchange(rfq, replyTo: rfq.metadata.from);
-
-    if (response.statusCode.category != HttpStatus.success) {
-      throw Exception(
-        'failed to send rfq with status code ${response.statusCode}',
-      );
+    try {
+      await TbdexHttpClient.createExchange(rfq, replyTo: rfq.metadata.from);
+    } on Exception {
+      rethrow;
     }
+
     return rfq;
   }
 
@@ -117,15 +102,14 @@ class TbdexService {
     await Future.delayed(const Duration(seconds: 1));
     final order = Order.create(pfi?.did ?? '', did.uri, exchangeId ?? '');
     await order.sign(did);
-    await Future.delayed(const Duration(seconds: 1));
+    await Future.delayed(const Duration(milliseconds: 500));
 
-    final response = await TbdexHttpClient.submitOrder(order);
-
-    if (response.statusCode.category != HttpStatus.success) {
-      throw Exception(
-        'failed to send order with status code ${response.statusCode}',
-      );
+    try {
+      await TbdexHttpClient.submitOrder(order);
+    } on Exception {
+      rethrow;
     }
+
     return order;
   }
 
