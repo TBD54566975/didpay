@@ -158,19 +158,20 @@ class AddPfiPage extends HookConsumerWidget {
         ),
       );
 
-  void _addPfi(
+  Future<void> _addPfi(
     WidgetRef ref,
     String did,
     ValueNotifier<AsyncValue<Pfi>?> state,
-  ) {
+  ) async {
     state.value = const AsyncLoading();
-    ref
-        .read(pfisProvider.notifier)
-        .add(did)
-        .then((pfi) => state.value = AsyncData(pfi))
-        .catchError((error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
-      throw error;
-    });
+
+    try {
+      await ref
+          .read(pfisProvider.notifier)
+          .add(did)
+          .then((pfi) => state.value = AsyncData(pfi));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }

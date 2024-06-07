@@ -38,7 +38,6 @@ class KccWebviewPage extends HookConsumerWidget {
     useEffect(
       () {
         Future.microtask(() async => _getIdvRequest(ref, idvRequest));
-
         return null;
       },
       [],
@@ -96,18 +95,18 @@ class KccWebviewPage extends HookConsumerWidget {
     );
   }
 
-  void _getIdvRequest(
+  Future<void> _getIdvRequest(
     WidgetRef ref,
     ValueNotifier<AsyncValue<IdvRequest>> state,
-  ) {
+  ) async {
     state.value = const AsyncLoading();
-    ref
-        .read(kccIssuanceProvider)
-        .getIdvRequest(pfi, ref.read(didProvider))
-        .then((idvRequest) => state.value = AsyncData(idvRequest))
-        .catchError((error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
-      throw error;
-    });
+    try {
+      await ref
+          .read(kccIssuanceProvider)
+          .getIdvRequest(pfi, ref.read(didProvider))
+          .then((idvRequest) => state.value = AsyncData(idvRequest));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }

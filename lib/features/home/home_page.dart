@@ -30,7 +30,7 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        _getExchanges(ref, exchanges);
+        Future.microtask(() async => _getExchanges(ref, exchanges));
         return null;
       },
       [],
@@ -298,18 +298,18 @@ class HomePage extends HookConsumerWidget {
         ),
       );
 
-  void _getExchanges(
+  Future<void> _getExchanges(
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
-  ) {
+  ) async {
     state.value = const AsyncLoading();
-    ref
-        .read(tbdexServiceProvider)
-        .getExchanges(ref.read(didProvider), ref.read(pfisProvider))
-        .then((exchanges) => state.value = AsyncData(exchanges))
-        .catchError((error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
-      throw error;
-    });
+    try {
+      await ref
+          .read(tbdexServiceProvider)
+          .getExchanges(ref.read(didProvider), ref.read(pfisProvider))
+          .then((exchanges) => state.value = AsyncData(exchanges));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }

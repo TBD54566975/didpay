@@ -208,45 +208,45 @@ class PaymentReviewPage extends HookConsumerWidget {
         ),
       );
 
-  void _pollForQuote(
+  Future<void> _pollForQuote(
     WidgetRef ref,
     ValueNotifier<AsyncValue<Quote>> state,
-  ) {
+  ) async {
     if (paymentState.exchangeId != null && paymentState.selectedPfi != null) {
-      ref
-          .read(tbdexServiceProvider)
-          .pollForQuote(
-            ref.read(didProvider),
-            paymentState.selectedPfi!,
-            paymentState.exchangeId!,
-          )
-          .then((quote) => state.value = AsyncData(quote))
-          .catchError((error, stackTrace) {
-        state.value = AsyncError(error, stackTrace);
-        throw error;
-      });
+      try {
+        await ref
+            .read(tbdexServiceProvider)
+            .pollForQuote(
+              ref.read(didProvider),
+              paymentState.selectedPfi!,
+              paymentState.exchangeId!,
+            )
+            .then((quote) => state.value = AsyncData(quote));
+      } on Exception catch (e) {
+        state.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 
-  void _submitOrder(
+  Future<void> _submitOrder(
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
     ValueNotifier<AsyncValue<Order>?> state,
-  ) {
+  ) async {
     state.value = const AsyncLoading();
-    ref
-        .read(tbdexServiceProvider)
-        .submitOrder(
-          ref.read(didProvider),
-          paymentState.selectedPfi,
-          paymentState.exchangeId,
-        )
-        .then((order) async {
-      state.value = AsyncData(order);
-    }).catchError((error, stackTrace) {
-      state.value = AsyncError(error, stackTrace);
-      throw error;
-    });
+
+    try {
+      await ref
+          .read(tbdexServiceProvider)
+          .submitOrder(
+            ref.read(didProvider),
+            paymentState.selectedPfi,
+            paymentState.exchangeId,
+          )
+          .then((order) => state.value = AsyncData(order));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }
