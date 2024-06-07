@@ -111,19 +111,21 @@ class PaymentDetailsPage extends HookConsumerWidget {
                           : paymentState.payoutMethods?.firstOrNull,
                     ),
                     onPaymentFormSubmit: (paymentState) async {
-                      await _getVc(
+                      await _hasRequiredVc(
                         context,
                         ref,
                         paymentState,
                         offeringCredentials,
                       ).then(
-                        (_) => _sendRfq(
-                          context,
-                          ref,
-                          paymentState,
-                          rfq,
-                          claims: offeringCredentials.value,
-                        ),
+                        (hasRequiredVc) async => hasRequiredVc
+                            ? _sendRfq(
+                                context,
+                                ref,
+                                paymentState,
+                                rfq,
+                                claims: offeringCredentials.value,
+                              )
+                            : null,
                       );
                     },
                   ),
@@ -312,7 +314,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
     }
   }
 
-  Future<void> _getVc(
+  Future<bool> _hasRequiredVc(
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
@@ -323,23 +325,27 @@ class PaymentDetailsPage extends HookConsumerWidget {
     final credentials =
         presentationDefinition?.selectCredentials(ref.read(vcsProvider));
 
+    if (credentials == null && presentationDefinition == null) {
+      return true;
+    }
+
     if (credentials != null && credentials.isNotEmpty) {
       offeringCredentials.value = credentials;
-    } else if (presentationDefinition != null) {
-      final issuedCredential = await Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => ModalFlow(
-            initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
-          ),
-          fullscreenDialog: true,
-        ),
-      );
-
-      issuedCredential == null
-          ? offeringCredentials.value = null
-          : offeringCredentials.value = [issuedCredential as String];
-    } else {
-      offeringCredentials.value = null;
+      return true;
     }
+
+    final issuedCredential = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ModalFlow(
+          initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+
+    if (issuedCredential == null) return false;
+
+    offeringCredentials.value = [issuedCredential as String];
+    return true;
   }
 }
