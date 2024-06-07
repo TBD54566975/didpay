@@ -63,9 +63,8 @@ class KccWebviewPage extends HookConsumerWidget {
             initialSettings: settings,
             onWebViewCreated: (c) {
               // TODO(mistermoe): this url needs to be fixed on our PFI side
-              final fullPath = Uri.parse(data.url)
-                  .replace(port: 5173, scheme: 'https')
-                  .toString();
+              final fullPath =
+                  Uri.parse(data.url).replace(scheme: 'https').toString();
 
               c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
             },
