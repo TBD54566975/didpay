@@ -36,7 +36,7 @@ class TbdexService {
         await TbdexHttpClient.listExchanges(did, pfi.did)
             .then((exchanges) => exchangesMap[pfi] = exchanges);
       } on Exception catch (e) {
-        if (e is ValidationError) return exchangesMap;
+        if (e is ValidationError) continue;
         rethrow;
       }
     }
