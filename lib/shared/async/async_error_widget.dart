@@ -2,6 +2,7 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class AsyncErrorWidget extends HookConsumerWidget {
@@ -24,7 +25,7 @@ class AsyncErrorWidget extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Header(title: Loc.of(context).errorFound, subtitle: text),
-            const Expanded(child: Spacer()),
+            Expanded(child: Container()),
             NextButton(onPressed: onRetry, title: Loc.of(context).tapToRetry),
           ],
         ),
