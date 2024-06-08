@@ -1,6 +1,5 @@
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/tbdex/tbdex_exceptions.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retry/retry.dart';
@@ -120,25 +119,18 @@ class TbdexService {
   ) =>
       retry(
         () async {
-          try {
-            final exchange = await getExchange(did, pfi, exchangeId);
-            return _getQuote(exchange);
-          } on Exception catch (e) {
-            throw QuoteNotFoundException(
-              message: 'no quote found in exchange $exchangeId',
-              cause: e,
-            );
-          }
+          final exchange = await getExchange(did, pfi, exchangeId);
+          return _getQuote(exchange);
         },
         maxAttempts: 15,
         maxDelay: const Duration(seconds: 10),
-        retryIf: (e) => e is QuoteNotFoundException,
+        retryIf: (e) => e is _QuoteNotFoundException,
       );
 
   Quote _getQuote(Exchange exchange) => exchange.firstWhere(
         (message) => message.metadata.kind == MessageKind.quote,
-        orElse: () => throw QuoteNotFoundException(
-          message: 'no quote found in exchange ${exchange.first.metadata.id}',
-        ),
+        orElse: () => throw _QuoteNotFoundException(),
       ) as Quote;
 }
+
+class _QuoteNotFoundException implements Exception {}
