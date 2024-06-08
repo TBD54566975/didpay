@@ -117,15 +117,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         paymentState,
                         offeringCredentials,
                       ).then(
-                        (hasRequiredVc) async => hasRequiredVc
-                            ? _sendRfq(
+                        (hasRequiredVc) async => !hasRequiredVc
+                            ? null
+                            : _sendRfq(
                                 context,
                                 ref,
                                 paymentState,
                                 rfq,
                                 claims: offeringCredentials.value,
-                              )
-                            : null,
+                              ),
                       );
                     },
                   ),
