@@ -136,16 +136,10 @@ class NumberDisplay extends HookWidget {
       return formattedAmount;
     }
 
-    final expectedScale = amount.value.split('.').last.length;
-    final actualScale = formattedAmount.contains('.')
-        ? formattedAmount.split('.').last.length
-        : 0;
-    final missingZeros = '0' * (expectedScale - actualScale);
+    final missingZeros = '0' *
+        (_getDecimalScale(amount.value) - _getDecimalScale(formattedAmount));
 
-    final isWholeNum =
-        Decimal.parse(amount.value).toString() == unformattedAmount;
-
-    return isWholeNum
+    return Decimal.parse(amount.value).isInteger
         ? '$formattedAmount.$missingZeros'
         : '$formattedAmount$missingZeros';
   }
