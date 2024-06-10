@@ -145,18 +145,6 @@ abstract class Loc {
   /// **'To:'**
   String get to;
 
-  /// No description provided for @scanRecipientQrCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t know the recipient\'s DID? Scan their QR code'**
-  String get scanRecipientQrCode;
-
-  /// No description provided for @scanPfiQrCode.
-  ///
-  /// In en, this message translates to:
-  /// **'Don\'t know the PFI\'s DID? Scan their QR code'**
-  String get scanPfiQrCode;
-
   /// No description provided for @withdraw.
   ///
   /// In en, this message translates to:
@@ -768,6 +756,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Fetching transactions...'**
   String get fetchingTransactions;
+
+  /// No description provided for @scan.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan'**
+  String get scan;
+
+  /// No description provided for @cameraUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera unavailable'**
+  String get cameraUnavailable;
+
+  /// No description provided for @dontKnowTheirDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t know their DID? Scan their DID QR code instead'**
+  String get dontKnowTheirDid;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

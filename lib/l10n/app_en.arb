@@ -8,8 +8,6 @@
     "deposit": "Deposit",
     "send": "Send",
     "to": "To:",
-    "scanRecipientQrCode": "Don't know the recipient's DID? Scan their QR code",
-    "scanPfiQrCode": "Don't know the PFI's DID? Scan their QR code",
     "withdraw": "Withdraw",
     "next": "Next",
     "accountBalance": "Account balance",
@@ -143,5 +141,8 @@
     "noCredentialsIssuedYet": "No credentials issued yet",
     "selectCurrency": "Select currency",
     "add": "Add",
-    "fetchingTransactions": "Fetching transactions..."
+    "fetchingTransactions": "Fetching transactions...",
+    "scan": "Scan",
+    "cameraUnavailable": "Camera unavailable",
+    "dontKnowTheirDid": "Don't know their DID? Scan their DID QR code instead"
 }

@@ -32,12 +32,6 @@ class LocEn extends Loc {
   String get to => 'To:';
 
   @override
-  String get scanRecipientQrCode => 'Don\'t know the recipient\'s DID? Scan their QR code';
-
-  @override
-  String get scanPfiQrCode => 'Don\'t know the PFI\'s DID? Scan their QR code';
-
-  @override
   String get withdraw => 'Withdraw';
 
   @override
@@ -350,4 +344,13 @@ class LocEn extends Loc {
 
   @override
   String get fetchingTransactions => 'Fetching transactions...';
+
+  @override
+  String get scan => 'Scan';
+
+  @override
+  String get cameraUnavailable => 'Camera unavailable';
+
+  @override
+  String get dontKnowTheirDid => 'Don\'t know their DID? Scan their DID QR code instead';
 }
