@@ -1,8 +1,7 @@
-import 'package:didpay/features/account/account_did_page.dart';
-import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/did/did_qr_tabs.dart';
 import 'package:didpay/features/modals/modal_remove_item.dart';
-import 'package:didpay/features/pfis/add_pfi_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -18,14 +17,15 @@ class AccountPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
     final credentials = ref.watch(vcsProvider);
+    const dap = 'username@didpay.me';
 
     return Scaffold(
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildProfile(context, ref.read(didProvider).uri),
-            const Center(child: Text('username@didpay.me')),
+            _buildProfile(context, dap),
+            const Center(child: Text(dap)),
             const SizedBox(height: Grid.lg),
             Expanded(
               child: SingleChildScrollView(
@@ -45,7 +45,7 @@ class AccountPage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildProfile(BuildContext context, String did) => Padding(
+  Widget _buildProfile(BuildContext context, String dap) => Padding(
         padding: const EdgeInsets.symmetric(
           vertical: Grid.xs,
           horizontal: Grid.side,
@@ -80,7 +80,7 @@ class AccountPage extends HookConsumerWidget {
                     onPressed: () {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => const AccountDidPage(),
+                          builder: (_) => DidQrTabs(dap: dap),
                           fullscreenDialog: true,
                         ),
                       );
@@ -163,7 +163,7 @@ class AccountPage extends HookConsumerWidget {
         onTap: () {
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddPfiPage()),
+            MaterialPageRoute(builder: (context) => const PfisAddPage()),
           );
         },
       );
