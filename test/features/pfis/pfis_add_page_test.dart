@@ -14,7 +14,13 @@ void main() {
     testWidgets('should show QR Code CTA', (tester) async {
       await tester.pumpWidget(pfisAddPageTestWidget());
 
-      expect(find.textContaining('Scan their QR code'), findsOneWidget);
+      expect(
+        find.widgetWithText(
+          ListTile,
+          "Don't know their DID? Scan their DID QR code instead",
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should show input field', (tester) async {
