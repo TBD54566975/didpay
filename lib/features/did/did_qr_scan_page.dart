@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -13,54 +14,62 @@ class DidQrScanPage extends HookWidget {
     final isProcessing = useState(false);
     final controller = useMemoized(MobileScannerController.new);
 
+    const maxSize = 400.0;
+    final screenSize = MediaQuery.of(context).size;
+    final scanSize = screenSize.width * 0.8;
+
+    final scanWindow = Rect.fromCenter(
+      center: Offset(screenSize.width / 2, screenSize.height / 2 - Grid.xxl),
+      width: min(scanSize, maxSize),
+      height: min(scanSize, maxSize),
+    );
+
     useOnAppLifecycleStateChange(
       (_, current) => current == AppLifecycleState.resumed
           ? controller.start()
           : controller.stop(),
     );
 
-    const maxSize = 400.0;
-    final screenSize = MediaQuery.of(context).size;
-    final scanSize = screenSize.width * 0.8;
+    return SafeArea(
+      top: false,
+      bottom: false,
+      child: Stack(
+        children: [
+          MobileScanner(
+            controller: controller,
+            scanWindow: scanWindow,
+            onDetect: (barcode) {
+              if (isProcessing.value) return;
+              isProcessing.value = true;
 
-    final scanWindow = Rect.fromCenter(
-      center: screenSize.center(Offset.zero),
-      width: min(scanSize, maxSize),
-      height: min(scanSize, maxSize),
-    );
-
-    return Scaffold(
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.flash_on),
-            onPressed: controller.toggleTorch,
-          ),
-        ],
-      ),
-      body: SafeArea(
-        top: false,
-        bottom: false,
-        child: Stack(
-          children: [
-            MobileScanner(
-              controller: controller,
-              scanWindow: scanWindow,
-              onDetect: (barcode) {
-                if (isProcessing.value) return;
-                isProcessing.value = true;
-
-                Navigator.of(context).pop(
-                  barcode.barcodes.map((e) => e.rawValue).join(),
-                );
-              },
+              Navigator.of(context).pop(
+                barcode.barcodes.map((e) => e.rawValue).join(),
+              );
+            },
+            errorBuilder: (context, error, child) => Padding(
+              padding: EdgeInsets.only(bottom: scanWindow.height / 3),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.no_photography,
+                    size: Grid.xxl,
+                  ),
+                  const SizedBox(height: Grid.sm),
+                  Center(
+                    child: Text(
+                      Loc.of(context).cameraUnavailable,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            CustomPaint(painter: _ScannerOverlay(scanWindow)),
-          ],
-        ),
+          ),
+          CustomPaint(painter: _ScannerOverlay(scanWindow)),
+        ],
       ),
     );
   }

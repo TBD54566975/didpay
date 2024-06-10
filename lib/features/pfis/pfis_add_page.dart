@@ -1,4 +1,6 @@
 import 'package:didpay/features/did/did_form.dart';
+import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_data_widget.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
@@ -8,40 +10,39 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SendDetailsPage extends HookConsumerWidget {
-  final String sendAmount;
-
-  const SendDetailsPage({required this.sendAmount, super.key});
+class PfisAddPage extends HookConsumerWidget {
+  const PfisAddPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final send = useState<AsyncValue<void>?>(null);
+    final pfi = useState<AsyncValue<Pfi>?>(null);
+
+    final pfiDidController = useTextEditingController();
 
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: send.value != null
-            ? send.value!.when(
-                data: (_) =>
-                    AsyncDataWidget(text: Loc.of(context).yourPaymentWasSent),
+        child: pfi.value != null
+            ? pfi.value!.when(
+                data: (_) => AsyncDataWidget(text: Loc.of(context).pfiAdded),
                 loading: () =>
-                    AsyncLoadingWidget(text: Loc.of(context).sendingPayment),
+                    AsyncLoadingWidget(text: Loc.of(context).addingPfi),
                 error: (error, _) => AsyncErrorWidget(
                   text: error.toString(),
-                  onRetry: () => _sendPayment(send),
+                  onRetry: () => _addPfi(ref, pfiDidController.text, pfi),
                 ),
               )
             : Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Header(
-                    title: Loc.of(context).enterRecipientDid,
+                    title: Loc.of(context).addAPfi,
                     subtitle: Loc.of(context).makeSureInfoIsCorrect,
                   ),
                   Expanded(
                     child: DidForm(
-                      buttonTitle: Loc.of(context).sendAmountUsdc(sendAmount),
-                      onSubmit: (did) => _sendPayment(send),
+                      buttonTitle: Loc.of(context).add,
+                      onSubmit: (did) => _addPfi(ref, did, pfi),
                     ),
                   ),
                 ],
@@ -50,9 +51,20 @@ class SendDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Future<void> _sendPayment(ValueNotifier<AsyncValue<void>?> state) async {
+  Future<void> _addPfi(
+    WidgetRef ref,
+    String did,
+    ValueNotifier<AsyncValue<Pfi>?> state,
+  ) async {
     state.value = const AsyncLoading();
-    await Future.delayed(const Duration(milliseconds: 1000));
-    state.value = const AsyncValue.data(null);
+
+    try {
+      await ref
+          .read(pfisProvider.notifier)
+          .add(did)
+          .then((pfi) => state.value = AsyncData(pfi));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
   }
 }

@@ -10,41 +10,33 @@ void main() async {
   final did = await DidDht.create();
 
   group('SendDetailsPage', () {
-    testWidgets('should show QR Code CTA', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: SendDetailsPage(sendAmount: '25'),
+    Widget sendDetailsPageTestWidget() => WidgetHelpers.testableWidget(
+          child: const SendDetailsPage(sendAmount: '25'),
           overrides: [
             didProvider.overrideWithValue(did),
           ],
-        ),
-      );
+        );
 
-      expect(find.textContaining('Scan their QR code'), findsOneWidget);
+    testWidgets('should show QR Code CTA', (tester) async {
+      await tester.pumpWidget(sendDetailsPageTestWidget());
+
+      expect(
+        find.widgetWithText(
+          ListTile,
+          "Don't know their DID? Scan their DID QR code instead",
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should show input field', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: SendDetailsPage(sendAmount: '25'),
-          overrides: [
-            didProvider.overrideWithValue(did),
-          ],
-        ),
-      );
+      await tester.pumpWidget(sendDetailsPageTestWidget());
 
       expect(find.byType(TextField), findsOneWidget);
     });
 
     testWidgets('should show send button', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: SendDetailsPage(sendAmount: '25'),
-          overrides: [
-            didProvider.overrideWithValue(did),
-          ],
-        ),
-      );
+      await tester.pumpWidget(sendDetailsPageTestWidget());
 
       expect(find.widgetWithText(FilledButton, 'Send 25 USDC'), findsOneWidget);
     });
