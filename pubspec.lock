@@ -783,7 +783,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "47402b9e8b531adb2d3122eb7d9c8b5ed4832b8e"
+      resolved-ref: "6e626f5adf620708c421f5b986fa5e95abdb143a"
       url: "https://github.com/TBD54566975/tbdex-dart.git"
     source: git
     version: "1.0.0"
