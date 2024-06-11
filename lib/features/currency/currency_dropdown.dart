@@ -1,7 +1,7 @@
-import 'package:didpay/features/modals/modal_select_currency.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/shared/modal/modal_select_currency.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
