@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance.dart';
+import 'package:didpay/features/account/account_balance_display.dart';
+import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
@@ -29,6 +30,9 @@ void main() async {
   final offerings = {
     pfi: [Offering.fromJson(jsonList[0])],
   };
+  final accountBalance =
+      AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {});
+
   late MockTbdexService mockTbdexService;
   late MockPfisNotifier mockPfisNotifier;
 
@@ -39,6 +43,8 @@ void main() async {
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
+            accountBalanceProvider
+                .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         );
@@ -73,8 +79,8 @@ void main() async {
       await tester.pumpWidget(homePageTestWidget());
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(AutoSizeText, '101'), findsOneWidget);
-      expect(find.widgetWithText(Row, 'USD'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceDisplay, '101'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceDisplay, 'USD'), findsOneWidget);
     });
 
     testWidgets('should show deposit button', (tester) async {
