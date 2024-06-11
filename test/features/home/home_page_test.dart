@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:didpay/features/account/account_balance.dart';
+import 'package:didpay/features/account/account_balance_display.dart';
+import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
@@ -27,6 +30,9 @@ void main() async {
   final offerings = {
     pfi: [Offering.fromJson(jsonList[0])],
   };
+  final accountBalance =
+      AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {});
+
   late MockTbdexService mockTbdexService;
   late MockPfisNotifier mockPfisNotifier;
 
@@ -37,6 +43,8 @@ void main() async {
             didProvider.overrideWithValue(did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
+            accountBalanceProvider
+                .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         );
@@ -52,6 +60,13 @@ void main() async {
       when(
         () => mockTbdexService.getExchanges(did, [pfi]),
       ).thenAnswer((_) async => {});
+
+      when(
+        () => mockTbdexService.getAccountBalance([pfi]),
+      ).thenAnswer(
+        (_) async =>
+            AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {}),
+      );
     });
 
     testWidgets('should show account balance', (tester) async {
@@ -60,12 +75,12 @@ void main() async {
       expect(find.text('Account balance'), findsOneWidget);
     });
 
-    testWidgets('should show valid account balance amount', (tester) async {
+    testWidgets('should show account balance amount', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
+      await tester.pumpAndSettle();
 
-      final numberPattern = RegExp(r'[0-9]+(\.[0-9]{2})?$');
-
-      expect(find.textContaining(numberPattern), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceDisplay, '101'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceDisplay, 'USD'), findsOneWidget);
     });
 
     testWidgets('should show deposit button', (tester) async {

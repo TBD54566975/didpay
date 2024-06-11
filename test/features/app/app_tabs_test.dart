@@ -1,3 +1,4 @@
+import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/did/did_provider.dart';
@@ -32,6 +33,13 @@ void main() async {
     when(
       () => mockTbdexService.getExchanges(did, [pfi]),
     ).thenAnswer((_) async => {});
+
+    when(
+      () => mockTbdexService.getAccountBalance([pfi]),
+    ).thenAnswer(
+      (_) async =>
+          AccountBalance(total: '0', currencyCode: 'USD', balancesMap: {}),
+    );
   });
 
   group('AppTabs', () {

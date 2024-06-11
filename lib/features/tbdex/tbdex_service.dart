@@ -1,3 +1,5 @@
+import 'package:decimal/decimal.dart';
+import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
@@ -22,6 +24,33 @@ class TbdexService {
     }
 
     return offeringsMap;
+  }
+
+  Future<AccountBalance> getAccountBalance(List<Pfi> pfis) async {
+    final balancesMap = <Pfi, List<Balance>>{};
+    var totalAvailable = Decimal.zero;
+    String? currencyCode;
+
+    for (final pfi in pfis) {
+      try {
+        await TbdexHttpClient.listBalances(pfi.did).then((balances) {
+          balancesMap[pfi] = balances;
+          for (final balance in balances) {
+            totalAvailable += Decimal.parse(balance.data.available);
+            currencyCode ??= balance.data.currencyCode;
+          }
+        });
+      } on Exception catch (e) {
+        if (e is ResponseError) continue;
+        rethrow;
+      }
+    }
+
+    return AccountBalance(
+      total: totalAvailable.toString(),
+      currencyCode: currencyCode ?? '',
+      balancesMap: balancesMap,
+    );
   }
 
   Future<Map<Pfi, List<String>>> getExchanges(
