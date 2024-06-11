@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:decimal/decimal.dart';
+import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -20,17 +20,19 @@ class HomePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pfis = ref.read(pfisProvider);
+    final pfis = ref.watch(pfisProvider);
 
     final exchanges =
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
-
-    // TODO(ethan-tbd): get balance from pfi, https://github.com/TBD54566975/didpay/issues/109
-    final accountBalance = Decimal.parse('0');
+    final accountBalance =
+        useState<AsyncValue<AccountBalance>>(const AsyncLoading());
 
     useEffect(
       () {
-        Future.microtask(() async => _getExchanges(ref, exchanges));
+        Future.microtask(() async {
+          await _getAccountBalance(ref, accountBalance);
+          await _getExchanges(ref, exchanges);
+        });
         return null;
       },
       [],
@@ -41,7 +43,7 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAccountBalance(context, accountBalance, pfis),
+            _buildAccountBalance(context, pfis, accountBalance.value),
             Expanded(
               child: pfis.isEmpty
                   ? _buildGetStarted(
@@ -64,8 +66,8 @@ class HomePage extends HookConsumerWidget {
 
   Widget _buildAccountBalance(
     BuildContext context,
-    Decimal accountBalance,
     List<Pfi> pfis,
+    AsyncValue<AccountBalance> accountBalance,
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(
@@ -89,35 +91,42 @@ class HomePage extends HookConsumerWidget {
               ),
               const SizedBox(height: Grid.xxs),
               Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.baseline,
-                  textBaseline: TextBaseline.alphabetic,
-                  children: [
-                    Flexible(
-                      child: AutoSizeText(
-                        accountBalance.toString(),
-                        style:
-                            Theme.of(context).textTheme.displayMedium?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                        maxLines: 1,
+                child: accountBalance.when(
+                  data: (balance) => Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.baseline,
+                    textBaseline: TextBaseline.alphabetic,
+                    children: [
+                      Flexible(
+                        child: AutoSizeText(
+                          balance.total,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                          maxLines: 1,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: Grid.half),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
-                      child: Text(
-                        'USDC',
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium
-                            ?.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                      const SizedBox(width: Grid.half),
+                      Padding(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: Grid.xxs),
+                        child: Text(
+                          balance.currencyCode,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
+                  loading: Container.new,
+                  error: (error, stackTrace) => Text(error.toString()),
                 ),
               ),
               const SizedBox(height: Grid.xs),
@@ -297,6 +306,21 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
       );
+
+  Future<void> _getAccountBalance(
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<AccountBalance>> state,
+  ) async {
+    state.value = const AsyncLoading();
+    try {
+      await ref
+          .read(tbdexServiceProvider)
+          .getAccountBalance(ref.read(pfisProvider))
+          .then((accountBalance) => state.value = AsyncData(accountBalance));
+    } on Exception catch (e) {
+      state.value = AsyncError(e, StackTrace.current);
+    }
+  }
 
   Future<void> _getExchanges(
     WidgetRef ref,
