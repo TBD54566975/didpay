@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
@@ -52,6 +54,13 @@ void main() async {
       when(
         () => mockTbdexService.getExchanges(did, [pfi]),
       ).thenAnswer((_) async => {});
+
+      when(
+        () => mockTbdexService.getAccountBalance([pfi]),
+      ).thenAnswer(
+        (_) async =>
+            AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {}),
+      );
     });
 
     testWidgets('should show account balance', (tester) async {
@@ -60,12 +69,12 @@ void main() async {
       expect(find.text('Account balance'), findsOneWidget);
     });
 
-    testWidgets('should show valid account balance amount', (tester) async {
+    testWidgets('should show account balance amount', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
+      await tester.pumpAndSettle();
 
-      final numberPattern = RegExp(r'[0-9]+(\.[0-9]{2})?$');
-
-      expect(find.textContaining(numberPattern), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '101'), findsOneWidget);
+      expect(find.widgetWithText(Row, 'USD'), findsOneWidget);
     });
 
     testWidgets('should show deposit button', (tester) async {
