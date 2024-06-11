@@ -1,3 +1,7 @@
+import 'dart:async';
+
+import 'package:didpay/features/account/account_balance.dart';
+import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -48,4 +52,16 @@ class MockTransactionNotifier extends AutoDisposeFamilyAsyncNotifier<
     Transaction?,
     TransactionProviderParameters> with Mock implements TransactionNotifier {
   MockTransactionNotifier();
+}
+
+class MockAccountBalanceNotifier
+    extends AutoDisposeFamilyAsyncNotifier<AccountBalance?, List<Pfi>>
+    with Mock
+    implements AccountBalanceNotifier {
+  final AccountBalance? accountBalance;
+
+  MockAccountBalanceNotifier(this.accountBalance);
+
+  @override
+  FutureOr<AccountBalance?> build(List<Pfi> arg) async => accountBalance;
 }
