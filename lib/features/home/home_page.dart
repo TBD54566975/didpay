@@ -1,5 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/account/account_balance.dart';
+import 'package:didpay/features/account/account_balance_display.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -21,18 +20,12 @@ class HomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
-
     final exchanges =
         useState<AsyncValue<Map<Pfi, List<String>>>>(const AsyncLoading());
-    final accountBalance =
-        useState<AsyncValue<AccountBalance>>(const AsyncLoading());
 
     useEffect(
       () {
-        Future.microtask(() async {
-          await _getAccountBalance(ref, accountBalance);
-          await _getExchanges(ref, exchanges);
-        });
+        Future.microtask(() async => _getExchanges(ref, exchanges));
         return null;
       },
       [],
@@ -43,7 +36,7 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildAccountBalance(context, pfis, accountBalance.value),
+            _buildBalanceActions(context, pfis),
             Expanded(
               child: pfis.isEmpty
                   ? _buildGetStarted(
@@ -64,12 +57,7 @@ class HomePage extends HookConsumerWidget {
     );
   }
 
-  Widget _buildAccountBalance(
-    BuildContext context,
-    List<Pfi> pfis,
-    AsyncValue<AccountBalance> accountBalance,
-  ) =>
-      Padding(
+  Widget _buildBalanceActions(BuildContext context, List<Pfi> pfis) => Padding(
         padding: const EdgeInsets.symmetric(
           vertical: Grid.xs,
           horizontal: Grid.side,
@@ -90,45 +78,7 @@ class HomePage extends HookConsumerWidget {
                     ),
               ),
               const SizedBox(height: Grid.xxs),
-              Center(
-                child: accountBalance.when(
-                  data: (balance) => Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.baseline,
-                    textBaseline: TextBaseline.alphabetic,
-                    children: [
-                      Flexible(
-                        child: AutoSizeText(
-                          balance.total,
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                          maxLines: 1,
-                        ),
-                      ),
-                      const SizedBox(width: Grid.half),
-                      Padding(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: Grid.xxs),
-                        child: Text(
-                          balance.currencyCode,
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineMedium
-                              ?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  loading: Container.new,
-                  error: (error, stackTrace) => Text(error.toString()),
-                ),
-              ),
+              const Center(child: AccountBalanceDisplay()),
               const SizedBox(height: Grid.xs),
               if (pfis.isNotEmpty) _buildDepositWithdrawButtons(context, pfis),
             ],
@@ -306,21 +256,6 @@ class HomePage extends HookConsumerWidget {
           ],
         ),
       );
-
-  Future<void> _getAccountBalance(
-    WidgetRef ref,
-    ValueNotifier<AsyncValue<AccountBalance>> state,
-  ) async {
-    state.value = const AsyncLoading();
-    try {
-      await ref
-          .read(tbdexServiceProvider)
-          .getAccountBalance(ref.read(pfisProvider))
-          .then((accountBalance) => state.value = AsyncData(accountBalance));
-    } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
-    }
-  }
 
   Future<void> _getExchanges(
     WidgetRef ref,
