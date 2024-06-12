@@ -28,7 +28,7 @@ class AccountBalanceCard extends HookConsumerWidget {
         Future.microtask(
           () async => getAccountBalanceNotifier().startPolling(),
         );
-        return () => getAccountBalanceNotifier().stopPolling;
+        return getAccountBalanceNotifier().stopPolling;
       },
       [],
     );
