@@ -193,13 +193,13 @@ class AccountPage extends HookConsumerWidget {
                   itemCount: credentials.length,
                   itemBuilder: (context, index) => TileContainer(
                     child:
-                        _buildCredentialsTile(context, ref, credentials[index]),
+                        _buildCredentialTile(context, ref, credentials[index]),
                   ),
                 ),
         ],
       );
 
-  Widget _buildCredentialsTile(
+  Widget _buildCredentialTile(
     BuildContext context,
     WidgetRef ref,
     String credential,
