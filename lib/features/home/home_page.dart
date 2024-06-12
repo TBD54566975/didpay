@@ -1,4 +1,4 @@
-import 'package:didpay/features/account/account_balance_display.dart';
+import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -36,7 +36,7 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildBalanceActions(context, pfis),
+            const AccountBalanceCard(),
             Expanded(
               child: pfis.isEmpty
                   ? _buildGetStarted(
@@ -56,74 +56,6 @@ class HomePage extends HookConsumerWidget {
       ),
     );
   }
-
-  Widget _buildBalanceActions(BuildContext context, List<Pfi> pfis) => Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: Grid.xs,
-          horizontal: Grid.side,
-        ),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(Grid.radius),
-          ),
-          padding: const EdgeInsets.all(Grid.xs),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                Loc.of(context).accountBalance,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                      color: Theme.of(context).colorScheme.onSurface,
-                    ),
-              ),
-              const SizedBox(height: Grid.xxs),
-              const Center(child: AccountBalanceDisplay()),
-              const SizedBox(height: Grid.xs),
-              if (pfis.isNotEmpty) _buildDepositWithdrawButtons(context, pfis),
-            ],
-          ),
-        ),
-      );
-
-  Widget _buildDepositWithdrawButtons(
-    BuildContext context,
-    List<Pfi> pfis,
-  ) =>
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const PaymentAmountPage(
-                      transactionType: TransactionType.deposit,
-                    ),
-                  ),
-                );
-              },
-              child: Text(Loc.of(context).deposit),
-            ),
-          ),
-          const SizedBox(width: Grid.xs),
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const PaymentAmountPage(
-                      transactionType: TransactionType.withdraw,
-                    ),
-                  ),
-                );
-              },
-              child: Text(Loc.of(context).withdraw),
-            ),
-          ),
-        ],
-      );
 
   Widget _buildTransactionsList(
     BuildContext context,
