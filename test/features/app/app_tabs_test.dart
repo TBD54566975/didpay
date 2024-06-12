@@ -1,4 +1,5 @@
 import 'package:didpay/features/account/account_balance.dart';
+import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/did/did_provider.dart';
@@ -19,6 +20,8 @@ import '../../helpers/widget_helpers.dart';
 
 void main() async {
   final did = await DidDht.create();
+  final accountBalance =
+      AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {});
   const pfi = Pfi(did: 'did:web:x%3A8892:ingress');
 
   late MockTbdexService mockTbdexService;
@@ -51,6 +54,8 @@ void main() async {
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
             vcsProvider.overrideWith((ref) => mockVcsNotifier),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
+            accountBalanceProvider
+                .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
           ],
         );
 

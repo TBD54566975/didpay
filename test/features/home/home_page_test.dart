@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:didpay/features/account/account_balance.dart';
-import 'package:didpay/features/account/account_balance_display.dart';
+import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
@@ -79,8 +79,8 @@ void main() async {
       await tester.pumpWidget(homePageTestWidget());
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(AccountBalanceDisplay, '101'), findsOneWidget);
-      expect(find.widgetWithText(AccountBalanceDisplay, 'USD'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceCard, '101'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceCard, 'USD'), findsOneWidget);
     });
 
     testWidgets('should show deposit button', (tester) async {
