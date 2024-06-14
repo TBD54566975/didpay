@@ -144,5 +144,8 @@
     "fetchingTransactions": "Fetching transactions...",
     "scan": "Scan",
     "cameraUnavailable": "Camera unavailable",
-    "dontKnowTheirDid": "Don't know their DID? Scan their DID QR code instead"
+    "dontKnowTheirDid": "Don't know their DID? Scan their DID QR code instead",
+    "featureFlags": "Feature flags",
+    "lucidMode": "Lucid mode",
+    "selectFromUnfilteredList": "Select from an unfiltered list of all your PFI offerings."
 }

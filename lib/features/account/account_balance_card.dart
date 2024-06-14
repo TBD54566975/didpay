@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -107,7 +108,9 @@ class AccountBalanceCard extends HookConsumerWidget {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const PaymentAmountPage(
-                    transactionType: TransactionType.deposit,
+                    paymentState: PaymentState(
+                      transactionType: TransactionType.deposit,
+                    ),
                   ),
                 ),
               ),
@@ -120,7 +123,9 @@ class AccountBalanceCard extends HookConsumerWidget {
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => const PaymentAmountPage(
-                    transactionType: TransactionType.withdraw,
+                    paymentState: PaymentState(
+                      transactionType: TransactionType.withdraw,
+                    ),
                   ),
                 ),
               ),

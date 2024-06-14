@@ -1,4 +1,6 @@
 import 'package:didpay/features/did/did_qr_tabs.dart';
+import 'package:didpay/features/feature_flags/feature_flag.dart';
+import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -17,6 +19,7 @@ class AccountPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
     final credentials = ref.watch(vcsProvider);
+    final featureFlags = ref.watch(featureFlagsProvider);
     const dap = 'username@didpay.me';
 
     return Scaffold(
@@ -35,6 +38,10 @@ class AccountPage extends HookConsumerWidget {
                     _buildLinkedPfisList(context, ref, pfis),
                     const SizedBox(height: Grid.lg),
                     _buildIssuedCredentialsList(context, ref, credentials),
+                    if (featureFlags.isNotEmpty) ...[
+                      const SizedBox(height: Grid.lg),
+                      _buildFeatureFlagsList(context, ref, featureFlags),
+                    ],
                   ],
                 ),
               ),
@@ -134,7 +141,7 @@ class AccountPage extends HookConsumerWidget {
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
-          child: const Center(child: Icon(Icons.attach_money)),
+          child: const Center(child: Icon(Icons.account_balance)),
         ),
         onTap: () => ModalRemoveItem.show(
           context,
@@ -242,6 +249,58 @@ class AccountPage extends HookConsumerWidget {
             child:
                 Icon(Icons.error, color: Theme.of(context).colorScheme.outline),
           ),
+        ),
+      );
+
+  Widget _buildFeatureFlagsList(
+    BuildContext context,
+    WidgetRef ref,
+    List<FeatureFlag> featureFlags,
+  ) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Grid.side),
+            child: Text(
+              Loc.of(context).featureFlags,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: featureFlags.length,
+            itemBuilder: (context, index) => TileContainer(
+              child: _buildFeatureFlagToggle(context, ref, featureFlags[index]),
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildFeatureFlagToggle(
+    BuildContext context,
+    WidgetRef ref,
+    FeatureFlag flag,
+  ) =>
+      SwitchListTile(
+        title: Text(
+          flag.name,
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        subtitle: Text(
+          flag.description,
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        value: flag.isEnabled,
+        onChanged: (value) async {
+          await ref.read(featureFlagsProvider.notifier).toggleFlag(flag);
+        },
+        activeColor: Theme.of(context).colorScheme.tertiary,
+        trackOutlineColor: MaterialStateProperty.resolveWith<Color?>(
+          (_) => Colors.transparent,
         ),
       );
 }

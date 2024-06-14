@@ -4,6 +4,8 @@ import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
+import 'package:didpay/features/feature_flags/feature_flag.dart';
+import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
@@ -46,6 +48,12 @@ class MockCountriesNotifier extends StateNotifier<List<Country>>
     with Mock
     implements CountriesNotifier {
   MockCountriesNotifier(super.state);
+}
+
+class MockFeatureFlagsNotifier extends StateNotifier<List<FeatureFlag>>
+    with Mock
+    implements FeatureFlagsNotifier {
+  MockFeatureFlagsNotifier(super.state);
 }
 
 class MockTransactionNotifier extends AutoDisposeFamilyAsyncNotifier<

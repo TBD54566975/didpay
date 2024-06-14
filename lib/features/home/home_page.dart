@@ -1,6 +1,7 @@
 import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -149,7 +150,9 @@ class HomePage extends HookConsumerWidget {
                   builder: (context) => ref.read(pfisProvider).isEmpty
                       ? const PfisAddPage()
                       : const PaymentAmountPage(
-                          transactionType: TransactionType.deposit,
+                          paymentState: PaymentState(
+                            transactionType: TransactionType.deposit,
+                          ),
                         ),
                 ),
               ),

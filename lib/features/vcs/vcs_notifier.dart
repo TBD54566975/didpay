@@ -32,6 +32,6 @@ class VcsNotifier extends StateNotifier<List<String>> {
   }
 
   Future<void> _save() async {
-    await box.put('vcs', state);
+    await box.put(storageKey, state);
   }
 }

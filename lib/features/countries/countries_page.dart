@@ -1,6 +1,7 @@
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/header.dart';
@@ -36,8 +37,10 @@ class CountriesPage extends HookConsumerWidget {
                   : () => Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (context) => PaymentAmountPage(
-                            transactionType: TransactionType.send,
-                            country: country.value,
+                            paymentState: PaymentState(
+                              transactionType: TransactionType.deposit,
+                              selectedCountry: country.value,
+                            ),
                           ),
                         ),
                       ),

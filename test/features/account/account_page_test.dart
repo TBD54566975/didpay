@@ -1,5 +1,6 @@
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/did/did_qr_tabs.dart';
+import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +14,13 @@ void main() async {
 
   late MockPfisNotifier mockPfisNotifier;
   late MockVcsNotifier mockVcsNotifier;
+  late MockFeatureFlagsNotifier mockFeatureFlagsNotifier;
 
   group('AccountPage', () {
     setUp(() {
       mockPfisNotifier = MockPfisNotifier([]);
       mockVcsNotifier = MockVcsNotifier([]);
+      mockFeatureFlagsNotifier = MockFeatureFlagsNotifier([]);
     });
 
     Widget accountPageTestWidget() => WidgetHelpers.testableWidget(
@@ -25,6 +28,8 @@ void main() async {
           overrides: [
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
             vcsProvider.overrideWith((ref) => mockVcsNotifier),
+            featureFlagsProvider
+                .overrideWith((ref) => mockFeatureFlagsNotifier),
           ],
         );
 
@@ -55,8 +60,10 @@ void main() async {
     testWidgets('should show no credentials issued yet tile', (tester) async {
       await tester.pumpWidget(accountPageTestWidget());
 
-      expect(find.widgetWithText(ListTile, 'No credentials issued yet'),
-          findsOneWidget,);
+      expect(
+        find.widgetWithText(ListTile, 'No credentials issued yet'),
+        findsOneWidget,
+      );
     });
 
     testWidgets('should show DidQrTabs on tap of qr icon', (tester) async {

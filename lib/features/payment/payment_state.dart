@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:tbdex/tbdex.dart';
@@ -13,6 +14,7 @@ class PaymentState {
   final Decimal? payinAmount;
   final Decimal? payoutAmount;
   final Decimal? exchangeRate;
+  final Country? selectedCountry;
   final Pfi? selectedPfi;
   final Offering? selectedOffering;
   final PayinMethod? selectedPayinMethod;
@@ -33,6 +35,7 @@ class PaymentState {
     this.payinAmount,
     this.payoutAmount,
     this.exchangeRate,
+    this.selectedCountry,
     this.selectedPfi,
     this.selectedOffering,
     this.selectedPayinMethod,
@@ -54,6 +57,7 @@ class PaymentState {
     Decimal? payinAmount,
     Decimal? payoutAmount,
     Decimal? exchangeRate,
+    Country? selectedCountry,
     Pfi? selectedPfi,
     Offering? selectedOffering,
     PayinMethod? selectedPayinMethod,
@@ -74,6 +78,7 @@ class PaymentState {
       payinAmount: payinAmount ?? this.payinAmount,
       payoutAmount: payoutAmount ?? this.payoutAmount,
       exchangeRate: exchangeRate ?? this.exchangeRate,
+      selectedCountry: selectedCountry ?? this.selectedCountry,
       selectedPfi: selectedPfi ?? this.selectedPfi,
       selectedOffering: selectedOffering ?? this.selectedOffering,
       selectedPayinMethod: selectedPayinMethod ?? this.selectedPayinMethod,

@@ -353,4 +353,13 @@ class LocEn extends Loc {
 
   @override
   String get dontKnowTheirDid => 'Don\'t know their DID? Scan their DID QR code instead';
+
+  @override
+  String get featureFlags => 'Feature flags';
+
+  @override
+  String get lucidMode => 'Lucid mode';
+
+  @override
+  String get selectFromUnfilteredList => 'Select from an unfiltered list of all your PFI offerings.';
 }

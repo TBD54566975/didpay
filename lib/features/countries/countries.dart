@@ -69,3 +69,5 @@ class Country extends Equatable {
   @override
   List<Object?> get props => [name, code];
 }
+
+const mexico = Country(name: 'Mexico', code: 'MX');

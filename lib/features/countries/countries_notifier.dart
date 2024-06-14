@@ -25,9 +25,7 @@ class CountriesNotifier extends StateNotifier<List<Country>> {
     );
   }
 
-  Future<Country> add(String code, String name) async {
-    final country = Country(code: code, name: name);
-
+  Future<Country> add(Country country) async {
     state = [...state, country];
     await _save();
     return country;

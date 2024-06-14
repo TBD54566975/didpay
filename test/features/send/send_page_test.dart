@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/send/send_details_page.dart';
@@ -23,6 +24,12 @@ void main() async {
       AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {});
 
   late MockPfisNotifier mockPfisNotifier;
+  late MockFeatureFlagsNotifier mockFeatureFlagsNotifier;
+
+  setUp(() {
+    mockPfisNotifier = MockPfisNotifier([pfi]);
+    mockFeatureFlagsNotifier = MockFeatureFlagsNotifier([]);
+  });
 
   group('SendPage', () {
     Widget sendPageTestWidget() => WidgetHelpers.testableWidget(
@@ -30,14 +37,12 @@ void main() async {
           overrides: [
             didProvider.overrideWithValue(did),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
+            featureFlagsProvider
+                .overrideWith((ref) => mockFeatureFlagsNotifier),
             accountBalanceProvider
                 .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
           ],
         );
-
-    setUp(() {
-      mockPfisNotifier = MockPfisNotifier([pfi]);
-    });
 
     testWidgets('should show Number Pad', (tester) async {
       await tester.pumpWidget(sendPageTestWidget());

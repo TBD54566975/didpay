@@ -3,6 +3,7 @@ import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/home/home_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -27,11 +28,13 @@ void main() async {
   late MockTbdexService mockTbdexService;
   late MockPfisNotifier mockPfisNotifier;
   late MockVcsNotifier mockVcsNotifier;
+  late MockFeatureFlagsNotifier mockFeatureFlagsNotifier;
 
   setUp(() {
     mockTbdexService = MockTbdexService();
     mockPfisNotifier = MockPfisNotifier([pfi]);
     mockVcsNotifier = MockVcsNotifier([]);
+    mockFeatureFlagsNotifier = MockFeatureFlagsNotifier([]);
 
     when(
       () => mockTbdexService.getExchanges(did, [pfi]),
@@ -53,6 +56,8 @@ void main() async {
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
             vcsProvider.overrideWith((ref) => mockVcsNotifier),
+            featureFlagsProvider
+                .overrideWith((ref) => mockFeatureFlagsNotifier),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
             accountBalanceProvider
                 .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
