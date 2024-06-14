@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -40,7 +41,8 @@ void main() {
   group('PaymentAmountPage', () {
     Widget paymentAmountPageTestWidget() => WidgetHelpers.testableWidget(
           child: const PaymentAmountPage(
-            transactionType: TransactionType.deposit,
+            paymentState:
+                PaymentState(transactionType: TransactionType.deposit),
           ),
           overrides: [
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
