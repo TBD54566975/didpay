@@ -4,18 +4,18 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/widget_helpers.dart';
 
-final _paymentTypes = {
-  'Bank',
-  'Mobile money',
-  'Wallet',
-};
-
 void main() {
+  final paymentTypes = {
+    'Bank',
+    'Mobile money',
+    'Wallet',
+  };
+
   group('PaymentTypesPage', () {
     Widget paymentTypesPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentTypesPage(
-            selectedPaymentType: ValueNotifier<String>(_paymentTypes.first),
-            paymentTypes: _paymentTypes,
+            selectedPaymentType: ValueNotifier<String>(paymentTypes.first),
+            paymentTypes: paymentTypes,
             payinCurrency: '',
           ),
         );
