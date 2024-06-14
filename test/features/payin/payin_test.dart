@@ -8,40 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:tbdex/tbdex.dart';
 
+import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
 
-void main() {
+void main() async {
+  await TestData.initializeDids();
+
   group('Payin', () {
     final amount = ValueNotifier<String>('70');
     final pfi = ValueNotifier<Pfi?>(null);
-    final offering = ValueNotifier<Offering?>(
-      Offering.create(
-        'pfiDid',
-        OfferingData(
-          description: '',
-          payoutUnitsPerPayinUnit: '1',
-          payin: PayinDetails(
-            currencyCode: 'AUD',
-            min: '0.01',
-            max: '100.00',
-            methods: [
-              PayinMethod(
-                kind: 'DEBIT_CARD',
-              ),
-            ],
-          ),
-          payout: PayoutDetails(
-            currencyCode: 'USDC',
-            methods: [
-              PayoutMethod(
-                estimatedSettlementTime: 0,
-                kind: 'DEBIT_CARD',
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+    final offering = ValueNotifier<Offering?>(TestData.getOffering());
     final keyPress = ValueNotifier<NumberKeyPress>(NumberKeyPress(0, ''));
 
     final paymentState = PaymentState(

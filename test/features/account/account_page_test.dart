@@ -7,11 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/mocks.dart';
+import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
 
-void main() async {
-  const dap = 'username@didpay.me';
-
+void main() {
   late MockPfisNotifier mockPfisNotifier;
   late MockVcsNotifier mockVcsNotifier;
   late MockFeatureFlagsNotifier mockFeatureFlagsNotifier;
@@ -36,7 +35,7 @@ void main() async {
     testWidgets('should show DAP', (tester) async {
       await tester.pumpWidget(accountPageTestWidget());
 
-      expect(find.text(dap), findsOneWidget);
+      expect(find.text(TestData.dap), findsOneWidget);
     });
 
     testWidgets('should show linked pfis', (tester) async {

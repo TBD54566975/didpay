@@ -1,11 +1,17 @@
-import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/mocks.dart';
+import '../../helpers/test_data.dart';
 
-void main() {
+void main() async {
+  await TestData.initializeDids();
+
+  final initialPfi = TestData.getPfi('did:dht:pfiDid');
+  final newPfi = TestData.getPfi('did:dht:newDid');
+  final initialPfis = [initialPfi];
+
   late MockBox mockBox;
   late MockPfisService mockPfisService;
 
@@ -16,8 +22,6 @@ void main() {
 
   group('PfisNotifier', () {
     test('should create and load initial list', () async {
-      final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
-
       when(() => mockBox.get(PfisNotifier.storageKey))
           .thenReturn(initialPfis.map((pfi) => pfi.toJson()).toList());
       final notifier = await PfisNotifier.create(mockBox, mockPfisService);
@@ -28,9 +32,6 @@ void main() {
     });
 
     test('should add a new Pfi', () async {
-      final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
-      const newPfi = Pfi(did: 'did:web:x%3A8892:egress');
-
       when(() => mockBox.get(PfisNotifier.storageKey))
           .thenReturn(initialPfis.map((pfi) => pfi.toJson()).toList());
       when(
@@ -55,12 +56,10 @@ void main() {
           [...initialPfis.map((pfi) => pfi.toJson()), newPfi.toJson()],
         ),
       ).called(1);
-      verify(() => mockPfisService.createPfi('did:web:x%3A8892:egress'))
-          .called(1);
+      verify(() => mockPfisService.createPfi(newPfi.did)).called(1);
     });
 
     test('should remove a Pfi', () async {
-      final initialPfis = [const Pfi(did: 'did:web:x%3A8892:ingress')];
       final pfiToRemove = initialPfis.first;
 
       when(() => mockBox.get(PfisNotifier.storageKey))

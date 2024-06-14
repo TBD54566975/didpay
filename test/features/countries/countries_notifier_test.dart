@@ -1,11 +1,15 @@
-import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../helpers/mocks.dart';
+import '../../helpers/test_data.dart';
 
 void main() {
+  final australia = TestData.getCountry('Australia', 'AU');
+  final us = TestData.getCountry('United States', 'US');
+  final initialCountries = [australia];
+
   late MockBox mockBox;
 
   setUp(() {
@@ -14,10 +18,9 @@ void main() {
 
   group('CountriesNotifier', () {
     test('should create and load initial list', () async {
-      final initialCountries = [const Country(name: 'Mexico', code: 'MXN')];
-
       when(() => mockBox.get(CountriesNotifier.storageKey)).thenReturn(
-          initialCountries.map((country) => country.toJson()).toList(),);
+        initialCountries.map((country) => country.toJson()).toList(),
+      );
       final notifier = await CountriesNotifier.create(mockBox);
 
       expect(notifier.state, initialCountries);
@@ -25,11 +28,9 @@ void main() {
     });
 
     test('should add a new Country', () async {
-      final initialCountries = [const Country(name: 'Mexico', code: 'MXN')];
-      const newCountry = Country(name: 'United States', code: 'USD');
-
       when(() => mockBox.get(CountriesNotifier.storageKey)).thenReturn(
-          initialCountries.map((country) => country.toJson()).toList(),);
+        initialCountries.map((country) => country.toJson()).toList(),
+      );
       when(
         () => mockBox.put(
           CountriesNotifier.storageKey,
@@ -39,28 +40,28 @@ void main() {
 
       final notifier = await CountriesNotifier.create(mockBox);
 
-      final addedCountry = await notifier.add(newCountry);
+      final addedCountry = await notifier.add(us);
 
-      expect(notifier.state, [...initialCountries, newCountry]);
-      expect(addedCountry, newCountry);
+      expect(notifier.state, [...initialCountries, us]);
+      expect(addedCountry, us);
 
       verify(
         () => mockBox.put(
           CountriesNotifier.storageKey,
           [
             ...initialCountries.map((country) => country.toJson()),
-            newCountry.toJson(),
+            us.toJson(),
           ],
         ),
       ).called(1);
     });
 
     test('should remove a Country', () async {
-      final initialCountries = [const Country(name: 'Mexico', code: 'MXN')];
       final countryToRemove = initialCountries.first;
 
       when(() => mockBox.get(CountriesNotifier.storageKey)).thenReturn(
-          initialCountries.map((country) => country.toJson()).toList(),);
+        initialCountries.map((country) => country.toJson()).toList(),
+      );
       when(() => mockBox.put(CountriesNotifier.storageKey, any()))
           .thenAnswer((_) async {});
 
