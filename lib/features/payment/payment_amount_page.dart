@@ -1,5 +1,4 @@
 import 'package:decimal/decimal.dart';
-import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
@@ -8,7 +7,6 @@ import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
-import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/async/async_error_widget.dart';
 import 'package:didpay/shared/async/async_loading_widget.dart';
@@ -22,28 +20,30 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
 class PaymentAmountPage extends HookConsumerWidget {
-  final TransactionType transactionType;
-  final Country? country;
+  final PaymentState paymentState;
 
-  const PaymentAmountPage({
-    required this.transactionType,
-    this.country,
-    super.key,
-  });
+  const PaymentAmountPage({required this.paymentState, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final payinAmount = useState<String>('0');
     final payoutAmount = useState<Decimal>(Decimal.zero);
     final keyPress = useState(NumberKeyPress(0, ''));
-    final selectedPfi = useState<Pfi?>(null);
-    final selectedOffering = useState<Offering?>(null);
+    final selectedPfi = useState<Pfi?>(paymentState.selectedPfi);
+    final selectedOffering = useState<Offering?>(paymentState.selectedOffering);
     final offerings =
         useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
 
     useEffect(
       () {
-        Future.microtask(() async => _getOfferings(ref, offerings));
+        Future.microtask(
+          () async =>
+              selectedOffering.value != null && selectedPfi.value != null
+                  ? offerings.value = AsyncData({
+                      selectedPfi.value!: [selectedOffering.value!],
+                    })
+                  : await _getOfferings(ref, offerings),
+        );
         return null;
       },
       [],
@@ -62,8 +62,7 @@ class PaymentAmountPage extends HookConsumerWidget {
               selectedOffering.value = offering;
             }
 
-            final paymentState = PaymentState(
-              transactionType: transactionType,
+            final state = paymentState.copyWith(
               payinAmount: Decimal.parse(payinAmount.value),
               payoutAmount: payoutAmount.value,
               selectedPfi: selectedPfi.value,
@@ -95,20 +94,20 @@ class PaymentAmountPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            paymentState: paymentState,
+                            paymentState: state,
                             payinAmount: payinAmount,
                             keyPress: keyPress,
                             onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.sm),
                           Payout(
-                            paymentState: paymentState,
+                            paymentState: state,
                             payoutAmount: payoutAmount,
                             onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.xl),
                           PaymentFeeDetails(
-                            transactionType: transactionType,
+                            transactionType: paymentState.transactionType,
                             offering: selectedOffering.value?.data,
                           ),
                         ],
