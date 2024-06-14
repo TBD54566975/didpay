@@ -774,6 +774,24 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Don\'t know their DID? Scan their DID QR code instead'**
   String get dontKnowTheirDid;
+
+  /// No description provided for @featureFlags.
+  ///
+  /// In en, this message translates to:
+  /// **'Feature flags'**
+  String get featureFlags;
+
+  /// No description provided for @lucidMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Lucid mode'**
+  String get lucidMode;
+
+  /// No description provided for @selectFromUnfilteredList.
+  ///
+  /// In en, this message translates to:
+  /// **'Select from an unfiltered list of all your PFI offerings.'**
+  String get selectFromUnfilteredList;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
