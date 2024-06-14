@@ -20,13 +20,12 @@ class FeatureFlag extends Equatable {
   Map<String, dynamic> toJson() =>
       {'name': name, 'description': description, 'isEnabled': isEnabled};
 
-  FeatureFlag copyWith({String? name, String? description, bool? isEnabled}) {
-    return FeatureFlag(
-      name: name ?? this.name,
-      description: description ?? this.description,
-      isEnabled: isEnabled ?? this.isEnabled,
-    );
-  }
+  FeatureFlag copyWith({String? name, String? description, bool? isEnabled}) =>
+      FeatureFlag(
+        name: name ?? this.name,
+        description: description ?? this.description,
+        isEnabled: isEnabled ?? this.isEnabled,
+      );
 
   @override
   List<Object?> get props => [name, description, isEnabled];
