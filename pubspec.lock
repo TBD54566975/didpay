@@ -812,7 +812,7 @@ packages:
     source: hosted
     version: "1.3.2"
   typeid:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: typeid
       sha256: "1e4beac12e6cdf65299bdc458a44e3a2a4b2b0bd88ca93bee81011ab4e1133cd"
