@@ -46,8 +46,6 @@ class LucidOfferingsPage extends HookConsumerWidget {
                 )
                 .toList();
 
-            print(offerings);
-
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
