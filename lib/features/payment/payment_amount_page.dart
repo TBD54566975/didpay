@@ -29,6 +29,7 @@ class PaymentAmountPage extends HookConsumerWidget {
     final payinAmount = useState<String>('0');
     final payoutAmount = useState<Decimal>(Decimal.zero);
     final keyPress = useState(NumberKeyPress(0, ''));
+    final currentPaymentState = useState<PaymentState>(paymentState);
     final selectedPfi = useState<Pfi?>(paymentState.selectedPfi);
     final selectedOffering = useState<Offering?>(paymentState.selectedOffering);
     final offerings =
@@ -62,7 +63,7 @@ class PaymentAmountPage extends HookConsumerWidget {
               selectedOffering.value = offering;
             }
 
-            final state = paymentState.copyWith(
+            currentPaymentState.value = currentPaymentState.value.copyWith(
               payinAmount: Decimal.parse(payinAmount.value),
               payoutAmount: payoutAmount.value,
               selectedPfi: selectedPfi.value,
@@ -94,14 +95,14 @@ class PaymentAmountPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            paymentState: state,
+                            paymentState: currentPaymentState.value,
                             payinAmount: payinAmount,
                             keyPress: keyPress,
                             onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.sm),
                           Payout(
-                            paymentState: state,
+                            paymentState: currentPaymentState.value,
                             payoutAmount: payoutAmount,
                             onCurrencySelect: onCurrencySelect,
                           ),
@@ -123,12 +124,12 @@ class PaymentAmountPage extends HookConsumerWidget {
                 ),
                 const SizedBox(height: Grid.sm),
                 NextButton(
-                  onPressed: paymentState.payinAmount == Decimal.zero
+                  onPressed: Decimal.parse(payinAmount.value) == Decimal.zero
                       ? null
                       : () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => PaymentDetailsPage(
-                                paymentState: paymentState,
+                                paymentState: currentPaymentState.value,
                               ),
                             ),
                           ),
