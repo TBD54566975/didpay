@@ -1,7 +1,9 @@
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/feature_flags/lucid/lucid_offerings_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -26,9 +28,15 @@ void main() async {
     mockFeatureFlagsNotifier = MockFeatureFlagsNotifier([]);
 
     when(
-      () => mockTbdexService.getOfferings(pfis),
+      () => mockTbdexService.getOfferings(any(), pfis),
     ).thenAnswer((_) async => offerings);
   });
+
+  setUpAll(
+    () => registerFallbackValue(
+      const PaymentState(transactionType: TransactionType.send),
+    ),
+  );
 
   group('LucidOfferingsPage', () {
     Widget lucidOfferingsPageTestWidget() => WidgetHelpers.testableWidget(
