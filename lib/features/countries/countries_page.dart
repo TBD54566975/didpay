@@ -38,7 +38,7 @@ class CountriesPage extends HookConsumerWidget {
                         MaterialPageRoute(
                           builder: (context) => PaymentAmountPage(
                             paymentState: PaymentState(
-                              transactionType: TransactionType.deposit,
+                              transactionType: TransactionType.send,
                               selectedCountry: country.value,
                             ),
                           ),
