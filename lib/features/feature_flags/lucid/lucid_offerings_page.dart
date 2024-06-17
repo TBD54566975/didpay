@@ -106,6 +106,7 @@ class LucidOfferingsPage extends HookConsumerWidget {
                                   transactionType: TransactionType.send,
                                   selectedOffering: selectedOffering.value,
                                   selectedPfi: selectedPfi.value,
+                                  offeringsMap: offeringsMap,
                                 ),
                               ),
                             ),
@@ -133,7 +134,9 @@ class LucidOfferingsPage extends HookConsumerWidget {
     try {
       await ref
           .read(tbdexServiceProvider)
-          .getOfferings(ref.read(pfisProvider))
+          .getOfferings(
+              const PaymentState(transactionType: TransactionType.send),
+              ref.read(pfisProvider),)
           .then((offerings) => state.value = AsyncData(offerings));
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
