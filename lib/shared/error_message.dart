@@ -5,12 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AsyncErrorWidget extends HookConsumerWidget {
-  final String text;
+class ErrorMessage extends HookConsumerWidget {
+  final String message;
   final VoidCallback onRetry;
 
-  const AsyncErrorWidget({
-    required this.text,
+  const ErrorMessage({
+    required this.message,
     required this.onRetry,
     super.key,
   });
@@ -24,7 +24,7 @@ class AsyncErrorWidget extends HookConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Header(title: Loc.of(context).errorFound, subtitle: text),
+            Header(title: Loc.of(context).errorFound, subtitle: message),
             Expanded(child: Container()),
             NextButton(onPressed: onRetry, title: Loc.of(context).tapToRetry),
           ],

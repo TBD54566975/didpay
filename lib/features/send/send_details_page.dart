@@ -1,8 +1,8 @@
 import 'package:didpay/features/did/did_form.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_data_widget.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/confirmation_message.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -22,12 +22,12 @@ class SendDetailsPage extends HookConsumerWidget {
       body: SafeArea(
         child: send.value != null
             ? send.value!.when(
-                data: (_) =>
-                    AsyncDataWidget(text: Loc.of(context).yourPaymentWasSent),
+                data: (_) => ConfirmationMessage(
+                    message: Loc.of(context).yourPaymentWasSent),
                 loading: () =>
-                    AsyncLoadingWidget(text: Loc.of(context).sendingPayment),
-                error: (error, _) => AsyncErrorWidget(
-                  text: error.toString(),
+                    LoadingMessage(message: Loc.of(context).sendingPayment),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
                   onRetry: () => _sendPayment(send),
                 ),
               )

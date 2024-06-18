@@ -6,9 +6,9 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_data_widget.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/confirmation_message.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/next_button.dart';
@@ -78,22 +78,22 @@ class PaymentReviewPage extends HookConsumerWidget {
                     ),
                   ],
                 ),
-                loading: () => AsyncLoadingWidget(
-                  text: Loc.of(context).gettingYourQuote,
+                loading: () => LoadingMessage(
+                  message: Loc.of(context).gettingYourQuote,
                 ),
-                error: (error, _) => AsyncErrorWidget(
-                  text: error.toString(),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
                   onRetry: () => _pollForQuote(ref, quote),
                 ),
               )
             : order.value!.when(
-                data: (_) =>
-                    AsyncDataWidget(text: Loc.of(context).orderConfirmed),
-                loading: () => AsyncLoadingWidget(
-                  text: Loc.of(context).confirmingYourOrder,
+                data: (_) => ConfirmationMessage(
+                    message: Loc.of(context).orderConfirmed),
+                loading: () => LoadingMessage(
+                  message: Loc.of(context).confirmingYourOrder,
                 ),
-                error: (error, _) => AsyncErrorWidget(
-                  text: error.toString(),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
                   onRetry: () => _submitOrder(
                     context,
                     ref,

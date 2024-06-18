@@ -2,9 +2,9 @@ import 'package:didpay/features/did/did_form.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_data_widget.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/confirmation_message.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -24,11 +24,12 @@ class PfisAddPage extends HookConsumerWidget {
       body: SafeArea(
         child: pfi.value != null
             ? pfi.value!.when(
-                data: (_) => AsyncDataWidget(text: Loc.of(context).pfiAdded),
+                data: (_) =>
+                    ConfirmationMessage(message: Loc.of(context).pfiAdded),
                 loading: () =>
-                    AsyncLoadingWidget(text: Loc.of(context).addingPfi),
-                error: (error, _) => AsyncErrorWidget(
-                  text: error.toString(),
+                    LoadingMessage(message: Loc.of(context).addingPfi),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
                   onRetry: () => _addPfi(ref, pfiDidController.text, pfi),
                 ),
               )

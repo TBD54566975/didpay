@@ -1,15 +1,15 @@
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../helpers/widget_helpers.dart';
+import '../helpers/widget_helpers.dart';
 
 void main() {
-  group('AsyncLoadingWidget', () {
+  group('LoadingMessage', () {
     testWidgets('should show request is pending', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
-          child: const AsyncLoadingWidget(text: 'Your request is pending...'),
+          child: const LoadingMessage(message: 'Your request is pending...'),
         ),
       );
 

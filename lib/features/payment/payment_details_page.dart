@@ -10,11 +10,11 @@ import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/json_schema_form.dart';
-import 'package:didpay/shared/modal_flow.dart';
+import 'package:didpay/shared/modal/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -60,14 +60,14 @@ class PaymentDetailsPage extends HookConsumerWidget {
       body: SafeArea(
         child: rfq.value != null
             ? rfq.value!.when(
-                data: (_) => AsyncLoadingWidget(
-                  text: Loc.of(context).gettingYourQuote,
+                data: (_) => LoadingMessage(
+                  message: Loc.of(context).gettingYourQuote,
                 ),
-                loading: () => AsyncLoadingWidget(
-                  text: Loc.of(context).sendingYourRequest,
+                loading: () => LoadingMessage(
+                  message: Loc.of(context).sendingYourRequest,
                 ),
-                error: (error, _) => AsyncErrorWidget(
-                  text: error.toString(),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
                   onRetry: () => _sendRfq(
                     context,
                     ref,
