@@ -43,7 +43,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 1) <= 1
+        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 0) <= 1
             ? filteredPaymentMethods?.firstOrNull
             : null;
         return;
@@ -104,11 +104,11 @@ class PaymentDetailsPage extends HookConsumerWidget {
                       selectedPayinMethod: paymentState.transactionType ==
                               TransactionType.deposit
                           ? selectedPaymentMethod.value as PayinMethod?
-                          : paymentState.payinMethods?.firstOrNull,
+                          : null,
                       selectedPayoutMethod: paymentState.transactionType ==
-                              TransactionType.withdraw
-                          ? selectedPaymentMethod.value as PayoutMethod?
-                          : paymentState.payoutMethods?.firstOrNull,
+                              TransactionType.deposit
+                          ? null
+                          : selectedPaymentMethod.value as PayoutMethod?,
                     ),
                     onPaymentFormSubmit: (paymentState) async {
                       await _hasRequiredVc(

@@ -28,9 +28,15 @@ void main() async {
     mockPfisNotifier = MockPfisNotifier(pfis);
 
     when(
-      () => mockTbdexService.getOfferings(pfis),
+      () => mockTbdexService.getOfferings(any(), pfis),
     ).thenAnswer((_) async => offerings);
   });
+
+  setUpAll(
+    () => registerFallbackValue(
+      const PaymentState(transactionType: TransactionType.deposit),
+    ),
+  );
 
   group('PaymentAmountPage', () {
     Widget paymentAmountPageTestWidget() => WidgetHelpers.testableWidget(

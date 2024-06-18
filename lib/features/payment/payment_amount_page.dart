@@ -38,12 +38,11 @@ class PaymentAmountPage extends HookConsumerWidget {
     useEffect(
       () {
         Future.microtask(
-          () async =>
-              selectedOffering.value != null && selectedPfi.value != null
-                  ? offerings.value = AsyncData({
-                      selectedPfi.value!: [selectedOffering.value!],
-                    })
-                  : await _getOfferings(ref, offerings),
+          () async => paymentState.offeringsMap != null
+              ? offerings.value = AsyncData({
+                  selectedPfi.value!: [selectedOffering.value!],
+                })
+              : await _getOfferings(ref, currentPaymentState.value, offerings),
         );
         return null;
       },
@@ -141,7 +140,8 @@ class PaymentAmountPage extends HookConsumerWidget {
               AsyncLoadingWidget(text: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => AsyncErrorWidget(
             text: error.toString(),
-            onRetry: () => _getOfferings(ref, offerings),
+            onRetry: () =>
+                _getOfferings(ref, currentPaymentState.value, offerings),
           ),
         ),
       ),
@@ -150,13 +150,14 @@ class PaymentAmountPage extends HookConsumerWidget {
 
   Future<void> _getOfferings(
     WidgetRef ref,
+    PaymentState paymentState,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
       await ref
           .read(tbdexServiceProvider)
-          .getOfferings(ref.read(pfisProvider))
+          .getOfferings(paymentState, ref.read(pfisProvider))
           .then((offerings) => state.value = AsyncData(offerings));
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);

@@ -11,14 +11,33 @@ import 'package:web5/web5.dart';
 final tbdexServiceProvider = Provider((_) => TbdexService());
 
 class TbdexService {
-  Future<Map<Pfi, List<Offering>>> getOfferings(List<Pfi> pfis) async {
+  Future<Map<Pfi, List<Offering>>> getOfferings(
+    PaymentState paymentState,
+    List<Pfi> pfis,
+  ) async {
     final offeringsMap = <Pfi, List<Offering>>{};
+
+    GetOfferingsFilter? filter;
+    switch (paymentState.transactionType) {
+      case TransactionType.deposit:
+        filter = GetOfferingsFilter(payoutCurrency: 'USDC');
+        break;
+      case TransactionType.withdraw:
+        filter = GetOfferingsFilter(payinCurrency: 'USDC');
+        break;
+      case TransactionType.send:
+        filter = paymentState.selectedCountry != null
+            ? GetOfferingsFilter(payoutCurrency: 'MXN')
+            : null;
+        break;
+    }
 
     for (final pfi in pfis) {
       try {
-        await TbdexHttpClient.listOfferings(pfi.did)
+        await TbdexHttpClient.listOfferings(pfi.did, filter: filter)
             .then((offerings) => offeringsMap[pfi] = offerings);
-      } on Exception {
+      } on Exception catch (e) {
+        if (e is ValidationError) continue;
         rethrow;
       }
     }
