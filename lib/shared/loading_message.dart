@@ -2,10 +2,10 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class AsyncLoadingWidget extends HookWidget {
-  final String text;
+class LoadingMessage extends HookWidget {
+  final String message;
 
-  const AsyncLoadingWidget({required this.text, super.key});
+  const LoadingMessage({required this.message, super.key});
 
   @override
   Widget build(BuildContext context) => Column(
@@ -13,7 +13,7 @@ class AsyncLoadingWidget extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            text,
+            message,
             style: Theme.of(context).textTheme.titleMedium,
             textAlign: TextAlign.center,
           ),
