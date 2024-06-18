@@ -42,6 +42,12 @@ class TbdexService {
       }
     }
 
+    if (offeringsMap.isEmpty) {
+      throw Exception(
+        'No ${paymentState.transactionType.toString().toLowerCase()} offerings found for any linked PFIs',
+      );
+    }
+
     return offeringsMap;
   }
 
