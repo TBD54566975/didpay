@@ -4,8 +4,8 @@ import 'package:didpay/features/kcc/lib/idv_request.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -40,9 +40,9 @@ class KccRetrievalPage extends HookConsumerWidget {
       body: SafeArea(
         child: credential.value.when(
           loading: () =>
-              AsyncLoadingWidget(text: Loc.of(context).verifyingYourIdentity),
-          error: (error, stackTrace) => AsyncErrorWidget(
-            text: error.toString(),
+              LoadingMessage(message: Loc.of(context).verifyingYourIdentity),
+          error: (error, stackTrace) => ErrorMessage(
+            message: error.toString(),
             onRetry: () => _pollForCredential(ref, credential),
           ),
           data: (data) => Column(

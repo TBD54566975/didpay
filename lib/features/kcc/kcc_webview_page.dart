@@ -6,8 +6,8 @@ import 'package:didpay/features/kcc/kcc_retrieval_page.dart';
 import 'package:didpay/features/kcc/lib/idv_request.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -51,10 +51,10 @@ class KccWebviewPage extends HookConsumerWidget {
         ),
       ),
       body: idvRequest.value.when(
-        loading: () => AsyncLoadingWidget(text: Loc.of(context).startingIdv),
+        loading: () => LoadingMessage(message: Loc.of(context).startingIdv),
         error: (error, stackTrace) => SafeArea(
-          child: AsyncErrorWidget(
-            text: error.toString(),
+          child: ErrorMessage(
+            message: error.toString(),
             onRetry: () => _getIdvRequest(ref, idvRequest),
           ),
         ),

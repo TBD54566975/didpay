@@ -8,8 +8,8 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/async/async_error_widget.dart';
-import 'package:didpay/shared/async/async_loading_widget.dart';
+import 'package:didpay/shared/error_message.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/number/number_key_press.dart';
 import 'package:didpay/shared/number/number_pad.dart';
@@ -137,9 +137,9 @@ class PaymentAmountPage extends HookConsumerWidget {
             );
           },
           loading: () =>
-              AsyncLoadingWidget(text: Loc.of(context).fetchingOfferings),
-          error: (error, stackTrace) => AsyncErrorWidget(
-            text: error.toString(),
+              LoadingMessage(message: Loc.of(context).fetchingOfferings),
+          error: (error, stackTrace) => ErrorMessage(
+            message: error.toString(),
             onRetry: () =>
                 _getOfferings(ref, currentPaymentState.value, offerings),
           ),
