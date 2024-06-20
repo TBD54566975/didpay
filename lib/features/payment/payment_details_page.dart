@@ -11,9 +11,9 @@ import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
-import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/json_schema_form.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/modal/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +56,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
         !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
     return Scaffold(
-      appBar: AppBar(),
+      appBar: rfq.value?.isLoading ?? false ? null : AppBar(),
       body: SafeArea(
         child: rfq.value != null
             ? rfq.value!.when(
@@ -298,16 +298,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
         state.value = AsyncData(rfq);
         await Navigator.of(context)
             .push(
-              MaterialPageRoute(
-                builder: (context) => PaymentReviewPage(
-                  paymentState: paymentState.copyWith(
-                    exchangeId: rfq.metadata.id,
-                    claims: claims,
-                  ),
-                ),
+          MaterialPageRoute(
+            builder: (context) => PaymentReviewPage(
+              paymentState: paymentState.copyWith(
+                exchangeId: rfq.metadata.id,
+                claims: claims,
               ),
-            )
-            .then((_) => state.value = null);
+            ),
+          ),
+        )
+            .then((_) {
+          if (context.mounted) state.value = null;
+        });
       });
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);

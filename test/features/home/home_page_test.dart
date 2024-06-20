@@ -1,4 +1,3 @@
-import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
@@ -56,8 +55,7 @@ void main() async {
       when(
         () => mockTbdexService.getAccountBalance(pfis),
       ).thenAnswer(
-        (_) async =>
-            AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {}),
+        (_) async => accountBalance,
       );
     });
 

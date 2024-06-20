@@ -3,7 +3,6 @@ import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/feature_flags/lucid/lucid_offerings_page.dart';
-import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/send/send_details_page.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/next_button.dart';
@@ -20,8 +19,7 @@ class SendPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pfis = ref.watch(pfisProvider);
-    final accountBalance = ref.watch(accountBalanceProvider(pfis));
+    final accountBalance = ref.watch(accountBalanceProvider);
     final featureFlags = ref.watch(featureFlagsProvider);
 
     final amount = useState('0');

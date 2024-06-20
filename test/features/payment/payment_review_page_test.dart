@@ -5,6 +5,7 @@ import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
@@ -23,49 +24,58 @@ void main() async {
   final order = TestData.getOrder();
 
   late MockTbdexService mockTbdexService;
+  late MockTbdexQuoteNotifier mockTbdexQuoteNotifier;
 
-  Widget reviewPaymentPageTestWidget() => WidgetHelpers.testableWidget(
-        child: PaymentReviewPage(
-          paymentState: PaymentState(
-            selectedPfi: const Pfi(did: ''),
-            payoutAmount: Decimal.parse('17.00'),
-            payinCurrency: 'USD',
-            payoutCurrency: 'MXN',
-            exchangeRate: Decimal.parse('17.00'),
-            exchangeId: '',
-            transactionType: TransactionType.deposit,
-            paymentName: 'ABC Bank',
-            formData: {'accountNumber': '1234567890'},
-          ),
-        ),
-        overrides: [
-          didProvider.overrideWithValue(did),
-          tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
-        ],
-      );
+  setUp(() {
+    mockTbdexService = MockTbdexService();
+    mockTbdexQuoteNotifier = MockTbdexQuoteNotifier();
+
+    when(
+      () => mockTbdexService.submitOrder(any(), any(), any()),
+    ).thenAnswer((_) async => order);
+
+    when(
+      () => mockTbdexService.getExchange(any(), any(), any()),
+    ).thenAnswer((_) async => TestData.getExchange());
+
+    when(
+      () => mockTbdexQuoteNotifier.startPolling(const Pfi(did: '123'), '123'),
+    ).thenAnswer((_) async => quote);
+  });
 
   group('PaymentReviewPage', () {
-    setUp(() {
-      mockTbdexService = MockTbdexService();
-
-      when(
-        () => mockTbdexService.submitOrder(any(), any(), any()),
-      ).thenAnswer((_) async => order);
-
-      when(
-        () => mockTbdexService.pollForQuote(any(), any(), any()),
-      ).thenAnswer((_) async => quote);
-    });
+    Widget reviewPaymentPageTestWidget() => WidgetHelpers.testableWidget(
+          child: PaymentReviewPage(
+            paymentState: PaymentState(
+              selectedPfi: const Pfi(did: '123'),
+              payinAmount: Decimal.parse('100.00'),
+              payoutAmount: Decimal.parse('0.12'),
+              payinCurrency: 'AUD',
+              payoutCurrency: 'BTC',
+              exchangeRate: Decimal.parse('17.00'),
+              exchangeId: '123',
+              transactionType: TransactionType.deposit,
+              paymentName: 'ABC Bank',
+              formData: {'accountNumber': '1234567890'},
+            ),
+          ),
+          overrides: [
+            didProvider.overrideWithValue(did),
+            quoteProvider.overrideWith(() => mockTbdexQuoteNotifier),
+            tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
+          ],
+        );
 
     setUpAll(() {
       registerFallbackValue(did);
-      registerFallbackValue(const Pfi(did: 'did:web:x%3A8892:ingress'));
+      registerFallbackValue(const Pfi(did: '123'));
     });
 
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
+
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(AutoSizeText, '100'), findsOneWidget);

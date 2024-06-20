@@ -362,4 +362,18 @@ class LocEn extends Loc {
 
   @override
   String get selectFromUnfilteredList => 'Select from an unfiltered list of all your PFI offerings.';
+
+  @override
+  String get exit => 'Exit';
+
+  @override
+  String get stay => 'Stay';
+
+  @override
+  String stoptxnType(String txnType) {
+    return 'Stop ${txnType}ing money?';
+  }
+
+  @override
+  String get ifYouExitNow => 'If you exit now, you\'ll lose all your progress';
 }

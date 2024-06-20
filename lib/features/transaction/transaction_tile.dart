@@ -24,7 +24,7 @@ class TransactionTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final parameters = TransactionProviderParameters(pfi, exchangeId);
-    final transactionState = ref.watch(transactionProvider(parameters));
+    final transaction = ref.watch(transactionProvider(parameters));
 
     final lastStatus = useState<TransactionStatus?>(null);
 
@@ -41,13 +41,12 @@ class TransactionTile extends HookConsumerWidget {
 
     useEffect(
       () {
-        if (transactionState is AsyncData<Transaction?>) {
-          final transaction = transactionState.value;
-          if (transaction == null) return;
+        if (transaction is AsyncData<Transaction?>) {
+          if (transaction.value == null) return;
 
-          if (lastStatus.value != transaction.status) {
+          if (lastStatus.value != transaction.value?.status) {
             if (lastStatus.value == null &&
-                Transaction.isClosed(transaction.status)) return;
+                Transaction.isClosed(transaction.value?.status)) return;
 
             Future.delayed(
               Duration.zero,
@@ -55,25 +54,26 @@ class TransactionTile extends HookConsumerWidget {
                 ScaffoldMessenger.of(context).removeCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(transaction.status.toString()),
+                    content: Text(transaction.value?.status.toString() ?? ''),
                     duration: const Duration(seconds: 1),
                     backgroundColor: Transaction.getStatusColor(
                       context,
-                      transaction.status,
+                      transaction.value?.status,
                     ),
                   ),
                 );
               },
             );
-            lastStatus.value = transaction.status;
+
+            lastStatus.value = transaction.value?.status;
           }
         }
         return null;
       },
-      [transactionState],
+      [transaction],
     );
 
-    return transactionState.when(
+    return transaction.when(
       data: (txn) {
         if (txn == null) {
           return _buildErrorTile(context, Loc.of(context).noTransactionsFound);
@@ -125,20 +125,20 @@ class TransactionTile extends HookConsumerWidget {
 
   Widget _buildTransactionAmount(
     BuildContext context,
-    Transaction transaction,
+    Transaction txn,
   ) {
-    final modifier = transaction.type == TransactionType.send ? '-' : '+';
-    final color = transaction.type == TransactionType.send
+    final modifier = txn.type == TransactionType.send ? '-' : '+';
+    final color = txn.type == TransactionType.send
         ? Theme.of(context).colorScheme.error
         : Theme.of(context).colorScheme.tertiary;
     return Text(
-      transaction.type == TransactionType.deposit
+      txn.type == TransactionType.deposit
           ? '$modifier${Decimal.parse(
-              transaction.payoutAmount,
-            ).formatCurrency(transaction.payoutCurrency)} ${transaction.payoutCurrency}'
+              txn.payoutAmount,
+            ).formatCurrency(txn.payoutCurrency)} ${txn.payoutCurrency}'
           : '$modifier${Decimal.parse(
-              transaction.payinAmount,
-            ).formatCurrency(transaction.payinCurrency)} ${transaction.payinCurrency}',
+              txn.payinAmount,
+            ).formatCurrency(txn.payinCurrency)} ${txn.payinCurrency}',
       style: TextStyle(
         color: color,
       ),

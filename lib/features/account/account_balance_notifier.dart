@@ -5,28 +5,23 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final accountBalanceProvider = AsyncNotifierProvider.family
-    .autoDispose<AccountBalanceNotifier, AccountBalance?, List<Pfi>>(
+final accountBalanceProvider =
+    AsyncNotifierProvider.autoDispose<AccountBalanceNotifier, AccountBalance?>(
   AccountBalanceNotifier.new,
 );
 
-class AccountBalanceNotifier
-    extends AutoDisposeFamilyAsyncNotifier<AccountBalance?, List<Pfi>> {
-  late List<Pfi>? _pfis;
+class AccountBalanceNotifier extends AutoDisposeAsyncNotifier<AccountBalance?> {
   Timer? _timer;
 
   @override
-  FutureOr<AccountBalance?> build(List<Pfi> arg) async {
-    _pfis = arg;
-    return fetchAccountBalance();
-  }
+  FutureOr<AccountBalance?> build() async => null;
 
-  Future<AccountBalance?> fetchAccountBalance() async {
-    if (_pfis == null || _pfis!.isEmpty) return null;
+  Future<AccountBalance?> fetchAccountBalance(List<Pfi>? pfis) async {
+    if (pfis == null || pfis.isEmpty) return null;
 
     try {
       final tbdexService = ref.read(tbdexServiceProvider);
-      final accountBalance = await tbdexService.getAccountBalance(_pfis!);
+      final accountBalance = await tbdexService.getAccountBalance(pfis);
 
       state = AsyncValue.data(accountBalance);
       return accountBalance;
@@ -36,11 +31,13 @@ class AccountBalanceNotifier
     return null;
   }
 
-  void startPolling() {
+  void startPolling(List<Pfi> pfis) {
     _timer?.cancel();
+    fetchAccountBalance(pfis);
+
     _timer = Timer.periodic(
-      const Duration(seconds: 30),
-      (timer) => fetchAccountBalance(),
+      const Duration(minutes: 3),
+      (timer) => fetchAccountBalance(pfis),
     );
   }
 
