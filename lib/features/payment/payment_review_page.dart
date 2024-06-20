@@ -152,7 +152,7 @@ class PaymentReviewPage extends HookConsumerWidget {
                             ),
                           );
                     },
-                    onStay: () async => Navigator.pop(context),
+                    onStay: () async => Navigator.pop(dialogContext),
                   ),
                 ),
                 icon: const Icon(Icons.close),
