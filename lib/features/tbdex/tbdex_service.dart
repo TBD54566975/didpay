@@ -166,6 +166,21 @@ class TbdexService {
     return order;
   }
 
+  Future<Close> submitClose(BearerDid did, Pfi? pfi, String? exchangeId) async {
+    final closeData = CloseData(reason: 'User requested');
+    final close =
+        Close.create(pfi?.did ?? '', did.uri, exchangeId ?? '', closeData);
+    await close.sign(did);
+
+    try {
+      await TbdexHttpClient.submitClose(close);
+    } on Exception {
+      rethrow;
+    }
+
+    return close;
+  }
+
   Future<Quote> pollForQuote(
     BearerDid did,
     Pfi pfi,
