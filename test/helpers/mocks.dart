@@ -9,6 +9,7 @@ import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
+import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_notifier.dart';
@@ -18,6 +19,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tbdex/tbdex.dart';
 import 'package:web5/web5.dart';
 
 class MockHttpClient extends Mock implements http.Client {}
@@ -60,6 +62,12 @@ class MockTransactionNotifier extends AutoDisposeFamilyAsyncNotifier<
     Transaction?,
     TransactionProviderParameters> with Mock implements TransactionNotifier {
   MockTransactionNotifier();
+}
+
+class MockTbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?>
+    with Mock
+    implements TbdexQuoteNotifier {
+  MockTbdexQuoteNotifier();
 }
 
 class MockAccountBalanceNotifier
