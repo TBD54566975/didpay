@@ -147,5 +147,16 @@
     "dontKnowTheirDid": "Don't know their DID? Scan their DID QR code instead",
     "featureFlags": "Feature flags",
     "lucidMode": "Lucid mode",
-    "selectFromUnfilteredList": "Select from an unfiltered list of all your PFI offerings."
+    "selectFromUnfilteredList": "Select from an unfiltered list of all your PFI offerings.",
+    "exit": "Exit",
+    "stay": "Stay",
+    "stoptxnType": "Stop {txnType}ing money?",
+    "@stoptxnType": {
+         "placeholders": {
+            "txnType": {
+                "type": "String"
+            }
+        }
+    },
+    "ifYouExitNow": "If you exit now, you'll lose all your progress"
 }

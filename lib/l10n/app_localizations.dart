@@ -792,6 +792,30 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Select from an unfiltered list of all your PFI offerings.'**
   String get selectFromUnfilteredList;
+
+  /// No description provided for @exit.
+  ///
+  /// In en, this message translates to:
+  /// **'Exit'**
+  String get exit;
+
+  /// No description provided for @stay.
+  ///
+  /// In en, this message translates to:
+  /// **'Stay'**
+  String get stay;
+
+  /// No description provided for @stoptxnType.
+  ///
+  /// In en, this message translates to:
+  /// **'Stop {txnType}ing money?'**
+  String stoptxnType(String txnType);
+
+  /// No description provided for @ifYouExitNow.
+  ///
+  /// In en, this message translates to:
+  /// **'If you exit now, you\'ll lose all your progress'**
+  String get ifYouExitNow;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {
