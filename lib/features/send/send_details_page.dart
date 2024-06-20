@@ -2,8 +2,8 @@ import 'package:didpay/features/did/did_form.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/confirmation_message.dart';
 import 'package:didpay/shared/error_message.dart';
-import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/header.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -23,7 +23,7 @@ class SendDetailsPage extends HookConsumerWidget {
         child: send.value != null
             ? send.value!.when(
                 data: (_) => ConfirmationMessage(
-                    message: Loc.of(context).yourPaymentWasSent),
+                    message: Loc.of(context).yourPaymentWasSent,),
                 loading: () =>
                     LoadingMessage(message: Loc.of(context).sendingPayment),
                 error: (error, _) => ErrorMessage(
