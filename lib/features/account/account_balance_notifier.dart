@@ -39,7 +39,7 @@ class AccountBalanceNotifier
   void startPolling() {
     _timer?.cancel();
     _timer = Timer.periodic(
-      const Duration(seconds: 30),
+      const Duration(minutes: 3),
       (timer) => fetchAccountBalance(),
     );
   }
