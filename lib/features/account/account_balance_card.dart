@@ -16,18 +16,18 @@ class AccountBalanceCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
-    final accountBalance = ref.watch(accountBalanceProvider(pfis));
+    final accountBalance = ref.watch(accountBalanceProvider);
 
     final accountTotal = accountBalance.asData?.value?.total ?? '';
     final accountCurrency = accountBalance.asData?.value?.currencyCode ?? '';
 
     AccountBalanceNotifier getAccountBalanceNotifier() =>
-        ref.read(accountBalanceProvider(pfis).notifier);
+        ref.read(accountBalanceProvider.notifier);
 
     useEffect(
       () {
         Future.microtask(
-          () async => getAccountBalanceNotifier().startPolling(),
+          () async => getAccountBalanceNotifier().startPolling(pfis),
         );
         return getAccountBalanceNotifier().stopPolling;
       },
