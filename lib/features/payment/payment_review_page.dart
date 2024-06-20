@@ -28,7 +28,8 @@ class PaymentReviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quote = useState<AsyncValue<Quote>>(const AsyncLoading());
+    final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
+
     final order = useState<AsyncValue<Order>?>(null);
 
     TbdexQuoteNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
@@ -48,43 +49,46 @@ class PaymentReviewPage extends HookConsumerWidget {
       body: SafeArea(
         child: order.value == null
             ? quote.value.when(
-                data: (q) => Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Header(
-                      title: Loc.of(context).reviewYourPayment,
-                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: Grid.side),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: Grid.sm),
-                              _buildAmounts(context, q.data),
-                              _buildFeeDetails(context, q.data),
-                              _buildPaymentDetails(context),
-                            ],
+                data: (q) => q == null
+                    ? Container()
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Header(
+                            title: Loc.of(context).reviewYourPayment,
+                            subtitle: Loc.of(context).makeSureInfoIsCorrect,
                           ),
-                        ),
+                          Expanded(
+                            child: SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: Grid.side,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const SizedBox(height: Grid.sm),
+                                    _buildAmounts(context, q.data),
+                                    _buildFeeDetails(context, q.data),
+                                    _buildPaymentDetails(context),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          NextButton(
+                            onPressed: () => _submitOrder(
+                              context,
+                              ref,
+                              paymentState,
+                              order,
+                            ),
+                            title:
+                                '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
+                          ),
+                        ],
                       ),
-                    ),
-                    NextButton(
-                      onPressed: () => _submitOrder(
-                        context,
-                        ref,
-                        paymentState,
-                        order,
-                      ),
-                      title:
-                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
-                    ),
-                  ],
-                ),
                 loading: () => LoadingMessage(
                   message: Loc.of(context).gettingYourQuote,
                 ),
@@ -117,7 +121,7 @@ class PaymentReviewPage extends HookConsumerWidget {
   AppBar _buildAppBar(
     BuildContext context,
     WidgetRef ref,
-    AsyncValue<Quote> quote,
+    AsyncValue<Quote?> quote,
     TbdexQuoteNotifier quoteNotifier,
   ) =>
       AppBar(
@@ -125,7 +129,7 @@ class PaymentReviewPage extends HookConsumerWidget {
             ? IconButton(
                 onPressed: () async => showDialog(
                   context: context,
-                  builder: (context) => ExitDialog(
+                  builder: (dialogContext) => ExitDialog(
                     title: Loc.of(context)
                         .stoptxnType(paymentState.transactionType.name),
                     description: Loc.of(context).ifYouExitNow,
@@ -139,9 +143,10 @@ class PaymentReviewPage extends HookConsumerWidget {
                             paymentState.exchangeId,
                           )
                           .then(
-                            (_) => Navigator.of(context).pushAndRemoveUntil(
+                            (_) =>
+                                Navigator.of(dialogContext).pushAndRemoveUntil(
                               MaterialPageRoute(
-                                builder: (context) => const App(),
+                                builder: (dialogContext) => const App(),
                               ),
                               (route) => false,
                             ),
@@ -260,8 +265,10 @@ class PaymentReviewPage extends HookConsumerWidget {
   Future<void> _pollForQuote(
     WidgetRef ref,
     TbdexQuoteNotifier quoteNotifier,
-    ValueNotifier<AsyncValue<Quote>> state,
+    ValueNotifier<AsyncValue<Quote?>> state,
   ) async {
+    state.value = const AsyncLoading();
+
     try {
       await quoteNotifier
           .startPolling(paymentState.selectedPfi, paymentState.exchangeId)
