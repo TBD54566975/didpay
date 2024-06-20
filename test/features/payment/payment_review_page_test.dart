@@ -41,10 +41,6 @@ void main() async {
     when(
       () => mockTbdexQuoteNotifier.startPolling(const Pfi(did: '123'), '123'),
     ).thenAnswer((_) async => quote);
-
-    when(
-      () => mockTbdexQuoteNotifier.stopPolling(),
-    ).thenAnswer((_) => {});
   });
 
   group('PaymentReviewPage', () {
@@ -72,13 +68,14 @@ void main() async {
 
     setUpAll(() {
       registerFallbackValue(did);
-      registerFallbackValue(const Pfi(did: 'did:web:x%3A8892:ingress'));
+      registerFallbackValue(const Pfi(did: '123'));
     });
 
     testWidgets('should show input and output amounts', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
+
       await tester.pumpAndSettle();
 
       expect(find.widgetWithText(AutoSizeText, '100'), findsOneWidget);

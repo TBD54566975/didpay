@@ -71,7 +71,7 @@ class MockTbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?>
 }
 
 class MockAccountBalanceNotifier
-    extends AutoDisposeFamilyAsyncNotifier<AccountBalance?, List<Pfi>>
+    extends AutoDisposeAsyncNotifier<AccountBalance?>
     with Mock
     implements AccountBalanceNotifier {
   final AccountBalance? accountBalance;
@@ -79,5 +79,5 @@ class MockAccountBalanceNotifier
   MockAccountBalanceNotifier(this.accountBalance);
 
   @override
-  FutureOr<AccountBalance?> build(List<Pfi> arg) async => accountBalance;
+  FutureOr<AccountBalance?> build() async => accountBalance;
 }

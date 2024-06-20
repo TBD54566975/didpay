@@ -1,4 +1,3 @@
-import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/account/account_page.dart';
 import 'package:didpay/features/app/app_tabs.dart';
 import 'package:didpay/features/did/did_provider.dart';
@@ -57,8 +56,6 @@ void main() async {
             featureFlagsProvider
                 .overrideWith((ref) => mockFeatureFlagsNotifier),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
-            accountBalanceProvider
-                .overrideWith(() => MockAccountBalanceNotifier(accountBalance)),
           ],
         );
 
