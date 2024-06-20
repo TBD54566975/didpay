@@ -64,9 +64,9 @@ class Transaction {
       }
     }
 
-    type = (payinCurrency == 'STORED_BALANCE')
+    type = (payinCurrency == 'USDC')
         ? TransactionType.withdraw
-        : (payoutCurrency == 'STORED_BALANCE')
+        : (payoutCurrency == 'USDC')
             ? TransactionType.deposit
             : type;
 
@@ -114,11 +114,11 @@ class Transaction {
     }
   }
 
-  static bool isClosed(TransactionStatus status) =>
+  static bool isClosed(TransactionStatus? status) =>
       status == TransactionStatus.payoutSuccess ||
       status == TransactionStatus.payoutCanceled;
 
-  static Color getStatusColor(BuildContext context, TransactionStatus status) {
+  static Color getStatusColor(BuildContext context, TransactionStatus? status) {
     switch (status) {
       case TransactionStatus.payoutSuccess:
         return Theme.of(context).colorScheme.tertiary;
@@ -128,6 +128,7 @@ class Transaction {
       case TransactionStatus.payoutInitiated:
       case TransactionStatus.payoutComplete:
       case TransactionStatus.orderSubmitted:
+      case null:
         return Theme.of(context).colorScheme.outline;
     }
   }
