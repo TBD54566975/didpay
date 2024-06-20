@@ -5,12 +5,7 @@ import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:json_schema/json_schema.dart';
-import 'package:tbdex/src/protocol/models/message.dart';
-import 'package:tbdex/src/protocol/models/message_data.dart';
-import 'package:tbdex/src/protocol/models/offering.dart';
-import 'package:tbdex/src/protocol/models/order.dart';
-import 'package:tbdex/src/protocol/models/quote.dart';
-import 'package:tbdex/src/protocol/models/resource_data.dart';
+import 'package:tbdex/tbdex.dart';
 import 'package:typeid/typeid.dart';
 import 'package:web5/web5.dart';
 
@@ -77,6 +72,8 @@ class TestData {
           requiredClaims: requiredClaims,
         ),
       );
+
+  static Exchange getExchange() => [getQuote()];
 
   static Quote getQuote() => Quote.create(
         aliceDid.uri,
