@@ -84,14 +84,12 @@ class AccountPage extends HookConsumerWidget {
                   ),
                   child: IconButton(
                     icon: const Icon(Icons.qr_code, size: Grid.sm),
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (_) => DidQrTabs(dap: dap),
-                          fullscreenDialog: true,
-                        ),
-                      );
-                    },
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => DidQrTabs(dap: dap),
+                        fullscreenDialog: true,
+                      ),
+                    ),
                   ),
                 ),
               ),
