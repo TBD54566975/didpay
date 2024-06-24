@@ -63,7 +63,10 @@ Future<List<Override>> notifierOverrides() async {
   final featureFlagsNotifier =
       await FeatureFlagsNotifier.create(featureFlagsBox);
 
-  if (featureFlagsBox.isEmpty) await featureFlagsNotifier.add(lucidMode);
+  if (featureFlagsBox.isEmpty) {
+    await featureFlagsNotifier.add(remittance);
+    await featureFlagsNotifier.add(lucidMode);
+  }
 
   return [
     pfisProvider.overrideWith((ref) => pfisNofitier),

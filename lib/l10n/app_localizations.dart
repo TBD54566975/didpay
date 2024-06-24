@@ -697,11 +697,11 @@ abstract class Loc {
   /// **'No transactions found'**
   String get noTransactionsFound;
 
-  /// No description provided for @enterRecipientDid.
+  /// No description provided for @enterRecipientDap.
   ///
   /// In en, this message translates to:
-  /// **'Enter the recipient\'s DID'**
-  String get enterRecipientDid;
+  /// **'Enter the recipient\'s DAP'**
+  String get enterRecipientDap;
 
   /// No description provided for @fetchingOfferings.
   ///
@@ -769,11 +769,11 @@ abstract class Loc {
   /// **'Camera unavailable'**
   String get cameraUnavailable;
 
-  /// No description provided for @dontKnowTheirDid.
+  /// No description provided for @dontKnowTheirDap.
   ///
   /// In en, this message translates to:
-  /// **'Don\'t know their DID? Scan their DID QR code instead'**
-  String get dontKnowTheirDid;
+  /// **'Don\'t know their DAP? Scan their QR code instead'**
+  String get dontKnowTheirDap;
 
   /// No description provided for @featureFlags.
   ///

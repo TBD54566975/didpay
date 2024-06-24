@@ -35,3 +35,8 @@ const lucidMode = FeatureFlag(
   name: 'Lucid mode',
   description: 'Access all your PFI offerings',
 );
+
+const remittance = FeatureFlag(
+  name: 'Remittance',
+  description: 'Experience a tranditional remittance flow',
+);

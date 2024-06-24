@@ -18,7 +18,7 @@ class AccountBalanceCard extends HookConsumerWidget {
     final pfis = ref.watch(pfisProvider);
     final accountBalance = ref.watch(accountBalanceProvider);
 
-    final accountTotal = accountBalance.asData?.value?.total ?? '';
+    final accountTotal = accountBalance.asData?.value?.total ?? '0';
     final accountCurrency = accountBalance.asData?.value?.currencyCode ?? '';
 
     AccountBalanceNotifier getAccountBalanceNotifier() =>
@@ -70,35 +70,36 @@ class AccountBalanceCard extends HookConsumerWidget {
     BuildContext context,
     String accountTotal,
     String accountCurrency,
-  ) =>
-      Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.baseline,
-          textBaseline: TextBaseline.alphabetic,
-          children: [
-            Flexible(
-              child: AutoSizeText(
-                accountTotal,
-                style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                maxLines: 1,
-              ),
+  ) {
+    return Center(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.baseline,
+        textBaseline: TextBaseline.alphabetic,
+        children: [
+          Flexible(
+            child: AutoSizeText(
+              accountTotal,
+              style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+              maxLines: 1,
             ),
-            const SizedBox(width: Grid.half),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
-              child: Text(
-                accountCurrency,
-                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
+          ),
+          const SizedBox(width: Grid.half),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
+            child: Text(
+              accountCurrency,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-          ],
-        ),
-      );
+          ),
+        ],
+      ),
+    );
+  }
 
   Widget _buildDepositWithdrawButtons(BuildContext context) => Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -112,6 +113,7 @@ class AccountBalanceCard extends HookConsumerWidget {
                       transactionType: TransactionType.deposit,
                     ),
                   ),
+                  fullscreenDialog: true,
                 ),
               ),
               child: Text(Loc.of(context).deposit),
@@ -127,6 +129,7 @@ class AccountBalanceCard extends HookConsumerWidget {
                       transactionType: TransactionType.withdraw,
                     ),
                   ),
+                  fullscreenDialog: true,
                 ),
               ),
               child: Text(Loc.of(context).withdraw),

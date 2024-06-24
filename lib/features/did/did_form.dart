@@ -64,7 +64,7 @@ class DidForm extends HookConsumerWidget {
             ),
           ),
           DidQrTile(
-            title: Loc.of(context).dontKnowTheirDid,
+            title: Loc.of(context).dontKnowTheirDap,
             didTextController: textController,
             errorText: errorText,
           ),

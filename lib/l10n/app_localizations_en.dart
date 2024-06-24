@@ -316,7 +316,7 @@ class LocEn extends Loc {
   String get noTransactionsFound => 'No transactions found';
 
   @override
-  String get enterRecipientDid => 'Enter the recipient\'s DID';
+  String get enterRecipientDap => 'Enter the recipient\'s DAP';
 
   @override
   String get fetchingOfferings => 'Fetching offerings...';
@@ -352,7 +352,7 @@ class LocEn extends Loc {
   String get cameraUnavailable => 'Camera unavailable';
 
   @override
-  String get dontKnowTheirDid => 'Don\'t know their DID? Scan their DID QR code instead';
+  String get dontKnowTheirDap => 'Don\'t know their DAP? Scan their QR code instead';
 
   @override
   String get featureFlags => 'Feature flags';
