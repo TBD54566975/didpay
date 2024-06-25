@@ -8,12 +8,10 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 
 class DidQrTile extends HookConsumerWidget {
-  final String title;
   final TextEditingController didTextController;
   final ValueNotifier<String?>? errorText;
 
   const DidQrTile({
-    required this.title,
     required this.didTextController,
     this.errorText,
     super.key,
@@ -39,7 +37,7 @@ class DidQrTile extends HookConsumerWidget {
       child: ListTile(
         leading: const Icon(Icons.qr_code),
         title: Text(
-          title,
+          Loc.of(context).dontKnowTheirDid,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.chevron_right),
@@ -67,7 +65,7 @@ class DidQrTile extends HookConsumerWidget {
   ) async {
     final qrValue = await Navigator.of(context).push<String>(
       MaterialPageRoute(
-        builder: (context) => const DidQrTabs(dap: 'username@didpay.me'),
+        builder: (context) => DidQrTabs(dap: Loc.of(context).placeholderDap),
       ),
     );
 
