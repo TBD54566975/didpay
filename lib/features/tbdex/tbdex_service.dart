@@ -28,7 +28,11 @@ class TbdexService {
       case TransactionType.send:
         filter = paymentState.selectedCountry != null
             ? GetOfferingsFilter(payoutCurrency: 'MXN')
-            : null;
+            : GetOfferingsFilter(
+                payoutCurrency: paymentState
+                    .moneyAddresses?.firstOrNull?.currency
+                    .toUpperCase(),
+              );
         break;
     }
 
@@ -47,6 +51,8 @@ class TbdexService {
         'No ${paymentState.transactionType.toString().toLowerCase()} offerings found for any linked PFIs',
       );
     }
+
+    await Future.delayed(const Duration(milliseconds: 500));
 
     return offeringsMap;
   }
