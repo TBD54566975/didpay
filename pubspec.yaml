@@ -12,19 +12,19 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  web5:
-    git:
-      url: https://github.com/TBD54566975/web5-dart.git
-      path: packages/web5
-      ref: main
-
   tbdex:
     git:
       url: https://github.com/TBD54566975/tbdex-dart.git
       ref: main
 
+  dap:
+    git:
+      url: https://github.com/TBD54566975/dap-dart.git
+      ref: main
+
   auto_size_text: ^3.0.0
   collection: ^1.18.0
+  decimal: ^2.3.3
   device_info_plus: ^9.1.2
   equatable: ^2.0.5
   flutter_hooks: ^0.20.3
@@ -43,7 +43,7 @@ dependencies:
   shared_preferences: ^2.2.2
   url_launcher: ^6.2.5
   webview_flutter: ^4.4.2
-  decimal: ^2.3.3
+  web5: ^0.2.0
 
 dev_dependencies:
   flutter_test:
