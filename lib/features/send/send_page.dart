@@ -1,5 +1,5 @@
 import 'package:didpay/features/countries/countries_page.dart';
-import 'package:didpay/features/did/did_form.dart';
+import 'package:didpay/features/dap/dap_form.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/feature_flags/lucid/lucid_offerings_page.dart';
@@ -26,11 +26,11 @@ class SendPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Header(
-              title: Loc.of(context).enterRecipientDap,
-              subtitle: Loc.of(context).makeSureInfoIsCorrect,
+              title: Loc.of(context).whoDoYouWantToPay,
+              subtitle: Loc.of(context).enterADap,
             ),
             Expanded(
-              child: DidForm(
+              child: DapForm(
                 buttonTitle: Loc.of(context).next,
                 onSubmit: (did) => Navigator.of(context).push(
                   MaterialPageRoute(
