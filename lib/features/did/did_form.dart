@@ -52,7 +52,7 @@ class DidForm extends HookConsumerWidget {
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: InputDecoration(
-                      labelText: Loc.of(context).didPrefix,
+                      labelText: Loc.of(context).didHint,
                       errorText: errorText.value,
                     ),
                     validator: (value) => value == null || value.isEmpty
@@ -64,7 +64,7 @@ class DidForm extends HookConsumerWidget {
             ),
           ),
           DidQrTile(
-            title: Loc.of(context).dontKnowTheirDap,
+            title: Loc.of(context).dontKnowTheirDid,
             didTextController: textController,
             errorText: errorText,
           ),
