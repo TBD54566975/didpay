@@ -141,6 +141,9 @@ class LocEn extends Loc {
   String get noDidQrCodeFound => 'No DID QR Code found';
 
   @override
+  String get noDapQrCodeFound => 'No DAP QR Code found';
+
+  @override
   String get myDap => 'My DAP';
 
   @override
@@ -388,4 +391,10 @@ class LocEn extends Loc {
 
   @override
   String get enterADap => 'Enter a Decentralized Agnostic Paytag (DAP)';
+
+  @override
+  String get verifyingDap => 'Verifying DAP...';
+
+  @override
+  String get placeholderDap => '@username/didpay.me';
 }

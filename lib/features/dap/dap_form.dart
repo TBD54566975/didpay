@@ -1,5 +1,5 @@
 import 'package:dap/dap.dart';
-import 'package:didpay/features/did/did_qr_tile.dart';
+import 'package:didpay/features/dap/dap_qr_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -9,15 +9,20 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DapForm extends HookConsumerWidget {
   final String buttonTitle;
-  final void Function(String) onSubmit;
+  final ValueNotifier<AsyncValue<Dap>?> dap;
+  final void Function(List<MoneyAddress>) onSubmit;
 
-  DapForm({required this.buttonTitle, required this.onSubmit, super.key});
+  DapForm({
+    required this.buttonTitle,
+    required this.dap,
+    required this.onSubmit,
+    super.key,
+  });
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dap = useState<Dap?>(null);
     final errorText = useState<String?>(null);
     final focusNode = useFocusNode();
 
@@ -40,16 +45,14 @@ class DapForm extends HookConsumerWidget {
                     focusNode: focusNode,
                     controller: textController,
                     onTap: () => errorText.value = null,
-                    onTapOutside: (_) async => _updateErrorText(
+                    onTapOutside: (_) async => _parseDap(
                       textController.text,
                       errorMessage,
-                      dap,
                       errorText,
                     ).then((_) => focusNode.unfocus()),
-                    onFieldSubmitted: (_) async => _updateErrorText(
+                    onFieldSubmitted: (_) async => _parseDap(
                       textController.text,
                       errorMessage,
-                      dap,
                       errorText,
                     ),
                     enableSuggestions: false,
@@ -66,21 +69,18 @@ class DapForm extends HookConsumerWidget {
               ),
             ),
           ),
-          DidQrTile(
-            title: Loc.of(context).dontKnowTheirDap,
-            didTextController: textController,
+          DapQrTile(
+            dapTextController: textController,
             errorText: errorText,
           ),
           NextButton(
-            onPressed: () async => _updateErrorText(
+            onPressed: () => _parseDap(
               textController.text,
               errorMessage,
-              dap,
               errorText,
             ).then(
-              (_) => errorText.value == null
-                  ? onSubmit(textController.text)
-                  : null,
+              (parsedDap) =>
+                  errorText.value == null ? _resolveDap(parsedDap) : null,
             ),
             title: buttonTitle,
           ),
@@ -89,17 +89,34 @@ class DapForm extends HookConsumerWidget {
     );
   }
 
-  Future<void> _updateErrorText(
+  Future<Dap?> _parseDap(
     String inputText,
     String errorMessage,
-    ValueNotifier<Dap?> dap,
     ValueNotifier<String?> errorText,
   ) async {
     try {
-      dap.value = Dap.parse(inputText);
+      final parsedDap = Dap.parse(inputText);
       errorText.value = null;
+      return parsedDap;
     } on Exception {
       errorText.value = errorMessage;
+    }
+    return null;
+  }
+
+  Future<void> _resolveDap(Dap? parsedDap) async {
+    if (parsedDap == null) return;
+    try {
+      dap.value = const AsyncValue.loading();
+      final result = await DapResolver().resolve(parsedDap);
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      dap.value = AsyncValue.data(result.dap);
+      onSubmit(result.moneyAddresses);
+    } on Exception catch (e) {
+      dap.value =
+          AsyncError('${e.runtimeType}: Invalid DAP', StackTrace.current);
     }
   }
 }

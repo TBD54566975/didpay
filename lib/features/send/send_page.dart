@@ -1,3 +1,4 @@
+import 'package:dap/dap.dart';
 import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/dap/dap_form.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
@@ -7,9 +8,12 @@ import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/header.dart';
+import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SendPage extends HookConsumerWidget {
@@ -19,33 +23,51 @@ class SendPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final featureFlags = ref.watch(featureFlagsProvider);
 
+    final dap = useState<AsyncValue<Dap>?>(null);
+
     return Scaffold(
       appBar: _buildAppBar(context, featureFlags),
       body: SafeArea(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Header(
-              title: Loc.of(context).whoDoYouWantToPay,
-              subtitle: Loc.of(context).enterADap,
-            ),
-            Expanded(
-              child: DapForm(
-                buttonTitle: Loc.of(context).next,
-                onSubmit: (did) => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const PaymentAmountPage(
-                      paymentState: PaymentState(
-                        transactionType: TransactionType.send,
-                      ),
-                    ),
-                    fullscreenDialog: true,
-                  ),
+        child: dap.value != null
+            ? dap.value!.when(
+                data: (_) => Container(),
+                loading: () =>
+                    LoadingMessage(message: Loc.of(context).verifyingDap),
+                error: (error, _) => ErrorMessage(
+                  message: error.toString(),
+                  onRetry: () => dap.value = null,
                 ),
+              )
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Header(
+                    title: Loc.of(context).whoDoYouWantToPay,
+                    subtitle: Loc.of(context).enterADap,
+                  ),
+                  Expanded(
+                    child: DapForm(
+                      buttonTitle: Loc.of(context).next,
+                      dap: dap,
+                      onSubmit: (moneyAddresses) => Navigator.of(context)
+                          .push(
+                        MaterialPageRoute(
+                          builder: (_) => PaymentAmountPage(
+                            paymentState: PaymentState(
+                              transactionType: TransactionType.send,
+                              moneyAddresses: moneyAddresses,
+                            ),
+                          ),
+                          fullscreenDialog: true,
+                        ),
+                      )
+                          .then((_) {
+                        if (context.mounted) dap.value = null;
+                      }),
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }

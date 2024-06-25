@@ -355,6 +355,12 @@ abstract class Loc {
   /// **'No DID QR Code found'**
   String get noDidQrCodeFound;
 
+  /// No description provided for @noDapQrCodeFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No DAP QR Code found'**
+  String get noDapQrCodeFound;
+
   /// No description provided for @myDap.
   ///
   /// In en, this message translates to:
@@ -840,6 +846,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Enter a Decentralized Agnostic Paytag (DAP)'**
   String get enterADap;
+
+  /// No description provided for @verifyingDap.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying DAP...'**
+  String get verifyingDap;
+
+  /// No description provided for @placeholderDap.
+  ///
+  /// In en, this message translates to:
+  /// **'@username/didpay.me'**
+  String get placeholderDap;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

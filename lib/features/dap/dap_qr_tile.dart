@@ -7,12 +7,12 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 
-class DidQrTile extends HookConsumerWidget {
-  final TextEditingController didTextController;
+class DapQrTile extends HookConsumerWidget {
+  final TextEditingController dapTextController;
   final ValueNotifier<String?>? errorText;
 
-  const DidQrTile({
-    required this.didTextController,
+  const DapQrTile({
+    required this.dapTextController,
     this.errorText,
     super.key,
   });
@@ -37,20 +37,20 @@ class DidQrTile extends HookConsumerWidget {
       child: ListTile(
         leading: const Icon(Icons.qr_code),
         title: Text(
-          Loc.of(context).dontKnowTheirDid,
+          Loc.of(context).dontKnowTheirDap,
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => isPhysicalDevice.value
             ? _scanQrCode(
                 context,
-                didTextController,
+                dapTextController,
                 errorText,
-                Loc.of(context).noDidQrCodeFound,
+                Loc.of(context).noDapQrCodeFound,
               )
             : _simulateScanQrCode(
                 context,
-                didTextController,
+                dapTextController,
                 errorText,
               ),
       ),
@@ -59,7 +59,7 @@ class DidQrTile extends HookConsumerWidget {
 
   Future<void> _scanQrCode(
     BuildContext context,
-    TextEditingController didTextController,
+    TextEditingController dapTextController,
     ValueNotifier<String?>? errorText,
     String errorMessage,
   ) async {
@@ -71,7 +71,7 @@ class DidQrTile extends HookConsumerWidget {
 
     final isValid = qrValue != null &&
         await DidResolver.resolve(qrValue).then((result) => !result.hasError());
-    didTextController.text = isValid ? qrValue : '';
+    dapTextController.text = isValid ? qrValue : '';
     errorText?.value = isValid ? null : errorMessage;
   }
 
@@ -88,8 +88,7 @@ class DidQrTile extends HookConsumerWidget {
       ),
     );
 
-    final did = await DidDht.create(publish: true);
-    didTextController.text = did.uri;
+    didTextController.text = '@moegrammer/didpay.me';
     errorText?.value = null;
   }
 }

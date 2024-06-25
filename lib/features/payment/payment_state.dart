@@ -1,3 +1,4 @@
+import 'package:dap/dap.dart';
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -14,6 +15,7 @@ class PaymentState {
   final Decimal? payinAmount;
   final Decimal? payoutAmount;
   final Decimal? exchangeRate;
+  final List<MoneyAddress>? moneyAddresses;
   final Country? selectedCountry;
   final Pfi? selectedPfi;
   final Offering? selectedOffering;
@@ -35,6 +37,7 @@ class PaymentState {
     this.payinAmount,
     this.payoutAmount,
     this.exchangeRate,
+    this.moneyAddresses,
     this.selectedCountry,
     this.selectedPfi,
     this.selectedOffering,
@@ -57,6 +60,7 @@ class PaymentState {
     Decimal? payinAmount,
     Decimal? payoutAmount,
     Decimal? exchangeRate,
+    List<MoneyAddress>? moneyAddresses,
     Country? selectedCountry,
     Pfi? selectedPfi,
     Offering? selectedOffering,
@@ -78,6 +82,7 @@ class PaymentState {
       payinAmount: payinAmount ?? this.payinAmount,
       payoutAmount: payoutAmount ?? this.payoutAmount,
       exchangeRate: exchangeRate ?? this.exchangeRate,
+      moneyAddresses: moneyAddresses ?? this.moneyAddresses,
       selectedCountry: selectedCountry ?? this.selectedCountry,
       selectedPfi: selectedPfi ?? this.selectedPfi,
       selectedOffering: selectedOffering ?? this.selectedOffering,
