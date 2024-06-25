@@ -20,7 +20,7 @@ class AccountPage extends HookConsumerWidget {
     final pfis = ref.watch(pfisProvider);
     final credentials = ref.watch(vcsProvider);
     final featureFlags = ref.watch(featureFlagsProvider);
-    const dap = '@username/didpay.me';
+    final dap = Loc.of(context).placeholderDap;
 
     return Scaffold(
       body: SafeArea(
@@ -28,7 +28,7 @@ class AccountPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildProfile(context, dap),
-            const Center(child: Text(dap)),
+            Center(child: Text(dap)),
             const SizedBox(height: Grid.lg),
             Expanded(
               child: SingleChildScrollView(
