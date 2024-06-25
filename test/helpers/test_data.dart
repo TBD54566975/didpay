@@ -10,7 +10,7 @@ import 'package:typeid/typeid.dart';
 import 'package:web5/web5.dart';
 
 class TestData {
-  static const String dap = 'username@didpay.me';
+  static const String dap = '@username/didpay.me';
 
   static final _aliceKeyManager = InMemoryKeyManager();
   static final _pfiKeyManager = InMemoryKeyManager();

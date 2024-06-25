@@ -54,11 +54,13 @@
     "search": "Search",
     "serviceFeesMayApply": "Service fees may apply",
     "selectPaymentMethod": "Select a payment method",
-    "didPrefix": "did:...",
+    "didHint": "did:...",
+    "dapHint": "@local-handle/domain",
     "thisFieldCannotBeEmpty": "This field cannot be empty",
     "invalidDid": "Invalid DID",
+    "invalidDap": "Invalid DAP",
     "noDidQrCodeFound": "No DID QR Code found",
-    "myDid": "My DID",
+    "myDap": "My DAP",
     "myVc": "My VC",
     "vcNotFound": "VC not found",
     "copiedDid": "Copied DID!",
@@ -131,7 +133,7 @@
     "cancel": "Cancel",
     "linkedPfis": "Linked PFIs",
     "noTransactionsFound": "No transactions found",
-    "enterRecipientDap": "Enter the recipient's DAP",
+    "whoDoYouWantToPay": "Who do you want to pay?",
     "fetchingOfferings": "Fetching offerings...",
     "startingIdv": "Starting identity verification...",
     "verifyingYourIdentity": "Verifying your identity...",
@@ -144,6 +146,7 @@
     "fetchingTransactions": "Fetching transactions...",
     "scan": "Scan",
     "cameraUnavailable": "Camera unavailable",
+    "dontKnowTheirDid": "Don't know their DID? Scan their QR code instead",
     "dontKnowTheirDap": "Don't know their DAP? Scan their QR code instead",
     "featureFlags": "Feature flags",
     "lucidMode": "Lucid mode",
@@ -158,5 +161,6 @@
             }
         }
     },
-    "ifYouExitNow": "If you exit now, you'll lose all your progress"
+    "ifYouExitNow": "If you exit now, you'll lose all your progress",
+    "enterADap": "Enter a Decentralized Agnostic Paytag (DAP)"
 }

@@ -54,12 +54,12 @@ class Payin extends HookWidget {
   Widget _buildPayinCurrency(BuildContext context) {
     switch (paymentState.transactionType) {
       case TransactionType.deposit:
+      case TransactionType.send:
         return CurrencyDropdown(
           paymentState: paymentState,
           onCurrencySelect: onCurrencySelect,
         );
       case TransactionType.withdraw:
-      case TransactionType.send:
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(

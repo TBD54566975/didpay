@@ -1,3 +1,4 @@
+import 'package:dap/dap.dart';
 import 'package:didpay/features/did/did_qr_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/next_button.dart';
@@ -5,23 +6,23 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:web5/web5.dart';
 
-class DidForm extends HookConsumerWidget {
+class DapForm extends HookConsumerWidget {
   final String buttonTitle;
   final void Function(String) onSubmit;
 
-  DidForm({required this.buttonTitle, required this.onSubmit, super.key});
+  DapForm({required this.buttonTitle, required this.onSubmit, super.key});
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final dap = useState<Dap?>(null);
     final errorText = useState<String?>(null);
     final focusNode = useFocusNode();
 
     final textController = useTextEditingController();
-    final errorMessage = Loc.of(context).invalidDid;
+    final errorMessage = Loc.of(context).invalidDap;
 
     return Form(
       key: _formKey,
@@ -42,17 +43,19 @@ class DidForm extends HookConsumerWidget {
                     onTapOutside: (_) async => _updateErrorText(
                       textController.text,
                       errorMessage,
+                      dap,
                       errorText,
                     ).then((_) => focusNode.unfocus()),
                     onFieldSubmitted: (_) async => _updateErrorText(
                       textController.text,
                       errorMessage,
+                      dap,
                       errorText,
                     ),
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: InputDecoration(
-                      labelText: Loc.of(context).didHint,
+                      labelText: Loc.of(context).dapHint,
                       errorText: errorText.value,
                     ),
                     validator: (value) => value == null || value.isEmpty
@@ -64,7 +67,7 @@ class DidForm extends HookConsumerWidget {
             ),
           ),
           DidQrTile(
-            title: Loc.of(context).dontKnowTheirDid,
+            title: Loc.of(context).dontKnowTheirDap,
             didTextController: textController,
             errorText: errorText,
           ),
@@ -72,6 +75,7 @@ class DidForm extends HookConsumerWidget {
             onPressed: () async => _updateErrorText(
               textController.text,
               errorMessage,
+              dap,
               errorText,
             ).then(
               (_) => errorText.value == null
@@ -86,16 +90,14 @@ class DidForm extends HookConsumerWidget {
   }
 
   Future<void> _updateErrorText(
-    String did,
+    String inputText,
     String errorMessage,
+    ValueNotifier<Dap?> dap,
     ValueNotifier<String?> errorText,
   ) async {
     try {
-      did.isNotEmpty &&
-              await DidResolver.resolve(did)
-                  .then((result) => !result.hasError())
-          ? errorText.value = null
-          : errorText.value = errorMessage;
+      dap.value = Dap.parse(inputText);
+      errorText.value = null;
     } on Exception {
       errorText.value = errorMessage;
     }

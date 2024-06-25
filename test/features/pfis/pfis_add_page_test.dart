@@ -17,7 +17,7 @@ void main() {
       expect(
         find.widgetWithText(
           ListTile,
-          "Don't know their DAP? Scan their QR code instead",
+          "Don't know their DID? Scan their QR code instead",
         ),
         findsOneWidget,
       );

@@ -20,7 +20,7 @@ class AccountPage extends HookConsumerWidget {
     final pfis = ref.watch(pfisProvider);
     final credentials = ref.watch(vcsProvider);
     final featureFlags = ref.watch(featureFlagsProvider);
-    const dap = 'username@didpay.me';
+    const dap = '@username/didpay.me';
 
     return Scaffold(
       body: SafeArea(
