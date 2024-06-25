@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/did/did_provider.dart';
-import 'package:didpay/features/kcc/kcc_consent_page.dart';
+// import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_method_operations.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
@@ -8,13 +8,13 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-import 'package:didpay/features/vcs/vcs_notifier.dart';
+// import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/loading_message.dart';
-import 'package:didpay/shared/modal/modal_flow.dart';
+// import 'package:didpay/shared/modal/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -60,9 +60,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
       body: SafeArea(
         child: rfq.value != null
             ? rfq.value!.when(
-                data: (_) => LoadingMessage(
-                  message: Loc.of(context).gettingYourQuote,
-                ),
+                data: (_) => Container(),
                 loading: () => LoadingMessage(
                   message: Loc.of(context).sendingYourRequest,
                 ),
@@ -111,22 +109,30 @@ class PaymentDetailsPage extends HookConsumerWidget {
                           : selectedPaymentMethod.value as PayoutMethod?,
                     ),
                     onPaymentFormSubmit: (paymentState) async {
-                      await _hasRequiredVc(
+                      await _sendRfq(
                         context,
                         ref,
                         paymentState,
-                        offeringCredentials,
-                      ).then(
-                        (hasRequiredVc) async => !hasRequiredVc
-                            ? null
-                            : _sendRfq(
-                                context,
-                                ref,
-                                paymentState,
-                                rfq,
-                                claims: offeringCredentials.value,
-                              ),
+                        rfq,
+                        claims: offeringCredentials.value,
                       );
+                      // TODO(ethan-tbd): uncomment below to initiate KCC flow
+                      // await _hasRequiredVc(
+                      //   context,
+                      //   ref,
+                      //   paymentState,
+                      //   offeringCredentials,
+                      // ).then(
+                      //   (hasRequiredVc) async => !hasRequiredVc
+                      //       ? null
+                      //       : _sendRfq(
+                      //           context,
+                      //           ref,
+                      //           paymentState,
+                      //           rfq,
+                      //           claims: offeringCredentials.value,
+                      //         ),
+                      // );
                     },
                   ),
                 ],
@@ -294,60 +300,59 @@ class PaymentDetailsPage extends HookConsumerWidget {
             ref.read(didProvider),
             paymentState.copyWith(claims: claims),
           )
-          .then((rfq) async {
-        state.value = AsyncData(rfq);
-        await Navigator.of(context)
-            .push(
-          MaterialPageRoute(
-            builder: (context) => PaymentReviewPage(
-              paymentState: paymentState.copyWith(
-                exchangeId: rfq.metadata.id,
-                claims: claims,
+          .then(
+            (rfq) async => Navigator.of(context)
+                .push(
+              MaterialPageRoute(
+                builder: (context) => PaymentReviewPage(
+                  paymentState: paymentState.copyWith(
+                    exchangeId: rfq.metadata.id,
+                    claims: claims,
+                  ),
+                ),
               ),
-            ),
-          ),
-        )
-            .then((_) {
-          if (context.mounted) state.value = null;
-        });
-      });
+            )
+                .then((_) {
+              if (context.mounted) state.value = null;
+            }),
+          );
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
   }
 
-  Future<bool> _hasRequiredVc(
-    BuildContext context,
-    WidgetRef ref,
-    PaymentState paymentState,
-    ValueNotifier<List<String>?> offeringCredentials,
-  ) async {
-    final presentationDefinition =
-        paymentState.selectedOffering?.data.requiredClaims;
-    final credentials =
-        presentationDefinition?.selectCredentials(ref.read(vcsProvider));
+  // Future<bool> _hasRequiredVc(
+  //   BuildContext context,
+  //   WidgetRef ref,
+  //   PaymentState paymentState,
+  //   ValueNotifier<List<String>?> offeringCredentials,
+  // ) async {
+  //   final presentationDefinition =
+  //       paymentState.selectedOffering?.data.requiredClaims;
+  //   final credentials =
+  //       presentationDefinition?.selectCredentials(ref.read(vcsProvider));
 
-    if (credentials == null && presentationDefinition == null) {
-      return true;
-    }
+  //   if (credentials == null && presentationDefinition == null) {
+  //     return true;
+  //   }
 
-    if (credentials != null && credentials.isNotEmpty) {
-      offeringCredentials.value = credentials;
-      return true;
-    }
+  //   if (credentials != null && credentials.isNotEmpty) {
+  //     offeringCredentials.value = credentials;
+  //     return true;
+  //   }
 
-    final issuedCredential = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ModalFlow(
-          initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
-        ),
-        fullscreenDialog: true,
-      ),
-    );
+  //   final issuedCredential = await Navigator.of(context).push(
+  //     MaterialPageRoute(
+  //       builder: (context) => ModalFlow(
+  //         initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
+  //       ),
+  //       fullscreenDialog: true,
+  //     ),
+  //   );
 
-    if (issuedCredential == null) return false;
+  //   if (issuedCredential == null) return false;
 
-    offeringCredentials.value = [issuedCredential as String];
-    return true;
-  }
+  //   offeringCredentials.value = [issuedCredential as String];
+  //   return true;
+  // }
 }
