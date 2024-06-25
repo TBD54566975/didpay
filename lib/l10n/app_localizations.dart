@@ -319,11 +319,17 @@ abstract class Loc {
   /// **'Select a payment method'**
   String get selectPaymentMethod;
 
-  /// No description provided for @didPrefix.
+  /// No description provided for @didHint.
   ///
   /// In en, this message translates to:
   /// **'did:...'**
-  String get didPrefix;
+  String get didHint;
+
+  /// No description provided for @dapHint.
+  ///
+  /// In en, this message translates to:
+  /// **'@local-handle/domain'**
+  String get dapHint;
 
   /// No description provided for @thisFieldCannotBeEmpty.
   ///
@@ -337,17 +343,23 @@ abstract class Loc {
   /// **'Invalid DID'**
   String get invalidDid;
 
+  /// No description provided for @invalidDap.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid DAP'**
+  String get invalidDap;
+
   /// No description provided for @noDidQrCodeFound.
   ///
   /// In en, this message translates to:
   /// **'No DID QR Code found'**
   String get noDidQrCodeFound;
 
-  /// No description provided for @myDid.
+  /// No description provided for @myDap.
   ///
   /// In en, this message translates to:
-  /// **'My DID'**
-  String get myDid;
+  /// **'My DAP'**
+  String get myDap;
 
   /// No description provided for @myVc.
   ///
@@ -697,11 +709,11 @@ abstract class Loc {
   /// **'No transactions found'**
   String get noTransactionsFound;
 
-  /// No description provided for @enterRecipientDap.
+  /// No description provided for @whoDoYouWantToPay.
   ///
   /// In en, this message translates to:
-  /// **'Enter the recipient\'s DAP'**
-  String get enterRecipientDap;
+  /// **'Who do you want to pay?'**
+  String get whoDoYouWantToPay;
 
   /// No description provided for @fetchingOfferings.
   ///
@@ -769,6 +781,12 @@ abstract class Loc {
   /// **'Camera unavailable'**
   String get cameraUnavailable;
 
+  /// No description provided for @dontKnowTheirDid.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t know their DID? Scan their QR code instead'**
+  String get dontKnowTheirDid;
+
   /// No description provided for @dontKnowTheirDap.
   ///
   /// In en, this message translates to:
@@ -816,6 +834,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'If you exit now, you\'ll lose all your progress'**
   String get ifYouExitNow;
+
+  /// No description provided for @enterADap.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a Decentralized Agnostic Paytag (DAP)'**
+  String get enterADap;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

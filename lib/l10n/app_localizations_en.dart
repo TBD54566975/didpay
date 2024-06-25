@@ -123,7 +123,10 @@ class LocEn extends Loc {
   String get selectPaymentMethod => 'Select a payment method';
 
   @override
-  String get didPrefix => 'did:...';
+  String get didHint => 'did:...';
+
+  @override
+  String get dapHint => '@local-handle/domain';
 
   @override
   String get thisFieldCannotBeEmpty => 'This field cannot be empty';
@@ -132,10 +135,13 @@ class LocEn extends Loc {
   String get invalidDid => 'Invalid DID';
 
   @override
+  String get invalidDap => 'Invalid DAP';
+
+  @override
   String get noDidQrCodeFound => 'No DID QR Code found';
 
   @override
-  String get myDid => 'My DID';
+  String get myDap => 'My DAP';
 
   @override
   String get myVc => 'My VC';
@@ -316,7 +322,7 @@ class LocEn extends Loc {
   String get noTransactionsFound => 'No transactions found';
 
   @override
-  String get enterRecipientDap => 'Enter the recipient\'s DAP';
+  String get whoDoYouWantToPay => 'Who do you want to pay?';
 
   @override
   String get fetchingOfferings => 'Fetching offerings...';
@@ -352,6 +358,9 @@ class LocEn extends Loc {
   String get cameraUnavailable => 'Camera unavailable';
 
   @override
+  String get dontKnowTheirDid => 'Don\'t know their DID? Scan their QR code instead';
+
+  @override
   String get dontKnowTheirDap => 'Don\'t know their DAP? Scan their QR code instead';
 
   @override
@@ -376,4 +385,7 @@ class LocEn extends Loc {
 
   @override
   String get ifYouExitNow => 'If you exit now, you\'ll lose all your progress';
+
+  @override
+  String get enterADap => 'Enter a Decentralized Agnostic Paytag (DAP)';
 }
