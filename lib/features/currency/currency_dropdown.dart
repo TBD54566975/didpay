@@ -37,9 +37,9 @@ class CurrencyDropdown extends HookConsumerWidget {
       );
 
   Widget _buildCurrencyLabel(BuildContext context) => Text(
-        paymentState.transactionType == TransactionType.deposit
-            ? paymentState.selectedOffering?.data.payin.currencyCode ?? ''
-            : paymentState.selectedOffering?.data.payout.currencyCode ?? '',
+        paymentState.transactionType == TransactionType.withdraw
+            ? paymentState.selectedOffering?.data.payout.currencyCode ?? ''
+            : paymentState.selectedOffering?.data.payin.currencyCode ?? '',
         style: Theme.of(context).textTheme.headlineMedium,
       );
 }
