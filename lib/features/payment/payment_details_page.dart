@@ -43,9 +43,14 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        selectedPaymentMethod.value = (filteredPaymentMethods?.length ?? 0) <= 1
-            ? filteredPaymentMethods?.firstOrNull
-            : null;
+        paymentState.moneyAddresses != null
+            ? Future.microtask(
+                () async => _sendRfq(context, ref, paymentState, rfq),
+              )
+            : selectedPaymentMethod.value =
+                (filteredPaymentMethods?.length ?? 0) <= 1
+                    ? filteredPaymentMethods?.firstOrNull
+                    : null;
         return;
       },
       [selectedPaymentType.value],
