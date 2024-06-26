@@ -3,6 +3,7 @@ import 'package:decimal/decimal.dart';
 import 'package:didpay/features/app/app.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
+import 'package:didpay/features/payment/payment_link_webview_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
@@ -78,12 +79,29 @@ class PaymentReviewPage extends HookConsumerWidget {
                             ),
                           ),
                           NextButton(
-                            onPressed: () => _submitOrder(
-                              context,
-                              ref,
-                              paymentState,
-                              order,
-                            ),
+                            onPressed: () => paymentState.moneyAddresses != null
+                                ? Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          PaymentLinkWebviewPage(
+                                        paymentLink: q.data.payin
+                                                .paymentInstruction?.link ??
+                                            '',
+                                        onSubmit: () => _submitOrder(
+                                          context,
+                                          ref,
+                                          paymentState,
+                                          order,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                : _submitOrder(
+                                    context,
+                                    ref,
+                                    paymentState,
+                                    order,
+                                  ),
                             title:
                                 '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
                           ),
