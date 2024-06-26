@@ -39,12 +39,11 @@ class PaymentFeeDetails extends HookWidget {
                 : Loc.of(context).estRate,
             '1 ${paymentDetails.payinCurrency} = ${paymentDetails.exchangeRate} ${paymentDetails.payoutCurrency}',
           ),
-          if (quote != null || transactionType != TransactionType.deposit)
-            _buildRow(
-              context,
-              Loc.of(context).serviceFee,
-              '${paymentDetails.payinFee} ${paymentDetails.payinCurrency}',
-            ),
+          _buildRow(
+            context,
+            Loc.of(context).serviceFee,
+            '${paymentDetails.payinFee} ${paymentDetails.payinCurrency}',
+          ),
           if (quote != null)
             _buildRow(
               context,
