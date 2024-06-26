@@ -92,8 +92,18 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        await TbdexHttpClient.listExchanges(did, pfi.did)
-            .then((exchanges) => exchangesMap[pfi] = exchanges);
+        final exchanges = await TbdexHttpClient.listExchanges(did, pfi.did);
+
+        final validExchanges = await Future.wait(
+          exchanges.map(
+            (exchangeId) async => _isValidExchange(did, pfi, exchangeId)
+                .then((isValid) => isValid ? exchangeId : null),
+          ),
+        );
+
+        final filteredExchanges = validExchanges.whereType<String>().toList();
+
+        if (filteredExchanges.isNotEmpty) exchangesMap[pfi] = filteredExchanges;
       } on Exception catch (e) {
         if (e is ValidationError) continue;
         rethrow;
@@ -101,6 +111,25 @@ class TbdexService {
     }
 
     return exchangesMap;
+  }
+
+  Future<bool> _isValidExchange(
+    BearerDid did,
+    Pfi pfi,
+    String exchangeId,
+  ) async {
+    try {
+      final exchange = await getExchange(
+        did,
+        pfi,
+        exchangeId,
+      );
+
+      return exchange
+          .any((message) => message.metadata.kind == MessageKind.quote);
+    } on Exception {
+      return false;
+    }
   }
 
   Future<Exchange> getExchange(
