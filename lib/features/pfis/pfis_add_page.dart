@@ -41,7 +41,7 @@ class PfisAddPage extends HookConsumerWidget {
                   Expanded(
                     child: DidForm(
                       buttonTitle: Loc.of(context).add,
-                      onSubmit: (did) => _addPfi(ref, did, pfi),
+                      onSubmit: (did) async => _addPfi(ref, did, pfi),
                     ),
                   ),
                 ],
