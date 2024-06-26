@@ -13,7 +13,13 @@ class PfisService {
       throw Exception('Invalid DID: $e');
     }
 
-    final res = await DidResolver.resolve(did.uri);
+    DidResolutionResult res;
+    try {
+      res = await DidResolver.resolve(did.uri);
+    } on Exception catch (e) {
+      throw Exception('Failed to resolve DID: $e');
+    }
+
     if (res.hasError()) {
       throw Exception(
         'Failed to resolve DID: ${res.didResolutionMetadata.error}',

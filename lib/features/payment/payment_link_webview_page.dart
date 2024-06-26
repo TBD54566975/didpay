@@ -17,7 +17,7 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final paymentLink = useState<AsyncValue<String>>(const AsyncLoading());
 
-    paymentLink.value = const AsyncData('https://square.link/u/fKCvsjLg');
+    paymentLink.value = const AsyncData('https://square.link/u/Em8f8k8F');
 
     final settings = InAppWebViewSettings(
       isInspectable:

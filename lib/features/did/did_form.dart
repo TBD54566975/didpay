@@ -68,15 +68,17 @@ class DidForm extends HookConsumerWidget {
             errorText: errorText,
           ),
           NextButton(
-            onPressed: () async => _updateErrorText(
-              textController.text,
-              errorMessage,
-              errorText,
-            ).then(
-              (_) => errorText.value == null
-                  ? onSubmit(textController.text)
-                  : null,
-            ),
+            onPressed: () {
+              _updateErrorText(
+                textController.text,
+                errorMessage,
+                errorText,
+              ).then(
+                (_) => errorText.value == null
+                    ? onSubmit(textController.text)
+                    : null,
+              );
+            },
             title: buttonTitle,
           ),
         ],
@@ -90,12 +92,17 @@ class DidForm extends HookConsumerWidget {
     ValueNotifier<String?> errorText,
   ) async {
     try {
-      did.isNotEmpty &&
-              await DidResolver.resolve(did)
-                  .then((result) => !result.hasError())
-          ? errorText.value = null
-          : errorText.value = errorMessage;
-    } on Exception {
+      if (did.isEmpty) {
+        errorText.value = errorMessage;
+        return;
+      }
+
+      final resolutionResult = await DidResolver.resolve(did);
+      if (resolutionResult.hasError()) {
+        errorText.value = errorMessage;
+        return;
+      }
+    } on Exception catch (e) {
       errorText.value = errorMessage;
     }
   }
