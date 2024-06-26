@@ -39,20 +39,10 @@ class PaymentFeeDetails extends HookWidget {
                 : Loc.of(context).estRate,
             '1 ${paymentDetails.payinCurrency} = ${paymentDetails.exchangeRate} ${paymentDetails.payoutCurrency}',
           ),
-          if (quote != null || transactionType == TransactionType.deposit)
-            _buildRow(
-              context,
-              transactionType == TransactionType.deposit
-                  ? Loc.of(context).txnTypeFee('$transactionType')
-                  : Loc.of(context).serviceFee,
-              '${paymentDetails.payoutFee} ${paymentDetails.payoutCurrency}',
-            ),
           if (quote != null || transactionType != TransactionType.deposit)
             _buildRow(
               context,
-              transactionType == TransactionType.deposit
-                  ? Loc.of(context).serviceFee
-                  : '$transactionType fee',
+              Loc.of(context).serviceFee,
               '${paymentDetails.payinFee} ${paymentDetails.payinCurrency}',
             ),
           if (quote != null)
@@ -138,11 +128,5 @@ extension _PaymentDetailsOperations on Object? {
       ? (this as QuoteData?)?.payin.fee
       : this is OfferingData
           ? (this as OfferingData?)?.payin.methods.firstOrNull?.fee ?? '0'
-          : null;
-
-  String? get payoutFee => this is QuoteData
-      ? (this as QuoteData?)?.payout.fee
-      : this is OfferingData
-          ? (this as OfferingData?)?.payout.methods.firstOrNull?.fee ?? '0'
           : null;
 }
