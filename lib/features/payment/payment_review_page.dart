@@ -45,94 +45,104 @@ class PaymentReviewPage extends HookConsumerWidget {
       [],
     );
 
-    return Scaffold(
-      appBar: _buildAppBar(context, ref, quote.value, getQuoteNotifier()),
-      body: SafeArea(
-        child: order.value == null
-            ? quote.value.when(
-                data: (q) => q == null
-                    ? Container()
-                    : Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Header(
-                            title: Loc.of(context).reviewYourPayment,
-                            subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                          ),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: Grid.side,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: Grid.sm),
-                                    _buildAmounts(context, q.data),
-                                    _buildFeeDetails(context, q.data),
-                                    _buildPaymentDetails(context),
-                                  ],
+    return PopScope(
+      child: Scaffold(
+        appBar: _buildAppBar(context, ref, quote.value, getQuoteNotifier()),
+        body: SafeArea(
+          child: order.value == null
+              ? quote.value.when(
+                  data: (q) => q == null
+                      ? Container()
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Header(
+                              title: Loc.of(context).reviewYourPayment,
+                              subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                            ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                physics: const BouncingScrollPhysics(),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: Grid.side,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const SizedBox(height: Grid.sm),
+                                      _buildAmounts(context, q.data),
+                                      _buildFeeDetails(context, q.data),
+                                      _buildPaymentDetails(context),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                          NextButton(
-                            onPressed: () => paymentState.moneyAddresses != null
-                                ? Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          PaymentLinkWebviewPage(
-                                        paymentLink: q.data.payin
-                                                .paymentInstruction?.link ??
-                                            '',
-                                        onSubmit: () => _submitOrder(
-                                          context,
-                                          ref,
-                                          paymentState,
-                                          order,
+                            NextButton(
+                              onPressed: () => paymentState.dap != null
+                                  ? Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            PaymentLinkWebviewPage(
+                                          paymentLink: q.data.payin
+                                                  .paymentInstruction?.link ??
+                                              '',
+                                          onSubmit: () => _submitOrder(
+                                            context,
+                                            ref,
+                                            paymentState,
+                                            order,
+                                          ),
                                         ),
                                       ),
+                                    )
+                                  : _submitOrder(
+                                      context,
+                                      ref,
+                                      paymentState,
+                                      order,
                                     ),
-                                  )
-                                : _submitOrder(
-                                    context,
-                                    ref,
-                                    paymentState,
-                                    order,
-                                  ),
-                            title:
-                                '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
-                          ),
-                        ],
-                      ),
-                loading: () => LoadingMessage(
-                  message: Loc.of(context).gettingYourQuote,
-                ),
-                error: (error, _) => ErrorMessage(
-                  message: error.toString(),
-                  onRetry: () => _pollForQuote(ref, getQuoteNotifier(), quote),
-                ),
-              )
-            : order.value!.when(
-                data: (_) => ConfirmationMessage(
-                  message: Loc.of(context).orderConfirmed,
-                ),
-                loading: () => LoadingMessage(
-                  message: Loc.of(context).confirmingYourOrder,
-                ),
-                error: (error, _) => ErrorMessage(
-                  message: error.toString(),
-                  onRetry: () => _submitOrder(
-                    context,
-                    ref,
-                    paymentState,
-                    order,
+                              title:
+                                  '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
+                            ),
+                          ],
+                        ),
+                  loading: () => LoadingMessage(
+                    message: Loc.of(context).gettingYourQuote,
+                  ),
+                  error: (error, _) => ErrorMessage(
+                    message: error.toString(),
+                    onRetry: () =>
+                        _pollForQuote(ref, getQuoteNotifier(), quote),
+                  ),
+                )
+              : order.value!.when(
+                  data: (_) => ConfirmationMessage(
+                    message: Loc.of(context).orderConfirmed,
+                  ),
+                  loading: () => LoadingMessage(
+                    message: Loc.of(context).confirmingYourOrder,
+                  ),
+                  error: (error, _) => ErrorMessage(
+                    message: error.toString(),
+                    onRetry: () => _submitOrder(
+                      context,
+                      ref,
+                      paymentState,
+                      order,
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
+      onPopInvoked: (_) {
+        if (paymentState.dap != null) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => Navigator.of(context).pop());
+        }
+      },
     );
   }
 
@@ -261,7 +271,9 @@ class PaymentReviewPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              paymentState.paymentName ?? '',
+              paymentState.dap != null
+                  ? paymentState.dap?.dap ?? ''
+                  : paymentState.paymentName ?? '',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: Grid.xxs),
