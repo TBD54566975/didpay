@@ -17,8 +17,6 @@ class PfisAddPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfi = useState<AsyncValue<Pfi>?>(null);
 
-    final pfiDidController = useTextEditingController();
-
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -30,7 +28,7 @@ class PfisAddPage extends HookConsumerWidget {
                     LoadingMessage(message: Loc.of(context).addingPfi),
                 error: (error, _) => ErrorMessage(
                   message: error.toString(),
-                  onRetry: () => _addPfi(ref, pfiDidController.text, pfi),
+                  onRetry: () => pfi.value = null,
                 ),
               )
             : Column(
