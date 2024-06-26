@@ -10,7 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class DapForm extends HookConsumerWidget {
   final String buttonTitle;
   final ValueNotifier<AsyncValue<Dap>?> dap;
-  final void Function(List<MoneyAddress>) onSubmit;
+  final void Function(Dap, List<MoneyAddress>) onSubmit;
 
   DapForm({
     required this.buttonTitle,
@@ -113,7 +113,7 @@ class DapForm extends HookConsumerWidget {
       await Future.delayed(const Duration(milliseconds: 500));
 
       dap.value = AsyncValue.data(result.dap);
-      onSubmit(result.moneyAddresses);
+      onSubmit(result.dap, result.moneyAddresses);
     } on Exception catch (e) {
       dap.value =
           AsyncError('${e.runtimeType}: Invalid DAP', StackTrace.current);
