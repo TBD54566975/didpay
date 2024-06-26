@@ -43,7 +43,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        paymentState.moneyAddresses != null
+        paymentState.dap != null
             ? Future.microtask(
                 () async => _sendRfq(context, ref, paymentState, rfq),
               )
