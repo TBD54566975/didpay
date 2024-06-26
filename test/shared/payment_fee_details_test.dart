@@ -28,33 +28,7 @@ void main() {
       expect(find.text('Est. rate'), findsOneWidget);
     });
 
-    testWidgets('should show deposit fee label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentFeeDetails(
-            transactionType: TransactionType.deposit,
-            offering: offering.data,
-          ),
-        ),
-      );
-
-      expect(find.text('Deposit fee'), findsOneWidget);
-    });
-
-    testWidgets('should show withdraw fee label', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentFeeDetails(
-            transactionType: TransactionType.withdraw,
-            offering: offering.data,
-          ),
-        ),
-      );
-
-      expect(find.text('Withdraw fee'), findsOneWidget);
-    });
-
-    testWidgets('should show send fee label', (tester) async {
+    testWidgets('should show service fee label', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: PaymentFeeDetails(
@@ -64,7 +38,7 @@ void main() {
         ),
       );
 
-      expect(find.text('Send fee'), findsOneWidget);
+      expect(find.text('Service fee'), findsOneWidget);
     });
 
     testWidgets('should show est rate', (tester) async {
