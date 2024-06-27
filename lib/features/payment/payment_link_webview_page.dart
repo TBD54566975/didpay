@@ -16,8 +16,6 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isFinished = useState(false);
-
     final settings = InAppWebViewSettings(
       isInspectable: kDebugMode,
       mediaPlaybackRequiresUserGesture: false,
@@ -41,13 +39,11 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
 
           c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
         },
-        onLoadStart: (controller, url) {
+        onLoadStart: (controller, url) async {
           if (url.toString().contains('finish.html')) {
-            isFinished.value = true;
+            await onSubmit();
+            if (context.mounted) Navigator.of(context).pop();
           }
-        },
-        onCloseWindow: (controller) async {
-          if (isFinished.value) await onSubmit();
         },
         onReceivedServerTrustAuthRequest: (controller, challenge) async {
           return ServerTrustAuthResponse(
