@@ -59,7 +59,7 @@ class PaymentFeeDetails extends HookWidget {
   static String calculateExchangeRate(QuoteData? quote) =>
       (double.parse(quote?.payout.amount ?? '0') /
               double.parse(quote?.payin.amount ?? '0'))
-          .toStringAsFixed(2);
+          .toStringAsFixed(quote?.payout.currencyCode == 'BTC' ? 8 : 2);
 
   static String calculateTotalAmount(QuoteData? quote) =>
       Decimal.parse(quote?.payin.amount ?? '0')
