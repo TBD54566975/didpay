@@ -17,8 +17,6 @@ class PfisAddPage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final pfi = useState<AsyncValue<Pfi>?>(null);
 
-    final pfiDidController = useTextEditingController();
-
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
@@ -30,7 +28,7 @@ class PfisAddPage extends HookConsumerWidget {
                     LoadingMessage(message: Loc.of(context).addingPfi),
                 error: (error, _) => ErrorMessage(
                   message: error.toString(),
-                  onRetry: () => _addPfi(ref, pfiDidController.text, pfi),
+                  onRetry: () => pfi.value = null,
                 ),
               )
             : Column(
@@ -43,7 +41,7 @@ class PfisAddPage extends HookConsumerWidget {
                   Expanded(
                     child: DidForm(
                       buttonTitle: Loc.of(context).add,
-                      onSubmit: (did) => _addPfi(ref, did, pfi),
+                      onSubmit: (did) async => _addPfi(ref, did, pfi),
                     ),
                   ),
                 ],
@@ -58,12 +56,9 @@ class PfisAddPage extends HookConsumerWidget {
     ValueNotifier<AsyncValue<Pfi>?> state,
   ) async {
     state.value = const AsyncLoading();
-
     try {
-      await ref
-          .read(pfisProvider.notifier)
-          .add(did)
-          .then((pfi) => state.value = AsyncData(pfi));
+      final pfi = await ref.read(pfisProvider.notifier).add(did);
+      state.value = AsyncData(pfi);
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }

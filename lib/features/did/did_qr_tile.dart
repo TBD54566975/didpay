@@ -9,11 +9,9 @@ import 'package:web5/web5.dart';
 
 class DidQrTile extends HookConsumerWidget {
   final TextEditingController didTextController;
-  final ValueNotifier<String?>? errorText;
 
   const DidQrTile({
     required this.didTextController,
-    this.errorText,
     super.key,
   });
 
@@ -45,13 +43,10 @@ class DidQrTile extends HookConsumerWidget {
             ? _scanQrCode(
                 context,
                 didTextController,
-                errorText,
-                Loc.of(context).noDidQrCodeFound,
               )
             : _simulateScanQrCode(
                 context,
                 didTextController,
-                errorText,
               ),
       ),
     );
@@ -60,8 +55,6 @@ class DidQrTile extends HookConsumerWidget {
   Future<void> _scanQrCode(
     BuildContext context,
     TextEditingController didTextController,
-    ValueNotifier<String?>? errorText,
-    String errorMessage,
   ) async {
     final qrValue = await Navigator.of(context).push<String>(
       MaterialPageRoute(
@@ -69,16 +62,12 @@ class DidQrTile extends HookConsumerWidget {
       ),
     );
 
-    final isValid = qrValue != null &&
-        await DidResolver.resolve(qrValue).then((result) => !result.hasError());
-    didTextController.text = isValid ? qrValue : '';
-    errorText?.value = isValid ? null : errorMessage;
+    didTextController.text = qrValue ?? '';
   }
 
   Future<void> _simulateScanQrCode(
     BuildContext context,
     TextEditingController didTextController,
-    ValueNotifier<String?>? errorText,
   ) async {
     ScaffoldMessenger.of(context).removeCurrentSnackBar();
 
@@ -90,6 +79,5 @@ class DidQrTile extends HookConsumerWidget {
 
     final did = await DidDht.create(publish: true);
     didTextController.text = did.uri;
-    errorText?.value = null;
   }
 }

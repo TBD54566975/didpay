@@ -15,6 +15,7 @@ class PaymentState {
   final Decimal? payinAmount;
   final Decimal? payoutAmount;
   final Decimal? exchangeRate;
+  final Dap? dap;
   final List<MoneyAddress>? moneyAddresses;
   final Country? selectedCountry;
   final Pfi? selectedPfi;
@@ -37,6 +38,7 @@ class PaymentState {
     this.payinAmount,
     this.payoutAmount,
     this.exchangeRate,
+    this.dap,
     this.moneyAddresses,
     this.selectedCountry,
     this.selectedPfi,
@@ -60,6 +62,7 @@ class PaymentState {
     Decimal? payinAmount,
     Decimal? payoutAmount,
     Decimal? exchangeRate,
+    Dap? dap,
     List<MoneyAddress>? moneyAddresses,
     Country? selectedCountry,
     Pfi? selectedPfi,
@@ -82,6 +85,7 @@ class PaymentState {
       payinAmount: payinAmount ?? this.payinAmount,
       payoutAmount: payoutAmount ?? this.payoutAmount,
       exchangeRate: exchangeRate ?? this.exchangeRate,
+      dap: dap ?? this.dap,
       moneyAddresses: moneyAddresses ?? this.moneyAddresses,
       selectedCountry: selectedCountry ?? this.selectedCountry,
       selectedPfi: selectedPfi ?? this.selectedPfi,

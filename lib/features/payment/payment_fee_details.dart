@@ -39,22 +39,11 @@ class PaymentFeeDetails extends HookWidget {
                 : Loc.of(context).estRate,
             '1 ${paymentDetails.payinCurrency} = ${paymentDetails.exchangeRate} ${paymentDetails.payoutCurrency}',
           ),
-          if (quote != null || transactionType == TransactionType.deposit)
-            _buildRow(
-              context,
-              transactionType == TransactionType.deposit
-                  ? Loc.of(context).txnTypeFee('$transactionType')
-                  : Loc.of(context).serviceFee,
-              '${paymentDetails.payoutFee} ${paymentDetails.payoutCurrency}',
-            ),
-          if (quote != null || transactionType != TransactionType.deposit)
-            _buildRow(
-              context,
-              transactionType == TransactionType.deposit
-                  ? Loc.of(context).serviceFee
-                  : '$transactionType fee',
-              '${paymentDetails.payinFee} ${paymentDetails.payinCurrency}',
-            ),
+          _buildRow(
+            context,
+            Loc.of(context).serviceFee,
+            '${paymentDetails.payinFee} ${paymentDetails.payinCurrency}',
+          ),
           if (quote != null)
             _buildRow(
               context,
@@ -70,7 +59,7 @@ class PaymentFeeDetails extends HookWidget {
   static String calculateExchangeRate(QuoteData? quote) =>
       (double.parse(quote?.payout.amount ?? '0') /
               double.parse(quote?.payin.amount ?? '0'))
-          .toStringAsFixed(2);
+          .toStringAsFixed(quote?.payout.currencyCode == 'BTC' ? 8 : 2);
 
   static String calculateTotalAmount(QuoteData? quote) =>
       Decimal.parse(quote?.payin.amount ?? '0')
@@ -138,11 +127,5 @@ extension _PaymentDetailsOperations on Object? {
       ? (this as QuoteData?)?.payin.fee
       : this is OfferingData
           ? (this as OfferingData?)?.payin.methods.firstOrNull?.fee ?? '0'
-          : null;
-
-  String? get payoutFee => this is QuoteData
-      ? (this as QuoteData?)?.payout.fee
-      : this is OfferingData
-          ? (this as OfferingData?)?.payout.methods.firstOrNull?.fee ?? '0'
           : null;
 }

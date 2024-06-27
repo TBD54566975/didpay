@@ -62,21 +62,13 @@ class PaymentAmountPage extends HookConsumerWidget {
               selectedOffering.value = offering;
             }
 
-            currentPaymentState.value = currentPaymentState.value.copyWith(
-              payinAmount: Decimal.parse(payinAmount.value),
-              payoutAmount: payoutAmount.value,
-              selectedPfi: selectedPfi.value,
-              selectedOffering: selectedOffering.value,
-              offeringsMap: data,
-              payinCurrency:
-                  selectedOffering.value?.data.payin.currencyCode ?? '',
-              payoutCurrency:
-                  selectedOffering.value?.data.payout.currencyCode ?? '',
-              payinMethods: selectedOffering.value?.data.payin.methods ?? [],
-              payoutMethods: selectedOffering.value?.data.payout.methods ?? [],
-              exchangeRate: Decimal.parse(
-                selectedOffering.value?.data.payoutUnitsPerPayinUnit ?? '1',
-              ),
+            currentPaymentState.value = _updatePaymentState(
+              currentPaymentState.value,
+              payinAmount.value,
+              payoutAmount.value,
+              selectedPfi.value,
+              selectedOffering.value,
+              data,
             );
 
             return Column(
@@ -147,6 +139,42 @@ class PaymentAmountPage extends HookConsumerWidget {
       ),
     );
   }
+
+  PaymentState _updatePaymentState(
+    PaymentState currentState,
+    String payinAmount,
+    Decimal payoutAmount,
+    Pfi? selectedPfi,
+    Offering? selectedOffering,
+    Map<Pfi, List<Offering>> offeringsMap,
+  ) =>
+      currentState.copyWith(
+        payinAmount: Decimal.parse(payinAmount),
+        payoutAmount: payoutAmount,
+        selectedPfi: selectedPfi,
+        selectedOffering: selectedOffering,
+        offeringsMap: offeringsMap,
+        payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
+        payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
+        payinMethods: selectedOffering?.data.payin.methods ?? [],
+        payoutMethods: selectedOffering?.data.payout.methods ?? [],
+        exchangeRate: Decimal.parse(
+          selectedOffering?.data.payoutUnitsPerPayinUnit ?? '1',
+        ),
+        selectedPayinMethod: currentState.moneyAddresses == null
+            ? null
+            : selectedOffering?.data.payin.methods.firstOrNull,
+        selectedPayoutMethod: currentState.moneyAddresses == null
+            ? null
+            : selectedOffering?.data.payout.methods.firstOrNull,
+        formData: currentState.moneyAddresses == null
+            ? null
+            : {
+                selectedOffering?.data.payout.methods.firstOrNull
+                        ?.requiredPaymentDetails?.requiredProperties?.first ??
+                    '': currentState.moneyAddresses?.first.urn ?? '',
+              },
+      );
 
   Future<void> _getOfferings(
     WidgetRef ref,
