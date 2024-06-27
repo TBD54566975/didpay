@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -39,12 +38,11 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
 
           c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
         },
-        onLoadStart: (controller, url) async {
-          if (url.toString().contains('finish.html')) {
-            await onSubmit();
-            if (context.mounted) Navigator.of(context).pop();
-          }
+        onCloseWindow: (controller) async {
+          await onSubmit();
+          if (context.mounted) Navigator.of(context).pop();
         },
+        onExitFullscreen: (controller) => print('onExitFullscreen'),
         onReceivedServerTrustAuthRequest: (controller, challenge) async {
           return ServerTrustAuthResponse(
             action: ServerTrustAuthResponseAction.PROCEED,
