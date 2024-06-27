@@ -30,7 +30,6 @@ class PaymentReviewPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
-
     final order = useState<AsyncValue<Order>?>(null);
 
     TbdexQuoteNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
@@ -47,7 +46,11 @@ class PaymentReviewPage extends HookConsumerWidget {
 
     return PopScope(
       child: Scaffold(
-        appBar: _buildAppBar(context, ref, quote.value, getQuoteNotifier()),
+        appBar: order.value?.hasValue ?? false
+            ? null
+            : quote.value.isLoading
+                ? _buildAppBar(context, ref, getQuoteNotifier())
+                : AppBar(),
         body: SafeArea(
           child: order.value == null
               ? quote.value.when(
@@ -149,43 +152,39 @@ class PaymentReviewPage extends HookConsumerWidget {
   AppBar _buildAppBar(
     BuildContext context,
     WidgetRef ref,
-    AsyncValue<Quote?> quote,
     TbdexQuoteNotifier quoteNotifier,
   ) =>
       AppBar(
-        leading: quote.isLoading
-            ? IconButton(
-                onPressed: () async => showDialog(
-                  context: context,
-                  builder: (dialogContext) => ExitDialog(
-                    title: Loc.of(context)
-                        .stoptxnType(paymentState.transactionType.name),
-                    description: Loc.of(context).ifYouExitNow,
-                    onExit: () async {
-                      quoteNotifier.stopPolling();
-                      await ref
-                          .read(tbdexServiceProvider)
-                          .submitClose(
-                            ref.read(didProvider),
-                            paymentState.selectedPfi,
-                            paymentState.exchangeId,
-                          )
-                          .then(
-                            (_) =>
-                                Navigator.of(dialogContext).pushAndRemoveUntil(
-                              MaterialPageRoute(
-                                builder: (dialogContext) => const App(),
-                              ),
-                              (route) => false,
-                            ),
-                          );
-                    },
-                    onStay: () async => Navigator.pop(dialogContext),
-                  ),
-                ),
-                icon: const Icon(Icons.close),
-              )
-            : null,
+        leading: IconButton(
+          onPressed: () async => showDialog(
+            context: context,
+            builder: (dialogContext) => ExitDialog(
+              title: Loc.of(context)
+                  .stoptxnType(paymentState.transactionType.name),
+              description: Loc.of(context).ifYouExitNow,
+              onExit: () async {
+                quoteNotifier.stopPolling();
+                await ref
+                    .read(tbdexServiceProvider)
+                    .submitClose(
+                      ref.read(didProvider),
+                      paymentState.selectedPfi,
+                      paymentState.exchangeId,
+                    )
+                    .then(
+                      (_) => Navigator.of(dialogContext).pushAndRemoveUntil(
+                        MaterialPageRoute(
+                          builder: (dialogContext) => const App(),
+                        ),
+                        (route) => false,
+                      ),
+                    );
+              },
+              onStay: () async => Navigator.pop(dialogContext),
+            ),
+          ),
+          icon: const Icon(Icons.close),
+        ),
       );
 
   Widget _buildAmounts(BuildContext context, QuoteData quote) => Column(
