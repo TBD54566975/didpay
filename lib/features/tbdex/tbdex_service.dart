@@ -151,6 +151,10 @@ class TbdexService {
     BearerDid did,
     PaymentState paymentState,
   ) async {
+    //! REMOVE. hardcoding for now
+    final lnAddress = paymentState.moneyAddresses![0].urn.split(':').last;
+    paymentState.formData!['lnAddress'] = lnAddress;
+
     final rfq = Rfq.create(
       paymentState.selectedPfi?.did ?? '',
       did.uri,
