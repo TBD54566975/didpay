@@ -57,8 +57,8 @@ class _NumberPadKey extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    const keyHeight = 64.0;
-    const keyWidth = 93.0;
+    const keyHeight = 75.0;
+    const keyWidth = 130.0;
     const defaultFontSize = 24.0;
     const selectedFontSize = 44.0;
 
