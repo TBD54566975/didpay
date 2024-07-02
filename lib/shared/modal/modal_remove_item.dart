@@ -54,8 +54,12 @@ class ModalRemoveItem {
                     ),
                   ),
                 ),
-                onTap: () async =>
-                    onRemove().then((_) => Navigator.pop(context)),
+                onTap: () async {
+                  await onRemove();
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+                },
               ),
               Divider(
                 color: Theme.of(context)
