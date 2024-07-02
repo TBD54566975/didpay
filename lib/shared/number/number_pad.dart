@@ -38,9 +38,11 @@ class NumberPad extends HookWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: keys.map((key) {
-          return _NumberPadKey(
-            text: key,
-            onKeyPressed: onKeyPressed,
+          return Flexible(
+            child: _NumberPadKey(
+              text: key,
+              onKeyPressed: onKeyPressed,
+            ),
           );
         }).toList(),
       );
@@ -57,8 +59,10 @@ class _NumberPadKey extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    const keyHeight = 75.0;
-    const keyWidth = 130.0;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final keyHeight = screenWidth / 6;
+    final keyWidth = screenWidth / 3;
+
     const defaultFontSize = 24.0;
     const selectedFontSize = 44.0;
 
