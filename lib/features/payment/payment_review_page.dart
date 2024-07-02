@@ -37,7 +37,7 @@ class PaymentReviewPage extends HookConsumerWidget {
     useEffect(
       () {
         Future.microtask(
-          () async => _pollForQuote(ref, getQuoteNotifier(), quote),
+          () async => _pollForQuote(context, ref, getQuoteNotifier(), quote),
         );
         return getQuoteNotifier().stopPolling;
       },
@@ -118,7 +118,7 @@ class PaymentReviewPage extends HookConsumerWidget {
                   error: (error, _) => ErrorMessage(
                     message: error.toString(),
                     onRetry: () =>
-                        _pollForQuote(ref, getQuoteNotifier(), quote),
+                        _pollForQuote(context, ref, getQuoteNotifier(), quote),
                   ),
                 )
               : order.value!.when(
@@ -164,21 +164,21 @@ class PaymentReviewPage extends HookConsumerWidget {
               description: Loc.of(context).ifYouExitNow,
               onExit: () async {
                 quoteNotifier.stopPolling();
-                await ref
-                    .read(tbdexServiceProvider)
-                    .submitClose(
+
+                await ref.read(tbdexServiceProvider).submitClose(
                       ref.read(didProvider),
                       paymentState.selectedPfi,
                       paymentState.exchangeId,
-                    )
-                    .then(
-                      (_) => Navigator.of(dialogContext).pushAndRemoveUntil(
-                        MaterialPageRoute(
-                          builder: (dialogContext) => const App(),
-                        ),
-                        (route) => false,
-                      ),
                     );
+
+                if (dialogContext.mounted) {
+                  await Navigator.of(dialogContext).pushAndRemoveUntil(
+                    MaterialPageRoute(
+                      builder: (dialogContext) => const App(),
+                    ),
+                    (route) => false,
+                  );
+                }
               },
               onStay: () async => Navigator.pop(dialogContext),
             ),
@@ -292,6 +292,7 @@ class PaymentReviewPage extends HookConsumerWidget {
       );
 
   Future<void> _pollForQuote(
+    BuildContext context,
     WidgetRef ref,
     TbdexQuoteNotifier quoteNotifier,
     ValueNotifier<AsyncValue<Quote?>> state,
@@ -299,14 +300,15 @@ class PaymentReviewPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
 
     try {
-      await quoteNotifier
-          .startPolling(paymentState.selectedPfi, paymentState.exchangeId)
-          ?.then((quote) {
-        if (quote != null) {
-          state.value = AsyncData(quote);
-          quoteNotifier.stopPolling();
-        }
-      });
+      final quote = await quoteNotifier.startPolling(
+        paymentState.selectedPfi,
+        paymentState.exchangeId,
+      );
+
+      if (context.mounted && quote != null) {
+        state.value = AsyncData(quote);
+        quoteNotifier.stopPolling();
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
@@ -321,14 +323,15 @@ class PaymentReviewPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
 
     try {
-      await ref
-          .read(tbdexServiceProvider)
-          .submitOrder(
+      final order = await ref.read(tbdexServiceProvider).submitOrder(
             ref.read(didProvider),
             paymentState.selectedPfi,
             paymentState.exchangeId,
-          )
-          .then((order) => state.value = AsyncData(order));
+          );
+
+      if (context.mounted) {
+        state.value = AsyncData(order);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }

@@ -26,7 +26,7 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => _getExchanges(ref, exchanges));
+        Future.microtask(() async => _getExchanges(context, ref, exchanges));
         return null;
       },
       [],
@@ -86,7 +86,7 @@ class HomePage extends HookConsumerWidget {
                       Loc.of(context).startByAdding,
                     )
                   : RefreshIndicator(
-                      onRefresh: () async => _getExchanges(ref, state),
+                      onRefresh: () async => _getExchanges(context, ref, state),
                       child: ListView(
                         children: exchangeMap.entries
                             .expand(
@@ -185,7 +185,7 @@ class HomePage extends HookConsumerWidget {
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
-              onPressed: () async => _getExchanges(ref, state),
+              onPressed: () async => _getExchanges(context, ref, state),
               child: Text(Loc.of(context).tapToRetry),
             ),
           ],
@@ -193,15 +193,19 @@ class HomePage extends HookConsumerWidget {
       );
 
   Future<void> _getExchanges(
+    BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<String>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
-      await ref
+      final exchanges = await ref
           .read(tbdexServiceProvider)
-          .getExchanges(ref.read(didProvider), ref.read(pfisProvider))
-          .then((exchanges) => state.value = AsyncData(exchanges));
+          .getExchanges(ref.read(didProvider), ref.read(pfisProvider));
+
+      if (context.mounted) {
+        state.value = AsyncData(exchanges);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }

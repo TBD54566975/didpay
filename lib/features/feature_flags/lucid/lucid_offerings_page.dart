@@ -28,7 +28,7 @@ class LucidOfferingsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => _getOfferings(ref, offerings));
+        Future.microtask(() async => _getOfferings(context, ref, offerings));
         return null;
       },
       [],
@@ -119,7 +119,7 @@ class LucidOfferingsPage extends HookConsumerWidget {
               LoadingMessage(message: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => ErrorMessage(
             message: error.toString(),
-            onRetry: () => _getOfferings(ref, offerings),
+            onRetry: () => _getOfferings(context, ref, offerings),
           ),
         ),
       ),
@@ -127,18 +127,20 @@ class LucidOfferingsPage extends HookConsumerWidget {
   }
 
   Future<void> _getOfferings(
+    BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
-      await ref
-          .read(tbdexServiceProvider)
-          .getOfferings(
+      final offerings = await ref.read(tbdexServiceProvider).getOfferings(
             const PaymentState(transactionType: TransactionType.send),
             ref.read(pfisProvider),
-          )
-          .then((offerings) => state.value = AsyncData(offerings));
+          );
+
+      if (context.mounted) {
+        state.value = AsyncData(offerings);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
