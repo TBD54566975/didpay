@@ -49,23 +49,22 @@ class SendPage extends HookConsumerWidget {
                     child: DapForm(
                       buttonTitle: Loc.of(context).next,
                       dap: dap,
-                      onSubmit: (recipientDap, moneyAddresses) =>
-                          Navigator.of(context)
-                              .push(
-                        MaterialPageRoute(
-                          builder: (_) => PaymentAmountPage(
-                            paymentState: PaymentState(
-                              transactionType: TransactionType.send,
-                              dap: recipientDap,
-                              moneyAddresses: moneyAddresses,
+                      onSubmit: (recipientDap, moneyAddresses) async {
+                        await Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => PaymentAmountPage(
+                              paymentState: PaymentState(
+                                transactionType: TransactionType.send,
+                                dap: recipientDap,
+                                moneyAddresses: moneyAddresses,
+                              ),
                             ),
+                            fullscreenDialog: true,
                           ),
-                          fullscreenDialog: true,
-                        ),
-                      )
-                              .then((_) {
+                        );
+
                         if (context.mounted) dap.value = null;
-                      }),
+                      },
                     ),
                   ),
                 ],

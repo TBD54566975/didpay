@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/did/did_provider.dart';
-// import 'package:didpay/features/kcc/kcc_consent_page.dart';
+import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_method_operations.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
@@ -8,13 +8,13 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
-// import 'package:didpay/features/vcs/vcs_notifier.dart';
+import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/header.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:didpay/shared/loading_message.dart';
-// import 'package:didpay/shared/modal/modal_flow.dart';
+import 'package:didpay/shared/modal/modal_flow.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -45,7 +45,13 @@ class PaymentDetailsPage extends HookConsumerWidget {
       () {
         paymentState.dap != null
             ? Future.microtask(
-                () async => _sendRfq(context, ref, paymentState, rfq),
+                () async => _checkCredsAndSendRfq(
+                  context,
+                  ref,
+                  paymentState,
+                  offeringCredentials,
+                  rfq,
+                ),
               )
             : selectedPaymentMethod.value =
                 (filteredPaymentMethods?.length ?? 0) <= 1
@@ -60,88 +66,79 @@ class PaymentDetailsPage extends HookConsumerWidget {
     final shouldShowPaymentMethodSelector =
         !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
-    return Scaffold(
-      appBar: rfq.value?.isLoading ?? false ? null : AppBar(),
-      body: SafeArea(
-        child: rfq.value != null
-            ? rfq.value!.when(
-                data: (_) => Container(),
-                loading: () => LoadingMessage(
-                  message: Loc.of(context).sendingYourRequest,
-                ),
-                error: (error, _) => ErrorMessage(
-                  message: error.toString(),
-                  onRetry: () => _sendRfq(
-                    context,
-                    ref,
-                    paymentState,
-                    rfq,
-                    claims: offeringCredentials.value,
+    final isSendingRfq = rfq.value?.isLoading ?? false;
+
+    return PopScope(
+      canPop: !isSendingRfq,
+      onPopInvoked: (_) {
+        if (isSendingRfq) rfq.value = null;
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: rfq.value != null
+              ? rfq.value!.when(
+                  data: (_) => Container(),
+                  loading: () => LoadingMessage(
+                    message: Loc.of(context).sendingYourRequest,
                   ),
-                ),
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Header(
-                    title: paymentState.transactionType == TransactionType.send
-                        ? Loc.of(context).enterTheirPaymentDetails
-                        : Loc.of(context).enterYourPaymentDetails,
-                    subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                  error: (error, _) => ErrorMessage(
+                    message: error.toString(),
+                    onRetry: () => _sendRfq(
+                      context,
+                      ref,
+                      paymentState,
+                      rfq,
+                      claims: offeringCredentials.value,
+                    ),
                   ),
-                  if (shouldShowPaymentTypeSelector)
-                    _buildPaymentTypeSelector(
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Header(
+                      title:
+                          paymentState.transactionType == TransactionType.send
+                              ? Loc.of(context).enterTheirPaymentDetails
+                              : Loc.of(context).enterYourPaymentDetails,
+                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                    ),
+                    if (shouldShowPaymentTypeSelector)
+                      _buildPaymentTypeSelector(
+                        context,
+                        selectedPaymentType,
+                        paymentTypes,
+                      ),
+                    if (shouldShowPaymentMethodSelector)
+                      _buildPaymentMethodSelector(
+                        context,
+                        selectedPaymentMethod,
+                        filteredPaymentMethods,
+                      ),
+                    _buildPaymentForm(
                       context,
-                      selectedPaymentType,
-                      paymentTypes,
-                    ),
-                  if (shouldShowPaymentMethodSelector)
-                    _buildPaymentMethodSelector(
-                      context,
-                      selectedPaymentMethod,
-                      filteredPaymentMethods,
-                    ),
-                  _buildPaymentForm(
-                    context,
-                    paymentState.copyWith(
-                      selectedPayinMethod: paymentState.transactionType ==
-                              TransactionType.deposit
-                          ? selectedPaymentMethod.value as PayinMethod?
-                          : null,
-                      selectedPayoutMethod: paymentState.transactionType ==
-                              TransactionType.deposit
-                          ? null
-                          : selectedPaymentMethod.value as PayoutMethod?,
-                    ),
-                    onPaymentFormSubmit: (paymentState) async {
-                      await _sendRfq(
+                      paymentState.copyWith(
+                        selectedPayinMethod: paymentState.transactionType ==
+                                TransactionType.deposit
+                            ? selectedPaymentMethod.value as PayinMethod?
+                            : null,
+                        selectedPayoutMethod: paymentState.transactionType ==
+                                TransactionType.deposit
+                            ? null
+                            : selectedPaymentMethod.value as PayoutMethod?,
+                      ),
+                      onPaymentFormSubmit: (paymentState) async =>
+                          _checkCredsAndSendRfq(
                         context,
                         ref,
                         paymentState,
+                        offeringCredentials,
                         rfq,
-                        claims: offeringCredentials.value,
-                      );
-                      // TODO(ethan-tbd): uncomment below to initiate KCC flow
-                      // await _hasRequiredVc(
-                      //   context,
-                      //   ref,
-                      //   paymentState,
-                      //   offeringCredentials,
-                      // ).then(
-                      //   (hasRequiredVc) async => !hasRequiredVc
-                      //       ? null
-                      //       : _sendRfq(
-                      //           context,
-                      //           ref,
-                      //           paymentState,
-                      //           rfq,
-                      //           claims: offeringCredentials.value,
-                      //         ),
-                      // );
-                    },
-                  ),
-                ],
-              ),
+                      ),
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -289,6 +286,31 @@ class PaymentDetailsPage extends HookConsumerWidget {
           )
           .toList();
 
+  Future<void> _checkCredsAndSendRfq(
+    BuildContext context,
+    WidgetRef ref,
+    PaymentState paymentState,
+    ValueNotifier<List<String>?> offeringCredentials,
+    ValueNotifier<AsyncValue<Rfq>?> state,
+  ) async {
+    final hasRequiredVc = await _hasRequiredVc(
+      context,
+      ref,
+      paymentState,
+      offeringCredentials,
+    );
+
+    if (hasRequiredVc && context.mounted) {
+      await _sendRfq(
+        context,
+        ref,
+        paymentState,
+        state,
+        claims: offeringCredentials.value,
+      );
+    }
+  }
+
   Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
@@ -299,65 +321,62 @@ class PaymentDetailsPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
 
     try {
-      await ref
-          .read(tbdexServiceProvider)
-          .sendRfq(
+      final rfq = await ref.read(tbdexServiceProvider).sendRfq(
             ref.read(didProvider),
             paymentState.copyWith(claims: claims),
-          )
-          .then(
-            (rfq) async => Navigator.of(context)
-                .push(
-              MaterialPageRoute(
-                builder: (context) => PaymentReviewPage(
-                  paymentState: paymentState.copyWith(
-                    exchangeId: rfq.metadata.id,
-                    claims: claims,
-                  ),
-                ),
-              ),
-            )
-                .then((_) {
-              if (context.mounted) state.value = null;
-            }),
           );
+
+      if (context.mounted && state.value != null) {
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PaymentReviewPage(
+              paymentState: paymentState.copyWith(
+                exchangeId: rfq.metadata.id,
+                claims: claims,
+              ),
+            ),
+          ),
+        );
+
+        if (context.mounted) state.value = null;
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
   }
 
-  // Future<bool> _hasRequiredVc(
-  //   BuildContext context,
-  //   WidgetRef ref,
-  //   PaymentState paymentState,
-  //   ValueNotifier<List<String>?> offeringCredentials,
-  // ) async {
-  //   final presentationDefinition =
-  //       paymentState.selectedOffering?.data.requiredClaims;
-  //   final credentials =
-  //       presentationDefinition?.selectCredentials(ref.read(vcsProvider));
+  Future<bool> _hasRequiredVc(
+    BuildContext context,
+    WidgetRef ref,
+    PaymentState paymentState,
+    ValueNotifier<List<String>?> offeringCredentials,
+  ) async {
+    final presentationDefinition =
+        paymentState.selectedOffering?.data.requiredClaims;
+    final credentials =
+        presentationDefinition?.selectCredentials(ref.read(vcsProvider));
 
-  //   if (credentials == null && presentationDefinition == null) {
-  //     return true;
-  //   }
+    if (credentials == null && presentationDefinition == null) {
+      return true;
+    }
 
-  //   if (credentials != null && credentials.isNotEmpty) {
-  //     offeringCredentials.value = credentials;
-  //     return true;
-  //   }
+    if (credentials != null && credentials.isNotEmpty) {
+      offeringCredentials.value = credentials;
+      return true;
+    }
 
-  //   final issuedCredential = await Navigator.of(context).push(
-  //     MaterialPageRoute(
-  //       builder: (context) => ModalFlow(
-  //         initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
-  //       ),
-  //       fullscreenDialog: true,
-  //     ),
-  //   );
+    final issuedCredential = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ModalFlow(
+          initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
 
-  //   if (issuedCredential == null) return false;
+    if (issuedCredential == null) return false;
 
-  //   offeringCredentials.value = [issuedCredential as String];
-  //   return true;
-  // }
+    offeringCredentials.value = [issuedCredential as String];
+    return true;
+  }
 }

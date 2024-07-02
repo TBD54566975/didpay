@@ -38,8 +38,10 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        await TbdexHttpClient.listOfferings(pfi.did, filter: filter)
-            .then((offerings) => offeringsMap[pfi] = offerings);
+        final offerings =
+            await TbdexHttpClient.listOfferings(pfi.did, filter: filter);
+
+        offeringsMap[pfi] = offerings;
       } on Exception catch (e) {
         if (e is ValidationError) continue;
         rethrow;
@@ -64,13 +66,13 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        await TbdexHttpClient.listBalances(pfi.did).then((balances) {
-          balancesMap[pfi] = balances;
-          for (final balance in balances) {
-            totalAvailable += Decimal.parse(balance.data.available);
-            currencyCode ??= balance.data.currencyCode;
-          }
-        });
+        final balances = await TbdexHttpClient.listBalances(pfi.did);
+        balancesMap[pfi] = balances;
+
+        for (final balance in balances) {
+          totalAvailable += Decimal.parse(balance.data.available);
+          currencyCode ??= balance.data.currencyCode;
+        }
       } on Exception catch (e) {
         if (e is ResponseError) continue;
         rethrow;
@@ -95,10 +97,10 @@ class TbdexService {
         final exchanges = await TbdexHttpClient.listExchanges(did, pfi.did);
 
         final validExchanges = await Future.wait(
-          exchanges.map(
-            (exchangeId) async => _isValidExchange(did, pfi, exchangeId)
-                .then((isValid) => isValid ? exchangeId : null),
-          ),
+          exchanges.map((exchangeId) async {
+            final isValid = await _isValidExchange(did, pfi, exchangeId);
+            return isValid ? exchangeId : null;
+          }),
         );
 
         final filteredExchanges = validExchanges.whereType<String>().toList();

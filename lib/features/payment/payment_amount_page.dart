@@ -42,7 +42,12 @@ class PaymentAmountPage extends HookConsumerWidget {
               ? offerings.value = AsyncData({
                   selectedPfi.value!: [selectedOffering.value!],
                 })
-              : await _getOfferings(ref, currentPaymentState.value, offerings),
+              : await _getOfferings(
+                  context,
+                  ref,
+                  currentPaymentState.value,
+                  offerings,
+                ),
         );
         return null;
       },
@@ -132,8 +137,12 @@ class PaymentAmountPage extends HookConsumerWidget {
               LoadingMessage(message: Loc.of(context).fetchingOfferings),
           error: (error, stackTrace) => ErrorMessage(
             message: error.toString(),
-            onRetry: () =>
-                _getOfferings(ref, currentPaymentState.value, offerings),
+            onRetry: () => _getOfferings(
+              context,
+              ref,
+              currentPaymentState.value,
+              offerings,
+            ),
           ),
         ),
       ),
@@ -177,16 +186,20 @@ class PaymentAmountPage extends HookConsumerWidget {
       );
 
   Future<void> _getOfferings(
+    BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
-      await ref
+      final offerings = await ref
           .read(tbdexServiceProvider)
-          .getOfferings(paymentState, ref.read(pfisProvider))
-          .then((offerings) => state.value = AsyncData(offerings));
+          .getOfferings(paymentState, ref.read(pfisProvider));
+
+      if (context.mounted) {
+        state.value = AsyncData(offerings);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }

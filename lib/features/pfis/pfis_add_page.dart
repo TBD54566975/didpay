@@ -41,7 +41,7 @@ class PfisAddPage extends HookConsumerWidget {
                   Expanded(
                     child: DidForm(
                       buttonTitle: Loc.of(context).add,
-                      onSubmit: (did) async => _addPfi(ref, did, pfi),
+                      onSubmit: (did) async => _addPfi(context, ref, did, pfi),
                     ),
                   ),
                 ],
@@ -51,6 +51,7 @@ class PfisAddPage extends HookConsumerWidget {
   }
 
   Future<void> _addPfi(
+    BuildContext context,
     WidgetRef ref,
     String did,
     ValueNotifier<AsyncValue<Pfi>?> state,
@@ -58,7 +59,10 @@ class PfisAddPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
     try {
       final pfi = await ref.read(pfisProvider.notifier).add(did);
-      state.value = AsyncData(pfi);
+
+      if (context.mounted) {
+        state.value = AsyncData(pfi);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }

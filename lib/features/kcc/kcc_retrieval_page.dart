@@ -28,7 +28,9 @@ class KccRetrievalPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => _pollForCredential(ref, credential));
+        Future.microtask(
+          () async => _pollForCredential(context, ref, credential),
+        );
 
         return null;
       },
@@ -43,7 +45,7 @@ class KccRetrievalPage extends HookConsumerWidget {
               LoadingMessage(message: Loc.of(context).verifyingYourIdentity),
           error: (error, stackTrace) => ErrorMessage(
             message: error.toString(),
-            onRetry: () => _pollForCredential(ref, credential),
+            onRetry: () => _pollForCredential(context, ref, credential),
           ),
           data: (data) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -79,6 +81,7 @@ class KccRetrievalPage extends HookConsumerWidget {
   }
 
   Future<void> _pollForCredential(
+    BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<String>> state,
   ) async {
@@ -91,10 +94,11 @@ class KccRetrievalPage extends HookConsumerWidget {
             ref.read(didProvider),
           );
 
-      await ref
-          .read(vcsProvider.notifier)
-          .add(credential)
-          .then((credential) => state.value = AsyncData(credential));
+      if (context.mounted) {
+        final addedCredential =
+            await ref.read(vcsProvider.notifier).add(credential);
+        state.value = AsyncData(addedCredential);
+      }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
