@@ -66,13 +66,12 @@ class PaymentDetailsPage extends HookConsumerWidget {
     final shouldShowPaymentMethodSelector =
         !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
+    final isSendingRfq = rfq.value?.isLoading ?? false;
+
     return PopScope(
-      canPop: !(rfq.value?.isLoading ?? false),
+      canPop: !isSendingRfq,
       onPopInvoked: (_) {
-        if (rfq.value?.isLoading ?? false) {
-          rfq.value = null;
-          return;
-        }
+        if (isSendingRfq) rfq.value = null;
       },
       child: Scaffold(
         appBar: AppBar(),
@@ -128,20 +127,14 @@ class PaymentDetailsPage extends HookConsumerWidget {
                             ? null
                             : selectedPaymentMethod.value as PayoutMethod?,
                       ),
-                      onPaymentFormSubmit: (paymentState) async => _sendRfq(
+                      onPaymentFormSubmit: (paymentState) async =>
+                          _checkCredsAndSendRfq(
                         context,
                         ref,
                         paymentState,
+                        offeringCredentials,
                         rfq,
-                        claims: offeringCredentials.value,
                       ),
-                      //     _checkCredsAndSendRfq(
-                      //   context,
-                      //   ref,
-                      //   paymentState,
-                      //   offeringCredentials,
-                      //   rfq,
-                      // ),
                     ),
                   ],
                 ),
