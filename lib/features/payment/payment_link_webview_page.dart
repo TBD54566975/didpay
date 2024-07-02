@@ -38,10 +38,6 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
 
           c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
         },
-        // onCloseWindow: (controller) async {
-        //   await onSubmit();
-        //   if (context.mounted) Navigator.of(context).pop();
-        // },
         onLoadStop: (controller, url) async {
           if (url == null) {
             return;
