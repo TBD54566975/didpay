@@ -84,29 +84,33 @@ class PaymentReviewPage extends HookConsumerWidget {
                               ),
                             ),
                             NextButton(
-                              onPressed: () => paymentState.dap != null
-                                  ? Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PaymentLinkWebviewPage(
-                                          paymentLink: q.data.payin
-                                                  .paymentInstruction?.link ??
-                                              '',
-                                          onSubmit: () => _submitOrder(
-                                            context,
-                                            ref,
-                                            paymentState,
-                                            order,
+                              onPressed: () =>
+                                  q.data.payin.paymentInstruction?.link != null
+                                      ? Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                PaymentLinkWebviewPage(
+                                              paymentLink: q
+                                                      .data
+                                                      .payin
+                                                      .paymentInstruction
+                                                      ?.link ??
+                                                  '',
+                                              onSubmit: () => _submitOrder(
+                                                context,
+                                                ref,
+                                                paymentState,
+                                                order,
+                                              ),
+                                            ),
                                           ),
+                                        )
+                                      : _submitOrder(
+                                          context,
+                                          ref,
+                                          paymentState,
+                                          order,
                                         ),
-                                      ),
-                                    )
-                                  : _submitOrder(
-                                      context,
-                                      ref,
-                                      paymentState,
-                                      order,
-                                    ),
                               title:
                                   '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
                             ),
