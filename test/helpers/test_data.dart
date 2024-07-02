@@ -85,19 +85,11 @@ class TestData {
             currencyCode: 'AUD',
             amount: '100',
             fee: '0.01',
-            paymentInstruction: PaymentInstruction(
-              link: 'https://block.xyz',
-              instruction: 'payin instruction',
-            ),
           ),
           payout: QuoteDetails(
             currencyCode: 'BTC',
             amount: '0.12',
             fee: '0.02',
-            paymentInstruction: PaymentInstruction(
-              link: 'https://block.xyz',
-              instruction: 'payout instruction',
-            ),
           ),
         ),
       );
