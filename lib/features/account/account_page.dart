@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/did/did_qr_tabs.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
@@ -288,7 +289,7 @@ class AccountPage extends HookConsumerWidget {
           flag.name,
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        subtitle: Text(
+        subtitle: AutoSizeText(
           flag.description,
           style: Theme.of(context).textTheme.bodySmall,
         ),

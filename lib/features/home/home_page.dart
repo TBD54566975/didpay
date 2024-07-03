@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
@@ -71,9 +72,11 @@ class HomePage extends HookConsumerWidget {
               horizontal: Grid.side,
               vertical: Grid.xs,
             ),
-            child: Text(
+            child: AutoSizeText(
               Loc.of(context).activity,
               style: Theme.of(context).textTheme.bodyMedium,
+              textScaleFactor: 1.1,
+              maxLines: 1,
             ),
           ),
           Expanded(
@@ -125,20 +128,24 @@ class HomePage extends HookConsumerWidget {
         child: Column(
           children: [
             const SizedBox(height: Grid.xs),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Grid.xxl),
+              child: AutoSizeText(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+                maxLines: 1,
+              ),
             ),
             if (subtitle != null) ...[
               const SizedBox(height: Grid.xxs),
-              Text(
+              AutoSizeText(
                 subtitle,
                 style: Theme.of(context).textTheme.bodyMedium,
+                maxLines: 2,
+                textAlign: TextAlign.center,
               ),
             ],
-            const SizedBox(height: Grid.xxs),
+            const SizedBox(height: Grid.xs),
             FilledButton(
               style: ButtonStyle(
                 backgroundColor: MaterialStateProperty.all(
@@ -156,7 +163,10 @@ class HomePage extends HookConsumerWidget {
                         ),
                 ),
               ),
-              child: Text(Loc.of(context).getStarted),
+              child: AutoSizeText(
+                Loc.of(context).getStarted,
+                maxLines: 1,
+              ),
             ),
           ],
         ),
