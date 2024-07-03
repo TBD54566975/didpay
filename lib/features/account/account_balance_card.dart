@@ -59,11 +59,13 @@ class AccountBalanceCard extends HookConsumerWidget {
     );
   }
 
-  Widget _buildCardTitle(BuildContext context) => Text(
+  Widget _buildCardTitle(BuildContext context) => AutoSizeText(
         Loc.of(context).accountBalance,
         style: Theme.of(context).textTheme.labelMedium?.copyWith(
               color: Theme.of(context).colorScheme.onSurface,
             ),
+        textScaleFactor: 1.1,
+        maxLines: 1,
       );
 
   Widget _buildAccountBalance(
@@ -71,31 +73,31 @@ class AccountBalanceCard extends HookConsumerWidget {
     String accountTotal,
     String accountCurrency,
   ) {
+    final accountTotalText = AutoSizeText(
+      accountTotal,
+      style: Theme.of(context).textTheme.displayMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+      maxLines: 1,
+    );
+    final accountCurrencyText = AutoSizeText(
+      accountCurrency,
+      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+      maxFontSize: accountTotalText.maxFontSize - 20,
+      maxLines: 1,
+    );
+
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
         children: [
-          Flexible(
-            child: AutoSizeText(
-              accountTotal,
-              style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-              maxLines: 1,
-            ),
-          ),
-          const SizedBox(width: Grid.half),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
-            child: Text(
-              accountCurrency,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
+          Flexible(child: accountTotalText),
+          const SizedBox(width: Grid.xxs),
+          Flexible(child: accountCurrencyText),
         ],
       ),
     );
@@ -116,7 +118,17 @@ class AccountBalanceCard extends HookConsumerWidget {
                   fullscreenDialog: true,
                 ),
               ),
-              child: Text(Loc.of(context).deposit),
+              child: Flexible(
+                child: FittedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Grid.xs),
+                    child: AutoSizeText(
+                      Loc.of(context).deposit,
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(width: Grid.xs),
@@ -132,7 +144,17 @@ class AccountBalanceCard extends HookConsumerWidget {
                   fullscreenDialog: true,
                 ),
               ),
-              child: Text(Loc.of(context).withdraw),
+              child: Flexible(
+                child: FittedBox(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Grid.xs),
+                    child: AutoSizeText(
+                      Loc.of(context).withdraw,
+                      maxLines: 1,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],
