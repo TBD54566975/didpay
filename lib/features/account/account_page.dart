@@ -289,13 +289,9 @@ class AccountPage extends HookConsumerWidget {
           flag.name,
           style: Theme.of(context).textTheme.titleSmall,
         ),
-        subtitle: Flexible(
-          child: FittedBox(
-            child: AutoSizeText(
-              flag.description,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ),
+        subtitle: AutoSizeText(
+          flag.description,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         value: flag.isEnabled,
         onChanged: (value) async {

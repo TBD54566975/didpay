@@ -118,16 +118,9 @@ class AccountBalanceCard extends HookConsumerWidget {
                   fullscreenDialog: true,
                 ),
               ),
-              child: Flexible(
-                child: FittedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Grid.xs),
-                    child: AutoSizeText(
-                      Loc.of(context).deposit,
-                      maxLines: 1,
-                    ),
-                  ),
-                ),
+              child: AutoSizeText(
+                Loc.of(context).deposit,
+                maxLines: 1,
               ),
             ),
           ),
@@ -144,16 +137,9 @@ class AccountBalanceCard extends HookConsumerWidget {
                   fullscreenDialog: true,
                 ),
               ),
-              child: Flexible(
-                child: FittedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Grid.xs),
-                    child: AutoSizeText(
-                      Loc.of(context).withdraw,
-                      maxLines: 1,
-                    ),
-                  ),
-                ),
+              child: AutoSizeText(
+                Loc.of(context).withdraw,
+                maxLines: 1,
               ),
             ),
           ),

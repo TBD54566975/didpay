@@ -130,29 +130,19 @@ class HomePage extends HookConsumerWidget {
             const SizedBox(height: Grid.xs),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: Grid.xxl),
-              child: Flexible(
-                child: FittedBox(
-                  child: AutoSizeText(
-                    title,
-                    style: Theme.of(context).textTheme.titleMedium,
-                    maxLines: 1,
-                  ),
-                ),
+              child: AutoSizeText(
+                title,
+                style: Theme.of(context).textTheme.titleMedium,
+                maxLines: 1,
               ),
             ),
             if (subtitle != null) ...[
               const SizedBox(height: Grid.xxs),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-                child: Flexible(
-                  child: FittedBox(
-                    child: AutoSizeText(
-                      subtitle,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 1,
-                    ),
-                  ),
-                ),
+              AutoSizeText(
+                subtitle,
+                style: Theme.of(context).textTheme.bodyMedium,
+                maxLines: 2,
+                textAlign: TextAlign.center,
               ),
             ],
             const SizedBox(height: Grid.xs),
@@ -173,16 +163,9 @@ class HomePage extends HookConsumerWidget {
                         ),
                 ),
               ),
-              child: Flexible(
-                child: FittedBox(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Grid.xs),
-                    child: AutoSizeText(
-                      Loc.of(context).getStarted,
-                      maxLines: 1,
-                    ),
-                  ),
-                ),
+              child: AutoSizeText(
+                Loc.of(context).getStarted,
+                maxLines: 1,
               ),
             ),
           ],
