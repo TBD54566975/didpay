@@ -60,8 +60,8 @@ class _NumberPadKey extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final keyHeight = screenWidth / 6;
-    final keyWidth = screenWidth / 3;
+    const keyHeight = 60.0;
+    final keyWidth = screenWidth / 4;
 
     const defaultFontSize = 24.0;
     const selectedFontSize = 44.0;
