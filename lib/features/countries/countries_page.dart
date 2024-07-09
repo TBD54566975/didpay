@@ -9,6 +9,7 @@ import 'package:didpay/shared/next_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:tbdex/tbdex.dart';
 
 class CountriesPage extends HookConsumerWidget {
   const CountriesPage({super.key});
@@ -39,7 +40,8 @@ class CountriesPage extends HookConsumerWidget {
                           builder: (context) => PaymentAmountPage(
                             paymentState: PaymentState(
                               transactionType: TransactionType.send,
-                              selectedCountry: country.value,
+                              getOfferingsFilter:
+                                  GetOfferingsFilter(payoutCurrency: 'MXN'),
                             ),
                           ),
                         ),
