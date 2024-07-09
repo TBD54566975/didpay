@@ -1,4 +1,3 @@
-import 'package:didpay/features/payment/payment_method_operations.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
@@ -8,8 +7,8 @@ class PaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
 
   final String? paymentCurrency;
-  final ValueNotifier<Object?> selectedPaymentMethod;
-  final List<Object?>? paymentMethods;
+  final ValueNotifier<dynamic> selectedPaymentMethod;
+  final List<dynamic>? paymentMethods;
 
   PaymentMethodsPage({
     required this.paymentCurrency,
@@ -51,12 +50,12 @@ class PaymentMethodsPage extends HookWidget {
   Widget _buildMethodsList(
     BuildContext context,
     ValueNotifier<String> searchText,
-    ValueNotifier<Object?> selectedPaymentMethod,
-    List<Object?>? paymentMethods,
+    ValueNotifier<dynamic> selectedPaymentMethod,
+    List<dynamic>? paymentMethods,
   ) {
     final filteredPaymentMethods = paymentMethods
         ?.where(
-          (method) => (method.paymentName ?? '')
+          (method) => (method?.name ?? method?.kind ?? '')
               .toLowerCase()
               .contains(searchText.value.toLowerCase()),
         )
@@ -66,7 +65,7 @@ class PaymentMethodsPage extends HookWidget {
       itemBuilder: (context, index) {
         final currentPaymentMethod =
             filteredPaymentMethods?.elementAtOrNull(index);
-        final fee = double.tryParse(currentPaymentMethod.paymentFee ?? '0.00')
+        final fee = double.tryParse(currentPaymentMethod?.fee ?? '0.00')
                 ?.toStringAsFixed(2) ??
             '0.00';
 
@@ -74,7 +73,7 @@ class PaymentMethodsPage extends HookWidget {
           visualDensity: VisualDensity.compact,
           selected: selectedPaymentMethod.value == currentPaymentMethod,
           title: Text(
-            currentPaymentMethod?.paymentName ?? '',
+            currentPaymentMethod?.name ?? currentPaymentMethod?.kind ?? '',
           ),
           subtitle: Text(
             Loc.of(context).serviceFeeAmount(fee, paymentCurrency ?? ''),
