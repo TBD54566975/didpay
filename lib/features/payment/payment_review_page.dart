@@ -25,7 +25,10 @@ import 'package:tbdex/tbdex.dart';
 class PaymentReviewPage extends HookConsumerWidget {
   final PaymentState paymentState;
 
-  const PaymentReviewPage({required this.paymentState, super.key});
+  const PaymentReviewPage({
+    required this.paymentState,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -171,8 +174,8 @@ class PaymentReviewPage extends HookConsumerWidget {
 
                 await ref.read(tbdexServiceProvider).submitClose(
                       ref.read(didProvider),
-                      paymentState.selectedPfi,
-                      paymentState.exchangeId,
+                      paymentState.pfiDid ?? '',
+                      paymentState.exchangeId ?? '',
                     );
 
                 if (dialogContext.mounted) {
@@ -274,13 +277,11 @@ class PaymentReviewPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              paymentState.dap != null
-                  ? paymentState.dap?.dap ?? ''
-                  : paymentState.paymentName ?? '',
+              paymentState.paymentName ?? '',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: Grid.xxs),
-            ...?paymentState.formData?.entries.map(
+            ...?paymentState.paymentDetails?.entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(
                   bottom: Grid.xxs,
@@ -305,8 +306,8 @@ class PaymentReviewPage extends HookConsumerWidget {
 
     try {
       final quote = await quoteNotifier.startPolling(
-        paymentState.selectedPfi,
-        paymentState.exchangeId,
+        paymentState.pfiDid ?? '',
+        paymentState.exchangeId ?? '',
       );
 
       if (context.mounted && quote != null) {
@@ -329,8 +330,8 @@ class PaymentReviewPage extends HookConsumerWidget {
     try {
       final order = await ref.read(tbdexServiceProvider).submitOrder(
             ref.read(didProvider),
-            paymentState.selectedPfi,
-            paymentState.exchangeId,
+            paymentState.pfiDid ?? '',
+            paymentState.exchangeId ?? '',
           );
 
       if (context.mounted) {

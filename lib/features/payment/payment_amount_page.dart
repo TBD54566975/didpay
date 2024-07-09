@@ -1,4 +1,5 @@
 import 'package:decimal/decimal.dart';
+import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
@@ -29,9 +30,8 @@ class PaymentAmountPage extends HookConsumerWidget {
     final payinAmount = useState<String>('0');
     final payoutAmount = useState<Decimal>(Decimal.zero);
     final keyPress = useState(NumberKeyPress(0, ''));
-    final currentPaymentState = useState<PaymentState>(paymentState);
-    final selectedPfi = useState<Pfi?>(paymentState.selectedPfi);
-    final selectedOffering = useState<Offering?>(paymentState.selectedOffering);
+    final selectedPfi = useState<Pfi?>(paymentState.pfi);
+    final selectedOffering = useState<Offering?>(paymentState.offering);
     final offerings =
         useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
 
@@ -45,7 +45,6 @@ class PaymentAmountPage extends HookConsumerWidget {
               : await _getOfferings(
                   context,
                   ref,
-                  currentPaymentState.value,
                   offerings,
                 ),
         );
@@ -58,22 +57,22 @@ class PaymentAmountPage extends HookConsumerWidget {
       appBar: AppBar(),
       body: SafeArea(
         child: offerings.value.when(
-          data: (data) {
-            selectedPfi.value ??= data.keys.first;
-            selectedOffering.value ??= data[selectedPfi.value]!.first;
+          data: (offeringsMap) {
+            selectedPfi.value ??= offeringsMap.keys.first;
+            selectedOffering.value ??= offeringsMap[selectedPfi.value]!.first;
 
             void onCurrencySelect(pfi, offering) {
               selectedPfi.value = pfi;
               selectedOffering.value = offering;
             }
 
-            currentPaymentState.value = _updatePaymentState(
-              currentPaymentState.value,
+            final updatedPaymentState = paymentState.setPaymentAmountData(
+              ref.read(didProvider),
               payinAmount.value,
-              payoutAmount.value,
+              payoutAmount.value.toString(),
               selectedPfi.value,
               selectedOffering.value,
-              data,
+              offeringsMap,
             );
 
             return Column(
@@ -91,14 +90,14 @@ class PaymentAmountPage extends HookConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Payin(
-                            paymentState: currentPaymentState.value,
+                            paymentState: updatedPaymentState,
                             payinAmount: payinAmount,
                             keyPress: keyPress,
                             onCurrencySelect: onCurrencySelect,
                           ),
                           const SizedBox(height: Grid.sm),
                           Payout(
-                            paymentState: currentPaymentState.value,
+                            paymentState: updatedPaymentState,
                             payoutAmount: payoutAmount,
                             onCurrencySelect: onCurrencySelect,
                           ),
@@ -125,7 +124,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                       : () => Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => PaymentDetailsPage(
-                                paymentState: currentPaymentState.value,
+                                paymentState: updatedPaymentState,
                               ),
                             ),
                           ),
@@ -140,7 +139,6 @@ class PaymentAmountPage extends HookConsumerWidget {
             onRetry: () => _getOfferings(
               context,
               ref,
-              currentPaymentState.value,
               offerings,
             ),
           ),
@@ -149,53 +147,53 @@ class PaymentAmountPage extends HookConsumerWidget {
     );
   }
 
-  PaymentState _updatePaymentState(
-    PaymentState currentState,
-    String payinAmount,
-    Decimal payoutAmount,
-    Pfi? selectedPfi,
-    Offering? selectedOffering,
-    Map<Pfi, List<Offering>> offeringsMap,
-  ) =>
-      currentState.copyWith(
-        payinAmount: Decimal.parse(payinAmount),
-        payoutAmount: payoutAmount,
-        selectedPfi: selectedPfi,
-        selectedOffering: selectedOffering,
-        offeringsMap: offeringsMap,
-        payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-        payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
-        payinMethods: selectedOffering?.data.payin.methods ?? [],
-        payoutMethods: selectedOffering?.data.payout.methods ?? [],
-        exchangeRate: Decimal.parse(
-          selectedOffering?.data.payoutUnitsPerPayinUnit ?? '1',
-        ),
-        selectedPayinMethod: currentState.moneyAddresses == null
-            ? null
-            : selectedOffering?.data.payin.methods.firstOrNull,
-        selectedPayoutMethod: currentState.moneyAddresses == null
-            ? null
-            : selectedOffering?.data.payout.methods.firstOrNull,
-        formData: currentState.moneyAddresses == null
-            ? null
-            : {
-                selectedOffering?.data.payout.methods.firstOrNull
-                        ?.requiredPaymentDetails?.requiredProperties?.first ??
-                    '': currentState.moneyAddresses?.first.urn ?? '',
-              },
-      );
+  // PaymentState _updatePaymentState(
+  //   PaymentState currentState,
+  //   String payinAmount,
+  //   Decimal payoutAmount,
+  //   Pfi? selectedPfi,
+  //   Offering? selectedOffering,
+  //   Map<Pfi, List<Offering>> offeringsMap,
+  // ) =>
+  //     currentState.copyWith(
+  //       payinAmount: Decimal.parse(payinAmount),
+  //       payoutAmount: payoutAmount,
+  //       selectedPfi: selectedPfi,
+  //       selectedOffering: selectedOffering,
+  //       offeringsMap: offeringsMap,
+  //       payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
+  //       payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
+  //       payinMethods: selectedOffering?.data.payin.methods ?? [],
+  //       payoutMethods: selectedOffering?.data.payout.methods ?? [],
+  //       exchangeRate: Decimal.parse(
+  //         selectedOffering?.data.payoutUnitsPerPayinUnit ?? '1',
+  //       ),
+  //       selectedPayinMethod: currentState.moneyAddresses == null
+  //           ? null
+  //           : selectedOffering?.data.payin.methods.firstOrNull,
+  //       selectedPayoutMethod: currentState.moneyAddresses == null
+  //           ? null
+  //           : selectedOffering?.data.payout.methods.firstOrNull,
+  //       formData: currentState.moneyAddresses == null
+  //           ? null
+  //           : {
+  //               selectedOffering?.data.payout.methods.firstOrNull
+  //                       ?.requiredPaymentDetails?.requiredProperties?.first ??
+  //                   '': currentState.moneyAddresses?.first.urn ?? '',
+  //             },
+  //     );
 
   Future<void> _getOfferings(
     BuildContext context,
     WidgetRef ref,
-    PaymentState paymentState,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
-      final offerings = await ref
-          .read(tbdexServiceProvider)
-          .getOfferings(paymentState, ref.read(pfisProvider));
+      final offerings = await ref.read(tbdexServiceProvider).getOfferings(
+            ref.read(pfisProvider),
+            offeringsFilter: paymentState.offeringsFilter,
+          );
 
       if (context.mounted) {
         state.value = AsyncData(offerings);
