@@ -25,23 +25,20 @@ class Payout extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyCode =
-        paymentState.selectedOffering?.data.payout.currencyCode ?? '';
+    final currencyCode = paymentState.offering?.data.payout.currencyCode ?? '';
     final formattedAmount = Decimal.parse(payoutAmount.value.toString())
         .formatCurrency(currencyCode);
 
     useEffect(
       () {
-        final exchangeRate = Decimal.tryParse(
-              paymentState.selectedOffering?.data.payoutUnitsPerPayinUnit ?? '',
-            ) ??
-            Decimal.one;
+        final exchangeRate =
+            Decimal.tryParse(paymentState.rate ?? '') ?? Decimal.one;
 
         WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (paymentState.selectedOffering == null) return;
+          if (paymentState.offering == null) return;
 
           payoutAmount.value =
-              (paymentState.payinAmount ?? Decimal.zero) * exchangeRate;
+              Decimal.parse(paymentState.payinAmount ?? '0') * exchangeRate;
         });
 
         return;
@@ -85,7 +82,7 @@ class Payout extends HookWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(
-            paymentState.selectedOffering?.data.payout.currencyCode ?? '',
+            paymentState.payoutCurrency ?? '',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         );

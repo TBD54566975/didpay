@@ -32,15 +32,14 @@ class Payin extends HookWidget {
             .addPostFrameCallback((_) => payinAmount.value = '0');
         return;
       },
-      [paymentState.selectedOffering],
+      [paymentState.offering],
     );
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         NumberDisplay(
-          currencyCode:
-              paymentState.selectedOffering?.data.payin.currencyCode ?? '',
+          currencyCode: paymentState.payinCurrency ?? '',
           currencyWidget: _buildPayinCurrency(context),
           amount: payinAmount,
           keyPress: keyPress,
@@ -63,7 +62,7 @@ class Payin extends HookWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
           child: Text(
-            paymentState.selectedOffering?.data.payin.currencyCode ?? '',
+            paymentState.payinCurrency ?? '',
             style: Theme.of(context).textTheme.headlineMedium,
           ),
         );
