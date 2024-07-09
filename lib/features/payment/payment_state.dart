@@ -138,6 +138,8 @@ class PaymentState {
 
   String? get payoutCurrency => _offering?.data.payin.currencyCode;
 
+  String? get rate => _offering?.data.payoutUnitsPerPayinUnit;
+
   String? get pfiDid => _rfq?.metadata.to;
 
   String? get exchangeId => _rfq?.metadata.id;
