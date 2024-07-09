@@ -42,6 +42,8 @@ class TestData {
 
   static Offering getOffering({
     PresentationDefinition? requiredClaims,
+    List<PayinMethod>? payinMethods,
+    List<PayoutMethod>? payoutMethods,
   }) =>
       Offering.create(
         pfiDid.uri,
@@ -52,28 +54,45 @@ class TestData {
             currencyCode: 'AUD',
             min: '0.01',
             max: '100.00',
-            methods: [
-              PayinMethod(
-                kind: 'DEBIT_CARD',
-                requiredPaymentDetails: paymentDetailsSchema(),
-              ),
-            ],
+            methods: payinMethods ??
+                [
+                  PayinMethod(
+                    kind: 'DEBIT_CARD',
+                    requiredPaymentDetails: paymentDetailsSchema(),
+                  ),
+                ],
           ),
           payout: PayoutDetails(
             currencyCode: 'USD',
-            methods: [
-              PayoutMethod(
-                estimatedSettlementTime: 0,
-                kind: 'DEBIT_CARD',
-                requiredPaymentDetails: paymentDetailsSchema(),
-              ),
-            ],
+            methods: payoutMethods ??
+                [
+                  PayoutMethod(
+                    estimatedSettlementTime: 0,
+                    kind: 'DEBIT_CARD',
+                    requiredPaymentDetails: paymentDetailsSchema(),
+                  ),
+                ],
           ),
           requiredClaims: requiredClaims,
         ),
       );
 
   static Exchange getExchange() => [getQuote()];
+
+  static Rfq getRfq() => Rfq.create(
+        aliceDid.uri,
+        pfiDid.uri,
+        CreateRfqData(
+          offeringId: '123',
+          payin: CreateSelectedPayinMethod(
+            amount: '100',
+            kind: 'DEBIT_CARD',
+          ),
+          payout: CreateSelectedPayoutMethod(
+            kind: 'DEBIT_CARD',
+          ),
+        ),
+      );
 
   static Quote getQuote() => Quote.create(
         aliceDid.uri,

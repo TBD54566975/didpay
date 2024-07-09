@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
@@ -20,6 +19,7 @@ void main() async {
   await TestData.initializeDids();
 
   final did = TestData.aliceDid;
+  final rfq = TestData.getRfq();
   final quote = TestData.getQuote();
   final order = TestData.getOrder();
 
@@ -39,7 +39,7 @@ void main() async {
     ).thenAnswer((_) async => TestData.getExchange());
 
     when(
-      () => mockTbdexQuoteNotifier.startPolling(const Pfi(did: '123'), '123'),
+      () => mockTbdexQuoteNotifier.startPolling(any(), any()),
     ).thenAnswer((_) async => quote);
   });
 
@@ -47,16 +47,10 @@ void main() async {
     Widget reviewPaymentPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentReviewPage(
             paymentState: PaymentState(
-              selectedPfi: const Pfi(did: '123'),
-              payinAmount: Decimal.parse('100.00'),
-              payoutAmount: Decimal.parse('0.12'),
-              payinCurrency: 'AUD',
-              payoutCurrency: 'BTC',
-              exchangeRate: Decimal.parse('17.00'),
-              exchangeId: '123',
               transactionType: TransactionType.deposit,
               paymentName: 'ABC Bank',
-              formData: {'accountNumber': '1234567890'},
+              pfi: const Pfi(did: '123'),
+              rfq: rfq,
             ),
           ),
           overrides: [

@@ -22,8 +22,8 @@ void main() async {
 
     final paymentState = PaymentState(
       transactionType: TransactionType.deposit,
-      selectedOffering: offering.value,
-      selectedPfi: pfi.value,
+      offering: offering.value,
+      pfi: pfi.value,
       offeringsMap: const {},
     );
 

@@ -28,7 +28,7 @@ void main() async {
     mockFeatureFlagsNotifier = MockFeatureFlagsNotifier([]);
 
     when(
-      () => mockTbdexService.getOfferings(any(), pfis),
+      () => mockTbdexService.getOfferings(pfis),
     ).thenAnswer((_) async => offerings);
   });
 
