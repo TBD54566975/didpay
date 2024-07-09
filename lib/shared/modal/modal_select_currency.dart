@@ -65,10 +65,10 @@ class ModalSelectCurrency {
                                       offering,
                                       paymentState.transactionType,
                                     ),
-                                    trailing: (paymentState.selectedOffering ==
-                                            offering)
-                                        ? const Icon(Icons.check)
-                                        : null,
+                                    trailing:
+                                        (paymentState.offering == offering)
+                                            ? const Icon(Icons.check)
+                                            : null,
                                   ),
                                 ),
                               )
