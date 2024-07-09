@@ -25,7 +25,7 @@ class Payout extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currencyCode = paymentState.offering?.data.payout.currencyCode ?? '';
+    final currencyCode = paymentState.payoutCurrency ?? '';
     final formattedAmount = Decimal.parse(payoutAmount.value.toString())
         .formatCurrency(currencyCode);
 

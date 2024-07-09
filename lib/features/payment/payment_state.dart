@@ -136,7 +136,7 @@ class PaymentState {
 
   String? get payinCurrency => _offering?.data.payin.currencyCode;
 
-  String? get payoutCurrency => _offering?.data.payin.currencyCode;
+  String? get payoutCurrency => _offering?.data.payout.currencyCode;
 
   String? get rate => _offering?.data.payoutUnitsPerPayinUnit;
 
