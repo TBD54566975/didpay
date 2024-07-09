@@ -113,13 +113,13 @@ class KccIssuanceService {
       body: jsonEncode(authResponse.toJson()),
     );
 
-    if (response.statusCode != 200) {
-      throw Exception(
-        'Sending siopv2 AuthResponse failed: ${response.statusCode} ${response.body}',
-      );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return IdvRequest.fromJson(response.body);
     }
 
-    return IdvRequest.fromJson(response.body);
+    throw Exception(
+      'Sending siopv2 AuthResponse failed: ${response.statusCode} ${response.body}',
+    );
   }
 
   /// Requests an access token from the PFI (aka KCC issuer) using the
