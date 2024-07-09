@@ -1,8 +1,6 @@
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/account/account_balance.dart';
-import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/transaction/transaction.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retry/retry.dart';
 import 'package:tbdex/tbdex.dart';
@@ -12,34 +10,15 @@ final tbdexServiceProvider = Provider((_) => TbdexService());
 
 class TbdexService {
   Future<Map<Pfi, List<Offering>>> getOfferings(
-    PaymentState paymentState,
-    List<Pfi> pfis,
-  ) async {
+    List<Pfi> pfis, {
+    GetOfferingsFilter? offeringsFilter,
+  }) async {
     final offeringsMap = <Pfi, List<Offering>>{};
-
-    GetOfferingsFilter? filter;
-    switch (paymentState.transactionType) {
-      case TransactionType.deposit:
-        filter = GetOfferingsFilter(payoutCurrency: 'USDC');
-        break;
-      case TransactionType.withdraw:
-        filter = GetOfferingsFilter(payinCurrency: 'USDC');
-        break;
-      case TransactionType.send:
-        filter = paymentState.selectedCountry != null
-            ? GetOfferingsFilter(payoutCurrency: 'MXN')
-            : GetOfferingsFilter(
-                payoutCurrency: paymentState
-                    .moneyAddresses?.firstOrNull?.currency
-                    .toUpperCase(),
-              );
-        break;
-    }
 
     for (final pfi in pfis) {
       try {
-        final offerings =
-            await TbdexHttpClient.listOfferings(pfi.did, filter: filter);
+        final offerings = await TbdexHttpClient.listOfferings(pfi.did,
+            filter: offeringsFilter,);
 
         offeringsMap[pfi] = offerings;
       } on Exception catch (e) {
@@ -50,7 +29,7 @@ class TbdexService {
 
     if (offeringsMap.isEmpty) {
       throw Exception(
-        'No ${paymentState.transactionType.toString().toLowerCase()} offerings found for any linked PFIs',
+        'No offerings found for any linked PFIs',
       );
     }
 
@@ -98,7 +77,7 @@ class TbdexService {
 
         final validExchanges = await Future.wait(
           exchanges.map((exchangeId) async {
-            final isValid = await _isValidExchange(did, pfi, exchangeId);
+            final isValid = await _isValidExchange(did, pfi.did, exchangeId);
             return isValid ? exchangeId : null;
           }),
         );
@@ -117,13 +96,13 @@ class TbdexService {
 
   Future<bool> _isValidExchange(
     BearerDid did,
-    Pfi pfi,
+    String pfiDid,
     String exchangeId,
   ) async {
     try {
       final exchange = await getExchange(
         did,
-        pfi,
+        pfiDid,
         exchangeId,
       );
 
@@ -136,12 +115,12 @@ class TbdexService {
 
   Future<Exchange> getExchange(
     BearerDid did,
-    Pfi pfi,
+    String pfiDid,
     String exchangeId,
   ) async {
     Exchange exchange;
     try {
-      exchange = await TbdexHttpClient.getExchange(did, pfi.did, exchangeId);
+      exchange = await TbdexHttpClient.getExchange(did, pfiDid, exchangeId);
     } on Exception {
       rethrow;
     }
@@ -151,31 +130,12 @@ class TbdexService {
 
   Future<Rfq> sendRfq(
     BearerDid did,
-    PaymentState paymentState,
+    Rfq? rfq,
   ) async {
-    final rfq = Rfq.create(
-      paymentState.selectedPfi?.did ?? '',
-      did.uri,
-      CreateRfqData(
-        offeringId: paymentState.selectedOffering?.metadata.id ?? '',
-        payin: CreateSelectedPayinMethod(
-          amount: paymentState.payinAmount.toString(),
-          kind: paymentState.selectedPayinMethod?.kind ?? '',
-          paymentDetails:
-              paymentState.transactionType == TransactionType.deposit
-                  ? paymentState.formData ?? {}
-                  : null,
-        ),
-        payout: CreateSelectedPayoutMethod(
-          kind: paymentState.selectedPayoutMethod?.kind ?? '',
-          paymentDetails:
-              paymentState.transactionType != TransactionType.deposit
-                  ? paymentState.formData ?? {}
-                  : null,
-        ),
-        claims: paymentState.claims,
-      ),
-    );
+    if (rfq == null) {
+      throw Exception('RFQ is required');
+    }
+
     await rfq.sign(did);
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -188,9 +148,13 @@ class TbdexService {
     return rfq;
   }
 
-  Future<Order> submitOrder(BearerDid did, Pfi? pfi, String? exchangeId) async {
+  Future<Order> submitOrder(
+    BearerDid did,
+    String pfiDid,
+    String exchangeId,
+  ) async {
     await Future.delayed(const Duration(seconds: 1));
-    final order = Order.create(pfi?.did ?? '', did.uri, exchangeId ?? '');
+    final order = Order.create(pfiDid, did.uri, exchangeId);
     await order.sign(did);
     await Future.delayed(const Duration(milliseconds: 500));
 
@@ -203,10 +167,10 @@ class TbdexService {
     return order;
   }
 
-  Future<Close> submitClose(BearerDid did, Pfi? pfi, String? exchangeId) async {
+  Future<Close> submitClose(
+      BearerDid did, String pfiDid, String exchangeId,) async {
     final closeData = CloseData(reason: 'User requested');
-    final close =
-        Close.create(pfi?.did ?? '', did.uri, exchangeId ?? '', closeData);
+    final close = Close.create(pfiDid, did.uri, exchangeId, closeData);
     await close.sign(did);
 
     try {
@@ -220,12 +184,12 @@ class TbdexService {
 
   Future<Quote> pollForQuote(
     BearerDid did,
-    Pfi pfi,
+    String pfiDid,
     String exchangeId,
   ) =>
       retry(
         () async {
-          final exchange = await getExchange(did, pfi, exchangeId);
+          final exchange = await getExchange(did, pfiDid, exchangeId);
           return _getQuote(exchange);
         },
         maxAttempts: 15,
