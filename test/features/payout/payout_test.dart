@@ -1,11 +1,9 @@
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
-import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
@@ -14,13 +12,11 @@ void main() async {
   await TestData.initializeDids();
   group('Payout', () {
     final amount = ValueNotifier<Decimal>(Decimal.one);
-    final pfi = ValueNotifier<Pfi?>(null);
-    final offering = ValueNotifier<Offering?>(TestData.getOffering());
+    final offering = TestData.getOffering();
 
     final paymentState = PaymentState(
       transactionType: TransactionType.deposit,
-      offering: offering.value,
-      pfi: pfi.value,
+      offering: offering,
       offeringsMap: const {},
     );
 
