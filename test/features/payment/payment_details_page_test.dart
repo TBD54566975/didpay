@@ -1,5 +1,6 @@
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
@@ -30,12 +31,16 @@ void main() async {
     Widget paymentDetailsPageTestWidget({Offering? offering}) =>
         WidgetHelpers.testableWidget(
           child: PaymentDetailsPage(
-            paymentState: PaymentState(
-              transactionType: TransactionType.deposit,
-              rfq: rfq,
-              offering: offering,
-            ),
-          ),
+              paymentState: PaymentState(
+                transactionType: TransactionType.deposit,
+                rfq: rfq,
+                offering: offering,
+              ),
+              paymentDetailsState: PaymentDetailsState(
+                paymentMethods: offering?.data.payin.methods
+                    .map(PaymentMethod.fromPayinMethod)
+                    .toList(),
+              ),),
           overrides: [
             didProvider.overrideWithValue(did),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),

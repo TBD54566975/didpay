@@ -1,7 +1,7 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
@@ -9,16 +9,16 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   final schema = TestData.paymentDetailsSchema();
   final paymentMethods = [
-    PayinMethod(
+    PaymentMethod(
       kind: 'BANK_ACCESS BANK',
       name: 'Access Bank',
-      requiredPaymentDetails: schema,
+      schema: schema.toJson(),
       fee: '9.0',
     ),
-    PayinMethod(
+    PaymentMethod(
       kind: 'MOMO_MTN',
       name: 'MTN',
-      requiredPaymentDetails: schema,
+      schema: schema.toJson(),
     ),
   ];
 
@@ -27,7 +27,7 @@ void main() {
           child: PaymentMethodsPage(
             paymentCurrency: '',
             selectedPaymentMethod:
-                ValueNotifier<PayinMethod>(paymentMethods.first),
+                ValueNotifier<PaymentMethod>(paymentMethods.first),
             paymentMethods: paymentMethods,
           ),
         );
@@ -47,7 +47,7 @@ void main() {
           child: PaymentMethodsPage(
             paymentCurrency: '',
             selectedPaymentMethod:
-                ValueNotifier<PayinMethod>(paymentMethods.first),
+                ValueNotifier<PaymentMethod>(paymentMethods.first),
             paymentMethods: paymentMethods,
           ),
         ),
