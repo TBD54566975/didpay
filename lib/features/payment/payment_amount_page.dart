@@ -2,12 +2,14 @@ import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/loading_message.dart';
@@ -125,6 +127,19 @@ class PaymentAmountPage extends HookConsumerWidget {
                             MaterialPageRoute(
                               builder: (context) => PaymentDetailsPage(
                                 paymentState: updatedPaymentState,
+                                paymentDetailsState: PaymentDetailsState(
+                                  paymentMethods: updatedPaymentState
+                                              .transactionType ==
+                                          TransactionType.deposit
+                                      ? selectedOffering
+                                          .value?.data.payin.methods
+                                          .map(PaymentMethod.fromPayinMethod)
+                                          .toList()
+                                      : selectedOffering
+                                          .value?.data.payout.methods
+                                          .map(PaymentMethod.fromPayoutMethod)
+                                          .toList(),
+                                ),
                               ),
                             ),
                           ),

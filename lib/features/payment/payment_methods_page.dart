@@ -1,3 +1,4 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
@@ -7,8 +8,8 @@ class PaymentMethodsPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
 
   final String? paymentCurrency;
-  final ValueNotifier<dynamic> selectedPaymentMethod;
-  final List<dynamic>? paymentMethods;
+  final ValueNotifier<PaymentMethod?> selectedPaymentMethod;
+  final List<PaymentMethod>? paymentMethods;
 
   PaymentMethodsPage({
     required this.paymentCurrency,
@@ -50,12 +51,12 @@ class PaymentMethodsPage extends HookWidget {
   Widget _buildMethodsList(
     BuildContext context,
     ValueNotifier<String> searchText,
-    ValueNotifier<dynamic> selectedPaymentMethod,
-    List<dynamic>? paymentMethods,
+    ValueNotifier<PaymentMethod?> selectedPaymentMethod,
+    List<PaymentMethod>? paymentMethods,
   ) {
     final filteredPaymentMethods = paymentMethods
         ?.where(
-          (method) => (method?.name ?? method?.kind ?? '')
+          (method) => (method.name ?? method.kind)
               .toLowerCase()
               .contains(searchText.value.toLowerCase()),
         )
