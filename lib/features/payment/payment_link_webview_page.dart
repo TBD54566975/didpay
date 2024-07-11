@@ -24,12 +24,7 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close),
-        ),
-      ),
+      appBar: AppBar(),
       body: InAppWebView(
         initialSettings: settings,
         onWebViewCreated: (c) {
