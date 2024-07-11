@@ -17,8 +17,10 @@ class TbdexService {
 
     for (final pfi in pfis) {
       try {
-        final offerings = await TbdexHttpClient.listOfferings(pfi.did,
-            filter: offeringsFilter,);
+        final offerings = await TbdexHttpClient.listOfferings(
+          pfi.did,
+          filter: offeringsFilter,
+        );
 
         offeringsMap[pfi] = offerings;
       } on Exception catch (e) {
@@ -130,11 +132,31 @@ class TbdexService {
 
   Future<Rfq> sendRfq(
     BearerDid did,
-    Rfq? rfq,
-  ) async {
-    if (rfq == null) {
-      throw Exception('RFQ is required');
-    }
+    String pfiDid,
+    String offeringId,
+    String payinAmount,
+    String payinKind,
+    String payoutKind,
+    Map<String, String> paymentDetails, {
+    List<String>? claims,
+  }) async {
+    final rfq = Rfq.create(
+      did.uri,
+      pfiDid,
+      CreateRfqData(
+        offeringId: offeringId,
+        payin: CreateSelectedPayinMethod(
+          amount: payinAmount,
+          kind: payinKind,
+          paymentDetails: paymentDetails,
+        ),
+        payout: CreateSelectedPayoutMethod(
+          kind: payoutKind,
+          paymentDetails: paymentDetails,
+        ),
+        claims: claims,
+      ),
+    );
 
     await rfq.sign(did);
     await Future.delayed(const Duration(milliseconds: 500));
@@ -168,7 +190,10 @@ class TbdexService {
   }
 
   Future<Close> submitClose(
-      BearerDid did, String pfiDid, String exchangeId,) async {
+    BearerDid did,
+    String pfiDid,
+    String exchangeId,
+  ) async {
     final closeData = CloseData(reason: 'User requested');
     final close = Close.create(pfiDid, did.uri, exchangeId, closeData);
     await close.sign(did);
