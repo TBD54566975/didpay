@@ -1,12 +1,20 @@
-import 'package:tbdex/tbdex.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 
 class PaymentDetailsState {
-  final List<PaymentMethod>? paymentMethods;
+  final String? paymentCurrency;
+  final String? selectedPaymentType;
   final PaymentMethod? selectedPaymentMethod;
+  final List<PaymentMethod>? paymentMethods;
+  final List<String>? credentialsJwt;
+  final Map<String, String>? formData;
 
   PaymentDetailsState({
-    required this.paymentMethods,
+    this.paymentCurrency,
+    this.selectedPaymentType,
     this.selectedPaymentMethod,
+    this.paymentMethods,
+    this.credentialsJwt,
+    this.formData,
   });
 
   Set<String>? get paymentTypes =>
@@ -15,44 +23,29 @@ class PaymentDetailsState {
   bool get hasNoPaymentTypes => paymentTypes?.isEmpty ?? true;
   bool get hasMultiplePaymentTypes => (paymentTypes?.length ?? 0) > 1;
 
-  List<PaymentMethod>? filterPaymentMethods(
-    String? paymentType,
-  ) =>
+  List<PaymentMethod>? filterPaymentMethods(String? paymentType) =>
       paymentMethods
           ?.where(
             (method) => method.type?.contains(paymentType ?? '') ?? true,
           )
           .toList();
-}
 
-class PaymentMethod {
-  final String kind;
-  final String? name;
-  final String? type;
-  final String? schema;
-  final String? fee;
-
-  PaymentMethod({
-    required this.kind,
-    this.name,
-    this.type,
-    this.schema,
-    this.fee,
-  });
-
-  factory PaymentMethod.fromPayinMethod(PayinMethod method) => PaymentMethod(
-        kind: method.kind,
-        name: method.name,
-        type: method.group,
-        schema: method.requiredPaymentDetails?.toJson(),
-        fee: method.fee,
-      );
-
-  factory PaymentMethod.fromPayoutMethod(PayoutMethod method) => PaymentMethod(
-        kind: method.kind,
-        name: method.name,
-        type: method.group,
-        schema: method.requiredPaymentDetails?.toJson(),
-        fee: method.fee,
-      );
+  PaymentDetailsState copyWith({
+    String? paymentCurrency,
+    String? selectedPaymentType,
+    PaymentMethod? selectedPaymentMethod,
+    List<PaymentMethod>? paymentMethods,
+    List<String>? credentialsJwt,
+    Map<String, String>? formData,
+  }) {
+    return PaymentDetailsState(
+      paymentCurrency: paymentCurrency ?? this.paymentCurrency,
+      selectedPaymentType: selectedPaymentType ?? this.selectedPaymentType,
+      selectedPaymentMethod:
+          selectedPaymentMethod ?? this.selectedPaymentMethod,
+      paymentMethods: paymentMethods ?? this.paymentMethods,
+      credentialsJwt: credentialsJwt ?? this.credentialsJwt,
+      formData: formData ?? this.formData,
+    );
+  }
 }
