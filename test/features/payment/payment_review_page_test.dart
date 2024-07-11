@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -20,6 +22,7 @@ void main() async {
   await TestData.initializeDids();
 
   final did = TestData.aliceDid;
+  final offering = TestData.getOffering();
   final quote = TestData.getQuote();
   final order = TestData.getOrder();
 
@@ -39,7 +42,7 @@ void main() async {
     ).thenAnswer((_) async => TestData.getExchange());
 
     when(
-      () => mockTbdexQuoteNotifier.startPolling(const Pfi(did: '123'), '123'),
+      () => mockTbdexQuoteNotifier.startPolling(any(), any()),
     ).thenAnswer((_) async => quote);
   });
 
@@ -47,16 +50,18 @@ void main() async {
     Widget reviewPaymentPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentReviewPage(
             paymentState: PaymentState(
-              selectedPfi: const Pfi(did: '123'),
-              payinAmount: Decimal.parse('100.00'),
-              payoutAmount: Decimal.parse('0.12'),
-              payinCurrency: 'AUD',
-              payoutCurrency: 'BTC',
-              exchangeRate: Decimal.parse('17.00'),
-              exchangeId: '123',
               transactionType: TransactionType.deposit,
-              paymentName: 'ABC Bank',
-              formData: {'accountNumber': '1234567890'},
+              paymentAmountState: PaymentAmountState(
+                pfiDid: '123',
+                payinAmount: '100',
+                payoutAmount: '0.12',
+                selectedOffering: offering,
+              ),
+              paymentDetailsState: PaymentDetailsState(
+                selectedPaymentMethod: PaymentMethod.fromPayinMethod(
+                  offering.data.payin.methods.first,
+                ),
+              ),
             ),
           ),
           overrides: [
@@ -94,13 +99,13 @@ void main() async {
       expect(find.text('0.01 AUD'), findsOneWidget);
     });
 
-    testWidgets('should show bank name', (tester) async {
+    testWidgets('should show payment name', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('ABC Bank'), findsOneWidget);
+      expect(find.text('DEBIT_CARD'), findsOneWidget);
     });
 
     testWidgets('should show order confirmation on tap of submit button',

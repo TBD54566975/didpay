@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:didpay/features/did/did_provider.dart';
-import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:retry/retry.dart';
@@ -18,8 +17,8 @@ class TbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?> {
   @override
   FutureOr<Quote?> build() => null;
 
-  Future<Quote?> pollForQuote(Pfi? pfi, String? exchangeId) async {
-    if (_completer == null || pfi == null || exchangeId == null) return null;
+  Future<Quote?> pollForQuote(String pfiDid, String? exchangeId) async {
+    if (_completer == null || exchangeId == null) return null;
 
     return retry(
       () async {
@@ -27,7 +26,7 @@ class TbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?> {
 
         final exchange = await ref
             .read(tbdexServiceProvider)
-            .getExchange(ref.read(didProvider), pfi, exchangeId);
+            .getExchange(ref.read(didProvider), pfiDid, exchangeId);
         return _getQuote(exchange);
       },
       maxAttempts: 15,
@@ -36,9 +35,9 @@ class TbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?> {
     );
   }
 
-  Future<Quote?>? startPolling(Pfi? pfi, String? exchangeId) {
+  Future<Quote?>? startPolling(String pfiDid, String exchangeId) {
     _completer = Completer();
-    return pollForQuote(pfi, exchangeId);
+    return pollForQuote(pfiDid, exchangeId);
   }
 
   void stopPolling() {

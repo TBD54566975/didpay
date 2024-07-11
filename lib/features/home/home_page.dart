@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_add_page.dart';
@@ -156,9 +157,10 @@ class HomePage extends HookConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => ref.read(pfisProvider).isEmpty
                       ? const PfisAddPage()
-                      : const PaymentAmountPage(
+                      : PaymentAmountPage(
                           paymentState: PaymentState(
                             transactionType: TransactionType.deposit,
+                            paymentAmountState: PaymentAmountState(),
                           ),
                         ),
                 ),

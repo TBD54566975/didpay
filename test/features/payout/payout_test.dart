@@ -1,11 +1,8 @@
-import 'package:decimal/decimal.dart';
-import 'package:didpay/features/payment/payment_state.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payout/payout.dart';
-import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
@@ -13,23 +10,18 @@ import '../../helpers/widget_helpers.dart';
 void main() async {
   await TestData.initializeDids();
   group('Payout', () {
-    final amount = ValueNotifier<Decimal>(Decimal.one);
-    final pfi = ValueNotifier<Pfi?>(null);
-    final offering = ValueNotifier<Offering?>(TestData.getOffering());
+    final offering = TestData.getOffering();
 
-    final paymentState = PaymentState(
-      transactionType: TransactionType.deposit,
-      selectedOffering: offering.value,
-      selectedPfi: pfi.value,
-      offeringsMap: const {},
-    );
-
-    Widget payoutTestWidget({PaymentState? paymentStateOverride}) =>
+    Widget payoutTestWidget({TransactionType? transactionTypeOverride}) =>
         WidgetHelpers.testableWidget(
           child: Payout(
-            paymentState: paymentStateOverride ?? paymentState,
-            payoutAmount: amount,
-            onCurrencySelect: (_, __) {},
+            transactionType: transactionTypeOverride ?? TransactionType.deposit,
+            state: ValueNotifier(
+              PaymentAmountState(
+                selectedOffering: offering,
+                payoutAmount: '1',
+              ),
+            ),
           ),
         );
 
@@ -53,9 +45,7 @@ void main() async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: payoutTestWidget(
-            paymentStateOverride: paymentState.copyWith(
-              transactionType: TransactionType.withdraw,
-            ),
+            transactionTypeOverride: TransactionType.withdraw,
           ),
         ),
       );
@@ -68,9 +58,7 @@ void main() async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
           child: payoutTestWidget(
-            paymentStateOverride: paymentState.copyWith(
-              transactionType: TransactionType.withdraw,
-            ),
+            transactionTypeOverride: TransactionType.withdraw,
           ),
         ),
       );

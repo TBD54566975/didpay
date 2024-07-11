@@ -33,7 +33,7 @@ class TransactionNotifier extends AutoDisposeFamilyAsyncNotifier<Transaction?,
       final bearerDid = ref.read(didProvider);
       final tbdexService = ref.read(tbdexServiceProvider);
       final exchange =
-          await tbdexService.getExchange(bearerDid, _pfi!, _exchangeId!);
+          await tbdexService.getExchange(bearerDid, _pfi!.did, _exchangeId!);
 
       final transaction = Transaction.fromExchange(exchange);
 

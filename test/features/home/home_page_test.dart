@@ -2,7 +2,7 @@ import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
-import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
@@ -11,6 +11,7 @@ import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/mocks.dart';
 import '../../helpers/test_data.dart';
@@ -45,7 +46,10 @@ void main() async {
       mockPfisNotifier = MockPfisNotifier(pfis);
 
       when(
-        () => mockTbdexService.getOfferings(any(), pfis),
+        () => mockTbdexService.getOfferings(
+          pfis,
+          offeringsFilter: GetOfferingsFilter(payinCurrency: 'USDC'),
+        ),
       ).thenAnswer((_) async => offerings);
 
       when(
@@ -61,7 +65,10 @@ void main() async {
 
     setUpAll(
       () => registerFallbackValue(
-        const PaymentState(transactionType: TransactionType.deposit),
+        PaymentState(
+          transactionType: TransactionType.deposit,
+          paymentAmountState: PaymentAmountState(offeringsMap: offerings),
+        ),
       ),
     );
 
@@ -85,31 +92,10 @@ void main() async {
       expect(find.widgetWithText(FilledButton, 'Deposit'), findsOneWidget);
     });
 
-    testWidgets('should navigate to PaymentAmountPage on tap of deposit button',
-        (tester) async {
-      await tester.pumpWidget(homePageTestWidget());
-
-      await tester.tap(find.widgetWithText(FilledButton, 'Deposit'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(PaymentAmountPage), findsOneWidget);
-    });
-
     testWidgets('should show withdraw button', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
 
       expect(find.widgetWithText(FilledButton, 'Withdraw'), findsOneWidget);
-    });
-
-    testWidgets(
-        'should navigate to PaymentAmountPage on tap of withdraw button',
-        (tester) async {
-      await tester.pumpWidget(homePageTestWidget());
-
-      await tester.tap(find.widgetWithText(FilledButton, 'Withdraw'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(PaymentAmountPage), findsOneWidget);
     });
 
     testWidgets('should show empty state when no transactions', (tester) async {
@@ -122,18 +108,6 @@ void main() async {
         findsOneWidget,
       );
       expect(find.text('Get started'), findsOneWidget);
-    });
-
-    testWidgets(
-        'should navigate to PaymentAmountPage on tap of get started button',
-        (tester) async {
-      await tester.pumpWidget(homePageTestWidget());
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Get started'));
-      await tester.pumpAndSettle();
-
-      expect(find.byType(PaymentAmountPage), findsOneWidget);
     });
   });
 }

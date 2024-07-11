@@ -1,7 +1,8 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
@@ -9,26 +10,29 @@ import '../../helpers/widget_helpers.dart';
 void main() {
   final schema = TestData.paymentDetailsSchema();
   final paymentMethods = [
-    PayinMethod(
+    PaymentMethod(
       kind: 'BANK_ACCESS BANK',
       name: 'Access Bank',
-      requiredPaymentDetails: schema,
+      schema: schema.toJson(),
       fee: '9.0',
     ),
-    PayinMethod(
+    PaymentMethod(
       kind: 'MOMO_MTN',
       name: 'MTN',
-      requiredPaymentDetails: schema,
+      schema: schema.toJson(),
     ),
   ];
 
   group('PaymentMethodsPage', () {
     Widget paymentMethodsPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod:
-                ValueNotifier<PayinMethod>(paymentMethods.first),
-            paymentMethods: paymentMethods,
+            availableMethods: paymentMethods,
+            state: ValueNotifier(
+              PaymentDetailsState(
+                paymentCurrency: '',
+                selectedPaymentMethod: paymentMethods.first,
+              ),
+            ),
           ),
         );
     testWidgets('should show search field', (tester) async {
@@ -43,14 +47,7 @@ void main() {
 
     testWidgets('should show payment method list', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod:
-                ValueNotifier<PayinMethod>(paymentMethods.first),
-            paymentMethods: paymentMethods,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: paymentMethodsPageTestWidget()),
       );
 
       expect(find.byType(ListTile), findsExactly(2));

@@ -1,12 +1,15 @@
-import 'package:decimal/decimal.dart';
 import 'package:didpay/features/payin/payin.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/loading_message.dart';
@@ -22,32 +25,23 @@ import 'package:tbdex/tbdex.dart';
 class PaymentAmountPage extends HookConsumerWidget {
   final PaymentState paymentState;
 
-  const PaymentAmountPage({required this.paymentState, super.key});
+  const PaymentAmountPage({
+    required this.paymentState,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final payinAmount = useState<String>('0');
-    final payoutAmount = useState<Decimal>(Decimal.zero);
     final keyPress = useState(NumberKeyPress(0, ''));
-    final currentPaymentState = useState<PaymentState>(paymentState);
-    final selectedPfi = useState<Pfi?>(paymentState.selectedPfi);
-    final selectedOffering = useState<Offering?>(paymentState.selectedOffering);
     final offerings =
         useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
+    final state =
+        useState<PaymentAmountState?>(paymentState.paymentAmountState);
 
     useEffect(
       () {
         Future.microtask(
-          () async => paymentState.offeringsMap != null
-              ? offerings.value = AsyncData({
-                  selectedPfi.value!: [selectedOffering.value!],
-                })
-              : await _getOfferings(
-                  context,
-                  ref,
-                  currentPaymentState.value,
-                  offerings,
-                ),
+          () async => _getOfferings(context, ref, offerings),
         );
         return null;
       },
@@ -57,145 +51,126 @@ class PaymentAmountPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: offerings.value.when(
-          data: (data) {
-            selectedPfi.value ??= data.keys.first;
-            selectedOffering.value ??= data[selectedPfi.value]!.first;
+        child: state.value?.selectedOffering != null
+            ? _buildPage(context, keyPress, state)
+            : offerings.value.when(
+                data: (offeringsMap) {
+                  if (state.value?.offeringsMap == null) {
+                    state.value = state.value?.copyWith(
+                      pfiDid: offeringsMap.keys.first.did,
+                      selectedOffering: offeringsMap.values.first.first,
+                      offeringsMap: offeringsMap,
+                    );
+                  }
 
-            void onCurrencySelect(pfi, offering) {
-              selectedPfi.value = pfi;
-              selectedOffering.value = offering;
-            }
-
-            currentPaymentState.value = _updatePaymentState(
-              currentPaymentState.value,
-              payinAmount.value,
-              payoutAmount.value,
-              selectedPfi.value,
-              selectedOffering.value,
-              data,
-            );
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Grid.side,
-                        vertical: Grid.xs,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Payin(
-                            paymentState: currentPaymentState.value,
-                            payinAmount: payinAmount,
-                            keyPress: keyPress,
-                            onCurrencySelect: onCurrencySelect,
-                          ),
-                          const SizedBox(height: Grid.sm),
-                          Payout(
-                            paymentState: currentPaymentState.value,
-                            payoutAmount: payoutAmount,
-                            onCurrencySelect: onCurrencySelect,
-                          ),
-                          const SizedBox(height: Grid.xl),
-                          PaymentFeeDetails(
-                            transactionType: paymentState.transactionType,
-                            offering: selectedOffering.value?.data,
-                          ),
-                        ],
-                      ),
-                    ),
+                  return _buildPage(context, keyPress, state);
+                },
+                loading: () =>
+                    LoadingMessage(message: Loc.of(context).fetchingOfferings),
+                error: (error, stackTrace) => ErrorMessage(
+                  message: error.toString(),
+                  onRetry: () => _getOfferings(
+                    context,
+                    ref,
+                    offerings,
                   ),
                 ),
-                Center(
-                  child: NumberPad(
-                    onKeyPressed: (key) => keyPress.value =
-                        NumberKeyPress(keyPress.value.count + 1, key),
-                  ),
-                ),
-                const SizedBox(height: Grid.sm),
-                NextButton(
-                  onPressed: Decimal.parse(payinAmount.value) == Decimal.zero
-                      ? null
-                      : () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => PaymentDetailsPage(
-                                paymentState: currentPaymentState.value,
-                              ),
-                            ),
-                          ),
-                ),
-              ],
-            );
-          },
-          loading: () =>
-              LoadingMessage(message: Loc.of(context).fetchingOfferings),
-          error: (error, stackTrace) => ErrorMessage(
-            message: error.toString(),
-            onRetry: () => _getOfferings(
-              context,
-              ref,
-              currentPaymentState.value,
-              offerings,
-            ),
-          ),
-        ),
+              ),
       ),
     );
   }
 
-  PaymentState _updatePaymentState(
-    PaymentState currentState,
-    String payinAmount,
-    Decimal payoutAmount,
-    Pfi? selectedPfi,
-    Offering? selectedOffering,
-    Map<Pfi, List<Offering>> offeringsMap,
-  ) =>
-      currentState.copyWith(
-        payinAmount: Decimal.parse(payinAmount),
-        payoutAmount: payoutAmount,
-        selectedPfi: selectedPfi,
-        selectedOffering: selectedOffering,
-        offeringsMap: offeringsMap,
-        payinCurrency: selectedOffering?.data.payin.currencyCode ?? '',
-        payoutCurrency: selectedOffering?.data.payout.currencyCode ?? '',
-        payinMethods: selectedOffering?.data.payin.methods ?? [],
-        payoutMethods: selectedOffering?.data.payout.methods ?? [],
-        exchangeRate: Decimal.parse(
-          selectedOffering?.data.payoutUnitsPerPayinUnit ?? '1',
+  Widget _buildPage(
+    BuildContext context,
+    ValueNotifier<NumberKeyPress> keyPress,
+    ValueNotifier<PaymentAmountState?> state,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Grid.side,
+                vertical: Grid.xs,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Payin(
+                    transactionType: paymentState.transactionType,
+                    state: state,
+                    keyPress: keyPress,
+                  ),
+                  const SizedBox(height: Grid.sm),
+                  Payout(
+                    transactionType: paymentState.transactionType,
+                    state: state,
+                  ),
+                  const SizedBox(height: Grid.xl),
+                  PaymentFeeDetails(
+                    transactionType: paymentState.transactionType,
+                    offering: state.value?.selectedOffering?.data,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-        selectedPayinMethod: currentState.moneyAddresses == null
-            ? null
-            : selectedOffering?.data.payin.methods.firstOrNull,
-        selectedPayoutMethod: currentState.moneyAddresses == null
-            ? null
-            : selectedOffering?.data.payout.methods.firstOrNull,
-        formData: currentState.moneyAddresses == null
-            ? null
-            : {
-                selectedOffering?.data.payout.methods.firstOrNull
-                        ?.requiredPaymentDetails?.requiredProperties?.first ??
-                    '': currentState.moneyAddresses?.first.urn ?? '',
-              },
-      );
+        Center(
+          child: NumberPad(
+            onKeyPressed: (key) =>
+                keyPress.value = NumberKeyPress(keyPress.value.count + 1, key),
+          ),
+        ),
+        const SizedBox(height: Grid.sm),
+        NextButton(
+          onPressed: state.value?.payinAmount == '0'
+              ? null
+              : () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PaymentDetailsPage(
+                        paymentState: paymentState.copyWith(
+                          paymentAmountState: state.value,
+                          paymentDetailsState: PaymentDetailsState(
+                            paymentCurrency: paymentState.transactionType ==
+                                    TransactionType.deposit
+                                ? state.value?.payinCurrency
+                                : state.value?.payoutCurrency,
+                            paymentMethods: paymentState.transactionType ==
+                                    TransactionType.deposit
+                                ? state
+                                    .value?.selectedOffering?.data.payin.methods
+                                    .map(PaymentMethod.fromPayinMethod)
+                                    .toList()
+                                : state.value?.selectedOffering?.data.payout
+                                    .methods
+                                    .map(PaymentMethod.fromPayoutMethod)
+                                    .toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+        ),
+      ],
+    );
+  }
 
   Future<void> _getOfferings(
     BuildContext context,
     WidgetRef ref,
-    PaymentState paymentState,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
-      final offerings = await ref
-          .read(tbdexServiceProvider)
-          .getOfferings(paymentState, ref.read(pfisProvider));
+      final offerings = await ref.read(tbdexServiceProvider).getOfferings(
+            ref.read(pfisProvider),
+            // TODO(ethan-tbd): add back filter
+            // offeringsFilter: paymentState.offeringsFilter,
+          );
 
       if (context.mounted) {
         state.value = AsyncData(offerings);

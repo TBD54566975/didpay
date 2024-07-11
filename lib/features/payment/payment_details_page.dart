@@ -1,11 +1,13 @@
 import 'package:collection/collection.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_consent_page.dart';
-import 'package:didpay/features/payment/payment_method_operations.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
@@ -31,40 +33,26 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedPaymentMethod = useState<Object?>(null);
-    final selectedPaymentType = useState<String?>(null);
-    final offeringCredentials = useState<List<String>?>(null);
     final rfq = useState<AsyncValue<Rfq>?>(null);
+    final state =
+        useState<PaymentDetailsState>(paymentState.paymentDetailsState!);
 
-    final paymentMethods = _getPaymentMethods(paymentState);
-    final paymentTypes = _getPaymentTypes(paymentMethods);
-    final filteredPaymentMethods =
-        _getFilteredPaymentMethods(paymentMethods, selectedPaymentType.value);
+    final availableMethods =
+        state.value.filterPaymentMethods(state.value.selectedPaymentType);
 
     useEffect(
       () {
-        paymentState.dap != null
-            ? Future.microtask(
-                () async => _checkCredsAndSendRfq(
-                  context,
-                  ref,
-                  paymentState,
-                  offeringCredentials,
-                  rfq,
-                ),
-              )
-            : selectedPaymentMethod.value =
-                (filteredPaymentMethods?.length ?? 0) <= 1
-                    ? filteredPaymentMethods?.firstOrNull
-                    : null;
+        // TODO(ethan-tbd): add back dap flow
+        state.value = state.value.copyWith(
+          selectedPaymentMethod: (availableMethods?.length ?? 0) <= 1
+              ? availableMethods?.firstOrNull
+              : null,
+        );
+
         return;
       },
-      [selectedPaymentType.value],
+      [state.value.selectedPaymentType],
     );
-
-    final shouldShowPaymentTypeSelector = (paymentTypes.length) > 1;
-    final shouldShowPaymentMethodSelector =
-        !shouldShowPaymentTypeSelector || selectedPaymentType.value != null;
 
     final isSendingRfq = rfq.value?.isLoading ?? false;
 
@@ -87,9 +75,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     onRetry: () => _sendRfq(
                       context,
                       ref,
-                      paymentState,
+                      state.value,
                       rfq,
-                      claims: offeringCredentials.value,
                     ),
                   ),
                 )
@@ -103,38 +90,23 @@ class PaymentDetailsPage extends HookConsumerWidget {
                               : Loc.of(context).enterYourPaymentDetails,
                       subtitle: Loc.of(context).makeSureInfoIsCorrect,
                     ),
-                    if (shouldShowPaymentTypeSelector)
+                    if (state.value.hasMultiplePaymentTypes)
                       _buildPaymentTypeSelector(
                         context,
-                        selectedPaymentType,
-                        paymentTypes,
+                        state,
                       ),
-                    if (shouldShowPaymentMethodSelector)
+                    if (state.value.hasNoPaymentTypes ||
+                        state.value.selectedPaymentType != null)
                       _buildPaymentMethodSelector(
                         context,
-                        selectedPaymentMethod,
-                        filteredPaymentMethods,
+                        availableMethods,
+                        state,
                       ),
                     _buildPaymentForm(
                       context,
-                      paymentState.copyWith(
-                        selectedPayinMethod: paymentState.transactionType ==
-                                TransactionType.deposit
-                            ? selectedPaymentMethod.value as PayinMethod?
-                            : null,
-                        selectedPayoutMethod: paymentState.transactionType ==
-                                TransactionType.deposit
-                            ? null
-                            : selectedPaymentMethod.value as PayoutMethod?,
-                      ),
-                      onPaymentFormSubmit: (paymentState) async =>
-                          _checkCredsAndSendRfq(
-                        context,
-                        ref,
-                        paymentState,
-                        offeringCredentials,
-                        rfq,
-                      ),
+                      ref,
+                      state,
+                      rfq,
                     ),
                   ],
                 ),
@@ -145,47 +117,38 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildPaymentForm(
     BuildContext context,
-    PaymentState paymentState, {
-    required void Function(PaymentState) onPaymentFormSubmit,
-  }) {
-    final paymentMethod =
-        paymentState.transactionType == TransactionType.deposit
-            ? paymentState.selectedPayinMethod
-            : paymentState.selectedPayoutMethod;
-
-    final isDisabled = paymentMethod.isDisabled;
-    final schema = paymentMethod.paymentSchema;
-    final fee = paymentMethod.paymentFee;
-    final paymentName = paymentMethod.paymentName;
-
-    return Expanded(
-      child: JsonSchemaForm(
-        schema: schema,
-        isDisabled: isDisabled,
-        onSubmit: (formData) => onPaymentFormSubmit(
-          paymentState.copyWith(
-            serviceFee: fee,
-            paymentName: paymentName,
-            formData: formData,
-          ),
+    WidgetRef ref,
+    ValueNotifier<PaymentDetailsState> state,
+    ValueNotifier<AsyncValue<Rfq>?> rfq,
+  ) =>
+      Expanded(
+        child: JsonSchemaForm(
+          schema: state.value.selectedPaymentMethod?.schema,
+          isDisabled: state.value.selectedPaymentMethod == null,
+          onSubmit: (formData) {
+            state.value = state.value.copyWith(formData: formData);
+            _checkCredsAndSendRfq(
+              context,
+              ref,
+              rfq,
+              state,
+            );
+          },
         ),
-      ),
-    );
-  }
+      );
 
   Widget _buildPaymentTypeSelector(
     BuildContext context,
-    ValueNotifier<String?> selectedPaymentType,
-    Set<String> paymentTypes,
+    ValueNotifier<PaymentDetailsState> state,
   ) =>
       Column(
         children: [
           const SizedBox(height: Grid.xxs),
           ListTile(
             title: Text(
-              selectedPaymentType.value == null
+              state.value.selectedPaymentType == null
                   ? Loc.of(context).selectPaymentType
-                  : selectedPaymentType.value ?? '',
+                  : state.value.selectedPaymentType ?? '',
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: Theme.of(context).colorScheme.primary,
                   ),
@@ -194,11 +157,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => PaymentTypesPage(
-                    payinCurrency: paymentState.payinCurrency,
-                    paymentTypes: paymentTypes,
-                    selectedPaymentType: selectedPaymentType,
-                  ),
+                  builder: (context) => PaymentTypesPage(state: state),
                 ),
               );
             },
@@ -208,17 +167,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   Widget _buildPaymentMethodSelector(
     BuildContext context,
-    ValueNotifier<Object?> selectedPaymentMethod,
-    List<Object?>? filteredPaymentMethods,
+    List<PaymentMethod>? availableMethods,
+    ValueNotifier<PaymentDetailsState> state,
   ) {
-    final isSelectionDisabled = (filteredPaymentMethods?.length ?? 0) <= 1;
+    final isSelectionDisabled = (availableMethods?.length ?? 0) <= 1;
     final fee = double.tryParse(
-          selectedPaymentMethod.value?.paymentFee ?? '0.00',
+          state.value.selectedPaymentMethod?.fee ?? '0.00',
         )?.toStringAsFixed(2) ??
         '0.00';
 
     if (isSelectionDisabled) {
-      selectedPaymentMethod.value = filteredPaymentMethods?.firstOrNull;
+      state.value = state.value
+          .copyWith(selectedPaymentMethod: availableMethods?.firstOrNull);
     }
 
     return Column(
@@ -226,17 +186,19 @@ class PaymentDetailsPage extends HookConsumerWidget {
         const SizedBox(height: Grid.xxs),
         ListTile(
           title: Text(
-            selectedPaymentMethod.value.paymentName ??
+            state.value.selectedPaymentMethod?.title ??
                 Loc.of(context).selectPaymentMethod,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                   color: Theme.of(context).colorScheme.primary,
                 ),
           ),
           subtitle: Text(
-            selectedPaymentMethod.value.paymentName == null
+            state.value.selectedPaymentMethod?.kind == null
                 ? Loc.of(context).serviceFeesMayApply
-                : Loc.of(context)
-                    .serviceFeeAmount(fee, paymentState.payinCurrency ?? ''),
+                : Loc.of(context).serviceFeeAmount(
+                    fee,
+                    paymentState.paymentAmountState?.payinCurrency ?? '',
+                  ),
             style: Theme.of(context).textTheme.bodySmall,
           ),
           trailing:
@@ -247,12 +209,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => PaymentMethodsPage(
-                        paymentCurrency: paymentState.transactionType ==
-                                TransactionType.deposit
-                            ? paymentState.payinCurrency
-                            : paymentState.payoutCurrency,
-                        selectedPaymentMethod: selectedPaymentMethod,
-                        paymentMethods: filteredPaymentMethods,
+                        state: state,
+                        availableMethods: availableMethods,
                       ),
                     ),
                   );
@@ -262,51 +220,20 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  List<Object?>? _getPaymentMethods(PaymentState paymentState) =>
-      paymentState.transactionType == TransactionType.deposit
-          ? paymentState.payinMethods
-          : paymentState.payoutMethods;
-
-  Set<String> _getPaymentTypes(List<Object?>? paymentMethods) =>
-      paymentMethods
-          ?.map((method) => method.paymentGroup)
-          .whereType<String>()
-          .toSet() ??
-      {};
-
-  List<Object?>? _getFilteredPaymentMethods(
-    List<Object?>? paymentMethods,
-    String? selectedPaymentType,
-  ) =>
-      paymentMethods
-          ?.where(
-            (method) =>
-                method.paymentGroup?.contains(selectedPaymentType ?? '') ??
-                true,
-          )
-          .toList();
-
   Future<void> _checkCredsAndSendRfq(
     BuildContext context,
     WidgetRef ref,
-    PaymentState paymentState,
-    ValueNotifier<List<String>?> offeringCredentials,
-    ValueNotifier<AsyncValue<Rfq>?> state,
+    ValueNotifier<AsyncValue<Rfq>?> rfq,
+    ValueNotifier<PaymentDetailsState> state,
   ) async {
-    final hasRequiredVc = await _hasRequiredVc(
-      context,
-      ref,
-      paymentState,
-      offeringCredentials,
-    );
+    final hasRequiredVc = await _hasRequiredVc(context, ref, state);
 
     if (hasRequiredVc && context.mounted) {
       await _sendRfq(
         context,
         ref,
-        paymentState,
-        state,
-        claims: offeringCredentials.value,
+        state.value,
+        rfq,
       );
     }
   }
@@ -314,45 +241,45 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
-    PaymentState paymentState,
-    ValueNotifier<AsyncValue<Rfq>?> state, {
-    List<String>? claims,
-  }) async {
-    state.value = const AsyncLoading();
+    PaymentDetailsState state,
+    ValueNotifier<AsyncValue<Rfq>?> rfq,
+  ) async {
+    rfq.value = const AsyncLoading();
 
     try {
-      final rfq = await ref.read(tbdexServiceProvider).sendRfq(
+      await ref.read(tbdexServiceProvider).sendRfq(
             ref.read(didProvider),
-            paymentState.copyWith(claims: claims),
+            paymentState.paymentAmountState?.pfiDid ?? '',
+            paymentState.paymentAmountState?.exchangeId ?? '',
+            paymentState.paymentAmountState?.payinAmount ?? '',
+            state.selectedPaymentMethod?.kind ?? '',
+            state.selectedPaymentMethod?.kind ?? '',
+            state.formData ?? {},
           );
 
-      if (context.mounted && state.value != null) {
+      if (context.mounted && rfq.value != null) {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentReviewPage(
-              paymentState: paymentState.copyWith(
-                exchangeId: rfq.metadata.id,
-                claims: claims,
-              ),
+              paymentState: paymentState.copyWith(paymentDetailsState: state),
             ),
           ),
         );
 
-        if (context.mounted) state.value = null;
+        if (context.mounted) rfq.value = null;
       }
     } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
+      rfq.value = AsyncError(e, StackTrace.current);
     }
   }
 
   Future<bool> _hasRequiredVc(
     BuildContext context,
     WidgetRef ref,
-    PaymentState paymentState,
-    ValueNotifier<List<String>?> offeringCredentials,
+    ValueNotifier<PaymentDetailsState> state,
   ) async {
     final presentationDefinition =
-        paymentState.selectedOffering?.data.requiredClaims;
+        paymentState.paymentAmountState?.selectedOffering?.data.requiredClaims;
     final credentials =
         presentationDefinition?.selectCredentials(ref.read(vcsProvider));
 
@@ -361,14 +288,18 @@ class PaymentDetailsPage extends HookConsumerWidget {
     }
 
     if (credentials != null && credentials.isNotEmpty) {
-      offeringCredentials.value = credentials;
+      state.value = state.value.copyWith(credentialsJwt: credentials);
       return true;
     }
+
+    if (paymentState.paymentAmountState?.pfiDid == null) return false;
 
     final issuedCredential = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => ModalFlow(
-          initialWidget: KccConsentPage(pfi: paymentState.selectedPfi!),
+          initialWidget: KccConsentPage(
+            pfi: Pfi(did: paymentState.paymentAmountState?.pfiDid ?? ''),
+          ),
         ),
         fullscreenDialog: true,
       ),
@@ -376,7 +307,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     if (issuedCredential == null) return false;
 
-    offeringCredentials.value = [issuedCredential as String];
+    state.value =
+        state.value.copyWith(credentialsJwt: [issuedCredential as String]);
     return true;
   }
 }
