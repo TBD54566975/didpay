@@ -1,6 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -19,7 +22,7 @@ void main() async {
   await TestData.initializeDids();
 
   final did = TestData.aliceDid;
-  final rfq = TestData.getRfq();
+  final offering = TestData.getOffering();
   final quote = TestData.getQuote();
   final order = TestData.getOrder();
 
@@ -48,9 +51,17 @@ void main() async {
           child: PaymentReviewPage(
             paymentState: PaymentState(
               transactionType: TransactionType.deposit,
-              paymentName: 'ABC Bank',
-              pfi: const Pfi(did: '123'),
-              rfq: rfq,
+              paymentAmountState: PaymentAmountState(
+                pfiDid: '123',
+                payinAmount: '100',
+                payoutAmount: '0.12',
+                selectedOffering: offering,
+              ),
+              paymentDetailsState: PaymentDetailsState(
+                selectedPaymentMethod: PaymentMethod.fromPayinMethod(
+                  offering.data.payin.methods.first,
+                ),
+              ),
             ),
           ),
           overrides: [
@@ -88,13 +99,13 @@ void main() async {
       expect(find.text('0.01 AUD'), findsOneWidget);
     });
 
-    testWidgets('should show bank name', (tester) async {
+    testWidgets('should show payment name', (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
       );
       await tester.pumpAndSettle();
 
-      expect(find.text('ABC Bank'), findsOneWidget);
+      expect(find.text('DEBIT_CARD'), findsOneWidget);
     });
 
     testWidgets('should show order confirmation on tap of submit button',

@@ -2,6 +2,7 @@ import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/home/home_page.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
@@ -51,11 +52,6 @@ void main() async {
         ),
       ).thenAnswer((_) async => offerings);
 
-      // when(
-      //   () => mockTbdexService.getOfferings(pfis,
-      //       offeringsFilter: GetOfferingsFilter(payoutCurrency: 'USDC')),
-      // ).thenAnswer((_) async => offerings);
-
       when(
         () => mockTbdexService.getExchanges(did, pfis),
       ).thenAnswer((_) async => {});
@@ -71,7 +67,7 @@ void main() async {
       () => registerFallbackValue(
         PaymentState(
           transactionType: TransactionType.deposit,
-          offeringsMap: offerings,
+          paymentAmountState: PaymentAmountState(offeringsMap: offerings),
         ),
       ),
     );

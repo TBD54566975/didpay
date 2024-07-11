@@ -1,6 +1,7 @@
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payout/payout.dart';
@@ -42,9 +43,11 @@ void main() async {
 
   group('PaymentAmountPage', () {
     Widget paymentAmountPageTestWidget() => WidgetHelpers.testableWidget(
-          child: const PaymentAmountPage(
-            paymentState:
-                PaymentState(transactionType: TransactionType.deposit),
+          child: PaymentAmountPage(
+            paymentState: PaymentState(
+              transactionType: TransactionType.deposit,
+              paymentAmountState: PaymentAmountState(),
+            ),
           ),
           overrides: [
             didProvider.overrideWithValue(did),

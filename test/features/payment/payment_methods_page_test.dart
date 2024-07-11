@@ -1,4 +1,5 @@
 import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -25,10 +26,13 @@ void main() {
   group('PaymentMethodsPage', () {
     Widget paymentMethodsPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod:
-                ValueNotifier<PaymentMethod>(paymentMethods.first),
-            paymentMethods: paymentMethods,
+            availableMethods: paymentMethods,
+            state: ValueNotifier(
+              PaymentDetailsState(
+                paymentCurrency: '',
+                selectedPaymentMethod: paymentMethods.first,
+              ),
+            ),
           ),
         );
     testWidgets('should show search field', (tester) async {
@@ -43,14 +47,7 @@ void main() {
 
     testWidgets('should show payment method list', (tester) async {
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: PaymentMethodsPage(
-            paymentCurrency: '',
-            selectedPaymentMethod:
-                ValueNotifier<PaymentMethod>(paymentMethods.first),
-            paymentMethods: paymentMethods,
-          ),
-        ),
+        WidgetHelpers.testableWidget(child: paymentMethodsPageTestWidget()),
       );
 
       expect(find.byType(ListTile), findsExactly(2));

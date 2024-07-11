@@ -1,3 +1,5 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -5,18 +7,27 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../helpers/widget_helpers.dart';
 
 void main() {
-  final paymentTypes = {
-    'Bank',
-    'Mobile money',
-    'Wallet',
-  };
+  final paymentMethods = [
+    PaymentMethod(
+      type: 'Bank',
+      kind: 'BANK_ACCESS BANK',
+    ),
+    PaymentMethod(
+      type: 'Mobile money',
+      kind: 'MOMO_MTN',
+    ),
+    PaymentMethod(
+      type: 'Wallet',
+      kind: 'BTC_WALLET',
+    ),
+  ];
 
   group('PaymentTypesPage', () {
     Widget paymentTypesPageTestWidget() => WidgetHelpers.testableWidget(
           child: PaymentTypesPage(
-            selectedPaymentType: ValueNotifier<String>(paymentTypes.first),
-            paymentTypes: paymentTypes,
-            payinCurrency: '',
+            state: ValueNotifier(
+              PaymentDetailsState(paymentMethods: paymentMethods),
+            ),
           ),
         );
 
