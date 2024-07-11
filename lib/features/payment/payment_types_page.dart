@@ -1,17 +1,14 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class PaymentTypesPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
-  final String? payinCurrency;
-  final Set<String?>? paymentTypes;
-  final ValueNotifier<String?> selectedPaymentType;
+  final ValueNotifier<PaymentDetailsState> state;
 
   PaymentTypesPage({
-    required this.payinCurrency,
-    required this.paymentTypes,
-    required this.selectedPaymentType,
+    required this.state,
     super.key,
   });
 
@@ -34,9 +31,8 @@ class PaymentTypesPage extends HookWidget {
             Expanded(
               child: _buildTypesList(
                 context,
-                selectedPaymentType,
                 searchText,
-                paymentTypes,
+                state,
               ),
             ),
           ],
@@ -47,32 +43,32 @@ class PaymentTypesPage extends HookWidget {
 
   Widget _buildTypesList(
     BuildContext context,
-    ValueNotifier<String?> selectedPaymentMethod,
     ValueNotifier<String> searchText,
-    Set<String?>? paymentTypes,
+    ValueNotifier<PaymentDetailsState> state,
   ) {
-    final filteredPaymentTypes = paymentTypes
+    final filteredPaymentTypes = state.value.paymentTypes
         ?.where(
           (entry) =>
-              entry?.toLowerCase().contains(searchText.value.toLowerCase()) ??
-              false,
+              entry.toLowerCase().contains(searchText.value.toLowerCase()),
         )
         .toList();
 
     return ListView.builder(
       itemBuilder: (context, index) {
         final currentPaymentType = filteredPaymentTypes?.elementAtOrNull(index);
+        final selected = state.value.selectedPaymentType == currentPaymentType;
 
         return ListTile(
           visualDensity: VisualDensity.compact,
-          selected: selectedPaymentMethod.value == currentPaymentType,
+          selected: selected,
           title: Text(currentPaymentType ?? ''),
-          trailing: selectedPaymentMethod.value == currentPaymentType
-              ? const Icon(Icons.check)
-              : null,
+          trailing: selected ? const Icon(Icons.check) : null,
           onTap: () {
-            selectedPaymentMethod.value =
-                currentPaymentType ?? selectedPaymentMethod.value;
+            if (currentPaymentType != null) {
+              state.value =
+                  state.value.copyWith(selectedPaymentType: currentPaymentType);
+            }
+
             Navigator.of(context).pop();
           },
         );

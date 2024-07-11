@@ -1,6 +1,4 @@
-import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +7,7 @@ import 'package:tbdex/tbdex.dart';
 class ModalSelectCurrency {
   static Future<dynamic> show(
     BuildContext context,
-    PaymentState paymentState,
-    void Function(Pfi, Offering) onSelect,
+    ValueNotifier<PaymentAmountState?> state,
   ) =>
       showModalBottomSheet(
         useSafeArea: true,
@@ -19,10 +16,11 @@ class ModalSelectCurrency {
         builder: (context) => SafeArea(
           child: LayoutBuilder(
             builder: (context, constraints) {
-              if (paymentState.offeringsMap == null) return Container();
+              if (state.value?.offeringsMap == null) return Container();
 
-              final totalOfferings = paymentState.offeringsMap!.values
-                  .fold(0, (total, list) => total + list.length);
+              final totalOfferings = state.value?.offeringsMap!.values
+                      .fold(0, (total, list) => total + list.length) ??
+                  1;
               final height = totalOfferings * Grid.tileHeight;
               final maxHeight = MediaQuery.of(context).size.height * 0.4;
 
@@ -47,28 +45,29 @@ class ModalSelectCurrency {
                         thumbVisibility: true,
                         child: ListView(
                           shrinkWrap: true,
-                          children: paymentState.offeringsMap!.entries
+                          children: state.value!.offeringsMap!.entries
                               .expand(
                                 (entry) => entry.value.map(
                                   (offering) => ListTile(
                                     onTap: () {
-                                      onSelect(entry.key, offering);
+                                      state.value = state.value?.copyWith(
+                                        selectedOffering: offering,
+                                        pfiDid: entry.key.did,
+                                      );
                                       Navigator.pop(context);
                                     },
                                     title: _buildCurrencyTitle(
                                       context,
                                       offering,
-                                      paymentState.transactionType,
                                     ),
                                     subtitle: _buildCurrencySubtitle(
                                       context,
                                       offering,
-                                      paymentState.transactionType,
                                     ),
-                                    trailing:
-                                        (paymentState.offering == offering)
-                                            ? const Icon(Icons.check)
-                                            : null,
+                                    trailing: (state.value?.selectedOffering ==
+                                            offering)
+                                        ? const Icon(Icons.check)
+                                        : null,
                                   ),
                                 ),
                               )
@@ -87,7 +86,6 @@ class ModalSelectCurrency {
   static Widget _buildCurrencyTitle(
     BuildContext context,
     Offering offering,
-    TransactionType transactionType,
   ) =>
       Text(
         '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
@@ -97,7 +95,6 @@ class ModalSelectCurrency {
   static Widget _buildCurrencySubtitle(
     BuildContext context,
     Offering offering,
-    TransactionType transactionType,
   ) =>
       Text(
         '1 ${offering.data.payin.currencyCode} = ${offering.data.payoutUnitsPerPayinUnit} ${offering.data.payout.currencyCode}',

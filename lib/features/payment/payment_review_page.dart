@@ -148,10 +148,11 @@ class PaymentReviewPage extends HookConsumerWidget {
         ),
       ),
       onPopInvoked: (_) {
-        if (paymentState.dap != null) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => Navigator.of(context).pop());
-        }
+        // TODO(ethan-tbd): add back dap flow
+        // if (paymentState.dap != null) {
+        //   WidgetsBinding.instance
+        //       .addPostFrameCallback((_) => Navigator.of(context).pop());
+        // }
       },
     );
   }
@@ -174,8 +175,8 @@ class PaymentReviewPage extends HookConsumerWidget {
 
                 await ref.read(tbdexServiceProvider).submitClose(
                       ref.read(didProvider),
-                      paymentState.pfiDid ?? '',
-                      paymentState.exchangeId ?? '',
+                      paymentState.paymentAmountState?.pfiDid ?? '',
+                      paymentState.paymentAmountState?.exchangeId ?? '',
                     );
 
                 if (dialogContext.mounted) {
@@ -277,11 +278,12 @@ class PaymentReviewPage extends HookConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              paymentState.paymentName ?? '',
+              paymentState.paymentDetailsState?.selectedPaymentMethod?.title ??
+                  '',
               style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: Grid.xxs),
-            ...?paymentState.paymentDetails?.entries.map(
+            ...?paymentState.paymentDetailsState?.formData?.entries.map(
               (entry) => Padding(
                 padding: const EdgeInsets.only(
                   bottom: Grid.xxs,
@@ -306,8 +308,8 @@ class PaymentReviewPage extends HookConsumerWidget {
 
     try {
       final quote = await quoteNotifier.startPolling(
-        paymentState.pfiDid ?? '',
-        paymentState.exchangeId ?? '',
+        paymentState.paymentAmountState?.pfiDid ?? '',
+        paymentState.paymentAmountState?.exchangeId ?? '',
       );
 
       if (context.mounted && quote != null) {
@@ -330,8 +332,8 @@ class PaymentReviewPage extends HookConsumerWidget {
     try {
       final order = await ref.read(tbdexServiceProvider).submitOrder(
             ref.read(didProvider),
-            paymentState.pfiDid ?? '',
-            paymentState.exchangeId ?? '',
+            paymentState.paymentAmountState?.pfiDid ?? '',
+            paymentState.paymentAmountState?.exchangeId ?? '',
           );
 
       if (context.mounted) {

@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/number/number_key_press.dart';
 import 'package:didpay/shared/shake_animated_text.dart';
@@ -9,16 +10,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class NumberDisplay extends HookWidget {
-  final String currencyCode;
   final Widget currencyWidget;
-  final ValueNotifier<String> amount;
+  final ValueNotifier<PaymentAmountState?> state;
   final ValueNotifier<NumberKeyPress> keyPress;
   final TextStyle? textStyle;
 
   const NumberDisplay({
-    required this.currencyCode,
     required this.currencyWidget,
-    required this.amount,
+    required this.state,
     required this.keyPress,
     this.textStyle,
     super.key,
@@ -29,8 +28,8 @@ class NumberDisplay extends HookWidget {
     final shouldAnimate = useState(false);
     final decimalHint = useState('');
 
-    final formattedAmount =
-        Decimal.parse(amount.value).formatCurrency(currencyCode);
+    final formattedAmount = Decimal.parse(state.value?.payinAmount ?? '0')
+        .formatCurrency(state.value?.payinCurrency ?? '');
     final displayAmount = _denormalizeAmount(formattedAmount);
 
     useEffect(
@@ -39,8 +38,17 @@ class NumberDisplay extends HookWidget {
           final key = keyPress.value.key;
           if (key == '') return;
 
-          _handleKeyPress(shouldAnimate, amount.value, key, currencyCode);
-          _updateDecimalHint(decimalHint, currencyCode);
+          _handleKeyPress(
+            shouldAnimate,
+            key,
+            state.value?.payinAmount ?? '0',
+            state.value?.payinCurrency ?? '',
+          );
+          _updateDecimalHint(
+            state.value?.payinAmount ?? '0',
+            state.value?.payinCurrency ?? '',
+            decimalHint,
+          );
         });
 
         return;
@@ -88,8 +96,8 @@ class NumberDisplay extends HookWidget {
 
   void _handleKeyPress(
     ValueNotifier<bool> shouldAnimate,
-    String current,
     String key,
+    String current,
     String currencyCode,
   ) {
     shouldAnimate.value = (key == '<')
@@ -102,44 +110,51 @@ class NumberDisplay extends HookWidget {
     if (shouldAnimate.value) return;
 
     if (key == '<') {
-      amount.value =
-          (current.length > 1) ? current.substring(0, current.length - 1) : '0';
+      state.value = state.value?.copyWith(
+        payinAmount: (current.length > 1)
+            ? current.substring(0, current.length - 1)
+            : '0',
+      );
     } else {
-      amount.value = (current == '0' && key == '.')
-          ? '$current$key'
-          : (current == '0')
-              ? key
-              : '$current$key';
+      state.value = state.value?.copyWith(
+        payinAmount: (current == '0' && key == '.')
+            ? '$current$key'
+            : (current == '0')
+                ? key
+                : '$current$key',
+      );
     }
   }
 
   void _updateDecimalHint(
+    String amount,
+    String currency,
     ValueNotifier<String> decimalHint,
-    String currencyCode,
   ) {
-    final decimalDigits = currencyCode == 'BTC' ? 8 : 2;
-    final hintDigits = decimalDigits - _getDecimalScale(amount.value);
+    final decimalDigits = currency == 'BTC' ? 8 : 2;
+    final hintDigits = decimalDigits - _getDecimalScale(amount);
 
     decimalHint.value =
-        _isDecimal(amount.value) && hintDigits > 0 ? '0' * hintDigits : '';
+        _isDecimal(amount) && hintDigits > 0 ? '0' * hintDigits : '';
   }
 
   /// Adds trailing zeros to a formatted decimal amount if they were trimmed.
   ///
   /// This function takes a [formattedAmount] string, removes any commas, and
-  /// compares it to the current [amount]. If [amount] has more decimal places,
+  /// compares it to the current [state]. If [state] has more decimal places,
   /// it appends the necessary trailing zeros to [formattedAmount] to match the
   /// expected scale.
   String _denormalizeAmount(String formattedAmount) {
     final unformattedAmount = formattedAmount.replaceAll(',', '');
-    if (amount.value == unformattedAmount) {
+    if (state.value?.payinAmount == unformattedAmount) {
       return formattedAmount;
     }
 
     final missingZeros = '0' *
-        (_getDecimalScale(amount.value) - _getDecimalScale(formattedAmount));
+        (_getDecimalScale(state.value?.payinAmount ?? '') -
+            _getDecimalScale(formattedAmount));
 
-    return Decimal.parse(amount.value).isInteger
+    return Decimal.parse(state.value?.payinAmount ?? '0').isInteger
         ? '$formattedAmount.$missingZeros'
         : '$formattedAmount$missingZeros';
   }
