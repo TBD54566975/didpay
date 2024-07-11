@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -104,9 +105,11 @@ class LucidOfferingsPage extends HookConsumerWidget {
                               builder: (context) => PaymentAmountPage(
                                 paymentState: PaymentState(
                                   transactionType: TransactionType.send,
-                                  offering: selectedOffering.value,
-                                  pfi: selectedPfi.value,
-                                  offeringsMap: offeringsMap,
+                                  paymentAmountState: PaymentAmountState(
+                                    selectedOffering: selectedOffering.value,
+                                    pfiDid: selectedPfi.value?.did,
+                                    offeringsMap: offeringsMap,
+                                  ),
                                 ),
                               ),
                             ),

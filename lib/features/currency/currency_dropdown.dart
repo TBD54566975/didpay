@@ -1,19 +1,16 @@
-import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/pfis/pfi.dart';
-import 'package:didpay/features/transaction/transaction.dart';
+import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/shared/modal/modal_select_currency.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:tbdex/tbdex.dart';
 
 class CurrencyDropdown extends HookConsumerWidget {
-  final PaymentState paymentState;
-  final void Function(Pfi, Offering) onCurrencySelect;
+  final String paymentCurrency;
+  final ValueNotifier<PaymentAmountState?> state;
 
   const CurrencyDropdown({
-    required this.paymentState,
-    required this.onCurrencySelect,
+    required this.paymentCurrency,
+    required this.state,
     super.key,
   });
 
@@ -30,16 +27,11 @@ class CurrencyDropdown extends HookConsumerWidget {
           ),
           onPressed: () => ModalSelectCurrency.show(
             context,
-            paymentState,
-            onCurrencySelect,
+            state,
           ),
         ),
       );
 
-  Widget _buildCurrencyLabel(BuildContext context) => Text(
-        paymentState.transactionType == TransactionType.withdraw
-            ? paymentState.payoutCurrency ?? ''
-            : paymentState.payinCurrency ?? '',
-        style: Theme.of(context).textTheme.headlineMedium,
-      );
+  Widget _buildCurrencyLabel(BuildContext context) =>
+      Text(paymentCurrency, style: Theme.of(context).textTheme.headlineMedium);
 }
