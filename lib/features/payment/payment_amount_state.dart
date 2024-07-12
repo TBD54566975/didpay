@@ -26,7 +26,7 @@ class PaymentAmountState {
   String? get payoutCurrency => selectedOffering?.data.payout.currencyCode;
 
   String? get exchangeRate => selectedOffering?.data.payoutUnitsPerPayinUnit;
-  String? get exchangeId => selectedOffering?.metadata.id;
+  String? get offeringId => selectedOffering?.metadata.id;
 
   PaymentAmountState copyWith({
     String? payinAmount,
