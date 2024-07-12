@@ -34,9 +34,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rfq = useState<AsyncValue<Rfq>?>(null);
-    final state =
-        useState<PaymentDetailsState>(paymentState.paymentDetailsState!);
-
+    final state = useState<PaymentDetailsState>(
+      paymentState.paymentDetailsState ?? PaymentDetailsState(),
+    );
     final availableMethods =
         state.value.filterPaymentMethods(state.value.selectedPaymentType);
 

@@ -1,6 +1,7 @@
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_state.dart';
@@ -34,8 +35,9 @@ class PaymentAmountPage extends HookConsumerWidget {
     final keyPress = useState(NumberKeyPress(0, ''));
     final offerings =
         useState<AsyncValue<Map<Pfi, List<Offering>>>>(const AsyncLoading());
-    final state =
-        useState<PaymentAmountState?>(paymentState.paymentAmountState);
+    final state = useState<PaymentAmountState>(
+      paymentState.paymentAmountState ?? PaymentAmountState(),
+    );
 
     useEffect(
       () {
@@ -52,8 +54,8 @@ class PaymentAmountPage extends HookConsumerWidget {
       body: SafeArea(
         child: offerings.value.when(
           data: (offeringsMap) {
-            if (state.value?.offeringsMap == null) {
-              state.value = state.value?.copyWith(
+            if (state.value.offeringsMap == null) {
+              state.value = state.value.copyWith(
                 pfiDid: offeringsMap.keys.first.did,
                 selectedOffering: offeringsMap.values.first.first,
                 offeringsMap: offeringsMap,
@@ -128,28 +130,42 @@ class PaymentAmountPage extends HookConsumerWidget {
               ? null
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PaymentDetailsPage(
-                        paymentState: paymentState.copyWith(
-                          paymentAmountState: state.value,
-                          paymentDetailsState:
-                              paymentState.paymentDetailsState?.copyWith(
-                            paymentCurrency: paymentState.transactionType ==
-                                    TransactionType.deposit
-                                ? state.value?.payinCurrency
-                                : state.value?.payoutCurrency,
-                            paymentMethods: paymentState.transactionType ==
-                                    TransactionType.deposit
-                                ? state
-                                    .value?.selectedOffering?.data.payin.methods
-                                    .map(PaymentMethod.fromPayinMethod)
-                                    .toList()
-                                : state.value?.selectedOffering?.data.payout
-                                    .methods
-                                    .map(PaymentMethod.fromPayoutMethod)
-                                    .toList(),
+                      builder: (context) {
+                        final paymentMethods = paymentState.transactionType ==
+                                TransactionType.deposit
+                            ? state.value?.selectedOffering?.data.payin.methods
+                                .map(PaymentMethod.fromPayinMethod)
+                                .toList()
+                            : state.value?.selectedOffering?.data.payout.methods
+                                .map(PaymentMethod.fromPayoutMethod)
+                                .toList();
+
+                        final paymentDetailsState =
+                            paymentState.paymentDetailsState ??
+                                PaymentDetailsState();
+
+                        return PaymentDetailsPage(
+                          paymentState: paymentState.copyWith(
+                            paymentAmountState: state.value,
+                            paymentDetailsState: paymentDetailsState.copyWith(
+                              paymentCurrency: paymentState.transactionType ==
+                                      TransactionType.deposit
+                                  ? state.value?.payinCurrency
+                                  : state.value?.payoutCurrency,
+                              paymentMethods: paymentState.transactionType ==
+                                      TransactionType.deposit
+                                  ? state.value?.selectedOffering?.data.payin
+                                      .methods
+                                      .map(PaymentMethod.fromPayinMethod)
+                                      .toList()
+                                  : state.value?.selectedOffering?.data.payout
+                                      .methods
+                                      .map(PaymentMethod.fromPayoutMethod)
+                                      .toList(),
+                            ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
                   ),
         ),
