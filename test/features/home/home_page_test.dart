@@ -11,7 +11,6 @@ import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:tbdex/tbdex.dart';
 
 import '../../helpers/mocks.dart';
 import '../../helpers/test_data.dart';
@@ -48,7 +47,7 @@ void main() async {
       when(
         () => mockTbdexService.getOfferings(
           pfis,
-          offeringsFilter: GetOfferingsFilter(payinCurrency: 'USDC'),
+          payinCurrency: 'USDC',
         ),
       ).thenAnswer((_) async => offerings);
 
