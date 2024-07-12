@@ -51,31 +51,29 @@ class PaymentAmountPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(),
       body: SafeArea(
-        child: state.value?.selectedOffering != null
-            ? _buildPage(context, keyPress, state)
-            : offerings.value.when(
-                data: (offeringsMap) {
-                  if (state.value?.offeringsMap == null) {
-                    state.value = state.value?.copyWith(
-                      pfiDid: offeringsMap.keys.first.did,
-                      selectedOffering: offeringsMap.values.first.first,
-                      offeringsMap: offeringsMap,
-                    );
-                  }
+        child: offerings.value.when(
+          data: (offeringsMap) {
+            if (state.value?.offeringsMap == null) {
+              state.value = state.value?.copyWith(
+                pfiDid: offeringsMap.keys.first.did,
+                selectedOffering: offeringsMap.values.first.first,
+                offeringsMap: offeringsMap,
+              );
+            }
 
-                  return _buildPage(context, keyPress, state);
-                },
-                loading: () =>
-                    LoadingMessage(message: Loc.of(context).fetchingOfferings),
-                error: (error, stackTrace) => ErrorMessage(
-                  message: error.toString(),
-                  onRetry: () => _getOfferings(
-                    context,
-                    ref,
-                    offerings,
-                  ),
-                ),
-              ),
+            return _buildPage(context, keyPress, state);
+          },
+          loading: () =>
+              LoadingMessage(message: Loc.of(context).fetchingOfferings),
+          error: (error, stackTrace) => ErrorMessage(
+            message: error.toString(),
+            onRetry: () => _getOfferings(
+              context,
+              ref,
+              offerings,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -134,7 +132,8 @@ class PaymentAmountPage extends HookConsumerWidget {
                       builder: (context) => PaymentDetailsPage(
                         paymentState: paymentState.copyWith(
                           paymentAmountState: state.value,
-                          paymentDetailsState: PaymentDetailsState(
+                          paymentDetailsState:
+                              paymentState.paymentDetailsState?.copyWith(
                             paymentCurrency: paymentState.transactionType ==
                                     TransactionType.deposit
                                 ? state.value?.payinCurrency
@@ -168,8 +167,8 @@ class PaymentAmountPage extends HookConsumerWidget {
     try {
       final offerings = await ref.read(tbdexServiceProvider).getOfferings(
             ref.read(pfisProvider),
-            // TODO(ethan-tbd): add back filter
-            // offeringsFilter: paymentState.offeringsFilter,
+            payinCurrency: paymentState.filterPayinCurrency,
+            payoutCurrency: paymentState.filterPayoutCurrency,
           );
 
       if (context.mounted) {

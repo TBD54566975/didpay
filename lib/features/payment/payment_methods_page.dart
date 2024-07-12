@@ -84,8 +84,10 @@ class PaymentMethodsPage extends HookWidget {
           trailing: selected ? const Icon(Icons.check) : null,
           onTap: () {
             if (currentPaymentMethod != null) {
-              state.value = state.value
-                  .copyWith(selectedPaymentMethod: currentPaymentMethod);
+              state.value = state.value.copyWith(
+                selectedPaymentMethod: currentPaymentMethod,
+                paymentName: currentPaymentMethod.title,
+              );
             }
 
             Navigator.of(context).pop();
