@@ -131,15 +131,6 @@ class PaymentAmountPage extends HookConsumerWidget {
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
-                        final paymentMethods = paymentState.transactionType ==
-                                TransactionType.deposit
-                            ? state.value?.selectedOffering?.data.payin.methods
-                                .map(PaymentMethod.fromPayinMethod)
-                                .toList()
-                            : state.value?.selectedOffering?.data.payout.methods
-                                .map(PaymentMethod.fromPayoutMethod)
-                                .toList();
-
                         final paymentDetailsState =
                             paymentState.paymentDetailsState ??
                                 PaymentDetailsState();

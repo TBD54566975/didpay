@@ -12,7 +12,7 @@ class NextButton extends HookWidget {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(
-            left: Grid.side, right: Grid.side, bottom: Grid.xxs),
+            left: Grid.side, right: Grid.side, bottom: Grid.xxs,),
         child: FilledButton(
           onPressed: onPressed,
           child: Text(title ?? Loc.of(context).next),
