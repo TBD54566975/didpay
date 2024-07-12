@@ -1,7 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
-import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
@@ -111,10 +110,9 @@ class AccountBalanceCard extends HookConsumerWidget {
             child: FilledButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => PaymentAmountPage(
+                  builder: (context) => const PaymentAmountPage(
                     paymentState: PaymentState(
                       transactionType: TransactionType.deposit,
-                      paymentAmountState: PaymentAmountState(),
                     ),
                   ),
                   fullscreenDialog: true,
@@ -131,11 +129,9 @@ class AccountBalanceCard extends HookConsumerWidget {
             child: FilledButton(
               onPressed: () => Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => PaymentAmountPage(
-                    paymentState: PaymentState(
-                      transactionType: TransactionType.withdraw,
-                      paymentAmountState: PaymentAmountState(),
-                    ),
+                  builder: (context) => const PaymentAmountPage(
+                    paymentState:
+                        PaymentState(transactionType: TransactionType.withdraw),
                   ),
                   fullscreenDialog: true,
                 ),
