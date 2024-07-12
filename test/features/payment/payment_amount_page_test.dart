@@ -39,7 +39,6 @@ void main() async {
   });
 
   setUpAll(() {
-    // registerFallbackValue('USD');
     registerFallbackValue(
       const PaymentState(transactionType: TransactionType.deposit),
     );
