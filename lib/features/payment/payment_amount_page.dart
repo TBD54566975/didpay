@@ -1,7 +1,6 @@
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
-import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_state.dart';
