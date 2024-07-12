@@ -13,6 +13,72 @@ class PaymentState {
     this.paymentDetailsState,
   });
 
+  String? get filterPayinCurrency {
+    switch (transactionType) {
+      case TransactionType.deposit:
+      case TransactionType.send:
+        return null;
+      case TransactionType.withdraw:
+        return 'USDC';
+    }
+  }
+
+  String? get filterPayoutCurrency {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return 'USDC';
+      case TransactionType.send:
+        return paymentDetailsState?.moneyAddresses?.firstOrNull?.currency
+            .toUpperCase();
+      case TransactionType.withdraw:
+        return null;
+    }
+  }
+
+  String? get selectedPayinKind {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return paymentDetailsState?.selectedPaymentMethod?.kind;
+      case TransactionType.send:
+      case TransactionType.withdraw:
+        return paymentAmountState
+            ?.selectedOffering?.data.payin.methods.firstOrNull?.kind;
+    }
+  }
+
+  String? get selectedPayoutKind {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return paymentAmountState
+            ?.selectedOffering?.data.payout.methods.firstOrNull?.kind;
+      case TransactionType.send:
+      case TransactionType.withdraw:
+        return paymentDetailsState?.selectedPaymentMethod?.kind;
+    }
+  }
+
+  Map<String, String>? get payinDetails {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return paymentDetailsState?.formData;
+      case TransactionType.send:
+      case TransactionType.withdraw:
+        return null;
+    }
+  }
+
+  Map<String, String>? get payoutDetails {
+    switch (transactionType) {
+      case TransactionType.deposit:
+        return null;
+      case TransactionType.send:
+        // TODO(ethan-tbd): remove hardcoded map
+        return {'lnAddress': paymentDetailsState?.paymentName ?? ''};
+      case TransactionType.withdraw:
+        return paymentDetailsState?.formData;
+    }
+  }
+
   PaymentState copyWith({
     PaymentAmountState? paymentAmountState,
     PaymentDetailsState? paymentDetailsState,
