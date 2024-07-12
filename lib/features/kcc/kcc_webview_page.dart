@@ -44,12 +44,7 @@ class KccWebviewPage extends HookConsumerWidget {
     );
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.close),
-        ),
-      ),
+      appBar: AppBar(),
       body: idvRequest.value.when(
         loading: () => LoadingMessage(message: Loc.of(context).startingIdv),
         error: (error, stackTrace) => SafeArea(
@@ -61,12 +56,28 @@ class KccWebviewPage extends HookConsumerWidget {
         data: (data) {
           return InAppWebView(
             initialSettings: settings,
-            onWebViewCreated: (c) {
+            onWebViewCreated: (controller) {
               // TODO(mistermoe): this url needs to be fixed on our PFI side
               final fullPath =
                   Uri.parse(data.url).replace(scheme: 'https').toString();
 
-              c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
+              controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
+            },
+            onLoadStop: (controller, url) {
+              if (url == null) {
+                return;
+              }
+
+              if (url.path.contains('finish.html')) {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => KccRetrievalPage(
+                      pfi: pfi,
+                      idvRequest: data,
+                    ),
+                  ),
+                );
+              }
             },
             onCloseWindow: (controller) {
               Navigator.of(context).push(
