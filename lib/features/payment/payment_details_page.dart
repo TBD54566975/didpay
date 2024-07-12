@@ -42,12 +42,20 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        // TODO(ethan-tbd): add back dap flow
-        state.value = state.value.copyWith(
-          selectedPaymentMethod: (availableMethods?.length ?? 0) <= 1
+        if (state.value.moneyAddresses != null) {
+          Future.microtask(
+            () async => _checkCredsAndSendRfq(context, ref, rfq, state),
+          );
+        } else {
+          final selectedMethod = (availableMethods?.length ?? 0) <= 1
               ? availableMethods?.firstOrNull
-              : null,
-        );
+              : null;
+
+          state.value = state.value.copyWith(
+            selectedPaymentMethod: selectedMethod,
+            paymentName: selectedMethod?.title,
+          );
+        }
 
         return;
       },
@@ -247,14 +255,20 @@ class PaymentDetailsPage extends HookConsumerWidget {
     rfq.value = const AsyncLoading();
 
     try {
+      final updatedPaymentState =
+          paymentState.copyWith(paymentDetailsState: state);
+
+      print('payout details: ${state.formData}');
+
       await ref.read(tbdexServiceProvider).sendRfq(
             ref.read(didProvider),
-            paymentState.paymentAmountState?.pfiDid ?? '',
-            paymentState.paymentAmountState?.exchangeId ?? '',
-            paymentState.paymentAmountState?.payinAmount ?? '',
-            state.selectedPaymentMethod?.kind ?? '',
-            state.selectedPaymentMethod?.kind ?? '',
-            state.formData ?? {},
+            updatedPaymentState.paymentAmountState?.pfiDid ?? '',
+            updatedPaymentState.paymentAmountState?.exchangeId ?? '',
+            updatedPaymentState.paymentAmountState?.payinAmount ?? '',
+            updatedPaymentState.selectedPayinKind ?? '',
+            updatedPaymentState.selectedPayoutKind ?? '',
+            updatedPaymentState.payinDetails,
+            updatedPaymentState.payoutDetails,
           );
 
       if (context.mounted && rfq.value != null) {

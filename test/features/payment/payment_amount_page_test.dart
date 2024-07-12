@@ -31,15 +31,18 @@ void main() async {
     mockPfisNotifier = MockPfisNotifier(pfis);
 
     when(
-      () => mockTbdexService.getOfferings(pfis),
+      () => mockTbdexService.getOfferings(
+        pfis,
+        payoutCurrency: 'USDC',
+      ),
     ).thenAnswer((_) async => offerings);
   });
 
-  setUpAll(
-    () => registerFallbackValue(
+  setUpAll(() {
+    registerFallbackValue(
       const PaymentState(transactionType: TransactionType.deposit),
-    ),
-  );
+    );
+  });
 
   group('PaymentAmountPage', () {
     Widget paymentAmountPageTestWidget() => WidgetHelpers.testableWidget(
@@ -66,7 +69,7 @@ void main() async {
 
     testWidgets('should show fee details', (tester) async {
       await tester.pumpWidget(paymentAmountPageTestWidget());
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Durations.extralong1);
 
       expect(find.byType(PaymentFeeDetails), findsOneWidget);
     });

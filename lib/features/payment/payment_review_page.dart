@@ -148,11 +148,10 @@ class PaymentReviewPage extends HookConsumerWidget {
         ),
       ),
       onPopInvoked: (_) {
-        // TODO(ethan-tbd): add back dap flow
-        // if (paymentState.dap != null) {
-        //   WidgetsBinding.instance
-        //       .addPostFrameCallback((_) => Navigator.of(context).pop());
-        // }
+        if (paymentState.paymentDetailsState?.moneyAddresses != null) {
+          WidgetsBinding.instance
+              .addPostFrameCallback((_) => Navigator.of(context).pop());
+        }
       },
     );
   }

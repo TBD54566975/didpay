@@ -6,6 +6,7 @@ import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/feature_flags/lucid/lucid_offerings_page.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/payment/payment_amount_state.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -55,11 +56,12 @@ class SendPage extends HookConsumerWidget {
                           MaterialPageRoute(
                             builder: (_) => PaymentAmountPage(
                               paymentState: PaymentState(
-                                // TODO(ethan-tbd): add back dap flow
                                 transactionType: TransactionType.send,
-                                // dap: recipientDap,
-                                // moneyAddresses: moneyAddresses,
                                 paymentAmountState: PaymentAmountState(),
+                                paymentDetailsState: PaymentDetailsState(
+                                  paymentName: recipientDap.dap,
+                                  moneyAddresses: moneyAddresses,
+                                ),
                               ),
                             ),
                             fullscreenDialog: true,

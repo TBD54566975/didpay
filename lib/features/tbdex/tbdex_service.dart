@@ -11,7 +11,8 @@ final tbdexServiceProvider = Provider((_) => TbdexService());
 class TbdexService {
   Future<Map<Pfi, List<Offering>>> getOfferings(
     List<Pfi> pfis, {
-    GetOfferingsFilter? offeringsFilter,
+    String? payinCurrency,
+    String? payoutCurrency,
   }) async {
     final offeringsMap = <Pfi, List<Offering>>{};
 
@@ -19,7 +20,10 @@ class TbdexService {
       try {
         final offerings = await TbdexHttpClient.listOfferings(
           pfi.did,
-          filter: offeringsFilter,
+          filter: GetOfferingsFilter(
+            payinCurrency: payinCurrency,
+            payoutCurrency: payoutCurrency,
+          ),
         );
 
         offeringsMap[pfi] = offerings;
@@ -137,22 +141,23 @@ class TbdexService {
     String payinAmount,
     String payinKind,
     String payoutKind,
-    Map<String, String> paymentDetails, {
+    Map<String, String>? payinDetails,
+    Map<String, String>? payoutDetails, {
     List<String>? claims,
   }) async {
     final rfq = Rfq.create(
-      did.uri,
       pfiDid,
+      did.uri,
       CreateRfqData(
         offeringId: offeringId,
         payin: CreateSelectedPayinMethod(
           amount: payinAmount,
           kind: payinKind,
-          paymentDetails: paymentDetails,
+          paymentDetails: payinDetails,
         ),
         payout: CreateSelectedPayoutMethod(
           kind: payoutKind,
-          paymentDetails: paymentDetails,
+          paymentDetails: payoutDetails,
         ),
         claims: claims,
       ),
