@@ -5,6 +5,7 @@ import 'package:tbdex/tbdex.dart';
 class PaymentAmountState {
   String? payinAmount;
   String? payoutAmount;
+  String? filterCurrency;
   String? pfiDid;
   Offering? selectedOffering;
   Map<Pfi, List<Offering>>? offeringsMap;
@@ -12,6 +13,7 @@ class PaymentAmountState {
   PaymentAmountState({
     this.payinAmount,
     this.payoutAmount,
+    this.filterCurrency,
     this.pfiDid,
     this.selectedOffering,
     this.offeringsMap,
@@ -29,6 +31,7 @@ class PaymentAmountState {
   PaymentAmountState copyWith({
     String? payinAmount,
     String? payoutAmount,
+    String? filterCurrency,
     String? pfiDid,
     Offering? selectedOffering,
     Map<Pfi, List<Offering>>? offeringsMap,
@@ -36,6 +39,7 @@ class PaymentAmountState {
     return PaymentAmountState(
       payinAmount: payinAmount ?? this.payinAmount,
       payoutAmount: payoutAmount ?? this.payoutAmount,
+      filterCurrency: filterCurrency ?? this.filterCurrency,
       pfiDid: pfiDid ?? this.pfiDid,
       selectedOffering: selectedOffering ?? this.selectedOffering,
       offeringsMap: offeringsMap ?? this.offeringsMap,
