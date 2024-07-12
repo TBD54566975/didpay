@@ -83,7 +83,7 @@ void main() async {
 
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(AutoSizeText, '100'), findsOneWidget);
+      expect(find.widgetWithText(AutoSizeText, '100.01'), findsOneWidget);
       expect(find.text('AUD'), findsOneWidget);
       expect(find.widgetWithText(AutoSizeText, '0.12'), findsOneWidget);
       expect(find.text('BTC'), findsOneWidget);
@@ -115,7 +115,7 @@ void main() async {
       );
       await tester.pumpAndSettle();
 
-      await tester.tap(find.text('Pay 100 AUD'));
+      await tester.tap(find.text('Pay 100.01 AUD'));
       await tester.pumpAndSettle();
 
       expect(find.text('Order confirmed!'), findsOneWidget);

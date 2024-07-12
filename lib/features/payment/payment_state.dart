@@ -35,6 +35,16 @@ class PaymentState {
     }
   }
 
+  Map<String, String>? get paymentDetails {
+    switch (transactionType) {
+      case TransactionType.deposit:
+      case TransactionType.withdraw:
+        return payinDetails;
+      case TransactionType.send:
+        return payoutDetails;
+    }
+  }
+
   String? get selectedPayinKind {
     switch (transactionType) {
       case TransactionType.deposit:

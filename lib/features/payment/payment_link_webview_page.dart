@@ -43,7 +43,6 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
             if (context.mounted) Navigator.of(context).pop();
           }
         },
-        onExitFullscreen: (controller) => print('onExitFullscreen'),
         onReceivedServerTrustAuthRequest: (controller, challenge) async {
           return ServerTrustAuthResponse(
             action: ServerTrustAuthResponseAction.PROCEED,

@@ -4,6 +4,7 @@ import 'package:didpay/features/payment/payment_method.dart';
 class PaymentDetailsState {
   final String? paymentCurrency;
   final String? paymentName;
+  final String? exchangeId;
   final String? selectedPaymentType;
   final PaymentMethod? selectedPaymentMethod;
   final List<PaymentMethod>? paymentMethods;
@@ -14,6 +15,7 @@ class PaymentDetailsState {
   PaymentDetailsState({
     this.paymentCurrency,
     this.paymentName,
+    this.exchangeId,
     this.selectedPaymentType,
     this.selectedPaymentMethod,
     this.paymentMethods,
@@ -38,6 +40,7 @@ class PaymentDetailsState {
   PaymentDetailsState copyWith({
     String? paymentCurrency,
     String? paymentName,
+    String? exchangeId,
     String? selectedPaymentType,
     PaymentMethod? selectedPaymentMethod,
     List<PaymentMethod>? paymentMethods,
@@ -48,6 +51,7 @@ class PaymentDetailsState {
     return PaymentDetailsState(
       paymentCurrency: paymentCurrency ?? this.paymentCurrency,
       paymentName: paymentName ?? this.paymentName,
+      exchangeId: exchangeId ?? this.exchangeId,
       selectedPaymentType: selectedPaymentType ?? this.selectedPaymentType,
       selectedPaymentMethod:
           selectedPaymentMethod ?? this.selectedPaymentMethod,
