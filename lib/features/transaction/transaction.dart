@@ -39,8 +39,8 @@ class Transaction {
             payinAmount = (msg as Rfq).data.payin.amount;
             break;
           case MessageKind.quote:
-            payinAmount = (msg as Quote).data.payin.amount;
-            payoutAmount = msg.data.payout.amount;
+            payinAmount = (msg as Quote).data.payin.total;
+            payoutAmount = msg.data.payout.total;
             payinCurrency = msg.data.payin.currencyCode;
             payoutCurrency = msg.data.payout.currencyCode;
             break;

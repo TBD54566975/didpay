@@ -258,12 +258,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
       final updatedPaymentState =
           paymentState.copyWith(paymentDetailsState: state);
 
-      print('payout details: ${state.formData}');
-
-      await ref.read(tbdexServiceProvider).sendRfq(
+      final sentRfq = await ref.read(tbdexServiceProvider).sendRfq(
             ref.read(didProvider),
             updatedPaymentState.paymentAmountState?.pfiDid ?? '',
-            updatedPaymentState.paymentAmountState?.exchangeId ?? '',
+            updatedPaymentState.paymentAmountState?.offeringId ?? '',
             updatedPaymentState.paymentAmountState?.payinAmount ?? '',
             updatedPaymentState.selectedPayinKind ?? '',
             updatedPaymentState.selectedPayoutKind ?? '',
@@ -275,7 +273,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentReviewPage(
-              paymentState: paymentState.copyWith(paymentDetailsState: state),
+              paymentState: updatedPaymentState.copyWith(
+                paymentDetailsState: updatedPaymentState.paymentDetailsState
+                    ?.copyWith(exchangeId: sentRfq.metadata.exchangeId),
+              ),
             ),
           ),
         );
