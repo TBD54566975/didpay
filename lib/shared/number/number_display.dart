@@ -146,7 +146,8 @@ class NumberDisplay extends HookWidget {
   /// expected scale.
   String _denormalizeAmount(String formattedAmount) {
     final unformattedAmount = formattedAmount.replaceAll(',', '');
-    if (state.value?.payinAmount == unformattedAmount) {
+    if (state.value?.payinAmount == null ||
+        state.value?.payinAmount == unformattedAmount) {
       return formattedAmount;
     }
 
