@@ -100,7 +100,9 @@ class KccRetrievalPage extends HookConsumerWidget {
         state.value = AsyncData(addedCredential);
       }
     } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
+      if (context.mounted) {
+        state.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 }

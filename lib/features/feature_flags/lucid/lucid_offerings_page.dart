@@ -144,7 +144,9 @@ class LucidOfferingsPage extends HookConsumerWidget {
         state.value = AsyncData(offerings);
       }
     } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
+      if (context.mounted) {
+        state.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 }

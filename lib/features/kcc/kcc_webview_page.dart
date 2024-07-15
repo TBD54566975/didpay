@@ -63,13 +63,13 @@ class KccWebviewPage extends HookConsumerWidget {
 
               controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
             },
-            onLoadStop: (controller, url) {
+            onLoadStop: (controller, url) async {
               if (url == null) {
                 return;
               }
 
               if (url.path.contains('finish.html')) {
-                Navigator.of(context).push(
+                await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => KccRetrievalPage(
                       pfi: pfi,
@@ -77,6 +77,7 @@ class KccWebviewPage extends HookConsumerWidget {
                     ),
                   ),
                 );
+                if (context.mounted) Navigator.pop(context);
               }
             },
             onCloseWindow: (controller) {
@@ -120,7 +121,9 @@ class KccWebviewPage extends HookConsumerWidget {
         state.value = AsyncData(idvRequest);
       }
     } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
+      if (context.mounted) {
+        state.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 }
