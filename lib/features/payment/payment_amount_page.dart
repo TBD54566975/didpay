@@ -126,7 +126,8 @@ class PaymentAmountPage extends HookConsumerWidget {
         ),
         const SizedBox(height: Grid.sm),
         NextButton(
-          onPressed: state.value?.payinAmount == '0'
+          onPressed: state.value?.payinAmount == null ||
+                  state.value?.payinAmount == '0'
               ? null
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
