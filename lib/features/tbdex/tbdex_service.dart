@@ -194,22 +194,24 @@ class TbdexService {
     return order;
   }
 
-  Future<Close> submitClose(
+  Future<Cancel> submitCancel(
     BearerDid did,
     String pfiDid,
     String exchangeId,
   ) async {
-    final closeData = CloseData(reason: 'User requested');
-    final close = Close.create(pfiDid, did.uri, exchangeId, closeData);
-    await close.sign(did);
+    final cancel = Cancel.create(
+        pfiDid, did.uri, exchangeId, CancelData(reason: 'User requested'));
+    await cancel.sign(did);
 
     try {
-      await TbdexHttpClient.submitClose(close);
-    } on Exception {
+      await TbdexHttpClient.submitCancel(cancel);
+    } on Exception catch (e) {
+      if (e is ResponseError) return cancel;
+
       rethrow;
     }
 
-    return close;
+    return cancel;
   }
 
   Future<Quote> pollForQuote(
