@@ -56,6 +56,9 @@ class Transaction {
                 ? status = TransactionStatus.payoutSuccess
                 : status = TransactionStatus.payoutCanceled;
             break;
+          case MessageKind.cancel:
+            status = TransactionStatus.payoutCanceled;
+            break;
         }
 
         if (createdAt.isAfter(latestCreatedAt)) {
