@@ -172,7 +172,7 @@ class PaymentReviewPage extends HookConsumerWidget {
               onExit: () async {
                 quoteNotifier.stopPolling();
 
-                await ref.read(tbdexServiceProvider).submitClose(
+                await ref.read(tbdexServiceProvider).submitCancel(
                       ref.read(didProvider),
                       paymentState.paymentAmountState?.pfiDid ?? '',
                       paymentState.paymentDetailsState?.exchangeId ?? '',
