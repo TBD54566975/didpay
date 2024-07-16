@@ -30,7 +30,7 @@ class AccountPage extends HookConsumerWidget {
           children: [
             _buildProfile(context, dap),
             Center(child: Text(dap)),
-            const SizedBox(height: Grid.lg),
+            const SizedBox(height: Grid.sm),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
