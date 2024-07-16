@@ -235,7 +235,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
     ValueNotifier<PaymentDetailsState> state,
   ) async {
     final hasRequiredVc = await _hasRequiredVc(context, ref, state);
-
     if (hasRequiredVc && context.mounted) {
       await _sendRfq(
         context,
