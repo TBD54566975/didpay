@@ -129,7 +129,7 @@ class Transaction {
       case TransactionStatus.payoutComplete:
       case TransactionStatus.orderSubmitted:
       case null:
-        return Theme.of(context).colorScheme.outline;
+        return Theme.of(context).colorScheme.surface;
     }
   }
 
