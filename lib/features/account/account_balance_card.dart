@@ -16,10 +16,12 @@ class AccountBalanceCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
-    final accountBalance = ref.watch(accountBalanceProvider);
+    // final accountBalance = ref.watch(accountBalanceProvider);
 
-    final accountTotal = accountBalance.asData?.value?.total ?? '0';
-    final accountCurrency = accountBalance.asData?.value?.currencyCode ?? '';
+    // final accountTotal = accountBalance.asData?.value?.total ?? '0';
+    // final accountCurrency = accountBalance.asData?.value?.currencyCode ?? '';
+    const accountTotal = '0';
+    const accountCurrency = 'USD';
 
     AccountBalanceNotifier getAccountBalanceNotifier() =>
         ref.read(accountBalanceProvider.notifier);
