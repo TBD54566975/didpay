@@ -7,8 +7,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 class App extends HookConsumerWidget {
   const App({super.key});
 
-  // TODO(ethan-tbd): add launch icon
-
   @override
   Widget build(BuildContext context, WidgetRef ref) => MaterialApp(
         title: 'DIDPay',
