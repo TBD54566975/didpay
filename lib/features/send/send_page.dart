@@ -3,7 +3,6 @@ import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/dap/dap_form.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
-import 'package:didpay/features/feature_flags/lucid/lucid_offerings_page.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
@@ -102,7 +101,11 @@ class SendPage extends HookConsumerWidget {
                     icon: const Icon(Icons.deblur, size: Grid.md),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => const LucidOfferingsPage(),
+                        builder: (context) => const PaymentAmountPage(
+                          paymentState: PaymentState(
+                            transactionType: TransactionType.send,
+                          ),
+                        ),
                       ),
                     ),
                   ),
