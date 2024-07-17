@@ -59,7 +59,7 @@ class Payout extends HookWidget {
             _buildPayoutCurrency(context),
           ],
         ),
-        const SizedBox(height: Grid.xs),
+        const SizedBox(height: Grid.half),
         _buildPayoutLabel(context),
       ],
     );
