@@ -69,7 +69,7 @@ class Payout extends HookWidget {
     switch (transactionType) {
       case TransactionType.withdraw:
         return CurrencyDropdown(
-          paymentCurrency: state.value?.payinCurrency ?? '',
+          paymentCurrency: state.value?.payoutCurrency ?? '',
           state: state,
         );
       case TransactionType.deposit:
