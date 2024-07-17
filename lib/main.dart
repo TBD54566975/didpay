@@ -5,6 +5,7 @@ import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/did/did_storage_service.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
+import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
@@ -49,7 +50,9 @@ void main() async {
 
 Future<List<Override>> notifierOverrides() async {
   final pfisBox = await Hive.openBox(PfisNotifier.storageKey);
-  final pfisNofitier = await PfisNotifier.create(pfisBox, PfisService());
+  final pfisNotifier = await PfisNotifier.create(pfisBox, PfisService());
+
+  if (pfisBox.isEmpty) await pfisNotifier.add(tbdPfiDid);
 
   final countriesBox = await Hive.openBox(CountriesNotifier.storageKey);
   final countriesNotifier = await CountriesNotifier.create(countriesBox);
@@ -69,7 +72,7 @@ Future<List<Override>> notifierOverrides() async {
   }
 
   return [
-    pfisProvider.overrideWith((ref) => pfisNofitier),
+    pfisProvider.overrideWith((ref) => pfisNotifier),
     countriesProvider.overrideWith((ref) => countriesNotifier),
     vcsProvider.overrideWith((ref) => vcsNotifier),
     featureFlagsProvider.overrideWith((ref) => featureFlagsNotifier),
