@@ -44,6 +44,7 @@ class KccWebviewPage extends HookConsumerWidget {
     );
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(),
       body: idvRequest.value.when(
         loading: () => LoadingMessage(message: Loc.of(context).startingIdv),
