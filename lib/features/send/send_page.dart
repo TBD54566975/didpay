@@ -83,7 +83,7 @@ class SendPage extends HookConsumerWidget {
             ? Padding(
                 padding: const EdgeInsets.only(left: Grid.xxs),
                 child: IconButton(
-                  icon: const Icon(Icons.language, size: Grid.lg),
+                  icon: const Icon(Icons.language, size: Grid.md),
                   onPressed: () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) => const CountriesPage(),
@@ -99,7 +99,7 @@ class SendPage extends HookConsumerWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: Grid.xxs),
                   child: IconButton(
-                    icon: const Icon(Icons.deblur, size: Grid.lg),
+                    icon: const Icon(Icons.deblur, size: Grid.md),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => const LucidOfferingsPage(),
