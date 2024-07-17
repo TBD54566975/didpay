@@ -54,7 +54,13 @@ class TransactionTile extends HookConsumerWidget {
                 ScaffoldMessenger.of(context).removeCurrentSnackBar();
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    content: Text(transaction.value?.status.toString() ?? ''),
+                    content: Text(
+                      transaction.value?.status.toString() ?? '',
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSurface,
+                          ),
+                    ),
+                    behavior: SnackBarBehavior.floating,
                     duration: const Duration(seconds: 1),
                     backgroundColor: Transaction.getStatusColor(
                       context,
