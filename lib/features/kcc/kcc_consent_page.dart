@@ -21,7 +21,11 @@ class KccConsentPage extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
-          onPressed: () => Navigator.of(context, rootNavigator: true).pop(),
+          onPressed: () {
+            if (context.mounted) {
+              Navigator.of(context, rootNavigator: true).pop();
+            }
+          },
           icon: const Icon(Icons.close),
         ),
       ),

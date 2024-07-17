@@ -70,8 +70,12 @@ class KccRetrievalPage extends HookConsumerWidget {
                 ),
               ),
               NextButton(
-                onPressed: () => Navigator.of(context, rootNavigator: true)
-                    .pop(credential.value.asData?.value),
+                onPressed: () {
+                  if (context.mounted) {
+                    Navigator.of(context, rootNavigator: true)
+                        .pop(credential.value.asData?.value);
+                  }
+                },
               ),
             ],
           ),
