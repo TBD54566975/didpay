@@ -40,7 +40,7 @@ class Payin extends HookWidget {
           state: state,
           keyPress: keyPress,
         ),
-        const SizedBox(height: Grid.xs),
+        const SizedBox(height: Grid.half),
         _buildPayinLabel(context),
       ],
     );

@@ -56,6 +56,8 @@ class Transaction {
                 ? status = TransactionStatus.payoutSuccess
                 : status = TransactionStatus.payoutCanceled;
             break;
+          case MessageKind.cancel:
+            status = TransactionStatus.payoutCanceled;
         }
 
         if (createdAt.isAfter(latestCreatedAt)) {
@@ -129,7 +131,7 @@ class Transaction {
       case TransactionStatus.payoutComplete:
       case TransactionStatus.orderSubmitted:
       case null:
-        return Theme.of(context).colorScheme.outline;
+        return Theme.of(context).colorScheme.surface;
     }
   }
 

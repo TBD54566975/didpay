@@ -91,9 +91,10 @@ class PaymentAmountPage extends HookConsumerWidget {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Grid.side,
-                vertical: Grid.xs,
+              padding: const EdgeInsets.only(
+                left: Grid.side,
+                right: Grid.side,
+                top: Grid.xxs,
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -108,7 +109,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                     transactionType: paymentState.transactionType,
                     state: state,
                   ),
-                  const SizedBox(height: Grid.xl),
+                  const SizedBox(height: Grid.lg),
                   PaymentFeeDetails(
                     transactionType: paymentState.transactionType,
                     offering: state.value?.selectedOffering?.data,
@@ -124,7 +125,7 @@ class PaymentAmountPage extends HookConsumerWidget {
                 keyPress.value = NumberKeyPress(keyPress.value.count + 1, key),
           ),
         ),
-        const SizedBox(height: Grid.sm),
+        const SizedBox(height: Grid.xs),
         NextButton(
           onPressed: state.value?.payinAmount == null ||
                   state.value?.payinAmount == '0'
@@ -182,7 +183,9 @@ class PaymentAmountPage extends HookConsumerWidget {
         state.value = AsyncData(offerings);
       }
     } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
+      if (context.mounted) {
+        state.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 }
