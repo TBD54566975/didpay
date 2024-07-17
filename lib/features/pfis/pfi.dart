@@ -12,3 +12,5 @@ class Pfi extends Equatable {
   @override
   List<Object?> get props => [did];
 }
+
+const tbdPfiDid = 'did:web:pfi.tbd.engineering';
