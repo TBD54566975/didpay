@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/text_input_util.dart';
@@ -7,24 +8,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
 class JsonSchemaForm extends HookWidget {
-  final String? schema;
-  final bool isDisabled;
+  final PaymentDetailsState state;
   final void Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
   final Map<String, String> formData = {};
 
   JsonSchemaForm({
-    required this.schema,
+    required this.state,
     required this.onSubmit,
-    this.isDisabled = false,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     void onPressed(Map<String, String> data) {
-      if (schema == null) {
+      if (state.selectedPaymentMethod?.schema == null) {
         onSubmit(data);
       } else {
         if (_formKey.currentState != null &&
@@ -35,9 +34,12 @@ class JsonSchemaForm extends HookWidget {
       }
     }
 
-    if (schema == null) return _buildEmptyForm(onPressed);
+    if (state.selectedPaymentMethod?.schema == null) {
+      return _buildEmptyForm(onPressed);
+    }
 
-    final jsonSchema = json.decode(schema ?? '') as Map<String, dynamic>;
+    final jsonSchema = json.decode(state.selectedPaymentMethod?.schema ?? '')
+        as Map<String, dynamic>;
     final properties = jsonSchema['properties'] as Map<String, dynamic>?;
 
     var formFields = <Widget>[];
@@ -45,11 +47,11 @@ class JsonSchemaForm extends HookWidget {
       (key, value) {
         final focusNode = useFocusNode();
         final valueMap = value as Map<String, dynamic>;
-
         final formatter = TextInputUtil.getMaskFormatter(valueMap['pattern']);
 
         formFields.add(
           TextFormField(
+            initialValue: state.formData?[key],
             focusNode: focusNode,
             onTapOutside: (_) => focusNode.unfocus(),
             enableSuggestions: false,
@@ -61,16 +63,12 @@ class JsonSchemaForm extends HookWidget {
             ),
             inputFormatters: [formatter],
             textInputAction: TextInputAction.next,
-            validator: (_) => _validateField(
+            validator: (value) => _validateField(
               key,
-              TextInputUtil.formatNumericText(
-                formatter.getMaskedText(),
-              ),
+              value,
               jsonSchema,
             ),
-            onSaved: (_) => formData[key] = TextInputUtil.formatNumericText(
-              formatter.getMaskedText(),
-            ),
+            onSaved: (value) => formData[key] = value ?? '',
           ),
         );
       },
@@ -90,7 +88,11 @@ class JsonSchemaForm extends HookWidget {
               ),
             ),
           ),
-          NextButton(onPressed: isDisabled ? null : () => onPressed(formData)),
+          NextButton(
+            onPressed: state.selectedPaymentMethod == null
+                ? null
+                : () => onPressed(formData),
+          ),
         ],
       ),
     );
@@ -100,7 +102,11 @@ class JsonSchemaForm extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           const Spacer(),
-          NextButton(onPressed: isDisabled ? null : () => onPressed(formData)),
+          NextButton(
+            onPressed: state.selectedPaymentMethod == null
+                ? null
+                : () => onPressed(formData),
+          ),
         ],
       );
 
