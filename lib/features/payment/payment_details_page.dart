@@ -43,9 +43,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
     useEffect(
       () {
         if (state.value.moneyAddresses != null) {
-          Future.microtask(
-            () async => _checkCredsAndSendRfq(context, ref, rfq, state),
-          );
+          state.value =
+              state.value.copyWith(formData: paymentState.payoutDetails);
         } else {
           final selectedMethod = (availableMethods?.length ?? 0) <= 1
               ? availableMethods?.firstOrNull
@@ -94,7 +93,9 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     Header(
                       title:
                           paymentState.transactionType == TransactionType.send
-                              ? Loc.of(context).enterTheirPaymentDetails
+                              ? state.value.moneyAddresses != null
+                                  ? Loc.of(context).checkTheirPaymentDetails
+                                  : Loc.of(context).enterTheirPaymentDetails
                               : Loc.of(context).enterYourPaymentDetails,
                       subtitle: Loc.of(context).makeSureInfoIsCorrect,
                     ),
@@ -131,8 +132,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
   ) =>
       Expanded(
         child: JsonSchemaForm(
-          schema: state.value.selectedPaymentMethod?.schema,
-          isDisabled: state.value.selectedPaymentMethod == null,
+          state: state.value,
           onSubmit: (formData) {
             state.value = state.value.copyWith(formData: formData);
             _checkCredsAndSendRfq(
