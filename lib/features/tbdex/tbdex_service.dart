@@ -167,7 +167,7 @@ class TbdexService {
     await Future.delayed(const Duration(milliseconds: 500));
 
     try {
-      await TbdexHttpClient.createExchange(rfq, replyTo: rfq.metadata.from);
+      await TbdexHttpClient.createExchange(rfq);
     } on Exception {
       rethrow;
     }
