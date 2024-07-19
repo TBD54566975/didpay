@@ -42,19 +42,14 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        if (state.value.moneyAddresses != null) {
-          state.value =
-              state.value.copyWith(formData: paymentState.payoutDetails);
-        } else {
-          final selectedMethod = (availableMethods?.length ?? 0) <= 1
-              ? availableMethods?.firstOrNull
-              : null;
+        final selectedMethod = (availableMethods?.length ?? 0) <= 1
+            ? availableMethods?.firstOrNull
+            : null;
 
-          state.value = state.value.copyWith(
-            selectedPaymentMethod: selectedMethod,
-            paymentName: selectedMethod?.title,
-          );
-        }
+        state.value = state.value.copyWith(
+          selectedPaymentMethod: selectedMethod,
+          paymentName: selectedMethod?.title,
+        );
 
         return;
       },
