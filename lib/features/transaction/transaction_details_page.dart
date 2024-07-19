@@ -157,19 +157,11 @@ class TransactionDetailsPage extends HookConsumerWidget {
   ) =>
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Grid.side),
-        child: OutlinedButton(
-          onPressed: () => {},
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(
-              color: Theme.of(context).colorScheme.onSurface,
-              width: Grid.quarter,
-            ),
-            splashFactory: NoSplash.splashFactory,
-          ),
-          child: Text(
+        child: Chip(
+          label: Text(
             status.toString(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Transaction.getStatusTextColor(context, status),
+                  color: Transaction.getStatusColor(context, status),
                 ),
           ),
         ),
