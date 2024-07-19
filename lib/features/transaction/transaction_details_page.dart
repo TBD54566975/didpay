@@ -169,7 +169,7 @@ class TransactionDetailsPage extends HookConsumerWidget {
           child: Text(
             status.toString(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Transaction.getStatusColor(context, status),
+                  color: Transaction.getStatusTextColor(context, status),
                 ),
           ),
         ),
