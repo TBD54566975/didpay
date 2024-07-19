@@ -93,18 +93,13 @@ class PaymentReviewPage extends HookConsumerWidget {
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 PaymentLinkWebviewPage(
+                                              paymentState: paymentState,
                                               paymentLink: q
                                                       .data
                                                       .payin
                                                       .paymentInstruction
                                                       ?.link ??
                                                   '',
-                                              onSubmit: () => _submitOrder(
-                                                context,
-                                                ref,
-                                                paymentState,
-                                                order,
-                                              ),
                                             ),
                                           ),
                                         )
