@@ -55,17 +55,29 @@ class TransactionTile extends HookConsumerWidget {
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
                     content: Text(
-                      transaction.value?.status.toString() ?? '',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface,
+                      '${transaction.value?.status}!',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: Transaction.getStatusColor(
+                              context,
+                              transaction.value?.status,
+                            ),
                           ),
                     ),
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Transaction.getStatusBackgroundColor(
-                      context,
-                      transaction.value?.status,
+                    showCloseIcon: true,
+                    closeIconColor: Theme.of(context).colorScheme.onSurface,
+                    shape: ShapeBorder.lerp(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Grid.xs),
+                      ),
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(Grid.xs),
+                      ),
+                      1,
                     ),
+                    margin: const EdgeInsets.symmetric(horizontal: Grid.xl),
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 10),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
                   ),
                 );
               },
