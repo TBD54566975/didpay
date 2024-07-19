@@ -65,7 +65,7 @@ class LocEn extends Loc {
   String get noTransactionsYet => 'No transactions yet';
 
   @override
-  String get startByAdding => 'Start by adding funds to your account!';
+  String get startBySendingMoney => 'Start by sending money through your PFI!';
 
   @override
   String get transactionDetails => 'Transaction details';
@@ -107,6 +107,9 @@ class LocEn extends Loc {
 
   @override
   String get enterTheirPaymentDetails => 'Enter their payment details';
+
+  @override
+  String get checkTheirPaymentDetails => 'Check their payment details';
 
   @override
   String serviceFeeAmount(String amount, String currency) {

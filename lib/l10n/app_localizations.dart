@@ -211,11 +211,11 @@ abstract class Loc {
   /// **'No transactions yet'**
   String get noTransactionsYet;
 
-  /// No description provided for @startByAdding.
+  /// No description provided for @startBySendingMoney.
   ///
   /// In en, this message translates to:
-  /// **'Start by adding funds to your account!'**
-  String get startByAdding;
+  /// **'Start by sending money through your PFI!'**
+  String get startBySendingMoney;
 
   /// No description provided for @transactionDetails.
   ///
@@ -294,6 +294,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Enter their payment details'**
   String get enterTheirPaymentDetails;
+
+  /// No description provided for @checkTheirPaymentDetails.
+  ///
+  /// In en, this message translates to:
+  /// **'Check their payment details'**
+  String get checkTheirPaymentDetails;
 
   /// No description provided for @serviceFeeAmount.
   ///
