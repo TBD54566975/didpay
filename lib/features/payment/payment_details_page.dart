@@ -267,6 +267,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
             updatedPaymentState.selectedPayoutKind ?? '',
             updatedPaymentState.payinDetails,
             updatedPaymentState.payoutDetails,
+            claims: updatedPaymentState.paymentDetailsState?.credentialsJwt,
           );
 
       if (context.mounted && rfq.value != null) {
