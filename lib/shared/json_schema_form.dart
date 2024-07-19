@@ -51,7 +51,8 @@ class JsonSchemaForm extends HookWidget {
 
         formFields.add(
           TextFormField(
-            initialValue: state.formData?[key],
+            initialValue:
+                state.moneyAddresses?.firstOrNull?.css.split(':').last,
             focusNode: focusNode,
             onTapOutside: (_) => focusNode.unfocus(),
             enableSuggestions: false,

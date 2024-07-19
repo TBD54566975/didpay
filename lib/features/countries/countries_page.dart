@@ -1,6 +1,7 @@
 import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
+import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -36,9 +37,11 @@ class CountriesPage extends HookConsumerWidget {
                   ? null
                   : () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => const PaymentAmountPage(
+                          builder: (context) => PaymentAmountPage(
                             paymentState: PaymentState(
                               transactionType: TransactionType.send,
+                              paymentDetailsState:
+                                  PaymentDetailsState(paymentCurrency: 'MXN'),
                             ),
                           ),
                         ),

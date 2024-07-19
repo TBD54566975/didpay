@@ -62,7 +62,7 @@ class TransactionTile extends HookConsumerWidget {
                     ),
                     behavior: SnackBarBehavior.floating,
                     duration: const Duration(seconds: 1),
-                    backgroundColor: Transaction.getStatusColor(
+                    backgroundColor: Transaction.getStatusBackgroundColor(
                       context,
                       transaction.value?.status,
                     ),

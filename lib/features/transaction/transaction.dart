@@ -120,7 +120,10 @@ class Transaction {
       status == TransactionStatus.payoutSuccess ||
       status == TransactionStatus.payoutCanceled;
 
-  static Color getStatusColor(BuildContext context, TransactionStatus? status) {
+  static Color getStatusBackgroundColor(
+    BuildContext context,
+    TransactionStatus? status,
+  ) {
     switch (status) {
       case TransactionStatus.payoutSuccess:
         return Theme.of(context).colorScheme.tertiary;
@@ -132,6 +135,24 @@ class Transaction {
       case TransactionStatus.orderSubmitted:
       case null:
         return Theme.of(context).colorScheme.surface;
+    }
+  }
+
+  static Color getStatusTextColor(
+    BuildContext context,
+    TransactionStatus? status,
+  ) {
+    switch (status) {
+      case TransactionStatus.payoutSuccess:
+        return Theme.of(context).colorScheme.tertiary;
+      case TransactionStatus.payoutCanceled:
+        return Theme.of(context).colorScheme.error;
+      case TransactionStatus.payoutPending:
+      case TransactionStatus.payoutInitiated:
+      case TransactionStatus.payoutComplete:
+      case TransactionStatus.orderSubmitted:
+      case null:
+        return Theme.of(context).colorScheme.outline;
     }
   }
 

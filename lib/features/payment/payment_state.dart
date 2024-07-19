@@ -28,8 +28,9 @@ class PaymentState {
       case TransactionType.deposit:
         return 'USDC';
       case TransactionType.send:
-        return paymentDetailsState?.moneyAddresses?.firstOrNull?.currency
-            .toUpperCase();
+        return paymentDetailsState?.paymentCurrency ??
+            paymentDetailsState?.moneyAddresses?.firstOrNull?.currency
+                .toUpperCase();
       case TransactionType.withdraw:
         return null;
     }
@@ -82,13 +83,6 @@ class PaymentState {
       case TransactionType.deposit:
         return null;
       case TransactionType.send:
-        // TODO(ethan-tbd): remove hardcoded map
-        return {
-          'lnAddress': paymentDetailsState?.moneyAddresses?.firstOrNull?.css
-                  .split(':')
-                  .last ??
-              '',
-        };
       case TransactionType.withdraw:
         return paymentDetailsState?.formData;
     }

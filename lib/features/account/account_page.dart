@@ -216,7 +216,7 @@ class AccountPage extends HookConsumerWidget {
   ) =>
       ListTile(
         title: Text(
-          'KCC - ${_getIssuanceDate(credential)}',
+          _getCredentialTitle(credential),
           style: Theme.of(context).textTheme.titleSmall,
         ),
         leading: Container(
@@ -230,7 +230,7 @@ class AccountPage extends HookConsumerWidget {
         ),
         onTap: () => ModalRemoveItem.show(
           context,
-          credential,
+          _getCredentialTitle(credential),
           Loc.of(context).removeCredential,
           () async => ref.read(vcsProvider.notifier).remove(credential),
         ),
@@ -307,13 +307,14 @@ class AccountPage extends HookConsumerWidget {
         ),
       );
 
-  String _getIssuanceDate(String credentialJwt) {
+  String _getCredentialTitle(String credentialJwt) {
     final decodedJwt = Jwt.decode(credentialJwt);
     final payload = decodedJwt.claims.misc?['vc'] as Map<String, dynamic>?;
     final issuedAt = payload?['issuanceDate'] as String?;
-
-    return issuedAt != null
+    final issuanceDate = issuedAt != null
         ? DateFormat('MMM dd yyyy').format(DateTime.parse(issuedAt).toLocal())
         : 'no issuance date';
+
+    return 'KCC - $issuanceDate';
   }
 }
