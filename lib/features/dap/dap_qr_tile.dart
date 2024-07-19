@@ -35,7 +35,7 @@ class DapQrTile extends HookConsumerWidget {
         leading: const Icon(Icons.qr_code),
         title: Text(
           Loc.of(context).dontKnowTheirDap,
-          style: Theme.of(context).textTheme.bodyMedium,
+          style: Theme.of(context).textTheme.bodySmall,
         ),
         trailing: const Icon(Icons.chevron_right),
         onTap: () => isPhysicalDevice.value

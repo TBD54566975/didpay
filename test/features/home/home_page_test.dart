@@ -103,7 +103,7 @@ void main() async {
 
       expect(find.text('No transactions yet'), findsOneWidget);
       expect(
-        find.text('Start by adding funds to your account!'),
+        find.text('Start by sending money through your PFI!'),
         findsOneWidget,
       );
       expect(find.text('Get started'), findsOneWidget);

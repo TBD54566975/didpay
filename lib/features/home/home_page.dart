@@ -1,13 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_card.dart';
 import 'package:didpay/features/did/did_provider.dart';
-import 'package:didpay/features/payment/payment_amount_page.dart';
-import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
+import 'package:didpay/features/send/send_page.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
-import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/loading_message.dart';
@@ -86,7 +84,7 @@ class HomePage extends HookConsumerWidget {
                       context,
                       ref,
                       Loc.of(context).noTransactionsYet,
-                      Loc.of(context).startByAdding,
+                      Loc.of(context).startBySendingMoney,
                     )
                   : RefreshIndicator(
                       onRefresh: () async => _getExchanges(context, ref, state),
@@ -156,11 +154,7 @@ class HomePage extends HookConsumerWidget {
                 MaterialPageRoute(
                   builder: (context) => ref.read(pfisProvider).isEmpty
                       ? const PfisAddPage()
-                      : const PaymentAmountPage(
-                          paymentState: PaymentState(
-                            transactionType: TransactionType.deposit,
-                          ),
-                        ),
+                      : const SendPage(),
                 ),
               ),
               child: AutoSizeText(

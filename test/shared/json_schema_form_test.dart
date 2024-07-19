@@ -1,3 +1,5 @@
+import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/shared/json_schema_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -26,30 +28,28 @@ void main() {
   }''';
 
   group('JsonSchemaForm', () {
-    testWidgets('should render form fields based on JSON schema',
-        (tester) async {
-      await tester.pumpWidget(
+    Widget jsonSchemaFormTestWidget({
+      void Function(Map<String, String>)? onSubmit,
+    }) =>
         WidgetHelpers.testableWidget(
           child: JsonSchemaForm(
-            schema: jsonSchemaString,
-            onSubmit: (_) {},
+            state: PaymentDetailsState(
+              selectedPaymentMethod:
+                  PaymentMethod(kind: '', schema: jsonSchemaString),
+            ),
+            onSubmit: onSubmit ?? (_) {},
           ),
-        ),
-      );
+        );
+    testWidgets('should render form fields based on JSON schema',
+        (tester) async {
+      await tester.pumpWidget(jsonSchemaFormTestWidget());
 
       expect(find.text('Name'), findsOneWidget);
       expect(find.text('Email'), findsOneWidget);
     });
 
     testWidgets('should validate form fields correctly', (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: JsonSchemaForm(
-            schema: jsonSchemaString,
-            onSubmit: (_) {},
-          ),
-        ),
-      );
+      await tester.pumpWidget(jsonSchemaFormTestWidget());
 
       await tester.tap(find.text('Next'));
       await tester.pump();
@@ -67,14 +67,10 @@ void main() {
     testWidgets('should call onSubmit with correct data when form is valid',
         (tester) async {
       Map<String, String>? submittedData;
+
       await tester.pumpWidget(
-        WidgetHelpers.testableWidget(
-          child: JsonSchemaForm(
-            schema: jsonSchemaString,
-            onSubmit: (formData) {
-              submittedData = formData;
-            },
-          ),
+        jsonSchemaFormTestWidget(
+          onSubmit: (formData) => submittedData = formData,
         ),
       );
 

@@ -19,7 +19,7 @@
     "usd": "USD",
     "activity": "Activity",
     "noTransactionsYet": "No transactions yet",
-    "startByAdding": "Start by adding funds to your account!",
+    "startBySendingMoney": "Start by sending money through your PFI!",
     "transactionDetails": "Transaction details",
     "youPay": "You pay",
     "youPaid": "You paid",
@@ -40,6 +40,7 @@
     "makeSureInfoIsCorrect": "Make sure this information is correct.",
     "enterYourPaymentDetails": "Enter your payment details",
     "enterTheirPaymentDetails": "Enter their payment details",
+    "checkTheirPaymentDetails": "Check their payment details",
     "serviceFeeAmount": "Service fee: {amount} {currency}",
     "@serviceFeeAmount": {
         "placeholders": {

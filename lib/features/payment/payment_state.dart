@@ -84,8 +84,10 @@ class PaymentState {
       case TransactionType.send:
         // TODO(ethan-tbd): remove hardcoded map
         return {
-          'lnAddress':
-              paymentDetailsState?.moneyAddresses?.firstOrNull?.urn ?? '',
+          'lnAddress': paymentDetailsState?.moneyAddresses?.firstOrNull?.css
+                  .split(':')
+                  .last ??
+              '',
         };
       case TransactionType.withdraw:
         return paymentDetailsState?.formData;
