@@ -113,7 +113,7 @@ class TbdexService {
       );
 
       return exchange
-          .any((message) => message.metadata.kind == MessageKind.quote);
+          .any((message) => message.metadata.kind == MessageKind.order);
     } on Exception {
       return false;
     }
