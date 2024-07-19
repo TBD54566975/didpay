@@ -1,15 +1,17 @@
+import 'package:didpay/features/payment/payment_order_page.dart';
+import 'package:didpay/features/payment/payment_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class PaymentLinkWebviewPage extends HookConsumerWidget {
+  final PaymentState paymentState;
   final String paymentLink;
-  final Future<void> Function() onSubmit;
 
   const PaymentLinkWebviewPage({
+    required this.paymentState,
     required this.paymentLink,
-    required this.onSubmit,
     super.key,
   });
 
@@ -33,14 +35,21 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
 
           c.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
         },
-        onLoadStop: (controller, url) async {
+        onLoadStop: (controller, url) {
           if (url == null) {
             return;
           }
 
           if (url.path.contains('finish.html')) {
-            await onSubmit();
-            if (context.mounted) Navigator.of(context).pop();
+            if (context.mounted) {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) =>
+                      PaymentOrderPage(paymentState: paymentState),
+                ),
+                (route) => false,
+              );
+            }
           }
         },
         onReceivedServerTrustAuthRequest: (controller, challenge) async {
