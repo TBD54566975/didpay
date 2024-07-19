@@ -12,9 +12,13 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/tile_container.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:web5/web5.dart';
 
 class AccountPage extends HookConsumerWidget {
   const AccountPage({super.key});
+
+  // TODO(ethan-tbd): add button to recreate did
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -212,7 +216,7 @@ class AccountPage extends HookConsumerWidget {
   ) =>
       ListTile(
         title: Text(
-          '${credential.substring(0, 10)}...${credential.substring(credential.length - 20)}',
+          'KCC - ${_getIssuanceDate(credential)}',
           style: Theme.of(context).textTheme.titleSmall,
         ),
         leading: Container(
@@ -302,4 +306,14 @@ class AccountPage extends HookConsumerWidget {
           (_) => Colors.transparent,
         ),
       );
+
+  String _getIssuanceDate(String credentialJwt) {
+    final decodedJwt = Jwt.decode(credentialJwt);
+    final payload = decodedJwt.claims.misc?['vc'] as Map<String, dynamic>?;
+    final issuedAt = payload?['issuanceDate'] as String?;
+
+    return issuedAt != null
+        ? DateFormat('MMM dd yyyy').format(DateTime.parse(issuedAt).toLocal())
+        : 'no issuance date';
+  }
 }
