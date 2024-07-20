@@ -4,10 +4,11 @@ import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
-import 'package:didpay/features/payment/payment_review_page.dart';
+import 'package:didpay/features/payment/payment_quote_widget.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
@@ -33,6 +34,8 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
+
     final rfq = useState<AsyncValue<Rfq>?>(null);
     final state = useState<PaymentDetailsState>(
       paymentState.paymentDetailsState ?? PaymentDetailsState(),
@@ -56,19 +59,31 @@ class PaymentDetailsPage extends HookConsumerWidget {
       [state.value.selectedPaymentType],
     );
 
-    final isSendingRfq = rfq.value?.isLoading ?? false;
+    final isAwaiting =
+        (rfq.value?.isLoading ?? false) || (quote.value.isLoading);
 
     return PopScope(
-      canPop: !isSendingRfq,
+      canPop: !isAwaiting,
       onPopInvoked: (_) {
-        if (isSendingRfq) rfq.value = null;
+        if (isAwaiting) {
+          rfq.value = null;
+          quote.value = const AsyncData(null);
+        }
       },
       child: Scaffold(
         appBar: AppBar(),
         body: SafeArea(
           child: rfq.value != null
               ? rfq.value!.when(
-                  data: (_) => Container(),
+                  data: (sentRfq) => PaymentQuoteWidget(
+                    paymentState: paymentState.copyWith(
+                      paymentDetailsState: state.value
+                          .copyWith(exchangeId: sentRfq.metadata.exchangeId),
+                    ),
+                    quote: quote,
+                    rfq: rfq,
+                    ref: ref,
+                  ),
                   loading: () => LoadingMessage(
                     message: Loc.of(context).sendingYourRequest,
                   ),
@@ -82,40 +97,49 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     ),
                   ),
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Header(
-                      title:
-                          paymentState.transactionType == TransactionType.send
-                              ? state.value.moneyAddresses != null
-                                  ? Loc.of(context).checkTheirPaymentDetails
-                                  : Loc.of(context).enterTheirPaymentDetails
-                              : Loc.of(context).enterYourPaymentDetails,
-                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                    ),
-                    if (state.value.hasMultiplePaymentTypes)
-                      _buildPaymentTypeSelector(
-                        context,
-                        state,
-                      ),
-                    if (state.value.hasNoPaymentTypes ||
-                        state.value.selectedPaymentType != null)
-                      _buildPaymentMethodSelector(
-                        context,
-                        availableMethods,
-                        state,
-                      ),
-                    _buildPaymentForm(
-                      context,
-                      ref,
-                      state,
-                      rfq,
-                    ),
-                  ],
-                ),
+              : _buildPage(context, ref, availableMethods, state, rfq),
         ),
       ),
+    );
+  }
+
+  Widget _buildPage(
+    BuildContext context,
+    WidgetRef ref,
+    List<PaymentMethod>? availableMethods,
+    ValueNotifier<PaymentDetailsState> state,
+    ValueNotifier<AsyncValue<Rfq>?> rfq,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Header(
+          title: paymentState.transactionType == TransactionType.send
+              ? state.value.moneyAddresses != null
+                  ? Loc.of(context).checkTheirPaymentDetails
+                  : Loc.of(context).enterTheirPaymentDetails
+              : Loc.of(context).enterYourPaymentDetails,
+          subtitle: Loc.of(context).makeSureInfoIsCorrect,
+        ),
+        if (state.value.hasMultiplePaymentTypes)
+          _buildPaymentTypeSelector(
+            context,
+            state,
+          ),
+        if (state.value.hasNoPaymentTypes ||
+            state.value.selectedPaymentType != null)
+          _buildPaymentMethodSelector(
+            context,
+            availableMethods,
+            state,
+          ),
+        _buildPaymentForm(
+          context,
+          ref,
+          state,
+          rfq,
+        ),
+      ],
     );
   }
 
@@ -266,18 +290,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
           );
 
       if (context.mounted && rfq.value != null) {
-        await Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PaymentReviewPage(
-              paymentState: updatedPaymentState.copyWith(
-                paymentDetailsState: updatedPaymentState.paymentDetailsState
-                    ?.copyWith(exchangeId: sentRfq.metadata.exchangeId),
-              ),
-            ),
-          ),
-        );
-
-        if (context.mounted) rfq.value = null;
+        rfq.value = AsyncData(sentRfq);
       }
     } on Exception catch (e) {
       rfq.value = AsyncError(e, StackTrace.current);

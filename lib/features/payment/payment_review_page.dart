@@ -1,24 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
-import 'package:didpay/features/app/app.dart';
-import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_link_webview_page.dart';
+import 'package:didpay/features/payment/payment_order_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
-import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/confirmation_message.dart';
 import 'package:didpay/shared/currency_formatter.dart';
-import 'package:didpay/shared/error_message.dart';
-import 'package:didpay/shared/exit_dialog.dart';
 import 'package:didpay/shared/header.dart';
-import 'package:didpay/shared/loading_message.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
@@ -32,164 +24,60 @@ class PaymentReviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
-    final order = useState<AsyncValue<Order>?>(null);
-
-    TbdexQuoteNotifier getQuoteNotifier() => ref.read(quoteProvider.notifier);
-
-    useEffect(
-      () {
-        Future.microtask(
-          () async => _pollForQuote(context, ref, getQuoteNotifier(), quote),
-        );
-        return getQuoteNotifier().stopPolling;
-      },
-      [],
-    );
-
-    return PopScope(
-      child: Scaffold(
-        appBar: order.value?.hasValue ?? false
-            ? null
-            : quote.value.isLoading
-                ? _buildAppBar(context, ref, getQuoteNotifier())
-                : AppBar(),
-        body: SafeArea(
-          child: order.value == null
-              ? quote.value.when(
-                  data: (q) => q == null
-                      ? Container()
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Header(
-                              title: Loc.of(context).reviewYourPayment,
-                              subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                            ),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                physics: const BouncingScrollPhysics(),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: Grid.side,
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const SizedBox(height: Grid.sm),
-                                      _buildAmounts(context, q.data),
-                                      _buildFeeDetails(context, q.data),
-                                      _buildPaymentDetails(context),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            NextButton(
-                              onPressed: () =>
-                                  q.data.payin.paymentInstruction?.link != null
-                                      ? Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                PaymentLinkWebviewPage(
-                                              paymentState: paymentState,
-                                              paymentLink: q
-                                                      .data
-                                                      .payin
-                                                      .paymentInstruction
-                                                      ?.link ??
-                                                  '',
-                                            ),
-                                          ),
-                                        )
-                                      : _submitOrder(
-                                          context,
-                                          ref,
-                                          paymentState,
-                                          order,
-                                        ),
-                              title:
-                                  '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(q.data)} ${q.data.payin.currencyCode}',
-                            ),
-                          ],
-                        ),
-                  loading: () => LoadingMessage(
-                    message: Loc.of(context).gettingYourQuote,
+    return Scaffold(
+      appBar: AppBar(),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Header(
+              title: Loc.of(context).reviewYourPayment,
+              subtitle: Loc.of(context).makeSureInfoIsCorrect,
+            ),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: Grid.side,
                   ),
-                  error: (error, _) => ErrorMessage(
-                    message: error.toString(),
-                    onRetry: () =>
-                        _pollForQuote(context, ref, getQuoteNotifier(), quote),
-                  ),
-                )
-              : order.value!.when(
-                  data: (_) => ConfirmationMessage(
-                    message: Loc.of(context).orderConfirmed,
-                  ),
-                  loading: () => LoadingMessage(
-                    message: Loc.of(context).confirmingYourOrder,
-                  ),
-                  error: (error, _) => ErrorMessage(
-                    message: error.toString(),
-                    onRetry: () => _submitOrder(
-                      context,
-                      ref,
-                      paymentState,
-                      order,
-                    ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: Grid.sm),
+                      _buildAmounts(context, paymentState.quote?.data),
+                      _buildFeeDetails(context, paymentState.quote?.data),
+                      _buildPaymentDetails(context),
+                    ],
                   ),
                 ),
+              ),
+            ),
+            NextButton(
+              onPressed: () =>
+                  paymentState.quote?.data.payin.paymentInstruction?.link !=
+                          null
+                      ? Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => PaymentLinkWebviewPage(
+                              paymentState: paymentState,
+                              paymentLink: paymentState.quote?.data.payin
+                                      .paymentInstruction?.link ??
+                                  '',
+                            ),
+                          ),
+                        )
+                      : PaymentOrderPage(paymentState: paymentState),
+              title:
+                  '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(paymentState.quote?.data)} ${paymentState.quote?.data.payin.currencyCode}',
+            ),
+          ],
         ),
       ),
-      onPopInvoked: (_) {
-        if (paymentState.paymentDetailsState?.moneyAddresses != null) {
-          WidgetsBinding.instance
-              .addPostFrameCallback((_) => Navigator.of(context).pop());
-        }
-      },
     );
   }
 
-  AppBar _buildAppBar(
-    BuildContext context,
-    WidgetRef ref,
-    TbdexQuoteNotifier quoteNotifier,
-  ) =>
-      AppBar(
-        leading: IconButton(
-          onPressed: () async => showDialog(
-            context: context,
-            builder: (dialogContext) => ExitDialog(
-              title: Loc.of(context)
-                  .stoptxnType(paymentState.transactionType.name),
-              description: Loc.of(context).ifYouExitNow,
-              onExit: () async {
-                quoteNotifier.stopPolling();
-
-                await ref.read(tbdexServiceProvider).submitClose(
-                      ref.read(didProvider),
-                      paymentState.paymentAmountState?.pfiDid ?? '',
-                      paymentState.paymentDetailsState?.exchangeId ?? '',
-                    );
-
-                if (dialogContext.mounted) {
-                  await Navigator.of(dialogContext).pushAndRemoveUntil(
-                    MaterialPageRoute(
-                      builder: (dialogContext) => const App(),
-                    ),
-                    (route) => false,
-                  );
-                }
-              },
-              onStay: () async => Navigator.pop(dialogContext),
-            ),
-          ),
-          icon: const Icon(Icons.close),
-        ),
-      );
-
-  Widget _buildAmounts(BuildContext context, QuoteData quote) => Column(
+  Widget _buildAmounts(BuildContext context, QuoteData? quote) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -198,8 +86,8 @@ class PaymentReviewPage extends HookConsumerWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  Decimal.parse(quote.payin.total)
-                      .formatCurrency(quote.payin.currencyCode),
+                  Decimal.parse(quote?.payin.total ?? '0')
+                      .formatCurrency(quote?.payin.currencyCode ?? ''),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
                 ),
@@ -208,7 +96,7 @@ class PaymentReviewPage extends HookConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Grid.xxs),
                 child: Text(
-                  quote.payin.currencyCode,
+                  quote?.payin.currencyCode ?? '',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
               ),
@@ -226,15 +114,15 @@ class PaymentReviewPage extends HookConsumerWidget {
             children: [
               Flexible(
                 child: AutoSizeText(
-                  Decimal.parse(quote.payout.total)
-                      .formatCurrency(quote.payout.currencyCode),
+                  Decimal.parse(quote?.payout.total ?? '0')
+                      .formatCurrency(quote?.payout.currencyCode ?? ''),
                   style: Theme.of(context).textTheme.headlineMedium,
                   maxLines: 1,
                 ),
               ),
               const SizedBox(width: Grid.xs),
               Text(
-                quote.payout.currencyCode,
+                quote?.payout.currencyCode ?? '',
                 style: Theme.of(context).textTheme.headlineSmall,
               ),
             ],
@@ -258,7 +146,7 @@ class PaymentReviewPage extends HookConsumerWidget {
     return Text(label, style: style);
   }
 
-  Widget _buildFeeDetails(BuildContext context, QuoteData quote) => Padding(
+  Widget _buildFeeDetails(BuildContext context, QuoteData? quote) => Padding(
         padding: const EdgeInsets.symmetric(vertical: Grid.lg),
         child: PaymentFeeDetails(
           transactionType: paymentState.transactionType,
@@ -291,50 +179,4 @@ class PaymentReviewPage extends HookConsumerWidget {
           ],
         ),
       );
-
-  Future<void> _pollForQuote(
-    BuildContext context,
-    WidgetRef ref,
-    TbdexQuoteNotifier quoteNotifier,
-    ValueNotifier<AsyncValue<Quote?>> state,
-  ) async {
-    state.value = const AsyncLoading();
-
-    try {
-      final quote = await quoteNotifier.startPolling(
-        paymentState.paymentAmountState?.pfiDid ?? '',
-        paymentState.paymentDetailsState?.exchangeId ?? '',
-      );
-
-      if (context.mounted && quote != null) {
-        state.value = AsyncData(quote);
-        quoteNotifier.stopPolling();
-      }
-    } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
-    }
-  }
-
-  Future<void> _submitOrder(
-    BuildContext context,
-    WidgetRef ref,
-    PaymentState paymentState,
-    ValueNotifier<AsyncValue<Order>?> state,
-  ) async {
-    state.value = const AsyncLoading();
-
-    try {
-      final order = await ref.read(tbdexServiceProvider).submitOrder(
-            ref.read(didProvider),
-            paymentState.paymentAmountState?.pfiDid ?? '',
-            paymentState.paymentDetailsState?.exchangeId ?? '',
-          );
-
-      if (context.mounted) {
-        state.value = AsyncData(order);
-      }
-    } on Exception catch (e) {
-      state.value = AsyncError(e, StackTrace.current);
-    }
-  }
 }

@@ -62,6 +62,7 @@ void main() async {
                   offering.data.payin.methods.first,
                 ),
               ),
+              quote: quote,
             ),
           ),
           overrides: [
@@ -106,19 +107,6 @@ void main() async {
       await tester.pumpAndSettle();
 
       expect(find.text('DEBIT_CARD'), findsOneWidget);
-    });
-
-    testWidgets('should show order confirmation on tap of submit button',
-        (tester) async {
-      await tester.pumpWidget(
-        WidgetHelpers.testableWidget(child: reviewPaymentPageTestWidget()),
-      );
-      await tester.pumpAndSettle();
-
-      await tester.tap(find.text('Pay 100.01 AUD'));
-      await tester.pumpAndSettle();
-
-      expect(find.text('Order confirmed!'), findsOneWidget);
     });
   });
 }

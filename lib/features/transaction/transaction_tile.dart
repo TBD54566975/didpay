@@ -76,7 +76,7 @@ class TransactionTile extends HookConsumerWidget {
                     ),
                     margin: const EdgeInsets.symmetric(horizontal: Grid.xl),
                     behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 10),
+                    duration: const Duration(seconds: 1),
                     backgroundColor: Theme.of(context).colorScheme.surface,
                   ),
                 );
