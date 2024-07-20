@@ -12,13 +12,13 @@ import 'package:tbdex/tbdex.dart';
 class PaymentQuoteWidget extends HookWidget {
   final PaymentState paymentState;
   final ValueNotifier<AsyncValue<Quote?>> quote;
-  final Widget detailsPage;
+  final ValueNotifier<AsyncValue<Rfq>?> rfq;
   final WidgetRef ref;
 
   const PaymentQuoteWidget({
     required this.paymentState,
     required this.quote,
-    required this.detailsPage,
+    required this.rfq,
     required this.ref,
     super.key,
   });
@@ -31,7 +31,7 @@ class PaymentQuoteWidget extends HookWidget {
       () {
         Future.microtask(() async {
           if (context.mounted) {
-            await _pollForQuote(context, ref, getQuoteNotifier(), quote);
+            await _pollForQuote(context, ref, getQuoteNotifier());
           }
         });
         return getQuoteNotifier().stopPolling;
@@ -40,13 +40,13 @@ class PaymentQuoteWidget extends HookWidget {
     );
 
     return quote.value.when(
-      data: (q) => q == null ? Container() : detailsPage,
+      data: (q) => Container(),
       loading: () => LoadingMessage(
         message: Loc.of(context).gettingYourQuote,
       ),
       error: (error, _) => ErrorMessage(
         message: error.toString(),
-        onRetry: () => _pollForQuote(context, ref, getQuoteNotifier(), quote),
+        onRetry: () => _pollForQuote(context, ref, getQuoteNotifier()),
       ),
     );
   }
@@ -55,36 +55,36 @@ class PaymentQuoteWidget extends HookWidget {
     BuildContext context,
     WidgetRef ref,
     TbdexQuoteNotifier quoteNotifier,
-    ValueNotifier<AsyncValue<Quote?>> state,
   ) async {
-    state.value = const AsyncLoading();
+    quote.value = const AsyncLoading();
 
     try {
-      final quote = await quoteNotifier.startPolling(
+      final receivedQuote = await quoteNotifier.startPolling(
         paymentState.paymentAmountState?.pfiDid ?? '',
         paymentState.paymentDetailsState?.exchangeId ?? '',
       );
 
-      if (context.mounted && quote != null) {
+      if (context.mounted && receivedQuote != null) {
         quoteNotifier.stopPolling();
 
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentReviewPage(
               paymentState: paymentState.copyWith(
-                quote: quote,
+                quote: receivedQuote,
               ),
             ),
           ),
         );
 
         if (context.mounted) {
-          state.value = AsyncData(quote);
+          quote.value = const AsyncData(null);
+          rfq.value = null;
         }
       }
     } on Exception catch (e) {
       if (context.mounted) {
-        state.value = AsyncError(e, StackTrace.current);
+        quote.value = AsyncError(e, StackTrace.current);
       }
     }
   }

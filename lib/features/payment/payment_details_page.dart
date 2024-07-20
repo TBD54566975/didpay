@@ -81,8 +81,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                           .copyWith(exchangeId: sentRfq.metadata.exchangeId),
                     ),
                     quote: quote,
-                    detailsPage:
-                        _buildPage(context, ref, availableMethods, state, rfq),
+                    rfq: rfq,
                     ref: ref,
                   ),
                   loading: () => LoadingMessage(
