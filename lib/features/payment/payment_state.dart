@@ -1,16 +1,19 @@
 import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/transaction/transaction.dart';
+import 'package:tbdex/tbdex.dart';
 
 class PaymentState {
   final TransactionType transactionType;
   final PaymentAmountState? paymentAmountState;
   final PaymentDetailsState? paymentDetailsState;
+  final Quote? quote;
 
   const PaymentState({
     required this.transactionType,
     this.paymentAmountState,
     this.paymentDetailsState,
+    this.quote,
   });
 
   String? get filterPayinCurrency {
@@ -91,11 +94,13 @@ class PaymentState {
   PaymentState copyWith({
     PaymentAmountState? paymentAmountState,
     PaymentDetailsState? paymentDetailsState,
+    Quote? quote,
   }) {
     return PaymentState(
       transactionType: transactionType,
       paymentAmountState: paymentAmountState ?? this.paymentAmountState,
       paymentDetailsState: paymentDetailsState ?? this.paymentDetailsState,
+      quote: quote ?? this.quote,
     );
   }
 }
