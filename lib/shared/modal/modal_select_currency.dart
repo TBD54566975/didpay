@@ -88,7 +88,7 @@ class ModalSelectCurrency {
     Offering offering,
   ) =>
       Text(
-        '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
+        '${offering.data.payin.methods.firstOrNull?.kind == 'STORED_BALANCE' ? 'Biz only: ' : ''}${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
         style: Theme.of(context).textTheme.titleMedium,
       );
 
