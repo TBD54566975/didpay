@@ -25,10 +25,10 @@ class KccWebviewPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final idvRequest = useState<AsyncValue<IdvRequest>>(const AsyncLoading());
+    final webViewController = useState<InAppWebViewController?>(null);
 
     final settings = InAppWebViewSettings(
-      isInspectable:
-          kDebugMode, // TODO(mistermoe): only enable for debug builds
+      isInspectable: kDebugMode, // TODO: only enable for debug builds
       mediaPlaybackRequiresUserGesture: false,
       allowsInlineMediaPlayback: true,
       iframeAllow: 'camera; microphone',
@@ -37,7 +37,9 @@ class KccWebviewPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => _getIdvRequest(context, ref, idvRequest));
+        Future.microtask(
+          () async => _loadWebView(context, ref, idvRequest, webViewController),
+        );
         return null;
       },
       [],
@@ -51,38 +53,27 @@ class KccWebviewPage extends HookConsumerWidget {
         error: (error, stackTrace) => SafeArea(
           child: ErrorMessage(
             message: error.toString(),
-            onRetry: () => _getIdvRequest(context, ref, idvRequest),
+            onRetry: () =>
+                _loadWebView(context, ref, idvRequest, webViewController),
           ),
         ),
-        data: (data) {
-          return InAppWebView(
-            initialSettings: settings,
-            onWebViewCreated: (controller) {
-              // TODO(mistermoe): this url needs to be fixed on our PFI side
-              final fullPath =
-                  Uri.parse(data.url).replace(scheme: 'https').toString();
+        data: (data) => InAppWebView(
+          initialSettings: settings,
+          onWebViewCreated: (controller) {
+            webViewController.value = controller;
 
-              controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
-            },
-            onLoadStop: (controller, url) async {
-              if (url == null) {
-                return;
-              }
+            final fullPath =
+                Uri.parse(data.url).replace(scheme: 'https').toString();
 
-              if (url.path.contains('finish.html')) {
-                await Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => KccRetrievalPage(
-                      pfi: pfi,
-                      idvRequest: data,
-                    ),
-                  ),
-                );
-                if (context.mounted) Navigator.pop(context);
-              }
-            },
-            onCloseWindow: (controller) {
-              Navigator.of(context).push(
+            controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
+          },
+          onLoadStop: (controller, url) async {
+            if (url == null) {
+              return;
+            }
+
+            if (url.path.contains('finish.html')) {
+              await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => KccRetrievalPage(
                     pfi: pfi,
@@ -90,27 +81,37 @@ class KccWebviewPage extends HookConsumerWidget {
                   ),
                 ),
               );
-            },
-            onReceivedServerTrustAuthRequest: (controller, challenge) async {
-              return ServerTrustAuthResponse(
-                action: ServerTrustAuthResponseAction.PROCEED,
-              );
-            },
-            onPermissionRequest: (controller, permissionRequest) async {
-              return PermissionResponse(
-                action: PermissionResponseAction.GRANT,
-              );
-            },
-          );
-        },
+
+              if (context.mounted) {
+                await _loadWebView(
+                  context,
+                  ref,
+                  idvRequest,
+                  webViewController,
+                );
+              }
+            }
+          },
+          onReceivedServerTrustAuthRequest: (controller, challenge) async {
+            return ServerTrustAuthResponse(
+              action: ServerTrustAuthResponseAction.PROCEED,
+            );
+          },
+          onPermissionRequest: (controller, permissionRequest) async {
+            return PermissionResponse(
+              action: PermissionResponseAction.GRANT,
+            );
+          },
+        ),
       ),
     );
   }
 
-  Future<void> _getIdvRequest(
+  Future<void> _loadWebView(
     BuildContext context,
     WidgetRef ref,
     ValueNotifier<AsyncValue<IdvRequest>> state,
+    ValueNotifier<InAppWebViewController?> webViewController,
   ) async {
     state.value = const AsyncLoading();
     try {
@@ -120,6 +121,11 @@ class KccWebviewPage extends HookConsumerWidget {
 
       if (context.mounted) {
         state.value = AsyncData(idvRequest);
+
+        final fullPath =
+            Uri.parse(idvRequest.url).replace(scheme: 'https').toString();
+        await webViewController.value
+            ?.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
       }
     } on Exception catch (e) {
       if (context.mounted) {
