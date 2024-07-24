@@ -1,9 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
-import 'package:didpay/features/payment/payment_amount_page.dart';
-import 'package:didpay/features/payment/payment_state.dart';
+// import 'package:didpay/features/payment/payment_amount_page.dart';
+// import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
-import 'package:didpay/features/transaction/transaction.dart';
+// import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
@@ -110,16 +110,17 @@ class AccountBalanceCard extends HookConsumerWidget {
         children: [
           Expanded(
             child: FilledButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PaymentAmountPage(
-                    paymentState: PaymentState(
-                      transactionType: TransactionType.deposit,
-                    ),
-                  ),
-                  fullscreenDialog: true,
-                ),
-              ),
+              onPressed: null,
+              // onPressed: () => Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const PaymentAmountPage(
+              //       paymentState: PaymentState(
+              //         transactionType: TransactionType.deposit,
+              //       ),
+              //     ),
+              //     fullscreenDialog: true,
+              //   ),
+              // ),
               child: AutoSizeText(
                 Loc.of(context).deposit,
                 maxLines: 1,
@@ -129,15 +130,16 @@ class AccountBalanceCard extends HookConsumerWidget {
           const SizedBox(width: Grid.xs),
           Expanded(
             child: FilledButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PaymentAmountPage(
-                    paymentState:
-                        PaymentState(transactionType: TransactionType.withdraw),
-                  ),
-                  fullscreenDialog: true,
-                ),
-              ),
+              onPressed: null,
+              // onPressed: () => Navigator.of(context).push(
+              //   MaterialPageRoute(
+              //     builder: (context) => const PaymentAmountPage(
+              //       paymentState:
+              //           PaymentState(transactionType: TransactionType.withdraw),
+              //     ),
+              //     fullscreenDialog: true,
+              //   ),
+              // ),
               child: AutoSizeText(
                 Loc.of(context).withdraw,
                 maxLines: 1,
