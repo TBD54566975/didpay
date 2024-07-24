@@ -45,7 +45,7 @@ class KccRetrievalPage extends HookConsumerWidget {
               LoadingMessage(message: Loc.of(context).verifyingYourIdentity),
           error: (error, stackTrace) => ErrorMessage(
             message: error.toString(),
-            onRetry: () => _pollForCredential(context, ref, credential),
+            onRetry: () => Navigator.of(context).pop(),
           ),
           data: (data) => Column(
             mainAxisAlignment: MainAxisAlignment.center,
