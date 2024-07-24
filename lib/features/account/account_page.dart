@@ -150,6 +150,7 @@ class AccountPage extends HookConsumerWidget {
           context,
           pfi.did,
           Loc.of(context).removePfi,
+          pfi.did,
           () async => ref.read(pfisProvider.notifier).remove(pfi),
         ),
       );
@@ -232,6 +233,7 @@ class AccountPage extends HookConsumerWidget {
           context,
           _getCredentialTitle(credential),
           Loc.of(context).removeCredential,
+          credential,
           () async => ref.read(vcsProvider.notifier).remove(credential),
         ),
       );
