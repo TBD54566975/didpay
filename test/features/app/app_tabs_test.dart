@@ -39,7 +39,7 @@ void main() async {
     ).thenAnswer((_) async => {});
 
     when(
-      () => mockTbdexService.getAccountBalance(pfis),
+      () => mockTbdexService.getAccountBalance(did, pfis),
     ).thenAnswer(
       (_) async => accountBalance,
     );
