@@ -54,7 +54,7 @@ class DidQrTabs extends HookWidget {
                     Theme.of(context).colorScheme.onBackground,
                 tabs: [
                   Tab(text: Loc.of(context).scan),
-                  Tab(text: Loc.of(context).myDap),
+                  Tab(text: Loc.of(context).myDid),
                 ],
               ),
             ),
