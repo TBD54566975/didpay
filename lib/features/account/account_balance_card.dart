@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:didpay/features/account/account_balance_notifier.dart';
+import 'package:didpay/features/did/did_provider.dart';
 // import 'package:didpay/features/payment/payment_amount_page.dart';
 // import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
@@ -16,12 +17,10 @@ class AccountBalanceCard extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
-    // final accountBalance = ref.watch(accountBalanceProvider);
+    final accountBalance = ref.watch(accountBalanceProvider);
 
-    // final accountTotal = accountBalance.asData?.value?.total ?? '0';
-    // final accountCurrency = accountBalance.asData?.value?.currencyCode ?? '';
-    const accountTotal = '0';
-    const accountCurrency = 'USD';
+    final accountTotal = accountBalance.asData?.value?.total ?? '0';
+    final accountCurrency = accountBalance.asData?.value?.currencyCode ?? 'USD';
 
     AccountBalanceNotifier getAccountBalanceNotifier() =>
         ref.read(accountBalanceProvider.notifier);
@@ -29,7 +28,8 @@ class AccountBalanceCard extends HookConsumerWidget {
     useEffect(
       () {
         Future.microtask(
-          () async => getAccountBalanceNotifier().startPolling(pfis),
+          () async => getAccountBalanceNotifier()
+              .startPolling(ref.read(didProvider), pfis),
         );
         return getAccountBalanceNotifier().stopPolling;
       },

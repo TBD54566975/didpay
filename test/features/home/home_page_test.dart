@@ -56,7 +56,7 @@ void main() async {
       ).thenAnswer((_) async => {});
 
       when(
-        () => mockTbdexService.getAccountBalance(pfis),
+        () => mockTbdexService.getAccountBalance(did, pfis),
       ).thenAnswer(
         (_) async => accountBalance,
       );
@@ -81,7 +81,7 @@ void main() async {
       await tester.pumpWidget(homePageTestWidget());
       await tester.pumpAndSettle();
 
-      expect(find.widgetWithText(AccountBalanceCard, '0'), findsOneWidget);
+      expect(find.widgetWithText(AccountBalanceCard, '101'), findsOneWidget);
       expect(find.widgetWithText(AccountBalanceCard, 'USD'), findsOneWidget);
     });
 
