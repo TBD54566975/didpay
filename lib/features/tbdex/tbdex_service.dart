@@ -44,14 +44,17 @@ class TbdexService {
     return offeringsMap;
   }
 
-  Future<AccountBalance> getAccountBalance(List<Pfi> pfis) async {
+  Future<AccountBalance> getAccountBalance(
+    BearerDid did,
+    List<Pfi> pfis,
+  ) async {
     final balancesMap = <Pfi, List<Balance>>{};
     var totalAvailable = Decimal.zero;
     String? currencyCode;
 
     for (final pfi in pfis) {
       try {
-        final balances = await TbdexHttpClient.listBalances(pfi.did);
+        final balances = await TbdexHttpClient.listBalances(did, pfi.did);
         balancesMap[pfi] = balances;
 
         for (final balance in balances) {
