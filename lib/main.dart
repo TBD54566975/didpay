@@ -40,7 +40,8 @@ void main() async {
       overrides: [
         sharedPreferencesProvider.overrideWithValue(sharedPreferences),
         secureStorageProvider.overrideWithValue(secureStorage),
-        didProvider.overrideWithValue(did),
+        didServiceProvider.overrideWithValue(didService),
+        didProvider.overrideWith((ref) => did),
         ...overrides,
       ],
       child: const App(),

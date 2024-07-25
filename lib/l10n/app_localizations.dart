@@ -373,6 +373,12 @@ abstract class Loc {
   /// **'My DAP'**
   String get myDap;
 
+  /// No description provided for @myDid.
+  ///
+  /// In en, this message translates to:
+  /// **'My DID'**
+  String get myDid;
+
   /// No description provided for @myVc.
   ///
   /// In en, this message translates to:
@@ -864,6 +870,30 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'@username/didpay.me'**
   String get placeholderDap;
+
+  /// No description provided for @areYouSure.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure?'**
+  String get areYouSure;
+
+  /// No description provided for @allOfYourCredentialsWillAlsoBeDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'All of your credentials will also be deleted'**
+  String get allOfYourCredentialsWillAlsoBeDeleted;
+
+  /// No description provided for @regenerate.
+  ///
+  /// In en, this message translates to:
+  /// **'Regenerate'**
+  String get regenerate;
+
+  /// No description provided for @goBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Go back'**
+  String get goBack;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

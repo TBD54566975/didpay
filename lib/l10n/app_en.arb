@@ -63,6 +63,7 @@
     "noDidQrCodeFound": "No DID QR Code found",
     "noDapQrCodeFound": "No DAP QR Code found",
     "myDap": "My DAP",
+    "myDid": "My DID",
     "myVc": "My VC",
     "vcNotFound": "VC not found",
     "copiedDid": "Copied DID!",
@@ -166,5 +167,9 @@
     "ifYouExitNow": "If you exit now, you'll lose all your progress",
     "enterADap": "Enter a Decentralized Agnostic Paytag (DAP)",
     "verifyingDap": "Verifying DAP...",
-    "placeholderDap": "@username/didpay.me"
+    "placeholderDap": "@username/didpay.me",
+    "areYouSure": "Are you sure?",
+    "allOfYourCredentialsWillAlsoBeDeleted": "All of your credentials will also be deleted",
+    "regenerate": "Regenerate",
+    "goBack": "Go back"
 }

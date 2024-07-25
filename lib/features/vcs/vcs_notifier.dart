@@ -31,6 +31,11 @@ class VcsNotifier extends StateNotifier<List<String>> {
     await _save();
   }
 
+  Future<void> reset() async {
+    state = [];
+    await box.clear();
+  }
+
   Future<void> _save() async {
     await box.put(storageKey, state);
   }
