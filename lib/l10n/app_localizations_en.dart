@@ -403,4 +403,16 @@ class LocEn extends Loc {
 
   @override
   String get placeholderDap => '@username/didpay.me';
+
+  @override
+  String get areYouSure => 'Are you sure?';
+
+  @override
+  String get allOfYourCredentialsWillAlsoBeDeleted => 'All of your credentials will also be deleted';
+
+  @override
+  String get regenerate => 'Regenerate';
+
+  @override
+  String get goBack => 'Go back';
 }
