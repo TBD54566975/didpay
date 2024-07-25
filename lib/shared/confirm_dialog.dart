@@ -1,17 +1,20 @@
-import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class ExitDialog extends HookWidget {
+class ConfirmDialog extends HookWidget {
   final String title;
   final String description;
+  final String exitText;
+  final String stayText;
   final Future<void> Function() onExit;
   final Future<void> Function() onStay;
 
-  const ExitDialog({
+  const ConfirmDialog({
     required this.title,
     required this.description,
+    required this.exitText,
+    required this.stayText,
     required this.onExit,
     required this.onStay,
     super.key,
@@ -67,7 +70,7 @@ class ExitDialog extends HookWidget {
                           ),
                         ),
                         child: Text(
-                          Loc.of(context).stay,
+                          stayText,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.outline,
                           ),
@@ -90,7 +93,7 @@ class ExitDialog extends HookWidget {
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(vertical: Grid.sm),
                         child: Text(
-                          Loc.of(context).exit,
+                          exitText,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.error,
                           ),
