@@ -373,6 +373,12 @@ abstract class Loc {
   /// **'My DAP'**
   String get myDap;
 
+  /// No description provided for @myDid.
+  ///
+  /// In en, this message translates to:
+  /// **'My DID'**
+  String get myDid;
+
   /// No description provided for @myVc.
   ///
   /// In en, this message translates to:

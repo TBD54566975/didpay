@@ -63,6 +63,7 @@
     "noDidQrCodeFound": "No DID QR Code found",
     "noDapQrCodeFound": "No DAP QR Code found",
     "myDap": "My DAP",
+    "myDid": "My DID",
     "myVc": "My VC",
     "vcNotFound": "VC not found",
     "copiedDid": "Copied DID!",

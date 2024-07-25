@@ -150,6 +150,9 @@ class LocEn extends Loc {
   String get myDap => 'My DAP';
 
   @override
+  String get myDid => 'My DID';
+
+  @override
   String get myVc => 'My VC';
 
   @override
