@@ -5,18 +5,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 class ConfirmDialog extends HookWidget {
   final String title;
   final String description;
-  final String exitText;
-  final String stayText;
-  final Future<void> Function() onExit;
-  final Future<void> Function() onStay;
+  final String confirmText;
+  final String cancelText;
+  final Future<void> Function() onConfirm;
+  final Future<void> Function() onCancel;
 
   const ConfirmDialog({
     required this.title,
     required this.description,
-    required this.exitText,
-    required this.stayText,
-    required this.onExit,
-    required this.onStay,
+    required this.confirmText,
+    required this.cancelText,
+    required this.onConfirm,
+    required this.onCancel,
     super.key,
   });
 
@@ -55,7 +55,7 @@ class ConfirmDialog extends HookWidget {
                           ),
                         ),
                       ),
-                      onPressed: () async => onStay(),
+                      onPressed: () async => onCancel(),
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(vertical: Grid.sm),
@@ -70,7 +70,7 @@ class ConfirmDialog extends HookWidget {
                           ),
                         ),
                         child: Text(
-                          stayText,
+                          cancelText,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.outline,
                           ),
@@ -88,12 +88,12 @@ class ConfirmDialog extends HookWidget {
                           ),
                         ),
                       ),
-                      onPressed: () async => onExit(),
+                      onPressed: () async => onConfirm(),
                       child: Container(
                         alignment: Alignment.center,
                         padding: const EdgeInsets.symmetric(vertical: Grid.sm),
                         child: Text(
-                          exitText,
+                          confirmText,
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.error,
                           ),

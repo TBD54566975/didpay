@@ -78,9 +78,9 @@ class DidQrCodePage extends HookConsumerWidget {
                         title: Loc.of(context).areYouSure,
                         description: Loc.of(context)
                             .allOfYourCredentialsWillAlsoBeDeleted,
-                        exitText: Loc.of(context).regenerate,
-                        stayText: Loc.of(context).goBack,
-                        onExit: () async {
+                        confirmText: Loc.of(context).regenerate,
+                        cancelText: Loc.of(context).goBack,
+                        onConfirm: () async {
                           final newDid =
                               await didStorageService.regenerateDid();
                           ref.read(didProvider.notifier).state = newDid;
@@ -91,7 +91,7 @@ class DidQrCodePage extends HookConsumerWidget {
                             Navigator.of(context).pop();
                           }
                         },
-                        onStay: () async {
+                        onCancel: () async {
                           Navigator.of(context).pop();
                         },
                       ),
