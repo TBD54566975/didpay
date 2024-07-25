@@ -48,7 +48,7 @@ void main() async {
             ),
           ),
           overrides: [
-            didProvider.overrideWithValue(did),
+            didProvider.overrideWith((ref) => did),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
           ],
         );

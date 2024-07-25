@@ -31,7 +31,7 @@ void main() async {
     Widget homePageTestWidget() => WidgetHelpers.testableWidget(
           child: const HomePage(),
           overrides: [
-            didProvider.overrideWithValue(did),
+            didProvider.overrideWith((ref) => did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             transactionProvider.overrideWith(MockTransactionNotifier.new),
             accountBalanceProvider

@@ -66,7 +66,7 @@ void main() async {
             ),
           ),
           overrides: [
-            didProvider.overrideWithValue(did),
+            didProvider.overrideWith((ref) => did),
             quoteProvider.overrideWith(() => mockTbdexQuoteNotifier),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
           ],

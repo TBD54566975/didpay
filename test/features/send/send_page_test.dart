@@ -23,7 +23,7 @@ void main() async {
     Widget sendDetailsPageTestWidget() => WidgetHelpers.testableWidget(
           child: const SendPage(),
           overrides: [
-            didProvider.overrideWithValue(did),
+            didProvider.overrideWith((ref) => did),
             featureFlagsProvider
                 .overrideWith((ref) => mockFeatureFlagsNotifier),
           ],

@@ -49,7 +49,7 @@ void main() async {
     Widget appTabsTestWidget() => WidgetHelpers.testableWidget(
           child: const AppTabs(),
           overrides: [
-            didProvider.overrideWithValue(did),
+            didProvider.overrideWith((ref) => did),
             tbdexServiceProvider.overrideWith((ref) => mockTbdexService),
             pfisProvider.overrideWith((ref) => mockPfisNotifier),
             vcsProvider.overrideWith((ref) => mockVcsNotifier),
