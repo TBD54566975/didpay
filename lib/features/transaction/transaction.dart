@@ -48,11 +48,14 @@ class Transaction {
             break;
           case MessageKind.orderstatus:
             if (createdAt.isAfter(latestCreatedAt)) {
-              status = _getStatus((msg as OrderStatus).data.orderStatus);
+              status =
+                  _statusToTransactionStatus((msg as OrderStatus).data.status);
             }
             break;
+          case MessageKind.orderinstructions:
+            break;
           case MessageKind.close:
-            ((msg as Close).data.success ?? true)
+            ((msg as Close).data.success ?? false)
                 ? status = TransactionStatus.payoutSuccess
                 : status = TransactionStatus.payoutCanceled;
             break;
@@ -138,16 +141,28 @@ class Transaction {
     }
   }
 
-  static TransactionStatus _getStatus(String status) {
+  static TransactionStatus _statusToTransactionStatus(Status status) {
     switch (status) {
-      case 'PAYOUT_PENDING':
+      case Status.payinPending:
+      case Status.payinInitiated:
+      case Status.payinSettled:
+      case Status.payoutPending:
+      case Status.payoutInitiated:
         return TransactionStatus.payoutPending;
-      case 'PAYOUT_INITIATED':
-        return TransactionStatus.payoutInitiated;
-      case 'PAYOUT_COMPLETED':
+
+      case Status.payoutSettled:
         return TransactionStatus.payoutComplete;
-      default:
-        return TransactionStatus.orderSubmitted;
+
+      case Status.payinFailed:
+      case Status.payinExpired:
+      case Status.payoutFailed:
+      case Status.refundFailed:
+        return TransactionStatus.payoutCanceled;
+
+      case Status.refundSettled:
+      case Status.refundInitiated:
+      case Status.refundPending:
+        return TransactionStatus.payoutPending;
     }
   }
 }
