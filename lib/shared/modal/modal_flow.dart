@@ -6,13 +6,11 @@ class ModalFlow extends StatelessWidget {
   const ModalFlow({required this.initialWidget, super.key});
 
   @override
-  Widget build(BuildContext context) => PopScope(
-        child: Navigator(
-          onGenerateRoute: (settings) {
-            return MaterialPageRoute(
-              builder: (context) => initialWidget,
-            );
-          },
-        ),
+  Widget build(BuildContext context) => Navigator(
+        onGenerateRoute: (settings) {
+          return MaterialPageRoute(
+            builder: (context) => initialWidget,
+          );
+        },
       );
 }
