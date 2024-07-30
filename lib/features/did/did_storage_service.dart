@@ -34,6 +34,10 @@ class DidStorageService {
     return did;
   }
 
+  // TODO(ethan-tbd): remove portable did method
+  Future<String?> getPortableDidJson() async =>
+      storage.read(key: Constants.portableDidKey);
+
   Future<BearerDid> regenerateDid() async {
     await storage.delete(key: Constants.portableDidKey);
 
