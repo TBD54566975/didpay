@@ -3,7 +3,7 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class ModalRemoveItem {
+class ModalManageItem {
   static Future<dynamic> show(
     BuildContext context,
     String title,
@@ -29,7 +29,7 @@ class ModalRemoveItem {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
-                            'Copied to clipboard',
+                            Loc.of(context).copiedToClipboard,
                             style: Theme.of(context)
                                 .textTheme
                                 .titleSmall
