@@ -8,6 +8,7 @@ import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/confirm_dialog.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
@@ -60,13 +61,65 @@ class DidQrCodePage extends HookConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-                  child: AutoSizeText(
-                    did.uri,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
+                  // TODO(ethan-tbd): remove portable did copy feature
+                  child: ListTile(
+                    trailing: IconButton(
+                      icon: const Icon(Icons.copy),
+                      onPressed: () async {
+                        final didJson = await ref
+                            .read(didServiceProvider)
+                            .getPortableDidJson();
+                        await Clipboard.setData(
+                          ClipboardData(
+                            text: didJson ?? 'Error: portable did not found',
+                          ),
+                        );
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Copied portable did',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface,
+                                    ),
+                              ),
+                              shape: ShapeBorder.lerp(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(Grid.xs),
+                                ),
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(Grid.xs),
+                                ),
+                                1,
+                              ),
+                              margin: const EdgeInsets.symmetric(
+                                horizontal: Grid.xl,
+                              ),
+                              behavior: SnackBarBehavior.floating,
+                              duration: const Duration(seconds: 1),
+                              backgroundColor:
+                                  Theme.of(context).colorScheme.surface,
+                            ),
+                          );
+                          Navigator.pop(context);
+                        }
+                      },
+                    ),
+                    title: Center(
+                      child: AutoSizeText(
+                        did.uri,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                        maxLines: 2,
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: Grid.sm),
