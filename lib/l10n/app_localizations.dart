@@ -894,6 +894,12 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Go back'**
   String get goBack;
+
+  /// No description provided for @copiedToClipboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied to clipboard'**
+  String get copiedToClipboard;
 }
 
 class _LocDelegate extends LocalizationsDelegate<Loc> {

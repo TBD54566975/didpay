@@ -7,7 +7,7 @@ import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/modal/modal_remove_item.dart';
+import 'package:didpay/shared/modal/modal_manage_item.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/tile_container.dart';
 import 'package:flutter/material.dart';
@@ -146,7 +146,7 @@ class AccountPage extends HookConsumerWidget {
           ),
           child: const Center(child: Icon(Icons.account_balance)),
         ),
-        onTap: () => ModalRemoveItem.show(
+        onTap: () => ModalManageItem.show(
           context,
           pfi.did,
           Loc.of(context).removePfi,
@@ -229,7 +229,7 @@ class AccountPage extends HookConsumerWidget {
           ),
           child: const Center(child: Icon(Icons.gpp_good)),
         ),
-        onTap: () => ModalRemoveItem.show(
+        onTap: () => ModalManageItem.show(
           context,
           _getCredentialTitle(credential),
           Loc.of(context).removeCredential,

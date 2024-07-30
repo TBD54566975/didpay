@@ -66,19 +66,15 @@ class DidQrCodePage extends HookConsumerWidget {
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
                       onPressed: () async {
-                        final didJson = await ref
-                            .read(didServiceProvider)
-                            .getPortableDidJson();
+                        final did = ref.read(didProvider);
                         await Clipboard.setData(
-                          ClipboardData(
-                            text: didJson ?? 'Error: portable did not found',
-                          ),
+                          ClipboardData(text: did.uri),
                         );
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                'Copied portable did',
+                                Loc.of(context).copiedToClipboard,
                                 style: Theme.of(context)
                                     .textTheme
                                     .titleSmall

@@ -415,4 +415,7 @@ class LocEn extends Loc {
 
   @override
   String get goBack => 'Go back';
+
+  @override
+  String get copiedToClipboard => 'Copied to clipboard';
 }
