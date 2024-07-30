@@ -24,6 +24,22 @@ class JsonSchemaForm extends HookWidget {
   Widget build(BuildContext context) {
     final formState = useState<Map<String, _FormFieldStateData>>({});
 
+    void onPressed(Map<String, String> data) {
+      if (state.selectedPaymentMethod?.schema == null) {
+        onSubmit(data);
+      } else {
+        if (_formKey.currentState != null &&
+            (_formKey.currentState?.validate() ?? false)) {
+          _formKey.currentState?.save();
+          onSubmit(data);
+        }
+      }
+    }
+
+    if (state.selectedPaymentMethod?.schema == null) {
+      return _buildEmptyForm(onPressed);
+    }
+
     final jsonSchema = json.decode(state.selectedPaymentMethod?.schema ?? '')
         as Map<String, dynamic>;
     final properties = jsonSchema['properties'] as Map<String, dynamic>?;
@@ -66,22 +82,6 @@ class JsonSchemaForm extends HookWidget {
       },
       [state.selectedPaymentMethod?.schema],
     );
-
-    void onPressed(Map<String, String> data) {
-      if (state.selectedPaymentMethod?.schema == null) {
-        onSubmit(data);
-      } else {
-        if (_formKey.currentState != null &&
-            (_formKey.currentState?.validate() ?? false)) {
-          _formKey.currentState?.save();
-          onSubmit(data);
-        }
-      }
-    }
-
-    if (state.selectedPaymentMethod?.schema == null) {
-      return _buildEmptyForm(onPressed);
-    }
 
     var formFields = <Widget>[];
     properties?.forEach(
