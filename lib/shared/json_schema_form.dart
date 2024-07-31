@@ -6,13 +6,13 @@ import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/utils/text_input_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class JsonSchemaForm extends HookWidget {
   final PaymentDetailsState state;
   final void Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
-  final Map<String, String> formData = {};
 
   JsonSchemaForm({
     required this.state,
@@ -22,6 +22,8 @@ class JsonSchemaForm extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final formState = useState<Map<String, _FormFieldStateData>>({});
+
     void onPressed(Map<String, String> data) {
       if (state.selectedPaymentMethod?.schema == null) {
         onSubmit(data);
@@ -42,34 +44,80 @@ class JsonSchemaForm extends HookWidget {
         as Map<String, dynamic>;
     final properties = jsonSchema['properties'] as Map<String, dynamic>?;
 
+    useEffect(
+      () {
+        if (properties != null) {
+          properties.forEach((key, value) {
+            final valueMap = value as Map<String, dynamic>;
+            final pattern = valueMap['pattern'] as String?;
+
+            if (!formState.value.containsKey(key)) {
+              final formatter = TextInputUtil.getMaskFormatter(pattern);
+              final controller = TextEditingController(
+                text: formState.value[key]?.formData ?? '',
+              );
+
+              controller.addListener(
+                () => formState.value = {
+                  ...formState.value,
+                  key: _FormFieldStateData(
+                    formData: controller.text,
+                    controller: controller,
+                    formatter: formatter,
+                  ),
+                },
+              );
+
+              formState.value[key] = _FormFieldStateData(
+                formData: '',
+                controller: controller,
+                formatter: formatter,
+              );
+            }
+          });
+        }
+
+        return () => formState.value
+            .forEach((key, fieldState) => fieldState.controller.dispose());
+      },
+      [state.selectedPaymentMethod?.schema],
+    );
+
     var formFields = <Widget>[];
     properties?.forEach(
       (key, value) {
-        final focusNode = useFocusNode();
         final valueMap = value as Map<String, dynamic>;
-        final formatter = TextInputUtil.getMaskFormatter(valueMap['pattern']);
+        final fieldState = formState.value[key];
+
+        if (fieldState == null) return;
 
         formFields.add(
           TextFormField(
-            initialValue:
-                state.moneyAddresses?.firstOrNull?.css.split(':').last,
-            focusNode: focusNode,
-            onTapOutside: (_) => focusNode.unfocus(),
+            controller: fieldState.controller,
+            focusNode: useFocusNode(),
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             enableSuggestions: false,
             autocorrect: false,
             keyboardType: TextInputUtil.getKeyboardType(valueMap['pattern']),
             decoration: InputDecoration(
               labelText: valueMap['title'] ?? key,
-              hintText: formatter.getMask(),
+              hintText: fieldState.formatter.getMask() ?? '',
             ),
-            inputFormatters: [formatter],
+            inputFormatters: [fieldState.formatter],
             textInputAction: TextInputAction.next,
             validator: (value) => _validateField(
               key,
               value,
               jsonSchema,
             ),
-            onSaved: (value) => formData[key] = value ?? '',
+            onSaved: (data) => formState.value = {
+              ...formState.value,
+              key: _FormFieldStateData(
+                formData: data ?? '',
+                controller: fieldState.controller,
+                formatter: fieldState.formatter,
+              ),
+            },
           ),
         );
       },
@@ -92,7 +140,11 @@ class JsonSchemaForm extends HookWidget {
           NextButton(
             onPressed: state.selectedPaymentMethod == null
                 ? null
-                : () => onPressed(formData),
+                : () {
+                    final data = formState.value
+                        .map((key, value) => MapEntry(key, value.formData));
+                    onPressed(data);
+                  },
           ),
         ],
       ),
@@ -106,7 +158,7 @@ class JsonSchemaForm extends HookWidget {
           NextButton(
             onPressed: state.selectedPaymentMethod == null
                 ? null
-                : () => onPressed(formData),
+                : () => onPressed({}),
           ),
         ],
       );
@@ -123,7 +175,6 @@ class JsonSchemaForm extends HookWidget {
     }
 
     if (value != null && value.isNotEmpty) {
-      // Cast the nested maps to `Map<String, dynamic>` to ensure type safety
       final properties = jsonSchema['properties'] as Map<String, dynamic>?;
       final fieldProperties = properties?[key] as Map<String, dynamic>?;
 
@@ -152,4 +203,16 @@ class JsonSchemaForm extends HookWidget {
 
     return null;
   }
+}
+
+class _FormFieldStateData {
+  String formData;
+  TextEditingController controller;
+  MaskTextInputFormatter formatter;
+
+  _FormFieldStateData({
+    required this.formData,
+    required this.controller,
+    required this.formatter,
+  });
 }
