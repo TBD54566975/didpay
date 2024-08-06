@@ -178,7 +178,7 @@ class TbdexService {
     return rfq;
   }
 
-  Future<Order> submitOrder(
+  Future<Order> sendOrder(
     BearerDid did,
     String pfiDid,
     String exchangeId,
@@ -197,22 +197,22 @@ class TbdexService {
     return order;
   }
 
-  Future<Close> submitClose(
+  Future<Cancel> sendCancel(
     BearerDid did,
     String pfiDid,
     String exchangeId,
   ) async {
-    final closeData = CloseData(reason: 'User requested');
-    final close = Close.create(pfiDid, did.uri, exchangeId, closeData);
-    await close.sign(did);
+    final cancelData = CancelData(reason: 'User requested');
+    final cancel = Cancel.create(pfiDid, did.uri, exchangeId, cancelData);
+    await cancel.sign(did);
 
     try {
-      await TbdexHttpClient.submitClose(close);
+      await TbdexHttpClient.submitCancel(cancel);
     } on Exception {
       rethrow;
     }
 
-    return close;
+    return cancel;
   }
 
   Future<Quote> pollForQuote(
