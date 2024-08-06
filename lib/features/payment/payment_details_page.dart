@@ -2,9 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
+import 'package:didpay/features/payment/payment_fetch_quote_widget.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
-import 'package:didpay/features/payment/payment_quote_widget.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -75,7 +75,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
         body: SafeArea(
           child: rfq.value != null
               ? rfq.value!.when(
-                  data: (sentRfq) => PaymentQuoteWidget(
+                  data: (sentRfq) => PaymentFetchQuoteWidget(
                     paymentState: paymentState.copyWith(
                       paymentDetailsState: state.value
                           .copyWith(exchangeId: sentRfq.metadata.exchangeId),
