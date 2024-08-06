@@ -9,13 +9,13 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
 
-class PaymentQuoteWidget extends HookWidget {
+class PaymentFetchQuoteWidget extends HookWidget {
   final PaymentState paymentState;
   final ValueNotifier<AsyncValue<Quote?>> quote;
   final ValueNotifier<AsyncValue<Rfq>?> rfq;
   final WidgetRef ref;
 
-  const PaymentQuoteWidget({
+  const PaymentFetchQuoteWidget({
     required this.paymentState,
     required this.quote,
     required this.rfq,
@@ -59,19 +59,19 @@ class PaymentQuoteWidget extends HookWidget {
     quote.value = const AsyncLoading();
 
     try {
-      final receivedQuote = await quoteNotifier.startPolling(
+      final fetchedQuote = await quoteNotifier.startPolling(
         paymentState.paymentAmountState?.pfiDid ?? '',
         paymentState.paymentDetailsState?.exchangeId ?? '',
       );
 
-      if (context.mounted && receivedQuote != null) {
+      if (context.mounted && fetchedQuote != null) {
         quoteNotifier.stopPolling();
 
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => PaymentReviewPage(
               paymentState: paymentState.copyWith(
-                quote: receivedQuote,
+                quote: fetchedQuote,
               ),
             ),
           ),
