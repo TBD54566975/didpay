@@ -34,7 +34,7 @@ void main() async {
     mockTbdexQuoteNotifier = MockTbdexQuoteNotifier();
 
     when(
-      () => mockTbdexService.submitOrder(any(), any(), any()),
+      () => mockTbdexService.sendOrder(any(), any(), any()),
     ).thenAnswer((_) async => order);
 
     when(
