@@ -853,6 +853,12 @@ abstract class Loc {
   /// **'If you exit now, you\'ll lose all your progress'**
   String get ifYouExitNow;
 
+  /// No description provided for @ifYouGoBackNow.
+  ///
+  /// In en, this message translates to:
+  /// **'If you go back now, you\'ll lose your quote'**
+  String get ifYouGoBackNow;
+
   /// No description provided for @enterADap.
   ///
   /// In en, this message translates to:
