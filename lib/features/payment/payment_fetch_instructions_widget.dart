@@ -1,8 +1,6 @@
-import 'package:didpay/features/payment/payment_link_webview_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/tbdex_order_instructions_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/confirmation_message.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/loading_message.dart';
 import 'package:flutter/material.dart';
@@ -14,12 +12,15 @@ class PaymentFetchInstructionsWidget extends HookWidget {
   final PaymentState paymentState;
   final ValueNotifier<AsyncValue<OrderInstructions?>> instructions;
   final ValueNotifier<AsyncValue<Order>?> order;
+  final Future<void> Function(BuildContext, OrderInstructions)
+      onInstructionsFetched;
   final WidgetRef ref;
 
   const PaymentFetchInstructionsWidget({
     required this.paymentState,
     required this.instructions,
     required this.order,
+    required this.onInstructionsFetched,
     required this.ref,
     super.key,
   });
@@ -44,7 +45,7 @@ class PaymentFetchInstructionsWidget extends HookWidget {
     return instructions.value.when(
       data: (q) => Container(),
       loading: () => LoadingMessage(
-        message: Loc.of(context).confirmingYourOrder,
+        message: Loc.of(context).fetchingPaymentInstructions,
       ),
       error: (error, _) => ErrorMessage(
         message: error.toString(),
@@ -70,29 +71,10 @@ class PaymentFetchInstructionsWidget extends HookWidget {
       if (context.mounted && fetchedInstructions != null) {
         instructionsNotifier.stopPolling();
 
-        final paymentLink = fetchedInstructions.data.payin.link;
-
-        if (paymentLink == null) {
-          await Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(
-              builder: (context) => ConfirmationMessage(
-                message: Loc.of(context).orderConfirmed,
-              ),
-            ),
-            (route) => false,
-          );
-        } else {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => PaymentLinkWebviewPage(
-                paymentLink: fetchedInstructions.data.payin.link ?? '',
-              ),
-            ),
-          );
-        }
+        await onInstructionsFetched(context, fetchedInstructions);
 
         if (context.mounted) {
-          instructions.value = const AsyncData(null);
+          instructions.value = AsyncData(fetchedInstructions);
           order.value = null;
         }
       }
