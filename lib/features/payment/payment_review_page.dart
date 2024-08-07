@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
 import 'package:didpay/features/payment/payment_fetch_instructions_widget.dart';
+import 'package:didpay/features/payment/payment_link_webview_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
@@ -59,10 +61,11 @@ class PaymentReviewPage extends HookConsumerWidget {
                     paymentState: paymentState,
                     instructions: orderInstructions,
                     order: order,
+                    onInstructionsFetched: _handleFetchedInstructions,
                     ref: ref,
                   ),
                   loading: () => LoadingMessage(
-                    message: Loc.of(context).confirmingYourOrder,
+                    message: Loc.of(context).sendingYourOrder,
                   ),
                   error: (error, _) => ErrorMessage(
                     message: error.toString(),
@@ -94,7 +97,9 @@ class PaymentReviewPage extends HookConsumerWidget {
                               const SizedBox(height: Grid.sm),
                               _buildAmounts(context, paymentState.quote?.data),
                               _buildFeeDetails(
-                                  context, paymentState.quote?.data,),
+                                context,
+                                paymentState.quote?.data,
+                              ),
                               _buildPaymentDetails(context),
                             ],
                           ),
@@ -102,8 +107,12 @@ class PaymentReviewPage extends HookConsumerWidget {
                       ),
                     ),
                     NextButton(
-                      onPressed: () =>
-                          _submitOrder(context, ref, paymentState, order),
+                      onPressed: () => orderInstructions.value.hasValue
+                          ? _handleFetchedInstructions(
+                              context,
+                              orderInstructions.value.asData!.value,
+                            )
+                          : _submitOrder(context, ref, paymentState, order),
                       title:
                           '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(paymentState.quote?.data)} ${paymentState.quote?.data.payin.currencyCode}',
                     ),
@@ -251,6 +260,30 @@ class PaymentReviewPage extends HookConsumerWidget {
       }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
+    }
+  }
+
+  Future<void> _handleFetchedInstructions(
+    BuildContext context,
+    OrderInstructions? fetchedInstructions,
+  ) async {
+    final paymentLink = fetchedInstructions?.data.payin.link;
+
+    if (paymentLink == null) {
+      await Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(
+          builder: (context) => const PaymentConfirmationPage(),
+        ),
+        (route) => false,
+      );
+    } else {
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => PaymentLinkWebviewPage(
+            paymentLink: paymentLink,
+          ),
+        ),
+      );
     }
   }
 }
