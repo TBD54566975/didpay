@@ -679,11 +679,17 @@ abstract class Loc {
   /// **'Must add a PFI before sending funds!'**
   String get mustAddPfiBeforeSending;
 
-  /// No description provided for @gettingYourQuote.
+  /// No description provided for @fetchingYourQuote.
   ///
   /// In en, this message translates to:
-  /// **'Getting your quote...'**
-  String get gettingYourQuote;
+  /// **'Fetching your quote...'**
+  String get fetchingYourQuote;
+
+  /// No description provided for @fetchingPaymentInstructions.
+  ///
+  /// In en, this message translates to:
+  /// **'Fetching payment instructions...'**
+  String get fetchingPaymentInstructions;
 
   /// No description provided for @sendingYourRequest.
   ///
@@ -691,11 +697,11 @@ abstract class Loc {
   /// **'Sending your request...'**
   String get sendingYourRequest;
 
-  /// No description provided for @confirmingYourOrder.
+  /// No description provided for @sendingYourOrder.
   ///
   /// In en, this message translates to:
-  /// **'Confirming your order...'**
-  String get confirmingYourOrder;
+  /// **'Sending your order...'**
+  String get sendingYourOrder;
 
   /// No description provided for @orderConfirmed.
   ///
