@@ -42,7 +42,7 @@ class PaymentFetchQuoteWidget extends HookWidget {
     return quote.value.when(
       data: (q) => Container(),
       loading: () => LoadingMessage(
-        message: Loc.of(context).gettingYourQuote,
+        message: Loc.of(context).fetchingYourQuote,
       ),
       error: (error, _) => ErrorMessage(
         message: error.toString(),
