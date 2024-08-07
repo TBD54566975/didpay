@@ -396,6 +396,9 @@ class LocEn extends Loc {
   String get ifYouExitNow => 'If you exit now, you\'ll lose all your progress';
 
   @override
+  String get ifYouGoBackNow => 'If you go back now, you\'ll lose your quote';
+
+  @override
   String get enterADap => 'Enter a Decentralized Agnostic Paytag (DAP)';
 
   @override

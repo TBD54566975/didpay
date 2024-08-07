@@ -165,6 +165,7 @@
         }
     },
     "ifYouExitNow": "If you exit now, you'll lose all your progress",
+    "ifYouGoBackNow": "If you go back now, you'll lose your quote",
     "enterADap": "Enter a Decentralized Agnostic Paytag (DAP)",
     "verifyingDap": "Verifying DAP...",
     "placeholderDap": "@username/didpay.me",

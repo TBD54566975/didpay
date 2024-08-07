@@ -7,6 +7,7 @@ import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/confirm_dialog.dart';
 import 'package:didpay/shared/currency_formatter.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/header.dart';
@@ -32,64 +33,83 @@ class PaymentReviewPage extends HookConsumerWidget {
     final orderInstructions =
         useState<AsyncValue<OrderInstructions?>>(const AsyncLoading());
 
-    return Scaffold(
-      appBar: AppBar(),
-      body: SafeArea(
-        child: order.value != null
-            ? order.value!.when(
-                data: (_) => PaymentFetchInstructionsWidget(
-                  paymentState: paymentState,
-                  instructions: orderInstructions,
-                  order: order,
-                  ref: ref,
-                ),
-                loading: () => LoadingMessage(
-                  message: Loc.of(context).confirmingYourOrder,
-                ),
-                error: (error, _) => ErrorMessage(
-                  message: error.toString(),
-                  onRetry: () => _submitOrder(
-                    context,
-                    ref,
-                    paymentState,
-                    order,
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) {
+          return;
+        }
+
+        WidgetsBinding.instance.addPostFrameCallback(
+          (_) async {
+            final shouldPop = await _showConfirmDialog(context) ?? false;
+
+            if (shouldPop && context.mounted) {
+              Navigator.of(context).pop();
+            }
+          },
+        );
+      },
+      child: Scaffold(
+        appBar: AppBar(),
+        body: SafeArea(
+          child: order.value != null
+              ? order.value!.when(
+                  data: (_) => PaymentFetchInstructionsWidget(
+                    paymentState: paymentState,
+                    instructions: orderInstructions,
+                    order: order,
+                    ref: ref,
                   ),
-                ),
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Header(
-                    title: Loc.of(context).reviewYourPayment,
-                    subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                  loading: () => LoadingMessage(
+                    message: Loc.of(context).confirmingYourOrder,
                   ),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Grid.side,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: Grid.sm),
-                            _buildAmounts(context, paymentState.quote?.data),
-                            _buildFeeDetails(context, paymentState.quote?.data),
-                            _buildPaymentDetails(context),
-                          ],
+                  error: (error, _) => ErrorMessage(
+                    message: error.toString(),
+                    onRetry: () => _submitOrder(
+                      context,
+                      ref,
+                      paymentState,
+                      order,
+                    ),
+                  ),
+                )
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Header(
+                      title: Loc.of(context).reviewYourPayment,
+                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                    ),
+                    Expanded(
+                      child: SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Grid.side,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: Grid.sm),
+                              _buildAmounts(context, paymentState.quote?.data),
+                              _buildFeeDetails(
+                                  context, paymentState.quote?.data,),
+                              _buildPaymentDetails(context),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  NextButton(
-                    onPressed: () =>
-                        _submitOrder(context, ref, paymentState, order),
-                    title:
-                        '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(paymentState.quote?.data)} ${paymentState.quote?.data.payin.currencyCode}',
-                  ),
-                ],
-              ),
+                    NextButton(
+                      onPressed: () =>
+                          _submitOrder(context, ref, paymentState, order),
+                      title:
+                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(paymentState.quote?.data)} ${paymentState.quote?.data.payin.currencyCode}',
+                    ),
+                  ],
+                ),
+        ),
       ),
     );
   }
@@ -197,6 +217,20 @@ class PaymentReviewPage extends HookConsumerWidget {
         ),
       );
 
+  Future<bool?> _showConfirmDialog(BuildContext context) {
+    return showDialog<bool>(
+      context: context,
+      builder: (c) => ConfirmDialog(
+        title: Loc.of(c).areYouSure,
+        description: Loc.of(c).ifYouGoBackNow,
+        confirmText: Loc.of(c).goBack,
+        cancelText: Loc.of(c).cancel,
+        onConfirm: () async => Navigator.of(c).pop(true),
+        onCancel: () async => Navigator.of(c).pop(false),
+      ),
+    );
+  }
+
   Future<void> _submitOrder(
     BuildContext context,
     WidgetRef ref,
@@ -206,7 +240,7 @@ class PaymentReviewPage extends HookConsumerWidget {
     state.value = const AsyncLoading();
 
     try {
-      final order = await ref.read(tbdexServiceProvider).submitOrder(
+      final order = await ref.read(tbdexServiceProvider).sendOrder(
             ref.read(didProvider),
             paymentState.paymentAmountState?.pfiDid ?? '',
             paymentState.paymentDetailsState?.exchangeId ?? '',
