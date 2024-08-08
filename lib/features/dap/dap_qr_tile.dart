@@ -1,6 +1,7 @@
 import 'package:didpay/features/device/device_info_service.dart';
 import 'package:didpay/features/did/did_qr_tabs.dart';
 import 'package:didpay/l10n/app_localizations.dart';
+import 'package:didpay/shared/snackbar/snackbar_service.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
@@ -17,6 +18,7 @@ class DapQrTile extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isPhysicalDevice = useState(true);
+    final snackbarService = SnackbarService();
 
     useEffect(
       () {
@@ -46,6 +48,7 @@ class DapQrTile extends HookConsumerWidget {
             : _simulateScanQrCode(
                 context,
                 dapTextController,
+                snackbarService,
               ),
       ),
     );
@@ -67,15 +70,9 @@ class DapQrTile extends HookConsumerWidget {
   Future<void> _simulateScanQrCode(
     BuildContext context,
     TextEditingController didTextController,
+    SnackbarService snackbarService,
   ) async {
-    ScaffoldMessenger.of(context).removeCurrentSnackBar();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(Loc.of(context).simulatedQrCodeScan),
-      ),
-    );
-
+    snackbarService.showSnackBar(context, Loc.of(context).simulatedQrCodeScan);
     didTextController.text = '@moegrammer/didpay.me';
   }
 }

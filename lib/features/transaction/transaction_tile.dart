@@ -5,6 +5,7 @@ import 'package:didpay/features/transaction/transaction_details_page.dart';
 import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/currency_formatter.dart';
+import 'package:didpay/shared/snackbar/snackbar_service.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/tile_container.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class TransactionTile extends HookConsumerWidget {
     final transaction = ref.watch(transactionProvider(parameters));
 
     final lastStatus = useState<TransactionStatus?>(null);
+    final snackbarService = SnackbarService();
 
     TransactionNotifier getTransactionsNotifier() =>
         ref.read(transactionProvider(parameters).notifier);
@@ -51,34 +53,11 @@ class TransactionTile extends HookConsumerWidget {
             Future.delayed(
               Duration.zero,
               () {
-                ScaffoldMessenger.of(context).removeCurrentSnackBar();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '${transaction.value?.status}!',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: Transaction.getStatusColor(
-                              context,
-                              transaction.value?.status,
-                            ),
-                          ),
-                    ),
-                    showCloseIcon: true,
-                    closeIconColor: Theme.of(context).colorScheme.onSurface,
-                    shape: ShapeBorder.lerp(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Grid.xs),
-                      ),
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(Grid.xs),
-                      ),
-                      1,
-                    ),
-                    margin: const EdgeInsets.symmetric(horizontal: Grid.xl),
-                    behavior: SnackBarBehavior.floating,
-                    duration: const Duration(seconds: 1),
-                    backgroundColor: Theme.of(context).colorScheme.surface,
-                  ),
+                if (!context.mounted) return;
+
+                snackbarService.showSnackBar(
+                  context,
+                  transaction.value?.status.toString() ?? '',
                 );
               },
             );
