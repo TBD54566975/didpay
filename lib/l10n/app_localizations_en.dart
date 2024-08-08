@@ -307,13 +307,16 @@ class LocEn extends Loc {
   String get mustAddPfiBeforeSending => 'Must add a PFI before sending funds!';
 
   @override
-  String get gettingYourQuote => 'Getting your quote...';
+  String get fetchingYourQuote => 'Fetching your quote...';
+
+  @override
+  String get fetchingPaymentInstructions => 'Fetching payment instructions...';
 
   @override
   String get sendingYourRequest => 'Sending your request...';
 
   @override
-  String get confirmingYourOrder => 'Confirming your order...';
+  String get sendingYourOrder => 'Sending your order...';
 
   @override
   String get orderConfirmed => 'Order confirmed!';

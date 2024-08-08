@@ -1,5 +1,4 @@
-import 'package:didpay/l10n/app_localizations.dart';
-import 'package:didpay/shared/confirmation_message.dart';
+import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -42,9 +41,7 @@ class PaymentLinkWebviewPage extends HookConsumerWidget {
             if (context.mounted) {
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(
-                  builder: (context) => ConfirmationMessage(
-                    message: Loc.of(context).orderConfirmed,
-                  ),
+                  builder: (context) => const PaymentConfirmationPage(),
                 ),
                 (route) => false,
               );
