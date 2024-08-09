@@ -39,7 +39,7 @@ class TbdexService {
       );
     }
 
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 300));
 
     return offeringsMap;
   }
@@ -167,13 +167,14 @@ class TbdexService {
     );
 
     await rfq.sign(did);
-    await Future.delayed(const Duration(milliseconds: 500));
 
     try {
       await TbdexHttpClient.createExchange(rfq);
     } on Exception {
       rethrow;
     }
+
+    await Future.delayed(const Duration(milliseconds: 300));
 
     return rfq;
   }
@@ -183,16 +184,16 @@ class TbdexService {
     String pfiDid,
     String exchangeId,
   ) async {
-    await Future.delayed(const Duration(seconds: 1));
     final order = Order.create(pfiDid, did.uri, exchangeId);
     await order.sign(did);
-    await Future.delayed(const Duration(milliseconds: 500));
 
     try {
       await TbdexHttpClient.submitOrder(order);
     } on Exception {
       rethrow;
     }
+
+    await Future.delayed(const Duration(milliseconds: 300));
 
     return order;
   }
