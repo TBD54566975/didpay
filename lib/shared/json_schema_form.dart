@@ -53,7 +53,11 @@ class JsonSchemaForm extends HookWidget {
 
             if (!formState.value.containsKey(key)) {
               final formatter = TextInputUtil.getMaskFormatter(pattern);
-              final initialText = state.formData?[key] ?? '';
+              final initialText = state.formData?[key] ??
+                  state.moneyAddresses?.firstOrNull?.css
+                      .split(':')
+                      .lastOrNull ??
+                  '';
               final controller = TextEditingController(text: initialText);
 
               controller.addListener(
