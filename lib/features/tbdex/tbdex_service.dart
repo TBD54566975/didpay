@@ -86,8 +86,9 @@ class TbdexService {
 
         final validExchanges = await Future.wait(
           exchanges.map((exchangeId) async {
-            final isValid = await _isValidExchange(did, pfi.did, exchangeId);
-            return isValid ? exchangeId : null;
+            final isComplete =
+                await _isCompleteExchange(did, pfi.did, exchangeId);
+            return isComplete ? exchangeId : null;
           }),
         );
 
@@ -103,7 +104,7 @@ class TbdexService {
     return exchangesMap;
   }
 
-  Future<bool> _isValidExchange(
+  Future<bool> _isCompleteExchange(
     BearerDid did,
     String pfiDid,
     String exchangeId,
@@ -116,7 +117,7 @@ class TbdexService {
       );
 
       return exchange
-          .any((message) => message.metadata.kind == MessageKind.order);
+          .any((message) => message.metadata.kind == MessageKind.orderstatus);
     } on Exception {
       return false;
     }
