@@ -45,7 +45,13 @@ class AccountPage extends HookConsumerWidget {
                     _buildIssuedCredentialsList(context, ref, credentials),
                     if (featureFlags.isNotEmpty) ...[
                       const SizedBox(height: Grid.lg),
-                      _buildFeatureFlagsList(context, ref, featureFlags),
+                      _buildFeatureFlagsList(
+                        context,
+                        ref,
+                        featureFlags
+                            .where((flag) => flag == lucidMode)
+                            .toList(),
+                      ),
                     ],
                   ],
                 ),
