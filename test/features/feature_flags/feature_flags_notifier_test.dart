@@ -21,12 +21,6 @@ void main() {
       when(() => mockBox.get(FeatureFlagsNotifier.storageKey)).thenReturn(
         initialFeatureFlags.map((flag) => flag.toJson()).toList(),
       );
-      when(
-        () => mockBox.put(
-          FeatureFlagsNotifier.storageKey,
-          any<List<Map<String, dynamic>>>(),
-        ),
-      ).thenAnswer((_) async {});
 
       final notifier = await FeatureFlagsNotifier.create(mockBox);
 
