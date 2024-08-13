@@ -1,6 +1,4 @@
 import 'package:didpay/features/app/app.dart';
-import 'package:didpay/features/countries/countries.dart';
-import 'package:didpay/features/countries/countries_notifier.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/did/did_storage_service.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
@@ -55,11 +53,6 @@ Future<List<Override>> notifierOverrides() async {
 
   if (pfisBox.isEmpty) await pfisNotifier.add(tbdPfiDid);
 
-  final countriesBox = await Hive.openBox(CountriesNotifier.storageKey);
-  final countriesNotifier = await CountriesNotifier.create(countriesBox);
-
-  if (countriesBox.isEmpty) await countriesNotifier.add(mexico);
-
   final vcsBox = await Hive.openBox(VcsNotifier.storageKey);
   final vcsNotifier = await VcsNotifier.create(vcsBox);
 
@@ -68,13 +61,11 @@ Future<List<Override>> notifierOverrides() async {
       await FeatureFlagsNotifier.create(featureFlagsBox);
 
   if (featureFlagsBox.isEmpty) {
-    await featureFlagsNotifier.add(remittance);
     await featureFlagsNotifier.add(lucidMode);
   }
 
   return [
     pfisProvider.overrideWith((ref) => pfisNotifier),
-    countriesProvider.overrideWith((ref) => countriesNotifier),
     vcsProvider.overrideWith((ref) => vcsNotifier),
     featureFlagsProvider.overrideWith((ref) => featureFlagsNotifier),
   ];

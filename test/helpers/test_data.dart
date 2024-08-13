@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:didpay/features/account/account_balance.dart';
-import 'package:didpay/features/countries/countries.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:json_schema/json_schema.dart';
@@ -24,9 +23,6 @@ class TestData {
   }
 
   static Pfi getPfi(String did) => Pfi(did: did);
-
-  static Country getCountry(String name, String code) =>
-      Country(name: name, code: code);
 
   static FeatureFlag getFeatureFlag(String name, String description) =>
       FeatureFlag(name: name, description: description);

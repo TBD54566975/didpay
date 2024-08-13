@@ -1,5 +1,4 @@
 import 'package:dap/dap.dart';
-import 'package:didpay/features/countries/countries_page.dart';
 import 'package:didpay/features/dap/dap_form.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
@@ -77,20 +76,6 @@ class SendPage extends HookConsumerWidget {
 
   AppBar _buildAppBar(BuildContext context, List<FeatureFlag> featureFlags) =>
       AppBar(
-        leading: featureFlags
-                .any((flag) => flag.name == 'Remittance' && flag.isEnabled)
-            ? Padding(
-                padding: const EdgeInsets.only(left: Grid.xxs),
-                child: IconButton(
-                  icon: const Icon(Icons.language, size: Grid.md),
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const CountriesPage(),
-                    ),
-                  ),
-                ),
-              )
-            : null,
         actions: featureFlags.any(
           (flag) => flag.name == Loc.of(context).lucidMode && flag.isEnabled,
         )

@@ -28,7 +28,7 @@ class FeatureFlag extends Equatable {
       );
 
   @override
-  List<Object?> get props => [name, description, isEnabled];
+  List<Object?> get props => [name, description];
 }
 
 const lucidMode = FeatureFlag(

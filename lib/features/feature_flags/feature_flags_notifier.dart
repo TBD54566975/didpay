@@ -20,9 +20,7 @@ class FeatureFlagsNotifier extends StateNotifier<List<FeatureFlag>> {
     final List<dynamic> flagsJson = await box.get(storageKey) ?? [];
 
     return FeatureFlagsNotifier._(
-      box,
-      Serializer.deserializeList(flagsJson, FeatureFlag.fromJson),
-    );
+        box, Serializer.deserializeList(flagsJson, FeatureFlag.fromJson),);
   }
 
   Future<FeatureFlag> add(FeatureFlag flag) async {
