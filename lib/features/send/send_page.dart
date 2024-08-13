@@ -76,24 +76,26 @@ class SendPage extends HookConsumerWidget {
 
   AppBar _buildAppBar(BuildContext context, List<FeatureFlag> featureFlags) =>
       AppBar(
-        leading: featureFlags.any(
+        actions: featureFlags.any(
           (flag) => flag.name == Loc.of(context).lucidMode && flag.isEnabled,
         )
-            ? Padding(
-                padding: const EdgeInsets.only(left: Grid.xxs),
-                child: IconButton(
-                  icon: const Icon(Icons.deblur, size: Grid.md),
-                  onPressed: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => const PaymentAmountPage(
-                        paymentState: PaymentState(
-                          transactionType: TransactionType.send,
+            ? [
+                Padding(
+                  padding: const EdgeInsets.only(right: Grid.xxs),
+                  child: IconButton(
+                    icon: const Icon(Icons.deblur, size: Grid.md),
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PaymentAmountPage(
+                          paymentState: PaymentState(
+                            transactionType: TransactionType.send,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              )
+              ]
             : null,
       );
 }
