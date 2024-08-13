@@ -18,9 +18,22 @@ class ModalSelectCurrency {
             builder: (context, constraints) {
               if (state.value?.offeringsMap == null) return Container();
 
-              final totalOfferings = state.value?.offeringsMap!.values
-                      .fold(0, (total, list) => total + list.length) ??
-                  1;
+              final filteredOfferingsMap = state.value!.offeringsMap!.map(
+                (key, value) => MapEntry(
+                  key,
+                  value
+                      .where(
+                        (offering) =>
+                            offering.data.payin.methods.firstOrNull?.kind !=
+                            'STORED_BALANCE',
+                      )
+                      .toList(),
+                ),
+              );
+
+              final totalOfferings = filteredOfferingsMap.values
+                  .fold(0, (total, list) => total + list.length);
+
               final height = totalOfferings * Grid.tileHeight;
               final maxHeight = MediaQuery.of(context).size.height * 0.4;
 
@@ -45,7 +58,7 @@ class ModalSelectCurrency {
                         thumbVisibility: true,
                         child: ListView(
                           shrinkWrap: true,
-                          children: state.value!.offeringsMap!.entries
+                          children: filteredOfferingsMap.entries
                               .expand(
                                 (entry) => entry.value.map(
                                   (offering) => ListTile(
@@ -88,7 +101,7 @@ class ModalSelectCurrency {
     Offering offering,
   ) =>
       Text(
-        '${offering.data.payin.methods.firstOrNull?.kind == 'STORED_BALANCE' ? 'Biz only: ' : ''}${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
+        '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
         style: Theme.of(context).textTheme.titleMedium,
       );
 
