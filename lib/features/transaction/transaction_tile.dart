@@ -5,7 +5,6 @@ import 'package:didpay/features/transaction/transaction_details_page.dart';
 import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/currency_formatter.dart';
-import 'package:didpay/shared/snackbar/snackbar_service.dart';
 import 'package:didpay/shared/theme/grid.dart';
 import 'package:didpay/shared/tile_container.dart';
 import 'package:flutter/material.dart';
@@ -27,9 +26,6 @@ class TransactionTile extends HookConsumerWidget {
     final parameters = TransactionProviderParameters(pfi, exchangeId);
     final transaction = ref.watch(transactionProvider(parameters));
 
-    final lastStatus = useState<TransactionStatus?>(null);
-    final snackbarService = SnackbarService();
-
     TransactionNotifier getTransactionsNotifier() =>
         ref.read(transactionProvider(parameters).notifier);
 
@@ -39,35 +35,6 @@ class TransactionTile extends HookConsumerWidget {
         return getTransactionsNotifier().stopPolling;
       },
       [],
-    );
-
-    useEffect(
-      () {
-        if (transaction is AsyncData<Transaction?>) {
-          if (transaction.value == null) return;
-
-          if (lastStatus.value != transaction.value?.status) {
-            if (lastStatus.value == null &&
-                Transaction.isClosed(transaction.value?.status)) return;
-
-            Future.delayed(
-              Duration.zero,
-              () {
-                if (!context.mounted) return;
-
-                snackbarService.showSnackBar(
-                  context,
-                  transaction.value?.status.toString() ?? '',
-                );
-              },
-            );
-
-            lastStatus.value = transaction.value?.status;
-          }
-        }
-        return null;
-      },
-      [transaction],
     );
 
     return transaction.when(
