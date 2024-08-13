@@ -68,7 +68,6 @@ Future<List<Override>> notifierOverrides() async {
       await FeatureFlagsNotifier.create(featureFlagsBox);
 
   if (featureFlagsBox.isEmpty) {
-    await featureFlagsNotifier.add(remittance);
     await featureFlagsNotifier.add(lucidMode);
   }
 

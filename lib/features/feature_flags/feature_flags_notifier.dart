@@ -19,10 +19,16 @@ class FeatureFlagsNotifier extends StateNotifier<List<FeatureFlag>> {
   ) async {
     final List<dynamic> flagsJson = await box.get(storageKey) ?? [];
 
-    return FeatureFlagsNotifier._(
-      box,
-      Serializer.deserializeList(flagsJson, FeatureFlag.fromJson),
-    );
+    final featureFlags =
+        Serializer.deserializeList(flagsJson, FeatureFlag.fromJson)
+            .where((flag) => flag.name != remittance.name)
+            .toList();
+
+    final featureFlagsJson =
+        Serializer.serializeList(featureFlags, (flag) => flag.toJson());
+    await box.put(storageKey, featureFlagsJson);
+
+    return FeatureFlagsNotifier._(box, featureFlags);
   }
 
   Future<FeatureFlag> add(FeatureFlag flag) async {
