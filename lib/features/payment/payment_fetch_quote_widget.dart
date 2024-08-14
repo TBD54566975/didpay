@@ -29,7 +29,7 @@ class PaymentFetchQuoteWidget extends HookWidget {
 
     useEffect(
       () {
-        Future.microtask(() async {
+        Future.delayed(Duration.zero, () async {
           if (context.mounted) {
             await _pollForQuote(context, ref, getQuoteNotifier());
           }

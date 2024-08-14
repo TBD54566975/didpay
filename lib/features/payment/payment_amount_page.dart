@@ -41,8 +41,9 @@ class PaymentAmountPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
-          () async => _getOfferings(context, ref, offerings),
+        Future.delayed(
+          Duration.zero,
+          () => _getOfferings(context, ref, offerings),
         );
         return null;
       },
