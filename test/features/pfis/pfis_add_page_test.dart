@@ -13,6 +13,7 @@ void main() {
 
     testWidgets('should show QR Code CTA', (tester) async {
       await tester.pumpWidget(pfisAddPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(
         find.widgetWithText(
@@ -25,12 +26,14 @@ void main() {
 
     testWidgets('should show input field', (tester) async {
       await tester.pumpWidget(pfisAddPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.byType(TextField), findsOneWidget);
     });
 
     testWidgets('should show add button', (tester) async {
       await tester.pumpWidget(pfisAddPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.widgetWithText(FilledButton, 'Add'), findsOneWidget);
     });

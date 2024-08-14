@@ -61,6 +61,7 @@ void main() async {
 
     testWidgets('should start on HomePage', (tester) async {
       await tester.pumpWidget(appTabsTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.byType(HomePage), findsOneWidget);
     });

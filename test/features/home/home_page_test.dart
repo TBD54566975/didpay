@@ -73,6 +73,7 @@ void main() async {
 
     testWidgets('should show account balance', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.text('Account balance'), findsOneWidget);
     });
@@ -87,12 +88,14 @@ void main() async {
 
     testWidgets('should show deposit button', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.widgetWithText(FilledButton, 'Deposit'), findsOneWidget);
     });
 
     testWidgets('should show withdraw button', (tester) async {
       await tester.pumpWidget(homePageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.widgetWithText(FilledButton, 'Withdraw'), findsOneWidget);
     });
