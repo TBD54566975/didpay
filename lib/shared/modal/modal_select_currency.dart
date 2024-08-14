@@ -18,20 +18,7 @@ class ModalSelectCurrency {
             builder: (context, constraints) {
               if (state.value?.offeringsMap == null) return Container();
 
-              final filteredOfferingsMap = state.value!.offeringsMap!.map(
-                (key, value) => MapEntry(
-                  key,
-                  value
-                      .where(
-                        (offering) =>
-                            offering.data.payin.methods.firstOrNull?.kind !=
-                            'STORED_BALANCE',
-                      )
-                      .toList(),
-                ),
-              );
-
-              final totalOfferings = filteredOfferingsMap.values
+              final totalOfferings = state.value!.offeringsMap!.values
                   .fold(0, (total, list) => total + list.length);
 
               final height = totalOfferings * Grid.tileHeight;
@@ -58,7 +45,7 @@ class ModalSelectCurrency {
                         thumbVisibility: true,
                         child: ListView(
                           shrinkWrap: true,
-                          children: filteredOfferingsMap.entries
+                          children: state.value!.offeringsMap!.entries
                               .expand(
                                 (entry) => entry.value.map(
                                   (offering) => ListTile(

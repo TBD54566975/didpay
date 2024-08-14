@@ -39,9 +39,24 @@ class TbdexService {
       );
     }
 
+    // temporarily filter our stored balance and USDC offerings
+    final filteredOfferingsMap = offeringsMap.map(
+      (key, value) => MapEntry(
+        key,
+        value
+            .where(
+              (offering) =>
+                  offering.data.payin.methods.firstOrNull?.kind !=
+                      'STORED_BALANCE' &&
+                  offering.data.payout.currencyCode != 'USDC',
+            )
+            .toList(),
+      ),
+    );
+
     await Future.delayed(const Duration(milliseconds: 300));
 
-    return offeringsMap;
+    return filteredOfferingsMap;
   }
 
   Future<AccountBalance> getAccountBalance(
