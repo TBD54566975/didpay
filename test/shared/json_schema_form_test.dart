@@ -29,7 +29,7 @@ void main() {
 
   group('JsonSchemaForm', () {
     Widget jsonSchemaFormTestWidget({
-      void Function(Map<String, String>)? onSubmit,
+      Future<void> Function(Map<String, String>)? onSubmit,
     }) =>
         WidgetHelpers.testableWidget(
           child: JsonSchemaForm(
@@ -37,7 +37,7 @@ void main() {
               selectedPaymentMethod:
                   PaymentMethod(kind: '', schema: jsonSchemaString),
             ),
-            onSubmit: onSubmit ?? (_) {},
+            onSubmit: onSubmit ?? (_) async {},
           ),
         );
     testWidgets('should render form fields based on JSON schema',
@@ -70,7 +70,7 @@ void main() {
 
       await tester.pumpWidget(
         jsonSchemaFormTestWidget(
-          onSubmit: (formData) => submittedData = formData,
+          onSubmit: (formData) async => submittedData = formData,
         ),
       );
 
