@@ -23,6 +23,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
+import 'package:web5/web5.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
   final PaymentState paymentState;
@@ -35,11 +36,11 @@ class PaymentDetailsPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
-
     final rfq = useState<AsyncValue<Rfq>?>(null);
     final state = useState<PaymentDetailsState>(
       paymentState.paymentDetailsState ?? PaymentDetailsState(),
     );
+
     final availableMethods =
         state.value.filterPaymentMethods(state.value.selectedPaymentType);
 
@@ -97,49 +98,40 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     ),
                   ),
                 )
-              : _buildPage(context, ref, availableMethods, state, rfq),
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Header(
+                      title:
+                          paymentState.transactionType == TransactionType.send
+                              ? state.value.moneyAddresses != null
+                                  ? Loc.of(context).checkTheirPaymentDetails
+                                  : Loc.of(context).enterTheirPaymentDetails
+                              : Loc.of(context).enterYourPaymentDetails,
+                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
+                    ),
+                    if (state.value.hasMultiplePaymentTypes)
+                      _buildPaymentTypeSelector(
+                        context,
+                        state,
+                      ),
+                    if (state.value.hasNoPaymentTypes ||
+                        state.value.selectedPaymentType != null)
+                      _buildPaymentMethodSelector(
+                        context,
+                        availableMethods,
+                        state,
+                      ),
+                    _buildPaymentForm(
+                      context,
+                      ref,
+                      state,
+                      rfq,
+                    ),
+                  ],
+                ),
         ),
       ),
-    );
-  }
-
-  Widget _buildPage(
-    BuildContext context,
-    WidgetRef ref,
-    List<PaymentMethod>? availableMethods,
-    ValueNotifier<PaymentDetailsState> state,
-    ValueNotifier<AsyncValue<Rfq>?> rfq,
-  ) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Header(
-          title: paymentState.transactionType == TransactionType.send
-              ? state.value.moneyAddresses != null
-                  ? Loc.of(context).checkTheirPaymentDetails
-                  : Loc.of(context).enterTheirPaymentDetails
-              : Loc.of(context).enterYourPaymentDetails,
-          subtitle: Loc.of(context).makeSureInfoIsCorrect,
-        ),
-        if (state.value.hasMultiplePaymentTypes)
-          _buildPaymentTypeSelector(
-            context,
-            state,
-          ),
-        if (state.value.hasNoPaymentTypes ||
-            state.value.selectedPaymentType != null)
-          _buildPaymentMethodSelector(
-            context,
-            availableMethods,
-            state,
-          ),
-        _buildPaymentForm(
-          context,
-          ref,
-          state,
-          rfq,
-        ),
-      ],
     );
   }
 
@@ -152,14 +144,31 @@ class PaymentDetailsPage extends HookConsumerWidget {
       Expanded(
         child: JsonSchemaForm(
           state: state.value,
-          onSubmit: (formData) {
+          onSubmit: (formData) async {
             state.value = state.value.copyWith(formData: formData);
-            _checkCredsAndSendRfq(
-              context,
-              ref,
-              rfq,
-              state,
-            );
+
+            final presentationDefinition = paymentState
+                .paymentAmountState?.selectedOffering?.data.requiredClaims;
+
+            if (presentationDefinition != null) {
+              final credentials = await _getRequiredCredentials(
+                  context, ref, presentationDefinition,);
+
+              if (credentials == null) {
+                return;
+              }
+
+              state.value = state.value.copyWith(credentialsJwt: credentials);
+            }
+
+            if (context.mounted) {
+              await _sendRfq(
+                context,
+                ref,
+                state.value,
+                rfq,
+              );
+            }
           },
         ),
       );
@@ -247,24 +256,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
-  Future<void> _checkCredsAndSendRfq(
-    BuildContext context,
-    WidgetRef ref,
-    ValueNotifier<AsyncValue<Rfq>?> rfq,
-    ValueNotifier<PaymentDetailsState> state,
-  ) async {
-    final hasRequiredVc = await _hasRequiredVc(context, ref, state);
-
-    if (hasRequiredVc && context.mounted) {
-      await _sendRfq(
-        context,
-        ref,
-        state.value,
-        rfq,
-      );
-    }
-  }
-
   Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
@@ -297,26 +288,17 @@ class PaymentDetailsPage extends HookConsumerWidget {
     }
   }
 
-  Future<bool> _hasRequiredVc(
+  Future<List<String>?> _getRequiredCredentials(
     BuildContext context,
     WidgetRef ref,
-    ValueNotifier<PaymentDetailsState> state,
+    PresentationDefinition presentationDefinition,
   ) async {
-    final presentationDefinition =
-        paymentState.paymentAmountState?.selectedOffering?.data.requiredClaims;
     final credentials =
-        presentationDefinition?.selectCredentials(ref.read(vcsProvider));
+        presentationDefinition.selectCredentials(ref.read(vcsProvider));
 
-    if (credentials == null && presentationDefinition == null) {
-      return true;
+    if (credentials.isNotEmpty) {
+      return credentials;
     }
-
-    if (credentials != null && credentials.isNotEmpty) {
-      state.value = state.value.copyWith(credentialsJwt: credentials);
-      return true;
-    }
-
-    if (paymentState.paymentAmountState?.pfiDid == null) return false;
 
     final issuedCredential = await Navigator.of(context).push(
       MaterialPageRoute(
@@ -329,10 +311,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
       ),
     );
 
-    if (issuedCredential == null) return false;
-
-    state.value =
-        state.value.copyWith(credentialsJwt: [issuedCredential as String]);
-    return true;
+    return issuedCredential == null ? null : [issuedCredential as String];
   }
 }
