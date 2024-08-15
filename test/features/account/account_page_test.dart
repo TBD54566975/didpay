@@ -1,7 +1,7 @@
 import 'package:didpay/features/account/account_page.dart';
-import 'package:didpay/features/qr/qr_tabs.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
+import 'package:didpay/features/qr/qr_tabs.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
