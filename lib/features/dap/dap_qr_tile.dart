@@ -1,5 +1,5 @@
 import 'package:didpay/features/device/device_info_service.dart';
-import 'package:didpay/features/did/did_qr_tabs.dart';
+import 'package:didpay/features/qr/qr_tabs.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/snackbar/snackbar_service.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -61,7 +61,7 @@ class DapQrTile extends HookConsumerWidget {
   ) async {
     final qrValue = await Navigator.of(context).push<String>(
       MaterialPageRoute(
-        builder: (context) => DidQrTabs(dap: Loc.of(context).placeholderDap),
+        builder: (context) => QrTabs(dap: Loc.of(context).placeholderDap),
       ),
     );
 

@@ -1,5 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:didpay/features/did/did_qr_tabs.dart';
+import 'package:didpay/features/qr/qr_tabs.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -97,7 +97,7 @@ class AccountPage extends HookConsumerWidget {
                     icon: const Icon(Icons.qr_code, size: Grid.sm),
                     onPressed: () => Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (_) => DidQrTabs(dap: dap),
+                        builder: (_) => QrTabs(dap: dap),
                         fullscreenDialog: true,
                       ),
                     ),
