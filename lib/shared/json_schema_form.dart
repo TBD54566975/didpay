@@ -10,7 +10,7 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class JsonSchemaForm extends HookWidget {
   final PaymentDetailsState state;
-  final void Function(Map<String, String>) onSubmit;
+  final Future<void> Function(Map<String, String>) onSubmit;
 
   final _formKey = GlobalKey<FormState>();
 
