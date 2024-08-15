@@ -25,7 +25,8 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => _getExchanges(context, ref, exchanges));
+        Future.delayed(
+            Duration.zero, () async => _getExchanges(context, ref, exchanges),);
         return null;
       },
       [],

@@ -37,7 +37,8 @@ class KccWebviewPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
+        Future.delayed(
+          Duration.zero,
           () async => _loadWebView(context, ref, idvRequest, webViewController),
         );
         return null;

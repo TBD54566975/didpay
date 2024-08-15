@@ -31,7 +31,10 @@ class TransactionTile extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(() async => getTransactionsNotifier().startPolling());
+        Future.delayed(
+          Duration.zero,
+          () async => getTransactionsNotifier().startPolling(),
+        );
         return getTransactionsNotifier().stopPolling;
       },
       [],

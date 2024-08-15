@@ -23,7 +23,8 @@ class DidQrTile extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
+        Future.delayed(
+          Duration.zero,
           () async => isPhysicalDevice.value =
               await ref.read(deviceInfoServiceProvider).isPhysicalDevice(),
         );

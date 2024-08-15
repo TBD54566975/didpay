@@ -28,7 +28,8 @@ class KccRetrievalPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
+        Future.delayed(
+          Duration.zero,
           () async => _pollForCredential(context, ref, credential),
         );
 

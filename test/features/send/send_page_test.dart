@@ -31,6 +31,7 @@ void main() async {
 
     testWidgets('should show QR Code CTA', (tester) async {
       await tester.pumpWidget(sendDetailsPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(
         find.widgetWithText(
@@ -43,12 +44,14 @@ void main() async {
 
     testWidgets('should show input field', (tester) async {
       await tester.pumpWidget(sendDetailsPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.byType(TextField), findsOneWidget);
     });
 
     testWidgets('should show next button', (tester) async {
       await tester.pumpWidget(sendDetailsPageTestWidget());
+      await tester.pumpAndSettle();
 
       expect(find.widgetWithText(FilledButton, 'Next'), findsOneWidget);
     });

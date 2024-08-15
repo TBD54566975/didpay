@@ -27,7 +27,8 @@ class AccountBalanceCard extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.microtask(
+        Future.delayed(
+          Duration.zero,
           () async => getAccountBalanceNotifier()
               .startPolling(ref.read(didProvider), pfis),
         );
