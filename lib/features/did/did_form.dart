@@ -1,4 +1,4 @@
-import 'package:didpay/features/did/did_qr_tile.dart';
+import 'package:didpay/features/qr/qr_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -49,7 +49,7 @@ class DidForm extends HookConsumerWidget {
               ),
             ),
           ),
-          DidQrTile(didTextController: textController),
+          QrTile(didTextController: textController),
           NextButton(
             onPressed: () async => onSubmit(textController.text),
             title: buttonTitle,

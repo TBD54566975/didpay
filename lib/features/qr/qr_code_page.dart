@@ -13,9 +13,9 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
-class DidQrCodePage extends HookConsumerWidget {
+class QrCodePage extends HookConsumerWidget {
   final String dap;
-  const DidQrCodePage({required this.dap, super.key});
+  const QrCodePage({required this.dap, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
