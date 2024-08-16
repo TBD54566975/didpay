@@ -39,7 +39,7 @@ class TbdexService {
       );
     }
 
-    // temporarily filter our stored balance and USDC offerings
+    // temporarily filter out stored balance payin offerings
     final filteredOfferingsMap = offeringsMap.map(
       (key, value) => MapEntry(
         key,
@@ -47,8 +47,7 @@ class TbdexService {
             .where(
               (offering) =>
                   offering.data.payin.methods.firstOrNull?.kind !=
-                      'STORED_BALANCE' &&
-                  offering.data.payout.currencyCode != 'USDC',
+                  'STORED_BALANCE',
             )
             .toList(),
       ),
