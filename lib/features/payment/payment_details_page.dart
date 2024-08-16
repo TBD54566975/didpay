@@ -12,6 +12,7 @@ import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
+import 'package:didpay/features/vcs/vcs_service.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/error_message.dart';
 import 'package:didpay/shared/header.dart';
@@ -23,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:tbdex/tbdex.dart';
-import 'package:web5/web5.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
   final PaymentState paymentState;
@@ -151,11 +151,17 @@ class PaymentDetailsPage extends HookConsumerWidget {
                 .paymentAmountState?.selectedOffering?.data.requiredClaims;
 
             if (presentationDefinition != null) {
-              final credentials = await _getRequiredCredentials(
-                  context, ref, presentationDefinition,);
+              var credentials =
+                  ref.read(vcsServiceProvider).getRequiredCredentials(
+                        presentationDefinition,
+                        ref.read(vcsProvider),
+                      );
 
               if (credentials == null) {
-                return;
+                final issuedCredential = await _startKccFlow(context);
+                if (issuedCredential == null) return;
+
+                credentials = issuedCredential;
               }
 
               state.value = state.value.copyWith(credentialsJwt: credentials);
@@ -256,6 +262,23 @@ class PaymentDetailsPage extends HookConsumerWidget {
     );
   }
 
+  Future<List<String>?> _startKccFlow(BuildContext context) async {
+    final credential = await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => ModalFlow(
+          initialWidget: KccConsentPage(
+            pfi: Pfi(
+              did: paymentState.paymentAmountState?.pfiDid ?? '',
+            ),
+          ),
+        ),
+        fullscreenDialog: true,
+      ),
+    );
+
+    return credential == null ? null : [credential as String];
+  }
+
   Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
@@ -286,31 +309,5 @@ class PaymentDetailsPage extends HookConsumerWidget {
     } on Exception catch (e) {
       rfq.value = AsyncError(e, StackTrace.current);
     }
-  }
-
-  Future<List<String>?> _getRequiredCredentials(
-    BuildContext context,
-    WidgetRef ref,
-    PresentationDefinition presentationDefinition,
-  ) async {
-    final credentials =
-        presentationDefinition.selectCredentials(ref.read(vcsProvider));
-
-    if (credentials.isNotEmpty) {
-      return credentials;
-    }
-
-    final issuedCredential = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ModalFlow(
-          initialWidget: KccConsentPage(
-            pfi: Pfi(did: paymentState.paymentAmountState?.pfiDid ?? ''),
-          ),
-        ),
-        fullscreenDialog: true,
-      ),
-    );
-
-    return issuedCredential == null ? null : [issuedCredential as String];
   }
 }
