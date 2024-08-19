@@ -23,6 +23,7 @@ class SendPage extends HookConsumerWidget {
     final featureFlags = ref.watch(featureFlagsProvider);
 
     final dap = useState<AsyncValue<Dap>?>(null);
+    final dapText = useState<String?>(null);
 
     return Scaffold(
       appBar: _buildAppBar(context, featureFlags),
@@ -47,6 +48,7 @@ class SendPage extends HookConsumerWidget {
                   Expanded(
                     child: DapForm(
                       buttonTitle: Loc.of(context).next,
+                      dapText: dapText,
                       dap: dap,
                       onSubmit: (recipientDap, moneyAddresses) async {
                         await Navigator.of(context).push(
