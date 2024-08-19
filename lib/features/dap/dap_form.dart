@@ -9,11 +9,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class DapForm extends HookConsumerWidget {
   final String buttonTitle;
+  final ValueNotifier<String?> dapText;
   final ValueNotifier<AsyncValue<Dap>?> dap;
   final Future<void> Function(Dap, List<MoneyAddress>) onSubmit;
 
   DapForm({
     required this.buttonTitle,
+    required this.dapText,
     required this.dap,
     required this.onSubmit,
     super.key,
@@ -26,8 +28,18 @@ class DapForm extends HookConsumerWidget {
     final errorText = useState<String?>(null);
     final focusNode = useFocusNode();
 
-    final textController = useTextEditingController();
+    final textController = useTextEditingController(text: dapText.value);
     final errorMessage = Loc.of(context).invalidDap;
+
+    useEffect(
+      () {
+        if (dapText.value != null && dapText.value!.isNotEmpty) {
+          focusNode.requestFocus();
+        }
+        return null;
+      },
+      [],
+    );
 
     return Form(
       key: _formKey,
@@ -46,11 +58,13 @@ class DapForm extends HookConsumerWidget {
                     controller: textController,
                     onTap: () => errorText.value = null,
                     onTapOutside: (_) {
-                      _parseDap(
-                        textController.text,
-                        errorMessage,
-                        errorText,
-                      );
+                      if (textController.text.isNotEmpty) {
+                        _parseDap(
+                          textController.text,
+                          errorMessage,
+                          errorText,
+                        );
+                      }
 
                       focusNode.unfocus();
                     },
@@ -81,6 +95,8 @@ class DapForm extends HookConsumerWidget {
                 errorMessage,
                 errorText,
               );
+
+              dapText.value = textController.text;
 
               if (errorText.value == null) {
                 await _resolveDap(parsedDap);
