@@ -24,6 +24,8 @@ class KccWebviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const finish = 'finish.html';
+
     final idvRequest = useState<AsyncValue<IdvRequest>>(const AsyncLoading());
     final webViewController = useState<InAppWebViewController?>(null);
 
@@ -66,6 +68,17 @@ class KccWebviewPage extends HookConsumerWidget {
             final fullPath =
                 Uri.parse(data.url).replace(scheme: 'https').toString();
 
+            if (fullPath.contains(finish)) {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => KccRetrievalPage(
+                    pfi: pfi,
+                    idvRequest: data,
+                  ),
+                ),
+              );
+            }
+
             controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
           },
           onLoadStop: (controller, url) async {
@@ -73,7 +86,7 @@ class KccWebviewPage extends HookConsumerWidget {
               return;
             }
 
-            if (url.path.contains('finish.html')) {
+            if (url.path.contains(finish)) {
               await Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => KccRetrievalPage(
