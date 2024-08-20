@@ -46,6 +46,8 @@ class JsonSchemaForm extends HookWidget {
 
     useEffect(
       () {
+        formState.value = {};
+
         if (properties != null) {
           properties.forEach((key, value) {
             final valueMap = value as Map<String, dynamic>;
