@@ -46,44 +46,47 @@ class JsonSchemaForm extends HookWidget {
 
     useEffect(
       () {
-        formState.value = {};
+        formState.value.forEach((key, fieldState) {
+          fieldState.controller.dispose();
+        });
+
+        formState.value.clear();
 
         if (properties != null) {
           properties.forEach((key, value) {
             final valueMap = value as Map<String, dynamic>;
             final pattern = valueMap['pattern'] as String?;
 
-            if (!formState.value.containsKey(key)) {
-              final formatter = TextInputUtil.getMaskFormatter(pattern);
-              final initialText = state.formData?[key] ??
-                  state.moneyAddresses?.firstOrNull?.css
-                      .split(':')
-                      .lastOrNull ??
-                  '';
-              final controller = TextEditingController(text: initialText);
+            final formatter = TextInputUtil.getMaskFormatter(pattern);
+            final initialText = state.formData?[key] ??
+                state.moneyAddresses?.firstOrNull?.css.split(':').lastOrNull ??
+                '';
+            final controller = TextEditingController(text: initialText);
 
-              controller.addListener(
-                () => formState.value = {
-                  ...formState.value,
-                  key: _FormFieldStateData(
-                    formData: controller.text,
-                    controller: controller,
-                    formatter: formatter,
-                  ),
-                },
-              );
+            final focusNode = FocusNode();
 
-              formState.value[key] = _FormFieldStateData(
-                formData: initialText,
-                controller: controller,
-                formatter: formatter,
-              );
-            }
+            controller.addListener(() {
+              formState.value = {
+                ...formState.value,
+                key: _FormFieldStateData(
+                  formData: controller.text,
+                  controller: controller,
+                  formatter: formatter,
+                  focusNode: focusNode,
+                ),
+              };
+            });
+
+            formState.value[key] = _FormFieldStateData(
+              formData: initialText,
+              controller: controller,
+              formatter: formatter,
+              focusNode: focusNode,
+            );
           });
         }
 
-        return () => formState.value
-            .forEach((key, fieldState) => fieldState.controller.dispose());
+        return null;
       },
       [state.selectedPaymentMethod?.schema],
     );
@@ -99,7 +102,7 @@ class JsonSchemaForm extends HookWidget {
         formFields.add(
           TextFormField(
             controller: fieldState.controller,
-            focusNode: useFocusNode(),
+            focusNode: fieldState.focusNode,
             onTapOutside: (_) => FocusScope.of(context).unfocus(),
             enableSuggestions: false,
             autocorrect: false,
@@ -121,6 +124,7 @@ class JsonSchemaForm extends HookWidget {
                 formData: data ?? '',
                 controller: fieldState.controller,
                 formatter: fieldState.formatter,
+                focusNode: fieldState.focusNode,
               ),
             },
           ),
@@ -214,10 +218,12 @@ class _FormFieldStateData {
   String formData;
   TextEditingController controller;
   MaskTextInputFormatter formatter;
+  FocusNode focusNode;
 
   _FormFieldStateData({
     required this.formData,
     required this.controller,
     required this.formatter,
+    required this.focusNode,
   });
 }
