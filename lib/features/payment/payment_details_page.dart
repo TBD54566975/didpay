@@ -158,10 +158,23 @@ class PaymentDetailsPage extends HookConsumerWidget {
                       );
 
               if (credentials == null) {
-                final issuedCredential = await _startKccFlow(context);
+                final issuedCredential = await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => ModalFlow(
+                      initialWidget: KccConsentPage(
+                        pfi: Pfi(
+                          did: paymentState.paymentAmountState?.pfiDid ?? '',
+                        ),
+                        presentationDefinition: presentationDefinition,
+                      ),
+                    ),
+                    fullscreenDialog: true,
+                  ),
+                );
+
                 if (issuedCredential == null) return;
 
-                credentials = issuedCredential;
+                credentials = [issuedCredential as String];
               }
 
               state.value = state.value.copyWith(credentialsJwt: credentials);
@@ -260,23 +273,6 @@ class PaymentDetailsPage extends HookConsumerWidget {
         ),
       ],
     );
-  }
-
-  Future<List<String>?> _startKccFlow(BuildContext context) async {
-    final credential = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => ModalFlow(
-          initialWidget: KccConsentPage(
-            pfi: Pfi(
-              did: paymentState.paymentAmountState?.pfiDid ?? '',
-            ),
-          ),
-        ),
-        fullscreenDialog: true,
-      ),
-    );
-
-    return credential == null ? null : [credential as String];
   }
 
   Future<void> _sendRfq(

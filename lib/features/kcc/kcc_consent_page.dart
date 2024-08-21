@@ -8,11 +8,17 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:web5/web5.dart';
 
 class KccConsentPage extends HookConsumerWidget {
   final Pfi pfi;
+  final PresentationDefinition presentationDefinition;
 
-  const KccConsentPage({required this.pfi, super.key});
+  const KccConsentPage({
+    required this.pfi,
+    required this.presentationDefinition,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +50,10 @@ class KccConsentPage extends HookConsumerWidget {
                   ? null
                   : () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (_) => KccWebviewPage(pfi: pfi),
+                          builder: (_) => KccWebviewPage(
+                            pfi: pfi,
+                            presentationDefinition: presentationDefinition,
+                          ),
                         ),
                       ),
             ),
