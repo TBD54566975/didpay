@@ -94,9 +94,12 @@ class KccIssuanceService {
 
   Future<IdvRequest> getIdvRequest(
     Pfi pfi,
+    PresentationDefinition presentationDefinition,
     BearerDid bearerDid,
   ) async {
-    final idvServiceEndpoint = await getIdvServiceEndpoint(pfi);
+    final idvServiceEndpoint =
+        await getIdvServiceEndpoint(pfi, presentationDefinition);
+
     var response = await httpClient.get(idvServiceEndpoint);
 
     final authRequest = await SiopV2AuthRequest.fromUrlParams(response.body);
@@ -373,7 +376,8 @@ class KccIssuanceService {
     return getVerifiableCredential(pfi, idvRequest, tokenResponse, bearerDid);
   }
 
-  Future<Uri> getIdvServiceEndpoint(Pfi pfi) async {
+  Future<Uri> getIdvServiceEndpoint(
+      Pfi pfi, PresentationDefinition presentationDefinition) async {
     try {
       final res = await DidResolver.resolve(pfi.did);
       if (res.hasError()) {
@@ -386,7 +390,14 @@ class KccIssuanceService {
         throw Exception('Malformed resolution result: missing DID Document');
       }
 
-      return PfisService.getServiceEndpoint(res.didDocument!, 'IDV');
+      final idvServiceEndpoint =
+          PfisService.getServiceEndpoint(res.didDocument!, 'IDV');
+
+      return idvServiceEndpoint.replace(
+        queryParameters: {
+          'presentation_definition_id': presentationDefinition.id,
+        },
+      );
     } on Exception catch (e) {
       throw CredentialRequestException(
         message: 'failed to resolve PFI DID',
