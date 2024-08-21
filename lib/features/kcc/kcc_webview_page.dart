@@ -13,12 +13,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:web5/web5.dart';
 
 class KccWebviewPage extends HookConsumerWidget {
   final Pfi pfi;
+  final PresentationDefinition presentationDefinition;
 
   const KccWebviewPage({
     required this.pfi,
+    required this.presentationDefinition,
     super.key,
   });
 
@@ -77,9 +80,9 @@ class KccWebviewPage extends HookConsumerWidget {
                   ),
                 ),
               );
+            } else {
+              controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
             }
-
-            controller.loadUrl(urlRequest: URLRequest(url: WebUri(fullPath)));
           },
           onLoadStop: (controller, url) async {
             if (url == null) {
@@ -131,7 +134,7 @@ class KccWebviewPage extends HookConsumerWidget {
     try {
       final idvRequest = await ref
           .read(kccIssuanceProvider)
-          .getIdvRequest(pfi, ref.read(didProvider));
+          .getIdvRequest(pfi, presentationDefinition, ref.read(didProvider));
 
       if (context.mounted) {
         state.value = AsyncData(idvRequest);
