@@ -135,27 +135,31 @@ class PaymentAmountPage extends HookConsumerWidget {
                     MaterialPageRoute(
                       builder: (context) {
                         final paymentDetailsState =
-                            paymentState.paymentDetailsState ??
-                                PaymentDetailsState();
+                            (paymentState.paymentDetailsState ??
+                                    PaymentDetailsState())
+                                .copyWith(
+                          paymentCurrency: paymentState.transactionType ==
+                                  TransactionType.deposit
+                              ? state.value?.payinCurrency
+                              : state.value?.payoutCurrency,
+                          paymentMethods: paymentState.transactionType ==
+                                  TransactionType.deposit
+                              ? state
+                                  .value?.selectedOffering?.data.payin.methods
+                                  .map(PaymentMethod.fromPayinMethod)
+                                  .toList()
+                              : state
+                                  .value?.selectedOffering?.data.payout.methods
+                                  .map(PaymentMethod.fromPayoutMethod)
+                                  .toList(),
+                        );
 
                         return PaymentDetailsPage(
                           paymentState: paymentState.copyWith(
                             paymentAmountState: state.value,
                             paymentDetailsState: paymentDetailsState.copyWith(
-                              paymentCurrency: paymentState.transactionType ==
-                                      TransactionType.deposit
-                                  ? state.value?.payinCurrency
-                                  : state.value?.payoutCurrency,
-                              paymentMethods: paymentState.transactionType ==
-                                      TransactionType.deposit
-                                  ? state.value?.selectedOffering?.data.payin
-                                      .methods
-                                      .map(PaymentMethod.fromPayinMethod)
-                                      .toList()
-                                  : state.value?.selectedOffering?.data.payout
-                                      .methods
-                                      .map(PaymentMethod.fromPayoutMethod)
-                                      .toList(),
+                              paymentMethods:
+                                  paymentDetailsState.filterDapProtocol(),
                             ),
                           ),
                         );
