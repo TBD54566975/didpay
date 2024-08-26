@@ -37,6 +37,17 @@ class PaymentDetailsState {
           )
           .toList();
 
+  List<PaymentMethod>? filterDapProtocol() => paymentMethods
+      ?.where(
+        (method) => method.kind.contains(
+          PaymentMethod.protocolPaymentMap[
+                  moneyAddresses?.firstOrNull?.css.split(':').firstOrNull ??
+                      ''] ??
+              '',
+        ),
+      )
+      .toList();
+
   PaymentDetailsState copyWith({
     String? paymentCurrency,
     String? paymentName,
