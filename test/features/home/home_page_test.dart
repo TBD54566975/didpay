@@ -47,7 +47,7 @@ void main() async {
       when(
         () => mockTbdexService.getOfferings(
           pfis,
-          payinCurrency: 'USDC',
+          payinCurrencies: ['USDC'],
         ),
       ).thenAnswer((_) async => offerings);
 
