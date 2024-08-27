@@ -11,8 +11,8 @@ final tbdexServiceProvider = Provider((_) => TbdexService());
 class TbdexService {
   Future<Map<Pfi, List<Offering>>> getOfferings(
     List<Pfi> pfis, {
-    String? payinCurrency,
-    String? payoutCurrency,
+    List<String>? payinCurrencies,
+    List<String>? payoutCurrencies,
   }) async {
     final offeringsMap = <Pfi, List<Offering>>{};
 
@@ -20,13 +20,27 @@ class TbdexService {
       try {
         final offerings = await TbdexHttpClient.listOfferings(
           pfi.did,
-          filter: GetOfferingsFilter(
-            payinCurrency: payinCurrency,
-            payoutCurrency: payoutCurrency,
-          ),
+          // TODO(ethan-tbd): update tbdex-dart to support list of payin and payout currencies
+          // filter: GetOfferingsFilter(
+          //   payinCurrency: payinCurrency,
+          //   payoutCurrency: payoutCurrency,
+          // ),
         );
 
-        offeringsMap[pfi] = offerings;
+        // TODO(ethan-tbd): remove when tbdex-dart supports filtering by payin and payout currencies
+        final filteredOfferings = (payoutCurrencies == null)
+            ? offerings
+            : offerings
+                .where(
+                  (offering) => payoutCurrencies.contains(
+                    offering.data.payout.currencyCode.toLowerCase(),
+                  ),
+                )
+                .toList();
+
+        if (filteredOfferings.isNotEmpty) {
+          offeringsMap[pfi] = filteredOfferings;
+        }
       } on Exception catch (e) {
         if (e is ValidationError) continue;
         rethrow;
@@ -39,7 +53,7 @@ class TbdexService {
       );
     }
 
-    // temporarily filter out stored balance payin offerings
+    // TODO(ethan-tbd): remove later, temporarily filter out stored balance payin offerings
     final filteredOfferingsMap = offeringsMap.map(
       (key, value) => MapEntry(
         key,
