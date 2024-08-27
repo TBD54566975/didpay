@@ -69,11 +69,12 @@ class Transaction {
       }
     }
 
-    type = (payinCurrency == 'USDC')
-        ? TransactionType.withdraw
-        : (payoutCurrency == 'USDC')
-            ? TransactionType.deposit
-            : type;
+    // TODO(ethan-tbd): uncomment once deposit/withdraw is supported
+    // type = (payinCurrency == 'USDC')
+    //     ? TransactionType.withdraw
+    //     : (payoutCurrency == 'USDC')
+    //         ? TransactionType.deposit
+    //         : type;
 
     return Transaction(
       payinAmount: payinAmount,
