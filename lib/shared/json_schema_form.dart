@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:didpay/features/dap/dap_state.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -11,12 +12,14 @@ import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 class JsonSchemaForm extends HookWidget {
   final PaymentDetailsState state;
   final Future<void> Function(Map<String, String>) onSubmit;
+  final DapState? dapState;
 
   final _formKey = GlobalKey<FormState>();
 
   JsonSchemaForm({
     required this.state,
     required this.onSubmit,
+    this.dapState,
     super.key,
   });
 
@@ -58,9 +61,13 @@ class JsonSchemaForm extends HookWidget {
             final pattern = valueMap['pattern'] as String?;
 
             final formatter = TextInputUtil.getMaskFormatter(pattern);
-            final initialText = state.formData?[key] ??
-                state.moneyAddresses?.firstOrNull?.css.split(':').lastOrNull ??
+
+            final dapPrefillText = (key == 'chain'
+                    ? dapState?.protocol
+                    : dapState?.paymentAddress) ??
                 '';
+
+            final initialText = state.formData?[key] ?? dapPrefillText;
             final controller = TextEditingController(text: initialText);
 
             final focusNode = FocusNode();

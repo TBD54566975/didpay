@@ -1,5 +1,6 @@
 import 'package:dap/dap.dart';
 import 'package:didpay/features/dap/dap_form.dart';
+import 'package:didpay/features/dap/dap_state.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/feature_flags/feature_flags_notifier.dart';
 import 'package:didpay/features/payment/payment_amount_page.dart';
@@ -58,8 +59,10 @@ class SendPage extends HookConsumerWidget {
                                 transactionType: TransactionType.send,
                                 paymentDetailsState: PaymentDetailsState(
                                   paymentName: recipientDap.dap,
-                                  moneyAddresses: moneyAddresses,
                                 ),
+                              ),
+                              dapState: DapState(
+                                moneyAddresses: moneyAddresses,
                               ),
                             ),
                             fullscreenDialog: true,

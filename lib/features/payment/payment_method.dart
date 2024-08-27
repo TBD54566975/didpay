@@ -48,9 +48,4 @@ class PaymentMethod {
       fee: fee ?? this.fee,
     );
   }
-
-  static const Map<String, String> protocolPaymentMap = {
-    'addr': 'BTC_ONCHAIN_PAYOUT',
-    'lnaddr': 'BTC_LN_PAYOUT',
-  };
 }

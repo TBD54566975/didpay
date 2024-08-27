@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:didpay/features/dap/dap_state.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
@@ -27,9 +28,11 @@ import 'package:tbdex/tbdex.dart';
 
 class PaymentDetailsPage extends HookConsumerWidget {
   final PaymentState paymentState;
+  final DapState? dapState;
 
   const PaymentDetailsPage({
     required this.paymentState,
+    this.dapState,
     super.key,
   });
 
@@ -104,7 +107,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                     Header(
                       title:
                           paymentState.transactionType == TransactionType.send
-                              ? state.value.moneyAddresses != null
+                              ? dapState?.moneyAddresses != null
                                   ? Loc.of(context).checkTheirPaymentDetails
                                   : Loc.of(context).enterTheirPaymentDetails
                               : Loc.of(context).enterYourPaymentDetails,
@@ -144,6 +147,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
       Expanded(
         child: JsonSchemaForm(
           state: state.value,
+          dapState: dapState,
           onSubmit: (formData) async {
             state.value = state.value.copyWith(formData: formData);
 

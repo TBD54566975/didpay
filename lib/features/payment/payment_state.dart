@@ -30,10 +30,8 @@ class PaymentState {
     switch (transactionType) {
       case TransactionType.deposit:
         return 'USDC';
+      // TODO(ethan-tbd): use dap currencies here when tbdex-dart supports list of currencies
       case TransactionType.send:
-        return paymentDetailsState?.paymentCurrency ??
-            paymentDetailsState?.moneyAddresses?.firstOrNull?.currency
-                .toUpperCase();
       case TransactionType.withdraw:
         return null;
     }
