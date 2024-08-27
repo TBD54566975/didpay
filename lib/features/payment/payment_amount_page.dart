@@ -1,3 +1,4 @@
+import 'package:didpay/features/dap/dap_state.dart';
 import 'package:didpay/features/payin/payin.dart';
 import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
@@ -24,9 +25,11 @@ import 'package:tbdex/tbdex.dart';
 
 class PaymentAmountPage extends HookConsumerWidget {
   final PaymentState paymentState;
+  final DapState? dapState;
 
   const PaymentAmountPage({
     required this.paymentState,
+    this.dapState,
     super.key,
   });
 
@@ -43,7 +46,7 @@ class PaymentAmountPage extends HookConsumerWidget {
       () {
         Future.delayed(
           Duration.zero,
-          () => _getOfferings(context, ref, offerings),
+          () => _getOfferings(context, ref, dapState?.currencies, offerings),
         );
         return null;
       },
@@ -72,6 +75,7 @@ class PaymentAmountPage extends HookConsumerWidget {
             onRetry: () => _getOfferings(
               context,
               ref,
+              dapState?.currencies,
               offerings,
             ),
           ),
@@ -134,33 +138,38 @@ class PaymentAmountPage extends HookConsumerWidget {
               : () => Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (context) {
+                        final paymentCurrency = paymentState.transactionType ==
+                                TransactionType.deposit
+                            ? state.value?.payinCurrency
+                            : state.value?.payoutCurrency;
+
+                        final paymentMethods = paymentState.transactionType ==
+                                TransactionType.deposit
+                            ? state.value?.selectedOffering?.data.payin.methods
+                                .map(PaymentMethod.fromPayinMethod)
+                                .toList()
+                            : state.value?.selectedOffering?.data.payout.methods
+                                .map(PaymentMethod.fromPayoutMethod)
+                                .toList();
+
                         final paymentDetailsState =
                             (paymentState.paymentDetailsState ??
                                     PaymentDetailsState())
                                 .copyWith(
-                          paymentCurrency: paymentState.transactionType ==
-                                  TransactionType.deposit
-                              ? state.value?.payinCurrency
-                              : state.value?.payoutCurrency,
-                          paymentMethods: paymentState.transactionType ==
-                                  TransactionType.deposit
-                              ? state
-                                  .value?.selectedOffering?.data.payin.methods
-                                  .map(PaymentMethod.fromPayinMethod)
-                                  .toList()
-                              : state
-                                  .value?.selectedOffering?.data.payout.methods
-                                  .map(PaymentMethod.fromPayoutMethod)
-                                  .toList(),
+                          paymentCurrency: paymentCurrency,
+                          paymentMethods:
+                              dapState?.filterPaymentMethods(paymentMethods) ??
+                                  paymentMethods,
                         );
 
                         return PaymentDetailsPage(
                           paymentState: paymentState.copyWith(
                             paymentAmountState: state.value,
-                            paymentDetailsState: paymentDetailsState.copyWith(
-                              paymentMethods:
-                                  paymentDetailsState.filterDapProtocol(),
-                            ),
+                            paymentDetailsState: paymentDetailsState,
+                          ),
+                          dapState: dapState?.copyWith(
+                            selectedAddress: dapState
+                                ?.getSelectedMoneyAddress(paymentCurrency),
                           ),
                         );
                       },
@@ -174,14 +183,14 @@ class PaymentAmountPage extends HookConsumerWidget {
   Future<void> _getOfferings(
     BuildContext context,
     WidgetRef ref,
+    List<String>? payoutCurrencies,
     ValueNotifier<AsyncValue<Map<Pfi, List<Offering>>>> state,
   ) async {
     state.value = const AsyncLoading();
     try {
       final offerings = await ref.read(tbdexServiceProvider).getOfferings(
             ref.read(pfisProvider),
-            payinCurrency: paymentState.filterPayinCurrency,
-            payoutCurrency: paymentState.filterPayoutCurrency,
+            payoutCurrencies: payoutCurrencies,
           );
 
       if (context.mounted) {
