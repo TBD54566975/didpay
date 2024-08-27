@@ -1,4 +1,3 @@
-import 'package:dap/dap.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 
 class PaymentDetailsState {
@@ -8,7 +7,6 @@ class PaymentDetailsState {
   final String? selectedPaymentType;
   final PaymentMethod? selectedPaymentMethod;
   final List<PaymentMethod>? paymentMethods;
-  final List<MoneyAddress>? moneyAddresses;
   final List<String>? credentialsJwt;
   final Map<String, String>? formData;
 
@@ -19,7 +17,6 @@ class PaymentDetailsState {
     this.selectedPaymentType,
     this.selectedPaymentMethod,
     this.paymentMethods,
-    this.moneyAddresses,
     this.credentialsJwt,
     this.formData,
   });
@@ -37,17 +34,6 @@ class PaymentDetailsState {
           )
           .toList();
 
-  List<PaymentMethod>? filterDapProtocol() => paymentMethods
-      ?.where(
-        (method) => method.kind.contains(
-          PaymentMethod.protocolPaymentMap[
-                  moneyAddresses?.firstOrNull?.css.split(':').firstOrNull ??
-                      ''] ??
-              '',
-        ),
-      )
-      .toList();
-
   PaymentDetailsState copyWith({
     String? paymentCurrency,
     String? paymentName,
@@ -55,7 +41,6 @@ class PaymentDetailsState {
     String? selectedPaymentType,
     PaymentMethod? selectedPaymentMethod,
     List<PaymentMethod>? paymentMethods,
-    List<MoneyAddress>? moneyAddresses,
     List<String>? credentialsJwt,
     Map<String, String>? formData,
   }) {
@@ -67,7 +52,6 @@ class PaymentDetailsState {
       selectedPaymentMethod:
           selectedPaymentMethod ?? this.selectedPaymentMethod,
       paymentMethods: paymentMethods ?? this.paymentMethods,
-      moneyAddresses: moneyAddresses ?? this.moneyAddresses,
       credentialsJwt: credentialsJwt ?? this.credentialsJwt,
       formData: formData ?? this.formData,
     );
