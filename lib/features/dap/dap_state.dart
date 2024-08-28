@@ -14,6 +14,7 @@ class DapState {
     'addr': 'BTC_ONCHAIN_PAYOUT',
     'lnaddr': 'BTC_LN_PAYOUT',
     'sol': 'USDC_ONCHAIN',
+    'eth': 'USDC_ONCHAIN',
   };
 
   String? get protocol => selectedAddress?.css.split(':').firstOrNull;
