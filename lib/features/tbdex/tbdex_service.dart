@@ -61,7 +61,7 @@ class TbdexService {
             .where(
               (offering) =>
                   offering.data.payin.methods.firstOrNull?.kind !=
-                  'STORED_BALANCE',
+                  'USD_STOREDBAL_PAYIN',
             )
             .toList(),
       ),
