@@ -3,9 +3,9 @@ import 'package:decimal/decimal.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/payment/payment_confirmation_page.dart';
 import 'package:didpay/features/payment/payment_fee_details.dart';
-import 'package:didpay/features/payment/payment_fetch_instructions_widget.dart';
 import 'package:didpay/features/payment/payment_link_webview_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
+import 'package:didpay/features/tbdex/tbdex_order_instructions_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/l10n/app_localizations.dart';
@@ -31,9 +31,10 @@ class PaymentReviewPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final order = useState<AsyncValue<Order>?>(null);
-    final orderInstructions =
-        useState<AsyncValue<OrderInstructions?>>(const AsyncLoading());
+    final orderInstructions = useState<AsyncValue<OrderInstructions?>?>(null);
+
+    final quote = paymentState.paymentDetailsState?.quote?.data;
+    final isAwaiting = orderInstructions.value?.isLoading ?? false;
 
     return PopScope(
       canPop: false,
@@ -53,17 +54,12 @@ class PaymentReviewPage extends HookConsumerWidget {
         );
       },
       child: Scaffold(
-        appBar: AppBar(),
+        appBar: isAwaiting ? null : AppBar(),
         body: SafeArea(
-          child: order.value != null
-              ? order.value!.when(
-                  data: (_) => PaymentFetchInstructionsWidget(
-                    paymentState: paymentState,
-                    instructions: orderInstructions,
-                    order: order,
-                    onInstructionsFetched: _handleFetchedInstructions,
-                    ref: ref,
-                  ),
+          child: orderInstructions.value != null
+              ? orderInstructions.value!.when(
+                  data: (_) =>
+                      _buildPage(context, ref, quote, orderInstructions),
                   loading: () => LoadingMessage(
                     message: Loc.of(context).sendingYourOrder,
                   ),
@@ -73,55 +69,71 @@ class PaymentReviewPage extends HookConsumerWidget {
                       context,
                       ref,
                       paymentState,
-                      order,
+                      orderInstructions,
                     ),
                   ),
                 )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Header(
-                      title: Loc.of(context).reviewYourPayment,
-                      subtitle: Loc.of(context).makeSureInfoIsCorrect,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        physics: const BouncingScrollPhysics(),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: Grid.side,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: Grid.sm),
-                              _buildAmounts(context, paymentState.quote?.data),
-                              _buildFeeDetails(
-                                context,
-                                paymentState.quote?.data,
-                              ),
-                              _buildPaymentDetails(context),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    NextButton(
-                      onPressed: () => orderInstructions.value.hasValue
-                          ? _handleFetchedInstructions(
-                              context,
-                              orderInstructions.value.asData!.value,
-                            )
-                          : _submitOrder(context, ref, paymentState, order),
-                      title:
-                          '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(paymentState.quote?.data)} ${paymentState.quote?.data.payin.currencyCode}',
-                    ),
-                  ],
-                ),
+              : _buildPage(context, ref, quote, orderInstructions),
         ),
       ),
     );
   }
+
+  Widget _buildPage(
+    BuildContext context,
+    WidgetRef ref,
+    QuoteData? quote,
+    ValueNotifier<AsyncValue<OrderInstructions?>?> state,
+  ) =>
+      Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Header(
+            title: Loc.of(context).reviewYourPayment,
+            subtitle: Loc.of(context).makeSureInfoIsCorrect,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Grid.side,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: Grid.sm),
+                    _buildAmounts(
+                      context,
+                      quote,
+                    ),
+                    _buildFeeDetails(
+                      context,
+                      quote,
+                    ),
+                    _buildPaymentDetails(context),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          NextButton(
+            onPressed: () => (state.value?.hasValue ?? false)
+                ? _onInstructionsFetched(
+                    context,
+                    state.value!.asData!.value,
+                  )
+                : _submitOrder(
+                    context,
+                    ref,
+                    paymentState,
+                    state,
+                  ),
+            title:
+                '${Loc.of(context).pay} ${PaymentFeeDetails.calculateTotalAmount(quote)} ${quote?.payin.currencyCode}',
+          ),
+        ],
+      );
 
   Widget _buildAmounts(BuildContext context, QuoteData? quote) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -244,30 +256,59 @@ class PaymentReviewPage extends HookConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     PaymentState paymentState,
-    ValueNotifier<AsyncValue<Order>?> state,
+    ValueNotifier<AsyncValue<OrderInstructions?>?> state,
   ) async {
     state.value = const AsyncLoading();
 
     try {
-      final order = await ref.read(tbdexServiceProvider).sendOrder(
+      await ref.read(tbdexServiceProvider).sendOrder(
             ref.read(didProvider),
             paymentState.paymentAmountState?.pfiDid ?? '',
             paymentState.paymentDetailsState?.exchangeId ?? '',
           );
 
       if (context.mounted) {
-        state.value = AsyncData(order);
+        await _pollForInstructions(context, ref, state);
       }
     } on Exception catch (e) {
       state.value = AsyncError(e, StackTrace.current);
     }
   }
 
-  Future<void> _handleFetchedInstructions(
+  Future<void> _pollForInstructions(
     BuildContext context,
-    OrderInstructions? fetchedInstructions,
+    WidgetRef ref,
+    ValueNotifier<AsyncValue<OrderInstructions?>?> state,
   ) async {
-    final paymentLink = fetchedInstructions?.data.payin.link;
+    final instructionsNotifier = ref.read(orderInstructionsProvider.notifier);
+
+    try {
+      final fetchedInstructions = await instructionsNotifier.startPolling(
+        paymentState.paymentAmountState?.pfiDid ?? '',
+        paymentState.paymentDetailsState?.exchangeId ?? '',
+      );
+
+      if (context.mounted) {
+        state.value = AsyncData(fetchedInstructions);
+        instructionsNotifier.stopPolling();
+
+        if (fetchedInstructions != null && state.value != null) {
+          await _onInstructionsFetched(context, fetchedInstructions);
+        }
+      }
+    } on Exception catch (e) {
+      if (context.mounted) {
+        instructionsNotifier.stopPolling();
+        state.value = AsyncError(e, StackTrace.current);
+      }
+    }
+  }
+
+  Future<void> _onInstructionsFetched(
+    BuildContext context,
+    OrderInstructions? instructions,
+  ) async {
+    final paymentLink = instructions?.data.payin.link;
 
     if (paymentLink == null) {
       await Navigator.of(context).pushAndRemoveUntil(
