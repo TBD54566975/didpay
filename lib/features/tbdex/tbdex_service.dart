@@ -67,8 +67,6 @@ class TbdexService {
       ),
     );
 
-    await Future.delayed(const Duration(milliseconds: 300));
-
     return filteredOfferingsMap;
   }
 
@@ -203,8 +201,6 @@ class TbdexService {
       rethrow;
     }
 
-    await Future.delayed(const Duration(milliseconds: 300));
-
     return rfq;
   }
 
@@ -221,8 +217,6 @@ class TbdexService {
     } on Exception {
       rethrow;
     }
-
-    await Future.delayed(const Duration(milliseconds: 300));
 
     return order;
   }

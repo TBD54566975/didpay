@@ -130,8 +130,6 @@ class DapForm extends HookConsumerWidget {
       dap.value = const AsyncValue.loading();
       final result = await DapResolver().resolve(parsedDap);
 
-      await Future.delayed(const Duration(milliseconds: 500));
-
       dap.value = AsyncValue.data(result.dap);
       await onSubmit(result.dap, result.moneyAddresses);
     } on Exception catch (e) {
