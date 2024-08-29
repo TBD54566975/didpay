@@ -3,9 +3,9 @@ import 'package:didpay/features/dap/dap_state.dart';
 import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
-import 'package:didpay/features/payment/payment_fetch_quote_widget.dart';
 import 'package:didpay/features/payment/payment_method.dart';
 import 'package:didpay/features/payment/payment_methods_page.dart';
+import 'package:didpay/features/payment/payment_review_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
 import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
@@ -38,8 +38,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final quote = useState<AsyncValue<Quote?>>(ref.watch(quoteProvider));
-    final rfq = useState<AsyncValue<Rfq>?>(null);
+    final quote = useState<AsyncValue<Quote?>?>(null);
     final state = useState<PaymentDetailsState>(
       paymentState.paymentDetailsState ?? PaymentDetailsState(),
     );
@@ -63,41 +62,32 @@ class PaymentDetailsPage extends HookConsumerWidget {
       [state.value.selectedPaymentType],
     );
 
-    final isAwaiting =
-        (rfq.value?.isLoading ?? false) || (quote.value.isLoading);
+    final isAwaiting = quote.value?.isLoading ?? false;
 
     return PopScope(
       canPop: !isAwaiting,
       onPopInvoked: (_) {
         if (isAwaiting) {
-          rfq.value = null;
-          quote.value = const AsyncData(null);
+          ref.read(quoteProvider.notifier).stopPolling();
+          quote.value = null;
         }
       },
       child: Scaffold(
         appBar: AppBar(),
         body: SafeArea(
-          child: rfq.value != null
-              ? rfq.value!.when(
-                  data: (sentRfq) => PaymentFetchQuoteWidget(
-                    paymentState: paymentState.copyWith(
-                      paymentDetailsState: state.value
-                          .copyWith(exchangeId: sentRfq.metadata.exchangeId),
-                    ),
-                    quote: quote,
-                    rfq: rfq,
-                    ref: ref,
-                  ),
+          child: quote.value != null
+              ? quote.value!.when(
+                  data: (_) => Container(),
                   loading: () => LoadingMessage(
-                    message: Loc.of(context).sendingYourRequest,
+                    message: Loc.of(context).fetchingYourQuote,
                   ),
                   error: (error, _) => ErrorMessage(
                     message: error.toString(),
                     onRetry: () => _sendRfq(
                       context,
                       ref,
-                      state.value,
-                      rfq,
+                      state,
+                      quote,
                     ),
                   ),
                 )
@@ -125,12 +115,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         availableMethods,
                         state,
                       ),
-                    _buildPaymentForm(
-                      context,
-                      ref,
-                      state,
-                      rfq,
-                    ),
+                    _buildPaymentForm(context, ref, quote, state),
                   ],
                 ),
         ),
@@ -141,14 +126,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Widget _buildPaymentForm(
     BuildContext context,
     WidgetRef ref,
+    ValueNotifier<AsyncValue<Quote?>?> quote,
     ValueNotifier<PaymentDetailsState> state,
-    ValueNotifier<AsyncValue<Rfq>?> rfq,
   ) =>
       Expanded(
         child: JsonSchemaForm(
           state: state.value,
           dapState: dapState,
           onSubmit: (formData) async {
+            quote.value = const AsyncLoading();
             state.value = state.value.copyWith(formData: formData);
 
             final presentationDefinition = paymentState
@@ -188,8 +174,17 @@ class PaymentDetailsPage extends HookConsumerWidget {
               await _sendRfq(
                 context,
                 ref,
+                state,
+                quote,
+              );
+            }
+
+            if (context.mounted && quote.value != null) {
+              await _pollForQuote(
+                context,
+                ref,
                 state.value,
-                rfq,
+                quote,
               );
             }
           },
@@ -282,32 +277,70 @@ class PaymentDetailsPage extends HookConsumerWidget {
   Future<void> _sendRfq(
     BuildContext context,
     WidgetRef ref,
-    PaymentDetailsState state,
-    ValueNotifier<AsyncValue<Rfq>?> rfq,
+    ValueNotifier<PaymentDetailsState> state,
+    ValueNotifier<AsyncValue<Quote?>?> quote,
   ) async {
-    rfq.value = const AsyncLoading();
-
     try {
       final updatedPaymentState =
-          paymentState.copyWith(paymentDetailsState: state);
+          paymentState.copyWith(paymentDetailsState: state.value);
 
       final sentRfq = await ref.read(tbdexServiceProvider).sendRfq(
             ref.read(didProvider),
-            updatedPaymentState.paymentAmountState?.pfiDid ?? '',
-            updatedPaymentState.paymentAmountState?.offeringId ?? '',
-            updatedPaymentState.paymentAmountState?.payinAmount ?? '',
+            paymentState.paymentAmountState?.pfiDid ?? '',
+            paymentState.paymentAmountState?.offeringId ?? '',
+            paymentState.paymentAmountState?.payinAmount ?? '',
             updatedPaymentState.selectedPayinKind ?? '',
             updatedPaymentState.selectedPayoutKind ?? '',
             updatedPaymentState.payinDetails,
             updatedPaymentState.payoutDetails,
-            claims: updatedPaymentState.paymentDetailsState?.credentialsJwt,
+            claims: state.value.credentialsJwt,
           );
 
-      if (context.mounted && rfq.value != null) {
-        rfq.value = AsyncData(sentRfq);
+      state.value = state.value.copyWith(exchangeId: sentRfq.metadata.id);
+    } on Exception catch (e) {
+      quote.value = AsyncError(e, StackTrace.current);
+    }
+  }
+
+  Future<void> _pollForQuote(
+    BuildContext context,
+    WidgetRef ref,
+    PaymentDetailsState state,
+    ValueNotifier<AsyncValue<Quote?>?> quote,
+  ) async {
+    quote.value = const AsyncLoading();
+    final quoteNotifier = ref.read(quoteProvider.notifier);
+
+    try {
+      final fetchedQuote = await quoteNotifier.startPolling(
+        paymentState.paymentAmountState?.pfiDid ?? '',
+        state.exchangeId ?? '',
+      );
+
+      if (context.mounted) {
+        quoteNotifier.stopPolling();
+
+        if (fetchedQuote != null && quote.value != null) {
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => PaymentReviewPage(
+                paymentState: paymentState.copyWith(
+                  paymentDetailsState: state.copyWith(quote: fetchedQuote),
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (context.mounted) {
+          quote.value = null;
+        }
       }
     } on Exception catch (e) {
-      rfq.value = AsyncError(e, StackTrace.current);
+      if (context.mounted) {
+        quoteNotifier.stopPolling();
+        quote.value = AsyncError(e, StackTrace.current);
+      }
     }
   }
 }
