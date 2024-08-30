@@ -27,7 +27,6 @@ class PaymentDetailsState {
   Set<String>? get paymentTypes =>
       paymentMethods?.map((method) => method.type).whereType<String>().toSet();
 
-  bool get hasNoPaymentTypes => paymentTypes?.isEmpty ?? true;
   bool get hasMultiplePaymentTypes => (paymentTypes?.length ?? 0) > 1;
 
   List<PaymentMethod>? filterPaymentMethods(String? paymentType) =>
@@ -47,14 +46,16 @@ class PaymentDetailsState {
     List<String>? credentialsJwt,
     Map<String, String>? formData,
     Quote? quote,
+    bool resetSelectedPaymentMethod = false,
   }) {
     return PaymentDetailsState(
       paymentCurrency: paymentCurrency ?? this.paymentCurrency,
       paymentName: paymentName ?? this.paymentName,
       exchangeId: exchangeId ?? this.exchangeId,
       selectedPaymentType: selectedPaymentType ?? this.selectedPaymentType,
-      selectedPaymentMethod:
-          selectedPaymentMethod ?? this.selectedPaymentMethod,
+      selectedPaymentMethod: resetSelectedPaymentMethod
+          ? null
+          : selectedPaymentMethod ?? this.selectedPaymentMethod,
       paymentMethods: paymentMethods ?? this.paymentMethods,
       credentialsJwt: credentialsJwt ?? this.credentialsJwt,
       formData: formData ?? this.formData,
