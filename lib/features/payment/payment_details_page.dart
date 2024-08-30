@@ -4,10 +4,9 @@ import 'package:didpay/features/did/did_provider.dart';
 import 'package:didpay/features/kcc/kcc_consent_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_method.dart';
-import 'package:didpay/features/payment/payment_methods_page.dart';
 import 'package:didpay/features/payment/payment_review_page.dart';
+import 'package:didpay/features/payment/payment_selection_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
 import 'package:didpay/features/tbdex/tbdex_service.dart';
@@ -55,6 +54,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
         state.value = state.value.copyWith(
           selectedPaymentMethod: selectedMethod,
           paymentName: selectedMethod?.title,
+          resetSelectedPaymentMethod: selectedMethod == null,
         );
 
         return;
@@ -108,7 +108,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
                         context,
                         state,
                       ),
-                    if (state.value.hasNoPaymentTypes ||
+                    if (!state.value.hasMultiplePaymentTypes ||
                         state.value.selectedPaymentType != null)
                       _buildPaymentMethodSelector(
                         context,
@@ -211,7 +211,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => PaymentTypesPage(state: state),
+                  builder: (context) => PaymentSelectionPage(
+                    state: state,
+                    isSelectingMethod: false,
+                  ),
                 ),
               );
             },
@@ -262,7 +265,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
               : () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PaymentMethodsPage(
+                      builder: (context) => PaymentSelectionPage(
                         state: state,
                         availableMethods: availableMethods,
                       ),
