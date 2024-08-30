@@ -1,4 +1,5 @@
 import 'package:didpay/features/payment/payment_method.dart';
+import 'package:tbdex/tbdex.dart';
 
 class PaymentDetailsState {
   final String? paymentCurrency;
@@ -9,6 +10,7 @@ class PaymentDetailsState {
   final List<PaymentMethod>? paymentMethods;
   final List<String>? credentialsJwt;
   final Map<String, String>? formData;
+  final Quote? quote;
 
   PaymentDetailsState({
     this.paymentCurrency,
@@ -19,6 +21,7 @@ class PaymentDetailsState {
     this.paymentMethods,
     this.credentialsJwt,
     this.formData,
+    this.quote,
   });
 
   Set<String>? get paymentTypes =>
@@ -43,6 +46,7 @@ class PaymentDetailsState {
     List<PaymentMethod>? paymentMethods,
     List<String>? credentialsJwt,
     Map<String, String>? formData,
+    Quote? quote,
   }) {
     return PaymentDetailsState(
       paymentCurrency: paymentCurrency ?? this.paymentCurrency,
@@ -54,6 +58,7 @@ class PaymentDetailsState {
       paymentMethods: paymentMethods ?? this.paymentMethods,
       credentialsJwt: credentialsJwt ?? this.credentialsJwt,
       formData: formData ?? this.formData,
+      quote: quote ?? this.quote,
     );
   }
 }

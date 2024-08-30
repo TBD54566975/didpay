@@ -61,8 +61,8 @@ void main() async {
                 selectedPaymentMethod: PaymentMethod.fromPayinMethod(
                   offering.data.payin.methods.first,
                 ),
+                quote: quote,
               ),
-              quote: quote,
             ),
           ),
           overrides: [
