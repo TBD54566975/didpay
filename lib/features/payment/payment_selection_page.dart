@@ -5,15 +5,17 @@ import 'package:didpay/shared/search_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PaymentMethodsPage extends HookWidget {
+class PaymentSelectionPage extends HookWidget {
   final _formKey = GlobalKey<FormState>();
 
-  final List<PaymentMethod>? availableMethods;
   final ValueNotifier<PaymentDetailsState> state;
+  final List<PaymentMethod>? availableMethods;
+  final bool isSelectingMethod;
 
-  PaymentMethodsPage({
-    required this.availableMethods,
+  PaymentSelectionPage({
     required this.state,
+    this.availableMethods,
+    this.isSelectingMethod = true,
     super.key,
   });
 
@@ -23,7 +25,7 @@ class PaymentMethodsPage extends HookWidget {
     final focusNode = useFocusNode();
 
     return Scaffold(
-      appBar: AppBar(scrolledUnderElevation: 0),
+      appBar: AppBar(),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -34,12 +36,18 @@ class PaymentMethodsPage extends HookWidget {
               searchText: searchText,
             ),
             Expanded(
-              child: _buildMethodsList(
-                context,
-                searchText,
-                availableMethods,
-                state,
-              ),
+              child: isSelectingMethod
+                  ? _buildMethodsList(
+                      context,
+                      searchText,
+                      availableMethods,
+                      state,
+                    )
+                  : _buildTypesList(
+                      context,
+                      searchText,
+                      state,
+                    ),
             ),
           ],
         ),
@@ -95,6 +103,42 @@ class PaymentMethodsPage extends HookWidget {
         );
       },
       itemCount: filteredPaymentMethods?.length,
+    );
+  }
+
+  Widget _buildTypesList(
+    BuildContext context,
+    ValueNotifier<String> searchText,
+    ValueNotifier<PaymentDetailsState> state,
+  ) {
+    final filteredPaymentTypes = state.value.paymentTypes
+        ?.where(
+          (entry) =>
+              entry.toLowerCase().contains(searchText.value.toLowerCase()),
+        )
+        .toList();
+
+    return ListView.builder(
+      itemBuilder: (context, index) {
+        final currentPaymentType = filteredPaymentTypes?.elementAtOrNull(index);
+        final selected = state.value.selectedPaymentType == currentPaymentType;
+
+        return ListTile(
+          visualDensity: VisualDensity.compact,
+          selected: selected,
+          title: Text(currentPaymentType ?? ''),
+          trailing: selected ? const Icon(Icons.check) : null,
+          onTap: () {
+            if (currentPaymentType != null) {
+              state.value =
+                  state.value.copyWith(selectedPaymentType: currentPaymentType);
+            }
+
+            Navigator.of(context).pop();
+          },
+        );
+      },
+      itemCount: filteredPaymentTypes?.length,
     );
   }
 }

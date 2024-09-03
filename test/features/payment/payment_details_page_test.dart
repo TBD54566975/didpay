@@ -3,9 +3,8 @@ import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:didpay/features/payment/payment_details_page.dart';
 import 'package:didpay/features/payment/payment_details_state.dart';
 import 'package:didpay/features/payment/payment_method.dart';
-import 'package:didpay/features/payment/payment_methods_page.dart';
+import 'package:didpay/features/payment/payment_selection_page.dart';
 import 'package:didpay/features/payment/payment_state.dart';
-import 'package:didpay/features/payment/payment_types_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:flutter/material.dart';
@@ -162,7 +161,8 @@ void main() async {
       expect(find.widgetWithIcon(Icon, Icons.chevron_right), findsNothing);
     });
 
-    testWidgets('should show PaymentTypesPage on tap of select a payment type',
+    testWidgets(
+        'should show PaymentSelectionPage on tap of select a payment type',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -187,11 +187,11 @@ void main() async {
 
       await tester.tap(find.text('Select a payment type'));
       await tester.pumpAndSettle();
-      expect(find.byType(PaymentTypesPage), findsOneWidget);
+      expect(find.byType(PaymentSelectionPage), findsOneWidget);
     });
 
     testWidgets(
-        'should show PaymentMethodsPage on tap of select a payment method',
+        'should show PaymentSelectionPage on tap of select a payment method',
         (tester) async {
       await tester.pumpWidget(
         WidgetHelpers.testableWidget(
@@ -214,7 +214,7 @@ void main() async {
 
       await tester.tap(find.text('Select a payment method'));
       await tester.pumpAndSettle();
-      expect(find.byType(PaymentMethodsPage), findsOneWidget);
+      expect(find.byType(PaymentSelectionPage), findsOneWidget);
     });
 
     testWidgets('should show payment type after PaymentTypesPage selection',
