@@ -17,9 +17,9 @@ class DapState {
     'eth': 'USDC_ONCHAIN',
   };
 
-  String? get protocol => selectedAddress?.pss.split(':').firstOrNull;
+  String? get protocol => selectedAddress?.protocol;
 
-  String? get paymentAddress => selectedAddress?.pss.split(':').lastOrNull;
+  String? get paymentAddress => selectedAddress?.pss;
 
   List<String>? get currencies =>
       moneyAddresses?.map((address) => address.currency).toList();
@@ -39,11 +39,13 @@ class DapState {
         )
         .toSet();
 
-    return paymentMethods
+    final filteredMethods = paymentMethods
         ?.where(
           (method) => protocolKinds?.contains(method.kind) ?? false,
         )
         .toList();
+
+    return filteredMethods?.isEmpty ?? true ? null : filteredMethods;
   }
 
   DapState copyWith({
