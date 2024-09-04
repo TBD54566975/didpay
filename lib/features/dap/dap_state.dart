@@ -17,9 +17,9 @@ class DapState {
     'eth': 'USDC_ONCHAIN',
   };
 
-  String? get protocol => selectedAddress?.css.split(':').firstOrNull;
+  String? get protocol => selectedAddress?.pss.split(':').firstOrNull;
 
-  String? get paymentAddress => selectedAddress?.css.split(':').lastOrNull;
+  String? get paymentAddress => selectedAddress?.pss.split(':').lastOrNull;
 
   List<String>? get currencies =>
       moneyAddresses?.map((address) => address.currency).toList();
@@ -35,7 +35,7 @@ class DapState {
     final protocolKinds = moneyAddresses
         ?.map(
           (address) =>
-              protocolToKindMap[address.css.split(':').firstOrNull ?? ''],
+              protocolToKindMap[address.pss.split(':').firstOrNull ?? ''],
         )
         .toSet();
 
