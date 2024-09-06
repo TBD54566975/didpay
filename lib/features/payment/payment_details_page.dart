@@ -162,7 +162,10 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   ),
                 );
 
-                if (issuedCredential == null) return;
+                if (issuedCredential == null) {
+                  quote.value = null;
+                  return;
+                }
 
                 credentials = [issuedCredential as String];
               }
