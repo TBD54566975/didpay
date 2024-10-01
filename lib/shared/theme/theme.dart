@@ -9,18 +9,18 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
       textTheme: textTheme(ThemeData().textTheme),
       appBarTheme: AppBarTheme(
         scrolledUnderElevation: 0,
-        backgroundColor: lightColorScheme.background,
+        backgroundColor: lightColorScheme.surface,
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              return states.contains(MaterialState.selected)
+              return states.contains(WidgetState.selected)
                   ? lightColorScheme.secondary
                   : lightColorScheme.onSecondary;
             },
           ),
-          side: MaterialStateProperty.resolveWith<BorderSide>(
+          side: WidgetStateProperty.resolveWith<BorderSide>(
             (_) {
               return BorderSide(
                 color: lightColorScheme.secondary,
@@ -28,7 +28,7 @@ ThemeData lightTheme(BuildContext context) => ThemeData(
               );
             },
           ),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Grid.xs),
             ),
@@ -60,18 +60,18 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
       textTheme: textTheme(ThemeData.dark().textTheme),
       appBarTheme: AppBarTheme(
         scrolledUnderElevation: 0,
-        backgroundColor: darkColorScheme.background,
+        backgroundColor: darkColorScheme.surface,
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.resolveWith<Color>(
+          backgroundColor: WidgetStateProperty.resolveWith<Color>(
             (states) {
-              return states.contains(MaterialState.selected)
+              return states.contains(WidgetState.selected)
                   ? darkColorScheme.secondary
                   : darkColorScheme.onSecondary;
             },
           ),
-          side: MaterialStateProperty.resolveWith<BorderSide>(
+          side: WidgetStateProperty.resolveWith<BorderSide>(
             (_) {
               return BorderSide(
                 color: darkColorScheme.secondary,
@@ -79,7 +79,7 @@ ThemeData darkTheme(BuildContext context) => ThemeData(
               );
             },
           ),
-          shape: MaterialStateProperty.all(
+          shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(Grid.xs),
             ),
