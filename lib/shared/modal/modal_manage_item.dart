@@ -49,8 +49,10 @@ class ModalManageItem {
               ),
             ),
             Divider(
-              color:
-                  Theme.of(context).colorScheme.outlineVariant.withOpacity(0.1),
+              color: Theme.of(context)
+                  .colorScheme
+                  .outlineVariant
+                  .withValues(alpha: 0.1),
             ),
             ListTile(
               title: Center(
@@ -70,8 +72,10 @@ class ModalManageItem {
               },
             ),
             Divider(
-              color:
-                  Theme.of(context).colorScheme.outlineVariant.withOpacity(0.1),
+              color: Theme.of(context)
+                  .colorScheme
+                  .outlineVariant
+                  .withValues(alpha: 0.1),
             ),
             ListTile(
               title: Center(

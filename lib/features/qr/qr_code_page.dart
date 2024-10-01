@@ -42,8 +42,8 @@ class QrCodePage extends HookConsumerWidget {
                 border: Border.all(
                   color: Theme.of(context)
                       .colorScheme
-                      .onBackground
-                      .withOpacity(0.2),
+                      .secondary
+                      .withValues(alpha: 0.2),
                 ),
                 borderRadius: BorderRadius.circular(Grid.radius),
               ),
@@ -137,10 +137,10 @@ class QrCodePage extends HookConsumerWidget {
         size: size,
         eyeStyle: QrEyeStyle(
           eyeShape: QrEyeShape.square,
-          color: Theme.of(context).colorScheme.onBackground,
+          color: Theme.of(context).colorScheme.secondary,
         ),
         dataModuleStyle: QrDataModuleStyle(
-          color: Theme.of(context).colorScheme.onBackground,
+          color: Theme.of(context).colorScheme.secondary,
           dataModuleShape: QrDataModuleShape.square,
         ),
       );

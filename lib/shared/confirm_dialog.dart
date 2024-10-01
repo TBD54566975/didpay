@@ -41,7 +41,7 @@ class ConfirmDialog extends HookWidget {
                 color: Theme.of(context)
                     .colorScheme
                     .outlineVariant
-                    .withOpacity(0.1),
+                    .withValues(alpha: 0.1),
               ),
               Row(
                 children: [
@@ -65,7 +65,7 @@ class ConfirmDialog extends HookWidget {
                               color: Theme.of(context)
                                   .colorScheme
                                   .outlineVariant
-                                  .withOpacity(0.1),
+                                  .withValues(alpha: 0.1),
                             ),
                           ),
                         ),
