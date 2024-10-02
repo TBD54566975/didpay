@@ -40,10 +40,8 @@ class QrCodePage extends HookConsumerWidget {
               height: qrSize,
               decoration: BoxDecoration(
                 border: Border.all(
-                  color: Theme.of(context)
-                      .colorScheme
-                      .secondary
-                      .withValues(alpha: 0.2),
+                  color:
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.2),
                 ),
                 borderRadius: BorderRadius.circular(Grid.radius),
               ),
