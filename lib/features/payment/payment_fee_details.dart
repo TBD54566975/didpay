@@ -25,7 +25,7 @@ class PaymentFeeDetails extends HookWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Theme.of(context).colorScheme.surfaceContainer,
         borderRadius: BorderRadius.circular(15),
       ),
       padding:
