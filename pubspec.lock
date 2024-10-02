@@ -110,7 +110,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "36bd58a14dc74313baaa5a8967dc4e5a64482e9e"
+      resolved-ref: "41a473a0f962ea8c8a8b4200e2b497a5f30ba9ee"
       url: "https://github.com/TBD54566975/dap-dart.git"
     source: git
     version: "0.1.0"
@@ -800,7 +800,7 @@ packages:
     description:
       path: "."
       ref: main
-      resolved-ref: "04939d59eeebbb23d8f62a4a2be5752808cdf29e"
+      resolved-ref: b76140da9b958d27d8f86a8a41b5739f16532d75
       url: "https://github.com/TBD54566975/tbdex-dart.git"
     source: git
     version: "1.0.0"
@@ -944,10 +944,10 @@ packages:
     dependency: "direct main"
     description:
       name: web5
-      sha256: b7b8641add97e29127d98616247442530506ded47bf73ce6ad4710e7202006d3
+      sha256: "74e454e9eea54e886c1dd9de827012ff0608168e74870733127f64e3c675f56d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.0"
+    version: "0.4.0"
   webview_flutter:
     dependency: "direct main"
     description:
