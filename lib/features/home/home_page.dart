@@ -25,10 +25,12 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(
-          Duration.zero,
-          () async => _getExchanges(context, ref, exchanges),
-        );
+        Future.delayed(Duration.zero, () async {
+          if (context.mounted) {
+            await _getExchanges(context, ref, exchanges);
+          }
+        });
+
         return null;
       },
       [],

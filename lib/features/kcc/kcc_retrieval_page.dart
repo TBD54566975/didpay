@@ -28,10 +28,11 @@ class KccRetrievalPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(
-          Duration.zero,
-          () async => _pollForCredential(context, ref, credential),
-        );
+        Future.delayed(Duration.zero, () async {
+          if (context.mounted) {
+            await _pollForCredential(context, ref, credential);
+          }
+        });
 
         return null;
       },
