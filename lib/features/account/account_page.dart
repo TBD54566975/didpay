@@ -18,8 +18,6 @@ import 'package:web5/web5.dart';
 class AccountPage extends HookConsumerWidget {
   const AccountPage({super.key});
 
-  // TODO(ethan-tbd): add button to recreate did
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);

@@ -377,7 +377,7 @@ class KccIssuanceService {
   }
 
   Future<Uri> getIdvServiceEndpoint(
-      Pfi pfi, PresentationDefinition presentationDefinition) async {
+      Pfi pfi, PresentationDefinition presentationDefinition,) async {
     try {
       final res = await DidResolver.resolve(pfi.did);
       if (res.hasError()) {

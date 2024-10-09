@@ -44,7 +44,7 @@ class QrTabs extends HookWidget {
                 controller: tabController,
                 indicator: BoxDecoration(
                   borderRadius: BorderRadius.circular(Grid.radius),
-                  color: Theme.of(context).colorScheme.surfaceContainer,
+                  color: Theme.of(context).colorScheme.surface,
                 ),
                 indicatorSize: TabBarIndicatorSize.tab,
                 indicatorPadding: const EdgeInsets.all(Grid.quarter),

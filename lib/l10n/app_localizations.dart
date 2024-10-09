@@ -7,6 +7,8 @@ import 'package:intl/intl.dart' as intl;
 
 import 'app_localizations_en.dart';
 
+// ignore_for_file: type=lint
+
 /// Callers can lookup localized strings with an instance of Loc
 /// returned by `Loc.of(context)`.
 ///
