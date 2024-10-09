@@ -33,7 +33,8 @@ class KccWebviewPage extends HookConsumerWidget {
     final webViewController = useState<InAppWebViewController?>(null);
 
     final settings = InAppWebViewSettings(
-      isInspectable: kDebugMode, // TODO: only enable for debug builds
+      isInspectable:
+          kDebugMode, // TODO(ethan-tbd): only enable for debug builds
       mediaPlaybackRequiresUserGesture: false,
       allowsInlineMediaPlayback: true,
       iframeAllow: 'camera; microphone',
