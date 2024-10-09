@@ -83,12 +83,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   ),
                   error: (error, _) => ErrorMessage(
                     message: error.toString(),
-                    onRetry: () => _sendRfq(
-                      context,
-                      ref,
-                      state,
-                      quote,
-                    ),
+                    onRetry: () {
+                      quote.value = const AsyncLoading();
+                      _sendRfq(
+                        context,
+                        ref,
+                        state,
+                        quote,
+                      );
+                    },
                   ),
                 )
               : Column(
