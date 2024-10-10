@@ -18,6 +18,7 @@ class CurrencyDropdown extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Directionality(
         textDirection: TextDirection.rtl,
         child: ElevatedButton.icon(
+          key: const Key('currencyDropdownButton'),
           icon: const Icon(Icons.keyboard_arrow_down),
           label: _buildCurrencyLabel(context),
           style: ElevatedButton.styleFrom(
