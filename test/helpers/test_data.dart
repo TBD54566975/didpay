@@ -27,9 +27,9 @@ class TestData {
   static FeatureFlag getFeatureFlag(String name, String description) =>
       FeatureFlag(name: name, description: description);
 
-  static Map<Pfi, List<Offering>> getOfferingsMap(
+  static Map<Pfi, List<Offering>> getOfferingsMap({
     List<String>? payoutCurrencies,
-  ) =>
+  }) =>
       {
         Pfi(did: pfiDid.uri):
             (payoutCurrencies != null && payoutCurrencies.isNotEmpty)
