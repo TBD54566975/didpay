@@ -66,7 +66,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     return PopScope(
       canPop: !isAwaiting,
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         if (isAwaiting) {
           ref.read(quoteProvider.notifier).stopPolling();
           quote.value = null;
