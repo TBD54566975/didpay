@@ -2,7 +2,7 @@ import 'package:didpay/features/currency/currency_dropdown.dart';
 import 'package:didpay/features/payment/payment_amount_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-  
+
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
 
@@ -13,67 +13,54 @@ void main() async {
   const testCurrency = 'USD';
 
   setUp(() {
-    // Initialize mockState with a non-null offeringsMap
     mockState = ValueNotifier<PaymentAmountState?>(
       PaymentAmountState(
         offeringsMap: TestData.getOfferingsMap(),
-      ), // Use TestData as suggested
+      ),
     );
   });
 
-  Widget createWidgetUnderTest() {
-    return WidgetHelpers.testableWidget(
-      // Use WidgetHelpers for consistent test setup
-      child: CurrencyDropdown(
-        paymentCurrency: testCurrency,
-        state: mockState,
-      ),
-    );
-  }
+  Widget currencyDropdownTestWidget() => WidgetHelpers.testableWidget(
+        child: CurrencyDropdown(
+          paymentCurrency: testCurrency,
+          state: mockState,
+        ),
+      );
 
-  testWidgets('CurrencyDropdown shows the correct initial currency',
+  testWidgets('should display the initial currency in CurrencyDropdown',
       (tester) async {
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(currencyDropdownTestWidget());
 
-    // Check if the currency label displays the initial currency
     expect(find.text(testCurrency), findsOneWidget);
   });
 
-  testWidgets('CurrencyDropdown opens the Select Currency modal when tapped',
+  testWidgets('should open Select Currency modal on tap in CurrencyDropdown',
       (tester) async {
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(currencyDropdownTestWidget());
 
-    // Tap on the currency dropdown button
     await tester.tap(find.text(testCurrency));
-    await tester.pumpAndSettle(); // Wait for the modal to open
-
-    // Verify if the modal is displayed
+    await tester.pumpAndSettle();
     expect(
       find.text('Select currency'),
       findsOneWidget,
-    ); // Look for modal text or widget
+    );
   });
 
-  testWidgets('CurrencyDropdown updates state when a currency is selected',
+  testWidgets(
+      'should update PaymentAmountState when a new offering is selected in CurrencyDropdown',
       (tester) async {
-    await tester.pumpWidget(createWidgetUnderTest());
+    await tester.pumpWidget(currencyDropdownTestWidget());
 
-    // Open the modal by tapping on the currency dropdown button
     await tester.tap(
       find.text(testCurrency),
-    ); // Using the 'USD' label text to find the button
-    await tester.pumpAndSettle();
-
-    // Simulate selecting a currency by updating the mockState directly
-    const selectedCurrency = 'EUR';
-    mockState.value = PaymentAmountState(
-      filterCurrency:
-          selectedCurrency, // Assuming 'filterCurrency' is the correct field for currency selection
     );
+    await tester.pumpAndSettle();
+
+    const selectedCurrency = 'EUR';
+    await tester.tap(find.text(selectedCurrency));
 
     await tester.pumpAndSettle();
 
-    // Verify the state reflects the selected currency
     expect(mockState.value?.filterCurrency, selectedCurrency);
   });
 }
