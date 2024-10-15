@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:tbdex/tbdex.dart';
 import 'package:typeid/typeid.dart';
@@ -159,5 +160,18 @@ class TestData {
           "additionalProperties": false
         }
     '''),
+      );
+
+  static Transaction getTransaction({
+    TransactionType type = TransactionType.send,
+  }) =>
+      Transaction(
+        payinAmount: '100.01',
+        payoutAmount: '0.12',
+        payinCurrency: 'AUD',
+        payoutCurrency: 'BTC',
+        createdAt: DateTime(2024),
+        type: type,
+        status: TransactionStatus.orderSubmitted,
       );
 }
