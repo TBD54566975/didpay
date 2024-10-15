@@ -83,7 +83,7 @@ void main() {
           ],
         );
 
-    testWidgets('should show paying and payout currencies', (tester) async {
+    testWidgets('should show payin and payout currencies', (tester) async {
       await tester.pumpWidget(
         transactionTileTestWidget(
           mockTransactionNotifierType:
