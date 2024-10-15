@@ -11,9 +11,6 @@ import '../../helpers/widget_helpers.dart';
 
 void main() {
   group('TransactionTile', () {
-    final pfi = TestData.getPfi('did:dht:pfiDid');
-    const exchangeId = 'rfq_01ha835rhefwmagsknrrhvaa0k';
-
     final sendTransaction = TestData.getTransaction();
     final depositTransaction = TestData.getTransaction(
       type: TransactionType.deposit,
@@ -62,8 +59,8 @@ void main() {
     }) =>
         WidgetHelpers.testableWidget(
           child: TransactionTile(
-            pfi: pfi,
-            exchangeId: exchangeId,
+            pfi: TestData.getPfi('did:dht:pfiDid'),
+            exchangeId: 'rfq_01ha835rhefwmagsknrrhvaa0k',
           ),
           overrides: [
             transactionProvider.overrideWith(
