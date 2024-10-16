@@ -15,6 +15,11 @@ import '../../helpers/test_data.dart';
 void main() async {
   await TestData.initializeDids();
 
+  final pfi = TestData.getPfi('did:dht:pfiDid');
+  const exchangeId = 'rfq_01ha835rhefwmagsknrrhvaa0k';
+  final parameters = TransactionProviderParameters(pfi, exchangeId);
+  final did = TestData.aliceDid;
+
   setUpAll(() {
     registerFallbackValue(
       const AsyncData<Transaction?>(null),
@@ -22,12 +27,6 @@ void main() async {
   });
 
   group('TransactionNotifier', () {
-    final pfi = TestData.getPfi('did:dht:pfiDid');
-    const exchangeId = 'rfq_01ha835rhefwmagsknrrhvaa0k';
-    final parameters = TransactionProviderParameters(pfi, exchangeId);
-
-    final did = TestData.aliceDid;
-
     test('should set the state to AsyncValue.data(transaction) on read',
         () async {
       final mockTbdexService = MockTbdexService();
