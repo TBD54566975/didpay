@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import '../../helpers/mocks.dart';
 import '../../helpers/test_data.dart';
 import '../../helpers/widget_helpers.dart';
-import 'transaction_tile_test.dart';
 
 void main() {
   group('TransactionDetailsPage', () {
@@ -129,4 +128,22 @@ void main() {
       expect(find.text('Bad state: Error loading transaction'), findsOneWidget);
     });
   });
+}
+
+sealed class MockTransactionNotifierType {
+  const MockTransactionNotifierType();
+}
+
+class MockTransactionNotifierWithData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithData({required this.transactionType});
+
+  final TransactionType transactionType;
+}
+
+class MockTransactionNotifierWithNullData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithNullData();
+}
+
+class MockTransactionNotifierWithError extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithError();
 }
