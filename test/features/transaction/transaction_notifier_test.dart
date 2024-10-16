@@ -12,10 +12,6 @@ import '../../helpers/mocks.dart';
 import '../../helpers/riverpod_helpers.dart';
 import '../../helpers/test_data.dart';
 
-class Listener<T> extends Mock {
-  void call(T? previous, T next);
-}
-
 void main() async {
   await TestData.initializeDids();
 

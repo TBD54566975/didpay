@@ -79,3 +79,7 @@ class MockAccountBalanceNotifier
   @override
   FutureOr<AccountBalance?> build() async => accountBalance;
 }
+
+class Listener<T> extends Mock {
+  void call(T? previous, T next);
+}
