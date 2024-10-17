@@ -79,3 +79,21 @@ class MockAccountBalanceNotifier
   @override
   FutureOr<AccountBalance?> build() async => accountBalance;
 }
+
+sealed class MockTransactionNotifierType {
+  const MockTransactionNotifierType();
+}
+
+class MockTransactionNotifierWithData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithData({required this.transactionType});
+
+  final TransactionType transactionType;
+}
+
+class MockTransactionNotifierWithNullData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithNullData();
+}
+
+class MockTransactionNotifierWithError extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithError();
+}
