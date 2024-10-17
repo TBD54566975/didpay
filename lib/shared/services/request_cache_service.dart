@@ -10,13 +10,15 @@ class RequestCacheService<T> {
   final Map<String, dynamic> Function(T) toJson;
   final Duration cacheDuration;
   final String networkCacheKey;
+  final http.Client httpClient;
 
   RequestCacheService({
     required this.fromJson,
     required this.toJson,
     this.cacheDuration = const Duration(minutes: 1),
     this.networkCacheKey = 'network_cache',
-  });
+    http.Client? httpClient,
+  }) : httpClient = httpClient ?? http.Client();
 
   /// Fetches data from the cache and API.
   Stream<T> fetchData(String url) async* {
@@ -48,7 +50,7 @@ class RequestCacheService<T> {
 
       // Fetch data from the network
       try {
-        final response = await http.get(Uri.parse(url));
+        final response = await httpClient.get(Uri.parse(url));
 
         if (response.statusCode == 200) {
           final dataMap = jsonDecode(response.body) as Map<String, dynamic>;
