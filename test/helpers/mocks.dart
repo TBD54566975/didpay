@@ -97,3 +97,7 @@ class MockTransactionNotifierWithNullData extends MockTransactionNotifierType {
 class MockTransactionNotifierWithError extends MockTransactionNotifierType {
   const MockTransactionNotifierWithError();
 }
+
+class Listener<T> extends Mock {
+  void call(T? previous, T next);
+}
