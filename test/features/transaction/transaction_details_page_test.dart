@@ -80,7 +80,7 @@ void main() {
       expect(
         find.text('100.01'),
         findsOneWidget,
-      ); // Adjust to your currency setup.
+      );
     });
 
     testWidgets('should show transaction date', (tester) async {
@@ -113,7 +113,7 @@ void main() {
       expect(
         find.text('Order submitted'),
         findsOneWidget,
-      ); // Adjust based on status
+      );
     });
 
     testWidgets('should display error when transaction fetch fails',
@@ -129,3 +129,4 @@ void main() {
     });
   });
 }
+
