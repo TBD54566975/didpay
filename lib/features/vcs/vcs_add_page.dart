@@ -1,4 +1,4 @@
-import 'package:didpay/features/vcs/vc_form.dart';
+import 'package:didpay/features/vcs/vcs_form.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/confirmation_message.dart';
