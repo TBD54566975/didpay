@@ -22,8 +22,9 @@ void main() async {
         .thenAnswer((_) async => TestData.getExchange());
   });
 
-  group('TbdexQuoteNotifier Stress Tests', () {
-    test('High-frequency polling with exponential backoff', () async {
+  group('TbdexQuoteNotifier', () {
+    test('should handle high-frequency polling with exponential backoff',
+        () async {
       when(() => mockTbdexQuoteNotifier.pollForQuote(any(), any()))
           .thenAnswer((_) async => TestData.getQuote());
 
@@ -33,7 +34,7 @@ void main() async {
           .called(1);
     });
 
-    test('Maximum retry attempts', () async {
+    test('should handle maximum retry attempts', () async {
       when(() => mockTbdexQuoteNotifier.pollForQuote(any(), any()))
           .thenThrow(Exception('Network error'));
 
@@ -43,7 +44,7 @@ void main() async {
           .called(1);
     });
 
-    test('Handling network latency', () async {
+    test('should handle network latency', () async {
       when(() => mockTbdexQuoteNotifier.startPolling(any(), any()))
           .thenAnswer((_) async {
         await Future.delayed(const Duration(seconds: 5));
