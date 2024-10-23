@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:didpay/features/account/account_balance.dart';
 import 'package:didpay/features/feature_flags/feature_flag.dart';
 import 'package:didpay/features/pfis/pfi.dart';
+import 'package:didpay/features/transaction/transaction.dart';
 import 'package:json_schema/json_schema.dart';
 import 'package:tbdex/tbdex.dart';
 import 'package:typeid/typeid.dart';
@@ -27,8 +28,16 @@ class TestData {
   static FeatureFlag getFeatureFlag(String name, String description) =>
       FeatureFlag(name: name, description: description);
 
-  static Map<Pfi, List<Offering>> getOfferingsMap() => {
-        Pfi(did: pfiDid.uri): [getOffering()],
+  static Map<Pfi, List<Offering>> getOfferingsMap({
+    List<String>? payoutCurrencies,
+  }) =>
+      {
+        Pfi(did: pfiDid.uri):
+            (payoutCurrencies != null && payoutCurrencies.isNotEmpty)
+                ? payoutCurrencies
+                    .map((currency) => getOffering(payoutCurrency: currency))
+                    .toList()
+                : [getOffering()],
       };
 
   static List<Pfi> getPfis() => [Pfi(did: pfiDid.uri)];
@@ -37,6 +46,7 @@ class TestData {
       AccountBalance(total: '101', currencyCode: 'USD', balancesMap: {});
 
   static Offering getOffering({
+    String? payoutCurrency,
     PresentationDefinition? requiredClaims,
     List<PayinMethod>? payinMethods,
     List<PayoutMethod>? payoutMethods,
@@ -59,7 +69,7 @@ class TestData {
                 ],
           ),
           payout: PayoutDetails(
-            currencyCode: 'USD',
+            currencyCode: payoutCurrency ?? 'USD',
             methods: payoutMethods ??
                 [
                   PayoutMethod(
@@ -150,5 +160,18 @@ class TestData {
           "additionalProperties": false
         }
     '''),
+      );
+
+  static Transaction getTransaction({
+    TransactionType type = TransactionType.send,
+  }) =>
+      Transaction(
+        payinAmount: '100.01',
+        payoutAmount: '0.12',
+        payinCurrency: 'AUD',
+        payoutCurrency: 'BTC',
+        createdAt: DateTime(2024),
+        type: type,
+        status: TransactionStatus.orderSubmitted,
       );
 }

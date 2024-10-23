@@ -66,7 +66,7 @@ class PaymentDetailsPage extends HookConsumerWidget {
 
     return PopScope(
       canPop: !isAwaiting,
-      onPopInvoked: (_) {
+      onPopInvokedWithResult: (_, __) {
         if (isAwaiting) {
           ref.read(quoteProvider.notifier).stopPolling();
           quote.value = null;
@@ -83,12 +83,15 @@ class PaymentDetailsPage extends HookConsumerWidget {
                   ),
                   error: (error, _) => ErrorMessage(
                     message: error.toString(),
-                    onRetry: () => _sendRfq(
-                      context,
-                      ref,
-                      state,
-                      quote,
-                    ),
+                    onRetry: () {
+                      quote.value = const AsyncLoading();
+                      _sendRfq(
+                        context,
+                        ref,
+                        state,
+                        quote,
+                      );
+                    },
                   ),
                 )
               : Column(

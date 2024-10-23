@@ -44,10 +44,12 @@ class PaymentAmountPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(
-          Duration.zero,
-          () => _getOfferings(context, ref, dapState?.currencies, offerings),
-        );
+        Future.delayed(Duration.zero, () async {
+          if (context.mounted) {
+            await _getOfferings(context, ref, dapState?.currencies, offerings);
+          }
+        });
+
         return null;
       },
       [],

@@ -25,8 +25,12 @@ class HomePage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(
-            Duration.zero, () async => _getExchanges(context, ref, exchanges),);
+        Future.delayed(Duration.zero, () async {
+          if (context.mounted) {
+            await _getExchanges(context, ref, exchanges);
+          }
+        });
+
         return null;
       },
       [],
@@ -147,7 +151,7 @@ class HomePage extends HookConsumerWidget {
             const SizedBox(height: Grid.xs),
             FilledButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),
@@ -186,7 +190,7 @@ class HomePage extends HookConsumerWidget {
             const SizedBox(height: Grid.xxs),
             FilledButton(
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStateProperty.all(
                   Theme.of(context).colorScheme.secondaryContainer,
                 ),
               ),

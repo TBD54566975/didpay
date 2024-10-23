@@ -33,7 +33,8 @@ class KccWebviewPage extends HookConsumerWidget {
     final webViewController = useState<InAppWebViewController?>(null);
 
     final settings = InAppWebViewSettings(
-      isInspectable: kDebugMode, // TODO: only enable for debug builds
+      isInspectable:
+          kDebugMode, // TODO(ethan-tbd): only enable for debug builds
       mediaPlaybackRequiresUserGesture: false,
       allowsInlineMediaPlayback: true,
       iframeAllow: 'camera; microphone',
@@ -42,10 +43,12 @@ class KccWebviewPage extends HookConsumerWidget {
 
     useEffect(
       () {
-        Future.delayed(
-          Duration.zero,
-          () async => _loadWebView(context, ref, idvRequest, webViewController),
-        );
+        Future.delayed(Duration.zero, () async {
+          if (context.mounted) {
+            await _loadWebView(context, ref, idvRequest, webViewController);
+          }
+        });
+
         return null;
       },
       [],

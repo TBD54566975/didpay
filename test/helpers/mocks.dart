@@ -53,7 +53,13 @@ class MockFeatureFlagsNotifier extends StateNotifier<List<FeatureFlag>>
 class MockTransactionNotifier extends AutoDisposeFamilyAsyncNotifier<
     Transaction?,
     TransactionProviderParameters> with Mock implements TransactionNotifier {
-  MockTransactionNotifier();
+  final Transaction? Function()? transactionBuilder;
+
+  MockTransactionNotifier([this.transactionBuilder]);
+
+  @override
+  FutureOr<Transaction?> build(TransactionProviderParameters arg) async =>
+      transactionBuilder?.call();
 }
 
 class MockTbdexQuoteNotifier extends AutoDisposeAsyncNotifier<Quote?>
@@ -72,4 +78,26 @@ class MockAccountBalanceNotifier
 
   @override
   FutureOr<AccountBalance?> build() async => accountBalance;
+}
+
+sealed class MockTransactionNotifierType {
+  const MockTransactionNotifierType();
+}
+
+class MockTransactionNotifierWithData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithData({required this.transactionType});
+
+  final TransactionType transactionType;
+}
+
+class MockTransactionNotifierWithNullData extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithNullData();
+}
+
+class MockTransactionNotifierWithError extends MockTransactionNotifierType {
+  const MockTransactionNotifierWithError();
+}
+
+class Listener<T> extends Mock {
+  void call(T? previous, T next);
 }

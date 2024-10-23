@@ -44,7 +44,7 @@ class AccountBalanceCard extends HookConsumerWidget {
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
+          color: Theme.of(context).colorScheme.surfaceContainer,
           borderRadius: BorderRadius.circular(Grid.radius),
         ),
         padding: const EdgeInsets.all(Grid.xs),

@@ -18,8 +18,6 @@ import 'package:web5/web5.dart';
 class AccountPage extends HookConsumerWidget {
   const AccountPage({super.key});
 
-  // TODO(ethan-tbd): add button to recreate did
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pfis = ref.watch(pfisProvider);
@@ -78,10 +76,10 @@ class AccountPage extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.surfaceContainer,
                     width: Grid.quarter,
                   ),
-                  color: Theme.of(context).colorScheme.background,
+                  color: Theme.of(context).colorScheme.surfaceContainer,
                 ),
                 child: const Center(child: Icon(Icons.person, size: Grid.xl)),
               ),
@@ -147,7 +145,7 @@ class AccountPage extends HookConsumerWidget {
           width: Grid.md,
           height: Grid.md,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
           child: const Center(child: Icon(Icons.account_balance)),
@@ -170,7 +168,7 @@ class AccountPage extends HookConsumerWidget {
           width: Grid.md,
           height: Grid.md,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
           child: const Center(
@@ -230,7 +228,7 @@ class AccountPage extends HookConsumerWidget {
           width: Grid.md,
           height: Grid.md,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
           child: const Center(child: Icon(Icons.gpp_good)),
@@ -253,7 +251,7 @@ class AccountPage extends HookConsumerWidget {
           width: Grid.md,
           height: Grid.md,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
           child: Center(
@@ -310,7 +308,7 @@ class AccountPage extends HookConsumerWidget {
           await ref.read(featureFlagsProvider.notifier).toggleFlag(flag);
         },
         activeColor: Theme.of(context).colorScheme.tertiary,
-        trackOutlineColor: MaterialStateProperty.resolveWith<Color?>(
+        trackOutlineColor: WidgetStateColor.resolveWith(
           (_) => Colors.transparent,
         ),
       );

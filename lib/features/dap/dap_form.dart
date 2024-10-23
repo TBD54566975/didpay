@@ -53,35 +53,51 @@ class DapForm extends HookConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
-                    focusNode: focusNode,
-                    controller: textController,
-                    onTap: () => errorText.value = null,
-                    onTapOutside: (_) {
-                      if (textController.text.isNotEmpty) {
-                        _parseDap(
-                          textController.text,
-                          errorMessage,
-                          errorText,
-                        );
-                      }
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          focusNode: focusNode,
+                          controller: textController,
+                          onTap: () => errorText.value = null,
+                          onTapOutside: (_) {
+                            if (textController.text.isNotEmpty) {
+                              _parseDap(
+                                textController.text,
+                                errorMessage,
+                                errorText,
+                              );
+                            }
 
-                      focusNode.unfocus();
-                    },
-                    onFieldSubmitted: (_) => _parseDap(
-                      textController.text,
-                      errorMessage,
-                      errorText,
-                    ),
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: InputDecoration(
-                      labelText: Loc.of(context).dapHint,
-                      errorText: errorText.value,
-                    ),
-                    validator: (value) => value == null || value.isEmpty
-                        ? Loc.of(context).thisFieldCannotBeEmpty
-                        : null,
+                            focusNode.unfocus();
+                          },
+                          onFieldSubmitted: (_) => _parseDap(
+                            textController.text,
+                            errorMessage,
+                            errorText,
+                          ),
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          decoration: InputDecoration(
+                            labelText: Loc.of(context).dapHint,
+                            errorText: errorText.value,
+                          ),
+                          validator: (value) => value == null || value.isEmpty
+                              ? Loc.of(context).thisFieldCannotBeEmpty
+                              : null,
+                        ),
+                      ),
+                      const SizedBox(width: Grid.xs),
+                      if (dap.value?.isLoading ?? false)
+                        const Padding(
+                          padding: EdgeInsets.all(Grid.xxs),
+                          child: SizedBox.square(
+                            dimension: Grid.sm,
+                            child: CircularProgressIndicator(),
+                          ),
+                        ),
+                    ],
                   ),
                 ],
               ),
