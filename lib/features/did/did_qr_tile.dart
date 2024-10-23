@@ -8,10 +8,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:web5/web5.dart';
 
-class QrTile extends HookConsumerWidget {
+class DidQrTile extends HookConsumerWidget {
   final TextEditingController didTextController;
 
-  const QrTile({
+  const DidQrTile({
     required this.didTextController,
     super.key,
   });
