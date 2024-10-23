@@ -56,13 +56,10 @@ void main() {
       expect(find.text('Issued credentials'), findsOneWidget);
     });
 
-    testWidgets('should show no credentials issued yet tile', (tester) async {
+    testWidgets('should show add a credential tile', (tester) async {
       await tester.pumpWidget(accountPageTestWidget());
 
-      expect(
-        find.widgetWithText(ListTile, 'No credentials issued yet'),
-        findsOneWidget,
-      );
+      expect(find.widgetWithText(ListTile, 'Add a credential'), findsOneWidget);
     });
 
     testWidgets('should show DidQrTabs on tap of qr icon', (tester) async {
