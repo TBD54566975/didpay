@@ -7,9 +7,11 @@ import '../../helpers/mocks.dart';
 
 void main() {
   late MockBox mockBox;
+  late MockVcsService mockVcsService;
 
   setUp(() {
     mockBox = MockBox();
+    mockVcsService = MockVcsService();
   });
 
   group('VcsNotifier', () {
@@ -17,7 +19,7 @@ void main() {
       final initialVcs = ['fake_cred'];
 
       when(() => mockBox.get(VcsNotifier.storageKey)).thenReturn(initialVcs);
-      final notifier = await VcsNotifier.create(mockBox);
+      final notifier = await VcsNotifier.create(mockBox, mockVcsService);
 
       expect(notifier.state, initialVcs);
       verify(() => mockBox.get(VcsNotifier.storageKey)).called(1);
@@ -35,7 +37,7 @@ void main() {
         ),
       ).thenAnswer((_) async {});
 
-      final notifier = await VcsNotifier.create(mockBox);
+      final notifier = await VcsNotifier.create(mockBox, mockVcsService);
 
       final addedVc = await notifier
           .add(CredentialResponse(credential: newVc, transactionId: null));
@@ -59,7 +61,7 @@ void main() {
       when(() => mockBox.put(VcsNotifier.storageKey, any()))
           .thenAnswer((_) async {});
 
-      final notifier = await VcsNotifier.create(mockBox);
+      final notifier = await VcsNotifier.create(mockBox, mockVcsService);
       await notifier.remove(credentialToRemove);
 
       expect(notifier.state, []);
