@@ -1,59 +1,68 @@
+import 'package:didpay/features/did/did_provider.dart';
+import 'package:didpay/features/tbdex/tbdex_quote_notifier.dart';
+import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+
 import '../../helpers/mocks.dart';
+import '../../helpers/riverpod_helpers.dart';
 import '../../helpers/test_data.dart';
 
-void main() async {
-  late MockTbdexService mockTbdexService;
-  late MockTbdexQuoteNotifier mockTbdexQuoteNotifier;
-
+Future<void> main() async {
   await TestData.initializeDids();
 
-  setUpAll(() {
-    registerFallbackValue(MockBearerDid());
-    registerFallbackValue(TestData.aliceDid);
-  });
+  final did = TestData.aliceDid;
+  const pfiDid = '123';
+  const exchangeId = 'rfq_01ha835rhefwmagsknrrhvaa0k';
 
-  setUp(() {
-    mockTbdexService = MockTbdexService();
-    mockTbdexQuoteNotifier = MockTbdexQuoteNotifier();
+  group('TbdexQuoteNotifier`', () {
+    group('startPolling', () {
+      test('should return Quote if successful', () async {
+        final mockTbdexService = MockTbdexService();
+        final quote = TestData.getQuote();
 
-    when(() => mockTbdexService.getExchange(any(), any(), any()))
-        .thenAnswer((_) async => TestData.getExchange());
-  });
+        when(() => mockTbdexService.getExchange(did, pfiDid, exchangeId))
+            .thenAnswer((_) async => [quote]);
 
-  group('TbdexQuoteNotifier', () {
-    test('should handle high-frequency polling with exponential backoff',
-        () async {
-      when(() => mockTbdexQuoteNotifier.pollForQuote(any(), any()))
-          .thenAnswer((_) async => TestData.getQuote());
+        final container = createContainer(
+          overrides: [
+            tbdexServiceProvider.overrideWith(
+              (ref) => mockTbdexService,
+            ),
+            didProvider.overrideWith((ref) => did),
+          ],
+        );
 
-      await mockTbdexQuoteNotifier.startPolling('pfiId', 'exchangeId');
+        final tbdexQuoteNotifier = container.read(quoteProvider.notifier);
 
-      verify(() => mockTbdexQuoteNotifier.startPolling('pfiId', 'exchangeId'))
-          .called(1);
-    });
+        final result =
+            await tbdexQuoteNotifier.startPolling(pfiDid, exchangeId);
 
-    test('should handle maximum retry attempts', () async {
-      when(() => mockTbdexQuoteNotifier.pollForQuote(any(), any()))
-          .thenThrow(Exception('Network error'));
-
-      await mockTbdexQuoteNotifier.startPolling('pfiId', 'exchangeId');
-
-      verify(() => mockTbdexQuoteNotifier.startPolling('pfiId', 'exchangeId'))
-          .called(1);
-    });
-
-    test('should handle network latency', () async {
-      when(() => mockTbdexQuoteNotifier.startPolling(any(), any()))
-          .thenAnswer((_) async {
-        await Future.delayed(const Duration(seconds: 5));
-        return TestData.getQuote();
+        expect(result, quote);
       });
 
-      await mockTbdexQuoteNotifier.startPolling('pfiId', 'exchangeId');
+      test('should throw an Exception if not successful', () async {
+        final mockTbdexService = MockTbdexService();
 
-      verify(() => mockTbdexQuoteNotifier.startPolling(any(), any())).called(1);
+        when(() => mockTbdexService.getExchange(did, pfiDid, exchangeId))
+            .thenThrow(Exception('Error'));
+
+        final container = createContainer(
+          overrides: [
+            tbdexServiceProvider.overrideWith(
+              (ref) => mockTbdexService,
+            ),
+            didProvider.overrideWith((ref) => did),
+          ],
+        );
+
+        final tbdexQuoteNotifier = container.read(quoteProvider.notifier);
+
+        expect(
+          () => tbdexQuoteNotifier.startPolling(pfiDid, exchangeId),
+          throwsA(isA<Exception>()),
+        );
+      });
     });
   });
 }
