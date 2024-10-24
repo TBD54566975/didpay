@@ -128,6 +128,22 @@ class TestData {
         TypeId.generate(MessageKind.rfq.name),
       );
 
+  static OrderInstructions getOrderInstructions() => OrderInstructions.create(
+        pfiDid.uri,
+        aliceDid.uri,
+        TypeId.generate(MessageKind.rfq.name),
+        OrderInstructionsData(
+          payin: PaymentInstruction(
+            link: 'https://payin.link',
+            instruction: 'Pay in instruction',
+          ),
+          payout: PaymentInstruction(
+            link: 'https://payout.link',
+            instruction: 'Pay out instruction',
+          ),
+        ),
+      );
+
   static JsonSchema paymentDetailsSchema() => JsonSchema.create(
         jsonDecode(r'''
         {
