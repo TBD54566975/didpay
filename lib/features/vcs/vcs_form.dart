@@ -1,4 +1,4 @@
-import 'package:didpay/features/did/did_qr_tile.dart';
+import 'package:didpay/features/vcs/vcs_qr_tile.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/next_button.dart';
 import 'package:didpay/shared/theme/grid.dart';
@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class DidForm extends HookConsumerWidget {
+class VcsForm extends HookConsumerWidget {
   final String buttonTitle;
   final Future<void> Function(String) onSubmit;
 
-  DidForm({required this.buttonTitle, required this.onSubmit, super.key});
+  VcsForm({required this.buttonTitle, required this.onSubmit, super.key});
 
   final _formKey = GlobalKey<FormState>();
 
@@ -39,7 +39,7 @@ class DidForm extends HookConsumerWidget {
                     enableSuggestions: false,
                     autocorrect: false,
                     decoration: InputDecoration(
-                      labelText: Loc.of(context).didHint,
+                      labelText: Loc.of(context).credentialHint,
                     ),
                     validator: (value) => value == null || value.isEmpty
                         ? Loc.of(context).thisFieldCannotBeEmpty
@@ -49,7 +49,7 @@ class DidForm extends HookConsumerWidget {
               ),
             ),
           ),
-          DidQrTile(didTextController: textController),
+          VcsQrTile(credentialTextController: textController),
           NextButton(
             onPressed: () async => onSubmit(textController.text),
             title: buttonTitle,

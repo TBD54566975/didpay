@@ -5,6 +5,7 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_add_page.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/qr/qr_tabs.dart';
+import 'package:didpay/features/vcs/vcs_add_page.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
 import 'package:didpay/l10n/app_localizations.dart';
 import 'package:didpay/shared/modal/modal_manage_item.dart';
@@ -200,17 +201,17 @@ class AccountPage extends HookConsumerWidget {
                   ),
             ),
           ),
-          credentials.isEmpty
-              ? TileContainer(child: _buildNoCredentialsTile(context))
-              : ListView.builder(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: credentials.length,
-                  itemBuilder: (context, index) => TileContainer(
+          ListView.builder(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
+            itemCount: credentials.length + 1,
+            itemBuilder: (context, index) => index < credentials.length
+                ? TileContainer(
                     child:
                         _buildCredentialTile(context, ref, credentials[index]),
-                  ),
-                ),
+                  )
+                : TileContainer(child: _buildAddCredentialTile(context)),
+          ),
         ],
       );
 
@@ -242,9 +243,9 @@ class AccountPage extends HookConsumerWidget {
         ),
       );
 
-  Widget _buildNoCredentialsTile(BuildContext context) => ListTile(
+  Widget _buildAddCredentialTile(BuildContext context) => ListTile(
         title: Text(
-          Loc.of(context).noCredentialsIssuedYet,
+          Loc.of(context).addACredential,
           style: Theme.of(context).textTheme.titleSmall,
         ),
         leading: Container(
@@ -254,11 +255,16 @@ class AccountPage extends HookConsumerWidget {
             color: Theme.of(context).colorScheme.surfaceContainer,
             borderRadius: BorderRadius.circular(Grid.xxs),
           ),
-          child: Center(
-            child:
-                Icon(Icons.error, color: Theme.of(context).colorScheme.outline),
+          child: const Center(
+            child: Icon(Icons.add),
           ),
         ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const VcsAddPage()),
+          );
+        },
       );
 
   Widget _buildFeatureFlagsList(

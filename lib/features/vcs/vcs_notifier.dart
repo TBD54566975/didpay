@@ -1,4 +1,5 @@
 import 'package:didpay/features/kcc/lib.dart';
+import 'package:didpay/features/vcs/vcs_service.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -9,13 +10,27 @@ final vcsProvider = StateNotifierProvider<VcsNotifier, List<String>>(
 class VcsNotifier extends StateNotifier<List<String>> {
   static const String storageKey = 'vcs';
   final Box box;
+  final VcsService vcsService;
 
-  VcsNotifier._(this.box, List<String> state) : super(state);
+  VcsNotifier._(this.box, this.vcsService, List<String> state) : super(state);
 
-  static Future<VcsNotifier> create(Box box) async {
+  static Future<VcsNotifier> create(Box box, VcsService vcsService) async {
     final List<String> vcs = await box.get(storageKey) ?? [];
 
-    return VcsNotifier._(box, vcs);
+    return VcsNotifier._(box, vcsService, vcs);
+  }
+
+  Future<String> addJwt(String vcJwt) async {
+    final parsedJwt = vcsService.parseCredential(vcJwt);
+
+    if (state.any((elem) => elem == vcJwt)) {
+      return parsedJwt;
+    }
+
+    state = [...state, parsedJwt];
+
+    await _save();
+    return parsedJwt;
   }
 
   Future<String> add(CredentialResponse response) async {

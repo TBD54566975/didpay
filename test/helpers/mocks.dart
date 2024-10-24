@@ -12,6 +12,7 @@ import 'package:didpay/features/tbdex/tbdex_service.dart';
 import 'package:didpay/features/transaction/transaction.dart';
 import 'package:didpay/features/transaction/transaction_notifier.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
+import 'package:didpay/features/vcs/vcs_service.dart';
 import 'package:hive/hive.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:http/http.dart' as http;
@@ -27,6 +28,8 @@ class MockBearerDid extends Mock implements BearerDid {}
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 
 class MockPfisService extends Mock implements PfisService {}
+
+class MockVcsService extends Mock implements VcsService {}
 
 class MockTbdexService extends Mock implements TbdexService {}
 

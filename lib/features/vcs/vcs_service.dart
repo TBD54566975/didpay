@@ -12,4 +12,14 @@ class VcsService {
 
     return credentials.isEmpty ? null : credentials;
   }
+
+  String parseCredential(String vcJwt) {
+    try {
+      final _ = Jwt.decode(vcJwt);
+    } on Exception {
+      rethrow;
+    }
+
+    return vcJwt;
+  }
 }

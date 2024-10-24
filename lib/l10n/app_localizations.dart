@@ -333,6 +333,12 @@ abstract class Loc {
   /// **'did:...'**
   String get didHint;
 
+  /// No description provided for @credentialHint.
+  ///
+  /// In en, this message translates to:
+  /// **'xxxxx.yyyyy.zzzzz'**
+  String get credentialHint;
+
   /// No description provided for @dapHint.
   ///
   /// In en, this message translates to:
@@ -651,6 +657,18 @@ abstract class Loc {
   /// **'Add a PFI'**
   String get addAPfi;
 
+  /// No description provided for @addACredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a credential'**
+  String get addACredential;
+
+  /// No description provided for @enterACredentialJwt.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a credential Json Web Token (JWT)'**
+  String get enterACredentialJwt;
+
   /// No description provided for @noPfisFound.
   ///
   /// In en, this message translates to:
@@ -669,11 +687,23 @@ abstract class Loc {
   /// **'PFI added!'**
   String get pfiAdded;
 
+  /// No description provided for @credentialAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Credential added!'**
+  String get credentialAdded;
+
   /// No description provided for @addingPfi.
   ///
   /// In en, this message translates to:
   /// **'Adding PFI...'**
   String get addingPfi;
+
+  /// No description provided for @addingCredential.
+  ///
+  /// In en, this message translates to:
+  /// **'Adding credential...'**
+  String get addingCredential;
 
   /// No description provided for @mustAddPfiBeforeSending.
   ///
@@ -818,6 +848,18 @@ abstract class Loc {
   /// In en, this message translates to:
   /// **'Don\'t know their DAP? Scan their QR code instead'**
   String get dontKnowTheirDap;
+
+  /// No description provided for @scanACredentialJwt.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan a credential JWT QR code'**
+  String get scanACredentialJwt;
+
+  /// No description provided for @credentialScanUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Credential scan unavailable'**
+  String get credentialScanUnavailable;
 
   /// No description provided for @featureFlags.
   ///

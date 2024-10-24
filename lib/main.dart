@@ -7,6 +7,7 @@ import 'package:didpay/features/pfis/pfi.dart';
 import 'package:didpay/features/pfis/pfis_notifier.dart';
 import 'package:didpay/features/pfis/pfis_service.dart';
 import 'package:didpay/features/vcs/vcs_notifier.dart';
+import 'package:didpay/features/vcs/vcs_service.dart';
 import 'package:didpay/shared/logger.dart';
 import 'package:didpay/shared/storage/storage_providers.dart';
 import 'package:flutter/material.dart';
@@ -54,7 +55,8 @@ Future<List<Override>> notifierOverrides() async {
   if (pfisBox.isEmpty) await pfisNotifier.add(tbdPfiDid);
 
   final vcsBox = await Hive.openBox(VcsNotifier.storageKey);
-  final vcsNotifier = await VcsNotifier.create(vcsBox);
+
+  final vcsNotifier = await VcsNotifier.create(vcsBox, VcsService());
 
   final featureFlagsBox = await Hive.openBox(FeatureFlagsNotifier.storageKey);
   final featureFlagsNotifier =

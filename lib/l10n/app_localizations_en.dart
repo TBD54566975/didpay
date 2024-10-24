@@ -131,6 +131,9 @@ class LocEn extends Loc {
   String get didHint => 'did:...';
 
   @override
+  String get credentialHint => 'xxxxx.yyyyy.zzzzz';
+
+  @override
   String get dapHint => '@local-handle/domain';
 
   @override
@@ -294,6 +297,12 @@ class LocEn extends Loc {
   String get addAPfi => 'Add a PFI';
 
   @override
+  String get addACredential => 'Add a credential';
+
+  @override
+  String get enterACredentialJwt => 'Enter a credential Json Web Token (JWT)';
+
+  @override
   String get noPfisFound => 'No PFIs found';
 
   @override
@@ -303,7 +312,13 @@ class LocEn extends Loc {
   String get pfiAdded => 'PFI added!';
 
   @override
+  String get credentialAdded => 'Credential added!';
+
+  @override
   String get addingPfi => 'Adding PFI...';
+
+  @override
+  String get addingCredential => 'Adding credential...';
 
   @override
   String get mustAddPfiBeforeSending => 'Must add a PFI before sending funds!';
@@ -376,6 +391,12 @@ class LocEn extends Loc {
 
   @override
   String get dontKnowTheirDap => 'Don\'t know their DAP? Scan their QR code instead';
+
+  @override
+  String get scanACredentialJwt => 'Scan a credential JWT QR code';
+
+  @override
+  String get credentialScanUnavailable => 'Credential scan unavailable';
 
   @override
   String get featureFlags => 'Feature flags';
