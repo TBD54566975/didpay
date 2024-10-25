@@ -11,7 +11,6 @@ class DeviceInfoService {
 
   Future<bool> isPhysicalDevice() async {
     if (kIsWeb) {
-      // On web, return false as there is no physical device
       return false;
     }
     if (Platform.isIOS) {
@@ -20,7 +19,7 @@ class DeviceInfoService {
     if (Platform.isAndroid) {
       return (await _deviceInfo.androidInfo).isPhysicalDevice;
     }
-    // Default return for unsupported platforms
+
     return false;
   }
 }
