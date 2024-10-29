@@ -327,6 +327,6 @@ class AccountPage extends HookConsumerWidget {
         ? DateFormat('MMM dd yyyy').format(DateTime.parse(issuedAt).toLocal())
         : 'no issuance date';
 
-    return 'KCC - $issuanceDate';
+    return 'Credential - $issuanceDate';
   }
 }
