@@ -88,7 +88,7 @@ class ModalSelectCurrency {
     Offering offering,
   ) =>
       Text(
-        '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode}',
+        '${offering.data.payin.currencyCode} → ${offering.data.payout.currencyCode} ${_isKbc(offering) ? '(KBC)' : ''}',
         style: Theme.of(context).textTheme.titleMedium,
       );
 
@@ -102,4 +102,12 @@ class ModalSelectCurrency {
               color: Theme.of(context).colorScheme.onSurface,
             ),
       );
+
+  static bool _isKbc(Offering offering) =>
+      offering.data.requiredClaims?.inputDescriptors[0].constraints.fields?.any(
+        (field) =>
+            field.filter?.constValue ==
+            'https://vc.schemas.host/kbc.schema.json',
+      ) ??
+      false;
 }
