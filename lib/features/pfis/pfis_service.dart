@@ -31,7 +31,7 @@ class PfisService {
     }
 
     getServiceEndpoint(res.didDocument!, 'PFI');
-    getServiceEndpoint(res.didDocument!, 'IDV');
+    // getServiceEndpoint(res.didDocument!, 'IDV');
 
     return Pfi(did: did.uri);
   }
