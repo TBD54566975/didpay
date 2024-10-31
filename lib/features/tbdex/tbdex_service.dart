@@ -53,21 +53,7 @@ class TbdexService {
       );
     }
 
-    // TODO(ethan-tbd): remove later, temporarily filter out stored balance payin offerings
-    final filteredOfferingsMap = offeringsMap.map(
-      (key, value) => MapEntry(
-        key,
-        value
-            .where(
-              (offering) =>
-                  offering.data.payin.methods.firstOrNull?.kind !=
-                  'USD_STOREDBAL_PAYIN',
-            )
-            .toList(),
-      ),
-    );
-
-    return filteredOfferingsMap;
+    return offeringsMap;
   }
 
   Future<AccountBalance> getAccountBalance(
