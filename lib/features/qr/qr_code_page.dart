@@ -61,7 +61,6 @@ class QrCodePage extends HookConsumerWidget {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Grid.sm),
-                  // TODO(ethan-tbd): remove portable did copy feature
                   child: ListTile(
                     trailing: IconButton(
                       icon: const Icon(Icons.copy),
@@ -81,7 +80,7 @@ class QrCodePage extends HookConsumerWidget {
                     ),
                     title: Center(
                       child: AutoSizeText(
-                        did.uri,
+                        _shortenUri(did.uri),
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
@@ -142,4 +141,8 @@ class QrCodePage extends HookConsumerWidget {
           dataModuleShape: QrDataModuleShape.square,
         ),
       );
+
+  String _shortenUri(String uri) => uri.length <= 25
+      ? uri
+      : '${uri.substring(0, 25)}...${uri.substring(uri.length - 7)}';
 }
